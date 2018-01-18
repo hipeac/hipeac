@@ -1,0 +1,144 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load staticfiles %}
+
+
+{% block title %}The Network - {{ block.super }}{% endblock %}
+
+{% block subtitle %}HiPEAC Network{% endblock %}
+
+{% block submenu %}
+    <li class="nav-item">
+        <router-link :to="{name: 'about'}" class="nav-link" exact>About</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'members'}" class="nav-link">Members</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'projects'}" class="nav-link">Projects</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'industry'}" class="nav-link">Industry</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'students'}" class="nav-link">Students</router-link>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
+        <router-view></router-view>
+    </div>
+{% endblock %}
+
+{% block vue_templates %}
+    {% include './v-about.html' with id='v-about' %}
+    {% include './v-industry.html' with id='v-industry' %}
+    {% include './v-members.html' with id='v-members' %}
+    {% include './v-projects.html' with id='v-projects' %}
+    {% include './v-students.html' with id='v-students' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+    <script>
+        var Store = new Vuex.Store({
+            state: {
+                members: [],
+                projects: []
+            },
+            mutations: {
+                fetchMembers: function (state) {
+                    ajax().get($('#urls').data('member-list')).done(function (res) {
+                        state.members = res;
+                    });
+                },
+                fetchProjects: function (state) {
+                    ajax().get($('#urls').data('project-list')).done(function (res) {
+                        state.projects = res;
+                    });
+                }
+            }
+        });
+
+        var AboutView = {
+            template: '#v-about'
+        };
+
+        var IndustryView = {
+            template: '#v-industry'
+        };
+
+        var MembersView = {
+            template: '#v-members',
+            computed: _.extend(
+                Vuex.mapState(['members']), {
+            }),
+            created: function () {
+                $.when(
+                    this.$store.commit('fetchMembers')
+                );
+            }
+        };
+
+        var ProjectsView = {
+            template: '#v-projects',
+            computed: _.extend(
+                Vuex.mapState(['projects']), {
+            }),
+            created: function () {
+                $.when(
+                    this.$store.commit('fetchProjects')
+                );
+            }
+        };
+
+        var StudentsView = {
+            template: '#v-students'
+        };
+
+        var Router = new VueRouter({
+            linkActiveClass: 'active',
+            routes: [
+                {
+                    name: 'about',
+                    path: '/',
+                    pathToRegexpOptions: {strict: true},
+                    component: AboutView
+                },
+                {
+                    name: 'industry',
+                    path: '/industry/',
+                    pathToRegexpOptions: {strict: true},
+                    component: IndustryView
+                },
+                {
+                    name: 'members',
+                    path: '/members/',
+                    pathToRegexpOptions: {strict: true},
+                    component: MembersView
+                },
+                {
+                    name: 'projects',
+                    path: '/projects/',
+                    pathToRegexpOptions: {strict: true},
+                    component: ProjectsView
+                },
+                {
+                    name: 'students',
+                    path: '/students/',
+                    pathToRegexpOptions: {strict: true},
+                    component: StudentsView
+                }
+            ]
+        });
+
+        var app = new Vue({
+            el: '#vue',
+            store: Store,
+            router: Router
+        });
+    </script>
+{% endcompress %}
+{% endblock %}

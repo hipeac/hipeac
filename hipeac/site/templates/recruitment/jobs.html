@@ -1,0 +1,111 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load staticfiles %}
+
+
+{% block title %}Jobs - {{ block.super }}{% endblock %}
+
+{% block subtitle %}HiPEAC Jobs{% endblock %}
+
+{% block submenu %}
+    <li class="nav-item">
+        <router-link :to="{name: 'jobs'}" class="nav-link" exact>Open positions</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'about'}" class="nav-link">For recruiters</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'careerCenter'}" class="nav-link">Career center</router-link>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="https://twitter.com/hipeacjobs" target="_blank"><span is="twitter-icon"></span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'jobs_feed' %}" target="_blank"><i class="material-icons">&#xE0E5;</i></a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div id="urls" data-job-list="{% url 'v1:job-list' %}" class="container">
+        <router-view></router-view>
+    </div>
+{% endblock %}
+
+{% block vue_templates %}
+    {% include './v-about.html' with id='v-about' %}
+    {% include './v-career-center.html' with id='v-career-center' %}
+    {% include './v-jobs.html' with id='v-jobs' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+    <script>
+        var Store = new Vuex.Store({
+            state: {
+                jobs: []
+            },
+            mutations: {
+                fetchJobs: function (state) {
+                    ajax().get($('#urls').data('job-list')).done(function (res) {
+                        state.jobs = res;
+                    });
+                }
+            }
+        });
+
+        var AboutView = {
+            template: '#v-about'
+        };
+
+        var CareerCenterView = {
+            template: '#v-career-center'
+        };
+
+        var JobsView = {
+            template: '#v-jobs',
+            computed: _.extend(
+                Vuex.mapState(['jobs']), {
+            })
+        };
+
+        var Router = new VueRouter({
+            linkActiveClass: 'active',
+            routes: [
+                {
+                    name: 'about',
+                    path: '/recruitment/',
+                    pathToRegexpOptions: {strict: true},
+                    component: AboutView
+                },
+                {
+                    name: 'careerCenter',
+                    path: '/career-center/',
+                    pathToRegexpOptions: {strict: true},
+                    component: CareerCenterView
+                },
+                {
+                    name: 'jobs',
+                    path: '/',
+                    pathToRegexpOptions: {strict: true},
+                    component: JobsView
+                }
+            ]
+        });
+
+        var app = new Vue({
+            el: '#vue',
+            store: Store,
+            router: Router,
+            created: function () {
+                $.when(
+                    this.$store.commit('fetchJobs')
+                );
+            }
+        });
+    </script>
+{% endcompress %}
+{% endblock %}

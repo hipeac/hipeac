@@ -1,0 +1,70 @@
+{% extends 'editor.html' %}
+
+
+{% block subtitle %}
+{% verbatim %}
+    <small>Position</small><span v-cloak v-if="obj"> #{{ obj.id }} / {{ obj.institution.short_name }}</span>
+{% endverbatim %}
+{% endblock %}
+
+{% block vue_templates %}
+{% verbatim %}
+    <script type="text/x-template" id="v-editor">
+        <div class="hipeac-card">
+            <hipeac-logo class="hipeac logo-sm mb-3 float-right"></hipeac-logo>
+            <display-sm>Please add a detailed description of the job offer and fill in the Career level section of the form to target specific HiPEAC users. The job will be automatically shared on HiPEAC's Twitter and LinkedIn accounts.</display-sm>
+            <form class="mt-4">
+                <autocomplete-popup v-model="obj.institution" type="institution" label="Institution" :required="true"></autocomplete-popup>
+                <autocomplete-popup v-model="obj.project" type="project" label="Related project"></autocomplete-popup>
+                <custom-input v-model.trim="obj.title" type="text" label="Title" :required="true"></custom-input>
+                <div class="form-row">
+                    <div class="col-12 col-md-6">
+                        <metadata-select v-model="obj.employment_type" type="employment_type" label="Employment type" :required="true"></metadata-select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <custom-input v-model.trim="obj.positions" type="number" label="Number of positions" :default="1"></custom-input>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-12 col-md-6">
+                        <custom-input v-model.trim="obj.location" type="text" label="Location"></custom-input>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <country-select v-model="obj.country" type="text" label="Country" :required="true"></country-select>
+                    </div>
+                </div>
+                <metadata-checkboxes v-model="obj.career_levels" type="job_position" label="Career levels" :required="true"></metadata-checkboxes>
+                <div class="form-row">
+                    <div class="col-12 col-md-6">
+                        <date-input v-model.trim="obj.deadline" label="Deadline for applications" :required="true"></date-input>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <custom-input v-model.trim="obj.email" type="email" label="Contact email" placeholder="Recommended"></custom-input>
+                    </div>
+                </div>
+                <markdown-textarea v-model.trim="obj.description" label="Description" :required="true" help="Preferably, do not include a contact email directly in the description; use the `Contact email` field instead."></markdown-textarea>
+                <metadata-checkboxes v-model="obj.topics" type="topic" label="Topics" sorting="value"></metadata-checkboxes>
+                <metadata-checkboxes v-model="obj.application_areas" type="application_area" label="Application areas" sorting="value"></metadata-checkboxes>
+            </form>
+        </div>
+    </script>
+    <script type="text/x-template" id="v-preview">
+        <div class="row">
+            <div class="col-12">
+                <button class="btn btn-sm btn-outline-primary mb-4 mr-2" disabled>Type: {{ obj.employment_type.value }}</button>
+                <button class="btn btn-sm btn-outline-danger mb-4" disabled>Deadline: {{ obj.deadline | moment }}</button>
+                <h2 class="display-lg mb-4">{{ obj.title }}</h2>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <metadata-badges :title="'Topics'" :items="obj.topics" color="secondary"></metadata-badges>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <metadata-badges :title="'Application areas'" :items="obj.application_areas" color="secondary"></metadata-badges>
+                    </div>
+                </div>
+                <div v-html="mark"></div>
+            </div>
+        </div>
+    </script>
+{% endverbatim %}
+{% endblock %}

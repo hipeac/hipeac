@@ -1,0 +1,8 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <loading v-if="!members.length"></loading>
+    <div v-else>
+        <div>{{ members }}</div>
+    </div>
+{% endverbatim %}
+</script>

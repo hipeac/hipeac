@@ -1,0 +1,15 @@
+{% if items.count %}
+    <div class="mb-4">
+        <h5 class="display-sm">{{ title }}</h5>
+        <ul class="list-with-icons mt-2">
+            {% for item in items.all %}
+                <li>
+                    <a href="{{ item.url }}" target="_blank">
+                        <i class="material-icons">&#xE250;</i>
+                        <span>{{ item.type | capfirst }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

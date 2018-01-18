@@ -1,0 +1,8 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <loading v-if="!projects.length"></loading>
+    <div v-else>
+        <project-list :items="projects" :show-search="true"></project-list>
+    </div>
+{% endverbatim %}
+</script>

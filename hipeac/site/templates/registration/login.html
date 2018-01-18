@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+
+{% block title %}Log in - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-10 col-md-6 col-lg-3">
+            <div class="d-flex justify-content-center mt-5 mb-4">
+                <div class="logo-container">{% include '_hipeac_logo.html' %}</div>
+            </div>
+            <div class="hipeac-card">
+                <h4 class="mb-4">Sign in to continue</h4>
+                <form method="post" action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}">
+                    {% csrf_token %}
+                    {{ form | crispy }}
+                    <input class="btn btn-primary mt-2" type="submit" value="Log in">
+                </form>
+                <hr class="my-4">
+                <p class="mb-0">
+                    <a href="{% url 'registration_register' %}">
+                        <i class="material-icons sm mr-2">&#xE150;</i>
+                        <small>You don't have an account? Join HiPEAC!</small>
+                    </a>
+                </p>
+                <p class="mb-0">
+                    <a href="{% url 'password_reset' %}">
+                        <i class="material-icons sm mr-2">&#xE8FD;</i>
+                        <small>Forgot your password?</small>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

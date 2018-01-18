@@ -1,0 +1,20 @@
+<li class="has-dropdown">
+    <a href="#"><img src="{{ user.nice_avatar }}" class="avatar">{{ user.username }}</a>
+    <ul class="dropdown">
+        <li><a href="{% url 'core:user_profile' user.username %}">My profile</a></li>
+        <li><a href="{% url 'core:profile' %}">Settings</a></li>
+        {% if user.is_steering_member %}
+            <li class="divider"></li>
+            <li><label>Steering Committe</label></li>
+            <li><a href="{% url 'steering:meetings' %}">Meetings</a></li>
+            <li><a href="{% url 'steering:action_points' %}">Action Points</a></li>
+            <li><a href="{% url 'steering:membership_requests' %}">Membership requests</a>
+        {% endif %}
+        {% if user.is_staff %}
+            <li class="divider"></li>
+            <li><a href="/admin/"><i class="in fa fa-lock"></i>Admin area</a></li>
+        {% endif %}
+        <li class="divider"></li>
+        <li><a href="{% url 'logout' %}"><i class="in fa fa-close"></i>Logout</a></li>
+    </ul>
+</li>

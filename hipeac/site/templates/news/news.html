@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load staticfiles %}
+
+
+{% block title %}News - {{ block.super }}{% endblock %}
+
+{% block subtitle %}HiPEAC News{% endblock %}
+
+{% block submenu %}
+    <li class="nav-item">
+        <router-link :to="{name: 'about'}" class="nav-link active" exact>About (?)</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'archive'}" class="nav-link">Magazine</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'archive'}" class="nav-link">News</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'archive'}" class="nav-link">Blog</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'archive'}" class="nav-link">Roadshow</router-link>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div id="urls" data-event-list="{% url 'v1:event-list' %}" class="container">
+        <router-view></router-view>
+    </div>
+{% endblock %}

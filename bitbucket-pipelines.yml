@@ -1,0 +1,9 @@
+image: python:3.6.4
+
+pipelines:
+    default:
+        - step:
+            script:
+                - pip install pipenv
+                - pipenv install --deploy --system
+                - python manage.py test hipeac

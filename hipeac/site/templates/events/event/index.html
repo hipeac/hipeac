@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+
+
+{% block title %}{{ event }} - {{ block.super }}{% endblock %}
+
+{% block subtitle %}
+    {% if event.type == event.CONFERENCE %}
+        <strong>{{ event }}</strong>
+    {% else %}
+        {{ event }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-2 pt-4">
+            </div>
+            <div class="col-12 col-md-10">
+                <div class="hipeac-card">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+    <script>
+        var app = new Vue({
+            el: '#vue'
+        });
+    </script>
+{% endcompress %}
+    <script type="application/ld+json">{% spaceless_json %}
+        {
+            "@context": "http://schema.org",
+            "@type": "Event",
+            "name": "{{ event }}",
+            "url": "{{ request.build_absolute_uri }}",
+            "startDate": "{{ event.start_date | date:'c' }}",
+            "endDate": "{{ event.end_date | date:'c' }}",
+            "location": {
+                "@type": "PostalAddress",
+                "addressLocality": "{{ event.city }}",
+                "addressCountry": "{{ event.country.name }}"
+            }
+        }
+    {% endspaceless_json %}</script>
+{% endblock %}

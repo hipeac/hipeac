@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="display-block">
+            <h2 class="display display-lg"><span>HiPEAC is a European network of almost 2,000 world-class computing systems researchers, industry representatives and students.</span></h2>
+            <h5 class="d-none d-md-block display display-md"><span>It provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.</span></h5>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-8 col-lg-9">
+                <div class="hipeac-card">
+                    Lorem ipsum.
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-3">
+                <div class="hipeac-card p-3">
+                    <a class="twitter-timeline" data-height="600" data-dnt="true" href="https://twitter.com/hipeac"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+    <script>
+        var app = new Vue({
+            el: '#vue'
+        });
+    </script>
+{% endcompress %}
+{% endblock %}
+
+{% block head_scripts %}
+{% compress js inline %}
+    <script type="text/javascript">
+        window.twttr = (function (d, s, id) {
+            var js;
+            var fjs = d.getElementsByTagName(s)[0];
+            var t = window.twttr || {};
+
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = 'https://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js, fjs);
+
+            t._e = [];
+            t.ready = function (f) {
+                t._e.push(f);
+            };
+
+            return t;
+        }(document, 'script', 'twitter-wjs'));
+    </script>
+{% endcompress %}
+{% endblock %}
+
+{% block structured_data %}
+    <meta name="twitter:site" content="@hipeac">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" property="og:title" content="HiPEAC">
+    <meta name="twitter:description" property="og:description" content="HiPEAC is a European network of almost 2,000 world-class computing systems researchers, industry representatives and students. It provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.">
+    <meta property="og:type" content="website">
+{% endblock %}

@@ -1,0 +1,135 @@
+{% load compress %}
+{% load staticfiles %}
+
+
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#" data-rev="{{ GIT_REV }}" data-csrf-token="{{ csrf_token }}" data-user="{{ user.id | default:"0" }}">
+    <head>
+        <link href="//fonts.googleapis.com/css?family=Material+Icons" type="text/css" rel="stylesheet">
+        {% compress css file bootstrap %}
+            <link href="{% static 'vendor/bootstrap@4.0.0/bootstrap.min.css' %}" rel="stylesheet">
+            <link href="{% static 'scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
+        {% endcompress %}
+        {% block styles %}{% endblock %}
+        <title>{% block title %}HiPEAC{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta property="og:site_name" content="HiPEAC">
+        <meta property="og:url" content="{{ request.build_absolute_uri }}">
+        <meta property="fb:app_id" content="207028983222704">
+        <meta name="twitter:site" content="@hipeac">
+        {% block structured_data %}{% endblock %}
+        {% if not debug %}
+            <script src='//cdn.goroost.com/roostjs/a253e21fb2404e8184943edd0bc67680' async></script>
+        {% endif %}
+        {% block head_scripts %}{% endblock %}
+    </head>
+    <body class="bg-light">
+        <div id="particles"></div>
+        {% block main %}{% block content %}{% endblock %}{% endblock %}
+        {% block vue_templates %}{% endblock %}
+
+            <script src="{% static 'vendor/jquery@3.2.1/jquery.min.js' %}"></script>
+            <script src="{% static 'vendor/popper.js@1.12.9/popper.min.js' %}"></script>
+            <script src="{% static 'vendor/bootstrap@4.0.0/bootstrap.min.js' %}"></script>
+            <script src="{% static 'vendor/marked@0.3.17/marked.min.js' %}"></script>
+            <script src="{% static 'vendor/moment@2.19.2/moment.min.js' %}"></script>
+            <script src="{% static 'vendor/underscore@1.8.3/underscore-min.js' %}"></script>
+
+        {% compress js file vue %}
+            <script src="{% static 'js/__init__.js' %}"></script>
+            <script src="{% static 'vendor/es6-promise@4.2.4/es6-promise.auto.min.js' %}"></script>
+            {% if debug %}
+                <script src="{% static 'vendor/vue@2.5.13/vue.js' %}"></script>
+                <script src="{% static 'vendor/vuex@3.0.1/vuex.js' %}"></script>
+                <script src="{% static 'vendor/vue-router@3.0.1/vue-router.js' %}"></script>
+            {% else %}
+                <script src="{% static 'vendor/vue@2.5.13/vue.min.js' %}"></script>
+                <script src="{% static 'vendor/vuex@3.0.1/vuex.min.js' %}"></script>
+                <script src="{% static 'vendor/vue-router@3.0.1/vue-router.min.js' %}"></script>
+                <script src="{% static 'vendor/vue-raven@3.20.0/raven.min.js' %}"></script>
+                <script src="{% static 'js/sentry.js' %}"></script>
+            {%endif %}
+            <script src="{% static 'js/ajax.js' %}"></script>
+            <script src="{% static 'js/helpers.js' %}"></script>
+            <script src="{% static 'js/mappers.js' %}"></script>
+            <script src="{% static 'js/v-shared.js' %}"></script>
+            <script src="{% static 'js/components/v-lists.js' %}"></script>
+        {% endcompress %}
+        {% block extra_scripts %}{% endblock %}
+        {% block scripts %}{% endblock %}
+        {% compress js file particles %}
+            <script src="{% static 'vendor/particles@2.0.0/particles.min.js' %}"></script>
+            <script>
+                if (!isSmallDevice() && !isIE()) {
+                    particlesJS('particles', {
+                        "particles": {
+                            "number": {
+                                "value": 200,
+                                "density": {
+                                    "enable": true,
+                                    "value_area": 800
+                                }
+                            },
+                            "color": {
+                                "value": "#ccc"
+                            },
+                            "shape": {
+                                "type": "circle",
+                                "stroke": {
+                                    "width": 0,
+                                    "color": "#ccc"
+                                },
+                                "polygon": {
+                                    "nb_sides": 6
+                                }
+                            },
+                            "opacity": {
+                                "value": 0.5,
+                                "random": false,
+                                "anim": {
+                                    "enable": false,
+                                    "speed": 1,
+                                    "opacity_min": 0.1,
+                                    "sync": false
+                                }
+                            },
+                            "size": {
+                                "value": 3,
+                                "random": true,
+                                "anim": {
+                                    "enable": false,
+                                    "speed": 40,
+                                    "size_min": 0.1,
+                                    "sync": false
+                                }
+                            },
+                            "line_linked": {
+                                "enable": true,
+                                "distance": 150,
+                                "color": "#ddd",
+                                "opacity": 0.4,
+                                "width": 1
+                            },
+                            "move": {
+                                "enable": false,
+                                "speed": 5,
+                                "direction": "none",
+                                "random": false,
+                                "straight": false,
+                                "out_mode": "out",
+                                "bounce": false,
+                                "attract": {
+                                    "enable": false,
+                                    "rotateX": 600,
+                                    "rotateY": 1200
+                                }
+                            }
+                        },
+                        "retina_detect": true
+                    });
+                }
+            </script>
+        {% endcompress %}
+    </body>
+</html>

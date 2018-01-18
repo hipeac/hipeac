@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% load hipeac %}
+
+
+{% block title %}{{ flatpage.title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+                <h4 class="w-75">{{ flatpage.title }}</h4>
+            </div>
+            <div class="col-lg-8">
+                <div class="md2">
+                    {{ flatpage.content | markdown }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

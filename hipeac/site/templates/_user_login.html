@@ -1,0 +1,6 @@
+<li>
+    <a href="{% url 'login' %}?next={{ request.path }}">Log in</a>
+</li>
+<li class="has-form">
+    <a href="{% url 'core:registration' %}" class="round secondary button"><i class="in fa fa-plus"></i>Join</a>
+</li>

@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load staticfiles %}
+
+
+{% block title %}Press room - {{ block.super }}{% endblock %}
+
+{% block subtitle %}Press room{% endblock %}
+
+{% block submenu %}
+    <li class="nav-item">
+        <router-link :to="{name: 'about'}" class="nav-link active" exact>About (?)</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'archive'}" class="nav-link">Press releases</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'archive'}" class="nav-link">Clippings</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'archive'}" class="nav-link">Expert videos</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'archive'}" class="nav-link">Press pack</router-link>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div id="urls" data-event-list="{% url 'v1:event-list' %}" class="container">
+        <router-view></router-view>
+    </div>
+{% endblock %}

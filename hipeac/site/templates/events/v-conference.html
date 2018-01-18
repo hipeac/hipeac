@@ -1,0 +1,34 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="hipeac-card">
+                <catchphrase>The HiPEAC conference provides a high-quality forum for computer architects and compiler builders working in the field of high performance computer architecture and compilation for embedded systems, but is also open to general-purpose research which is becoming increasingly relevant to the embedded domain.</catchphrase>
+                <p>The conference aims at the dissemination of advanced scientific knowledge and the promotion of international contacts among scientists from academia and industry. Topics of interest include, but are not limited to:
+
+                        Processor architectures
+                        Memory system optimization
+                        Power, performance and implementation efficient designs
+                        Interconnection networks, networks-on-chip, network interfaces and processors
+                        Security, dependability, and predictability support
+                        Application specific processors and accelerators
+                        Reconfigurable architectures
+                        Simulation and methodology
+                        Compiler techniques for embedded processors
+                        Feedback-directed optimization
+                        Program characterization and analysis techniques
+                        Dynamic compilation, adaptive execution, and continuous profiling/optimization
+                        Back-end code generation
+                        Binary translation/optimization
+                        Code size/memory footprint optimizations</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <loading v-if="!groupedEvents"></loading>
+            <div v-else class="hipeac-card">
+                <event-list :items="groupedEvents.conference"></event-list>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

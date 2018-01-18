@@ -1,0 +1,23 @@
+# https://support.google.com/webmasters/answer/6062608?hl=en
+
+# Disallow all
+User-agent: *
+Disallow: /
+
+# But allow only some bots
+User-agent: Googlebot
+User-agent: msnbot
+User-agent: Slurp
+User-agent: Yahoo-Blogs
+User-agent: LinkedInBot
+User-agent: Twitterbot
+User-agent: Facebot
+
+Disallow: /accounts/
+Disallow: /admin/
+Disallow: /assets/private/
+Disallow: /ec/
+Disallow: /sc/
+Disallow: /sympa/
+
+Crawl-delay: 600

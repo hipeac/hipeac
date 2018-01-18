@@ -1,0 +1,8 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div v-if="!jobs.length" is="loading"></div>
+    <div v-else>
+        <job-list :items="jobs" :show-extra-filters="true" :show-search="true"></job-list>
+    </div>
+{% endverbatim %}
+</script>

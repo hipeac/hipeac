@@ -1,0 +1,24 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="hipeac-card">
+                <catchphrase>ACACES, the "HiPEAC Summer School", is a one week summer school for computer architects and compiler builders working in the field of high performance computer architecture and compilation for embedded systems.</catchphrase>
+                <p>The school aims at the dissemination of advanced scientific knowledge and the promotion of international contacts among scientists from academia and industry.
+
+                        A distinguishing feature of this Summer School is its broad scope ranging from low level technological issues to advanced compilation techniques. In the design of modern computer systems one has to be knowledgeable about architecture as well as about the quality of the code, and how to improve it. This summer school offers the ideal mix of the two worlds – both at the entry level and at the most advanced level.
+
+                        The ACACES Summer School is organized by HiPEAC.
+
+                        The summer school is open to everybody but previous training and/or experience in computer science as well as a background in computer architecture or compilation is indispensable.</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <loading v-if="!groupedEvents"></loading>
+            <div v-else class="hipeac-card">
+                <event-list :items="groupedEvents.acaces"></event-list>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

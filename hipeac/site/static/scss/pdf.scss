@@ -1,0 +1,11 @@
+$text-color: #37474F;  // Blue Grey 800
+
+
+html, body {
+    -webkit-font-smoothing: antialiased;
+    font-family: Roboto, 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 0.5in;
+    font-weight: 400;
+    line-height: 1.4;
+    color: $text-color;
+}

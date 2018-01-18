@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="large-6 columns large-centered">
+            <h1 class="color-alert">403 Forbidden</h1>
+            {% if messages %}
+                {% for message in messages %}
+                    <h2 class="light-weight">{{ message }}</h2>
+                {% endfor %}
+            {% endif %}
+            <hr>
+            <table class="generic">
+                <tr>
+                    <td class="i"><i class="in fa fa-envelope"></i></td>
+                    <td><h5 class="color-subheader"><a href="mailto:webmaster@hipeac.net">Contact us</a> if you think that this message does not apply to you.</h5>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,41 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[requires]
+python_version = "3.6"
+
+[packages]
+celery = "==4.0.2"
+coreapi = "*"
+django = ">=2.0.0"
+djangorestframework = "*"
+django-anymail = "*"
+django-compressor = "*"
+django-countries = "*"
+django-crispy-forms = "*"
+django-libsass = "*"
+django-pipeline = "*"
+django-recaptcha = "*"
+django-redis = "*"
+django-registration = { git = "https://github.com/ubernostrum/django-registration.git" }
+django-wkhtmltopdf = "*"
+google-api-python-client = "*"
+gunicorn = "*"
+lxml = "*"
+markdown = "*"
+mysqlclient = "*"
+nltk = "*"
+pillow = "*"
+raven = "*"
+requests = "*"
+twitter = "*"
+whitenoise = "*"
+
+[dev-packages]
+coverage = "*"
+django-debug-toolbar = "*"
+flake8 = "*"
+flake8-mypy = "*"
+sqlalchemy = "*"

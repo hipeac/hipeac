@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load staticfiles %}
+
+
+{% block main %}
+    <div id="vue">
+        <nav class="hipeac navbar sticky-top navbar-expand-lg navbar-light">
+            <div class="container">
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'homepage' %}">
+                    {% include '_hipeac_logo.html' %}
+                </a>
+                <div class="collapse navbar-collapse" id="navbar">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link {% active request '/' %}" href="{% url 'homepage' %}">
+                                <i class="material-icons sm">&#xE88A;</i>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link {% active request '/network/+' %}" href="{% url 'network' %}">The Network</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% active request '/events/+,/acaces/+,/csw/+,/conference/+' %}" href="{% url 'events' %}">Events</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% active request '/jobs/+' %}" href="{% url 'jobs' %}">Jobs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% active request '/vision/+' %}" href="{% url 'vision' %}">Vision</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% active request '/news/+' %}" href="{% url 'news' %}">News</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% active request '/press/+' %}" href="{% url 'press' %}">Press room</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="hipeac subheader mb-3 mb-md-5">
+            <div class="container d-md-flex justify-content-md-between align-items-md-end">
+                <h3 class="title">{% block subtitle %}{% endblock %}</h3>
+                <ul class="nav nav-tabs">{% block submenu %}{% endblock %}</ul>
+            </div>
+        </div>
+        {% block content %}{% endblock %}
+    </div>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12">
+                <hr class="my-5">
+            </div>
+            <div class="col-12 col-lg-2">
+                <p class="text-sm">&copy; 2004-{% now 'Y' %} <strong>HiPEAC</strong></p>
+            </div>
+            <div class="col-12 col-lg-10">
+                <img class="float-right flag-sm ml-3" src="{% static 'images/eu-flag.png' %}">
+                <p class="text-sm">
+                    <strong>European Network on High Performance and Embedded Architecture and Compilation</strong><br>
+                    <span class="color-lightest-text">The HiPEAC project has received funding from the European Union’s Horizon2020 research and innovation programme under grant agreement number 779656.</span>
+                </p>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="/privacy-policy/"><small>Privacy policy</small></a></li>
+                    <li class="list-inline-item"><a href="/disclaimer/"><small>Disclaimer</small></a></li>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
