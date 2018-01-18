@@ -1,0 +1,14 @@
+.DS_Store
+._*
+
+__pycache__
+*.py[cod]
+*$py.class
+.mypy_cache
+.vscode
+
+.coverage
+categories.json
+confusables.json
+celerybeat-schedule
+dev.db
