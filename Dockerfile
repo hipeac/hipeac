@@ -1,4 +1,4 @@
-FROM python:3.6.5
+FROM python:3.6
 
 # install wkhtmltopdf
 RUN wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
