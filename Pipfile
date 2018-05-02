@@ -7,6 +7,7 @@ name = "pypi"
 python_version = "3.6"
 
 [packages]
+carbonize = "*"
 celery = "==4.0.2"
 coreapi = "*"
 django = ">=2.0.0"
