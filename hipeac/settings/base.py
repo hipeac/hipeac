@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'pipeline',
 
     # api
+    'corsheaders',
     'rest_framework',
 
     # app
@@ -78,6 +79,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.gzip.GZipMiddleware',
@@ -122,6 +124,8 @@ DATETIME_FORMAT = DATE_FORMAT + ', ' + TIME_FORMAT
 
 
 # Security
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 LOGOUT_REDIRECT_URL = '/'
 
