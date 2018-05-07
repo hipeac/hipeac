@@ -1,0 +1,14 @@
+language: python
+
+python:
+    - "3.6"
+
+install:
+    - pip install pipenv coveralls
+    - pipenv install --deploy --system
+
+script:
+    - coverage run --source='hipeac' manage.py test hipeac
+
+after_success:
+    - coveralls
