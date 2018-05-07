@@ -7,7 +7,11 @@
     <div class="row justify-content-center">
         <div class="col-10 col-md-6 col-lg-3">
             <div class="d-flex justify-content-center mt-5 mb-4">
-                <div class="logo-container">{% include '_hipeac_logo.html' %}</div>
+                <div class="logo-container">
+                    <a href="{% url 'homepage' %}">
+                        {% include '_hipeac_logo.html' %}
+                    </a>
+                </div>
             </div>
             <div class="hipeac-card account-card">
                 {% block content %}{% endblock %}

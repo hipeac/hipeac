@@ -9,7 +9,7 @@
         {% compress css file pdf %}
             <link href="{% static 'scss/pdf.scss' %}" type="text/x-scss" rel="stylesheet">
         {% endcompress %}
-        <title>{% block title %}HiPEAC{% endblock %}</title>
+        <title>{% block head_title %}HiPEAC{% endblock %}</title>
         <meta charset="utf-8">
     </head>
     <body>

@@ -3,6 +3,7 @@ $hipeac-dark-blue: #0055A4;  // SVG
 $hipeac-yellow: #FFEE00;
 
 $text-color: #37474F;  // Blue Grey 800
+$light-text-color: #607D8B;  // Blue Grey 500
 $primary-color: $hipeac-blue;
 $light-yellow-color: #FFF9C4;  // Yellow 100
 $lightest-yellow-color: #FFFDE7;  // Yellow 50
@@ -72,8 +73,16 @@ a {
     background: $lightest-blue-color !important;
 }
 
+.btn {
+    .material-icons {
+        font-size: 1rem;
+        vertical-align: -20%;
+    }
+}
+
 .btn-outline-primary {
     border-color: $primary-color !important;
+    color: $primary-color;
 }
 
 .btn-pill {
@@ -433,9 +442,37 @@ b, strong, .font-weight-bold {
     }
 
     &.account-card {
-        h1 {
+        h1, .header {
             font-size: 1.5rem;
             margin-bottom: 1.5rem !important;
+        }
+
+        .content {}
+
+        hr {
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .main-action {
+            margin-top: .5rem !important;
+        }
+
+        .asteriskField {
+            color: #F44336;  // Red 500
+            margin-left: 0.2rem;
+        }
+
+        #div_id_remember {
+            float: right;
+            color: $light-text-color;
+
+            input {
+                margin-top: 0.1rem;
+            }
+            label {
+                font-size: small;
+            }
         }
     }
 }
