@@ -40,8 +40,8 @@ Unless otherwise specified, follow
 Tab size is 4 **spaces**. Maximum line length is 120. All changes should include tests and pass `flake8`.
 
 
-[ci-badge]: https://travis-ci.org/hipeac/website.svg?branch=master
-[ci]: https://travis-ci.org/hipeac/website?branch=master
+[ci-badge]: https://api.travis-ci.com/hipeac/website.svg?branch=master
+[ci]: https://travis-ci.com/hipeac/website?branch=master
 [coverage-badge]: https://coveralls.io/repos/github/hipeac/website/badge.svg?branch=master
 [coverage]: https://coveralls.io/r/hipeac/website?branch=master
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
