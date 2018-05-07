@@ -10,7 +10,7 @@ urlpatterns = [
     # API
     re_path(r'^api/', include('hipeac.api.urls')),
     # Admin
-    re_path(r'^accounts/', include('django.contrib.auth.urls')),
+    re_path(r'^accounts/', include('allauth.urls')),
     re_path(r'^admin/', admin.site.urls),
     # HiPEAC
     re_path(r'^', include('hipeac.site.urls')),

@@ -431,6 +431,13 @@ b, strong, .font-weight-bold {
     &.with-table {
         padding: 1.5rem 0.75rem;
     }
+
+    &.account-card {
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem !important;
+        }
+    }
 }
 
 .hipeac.list-group {

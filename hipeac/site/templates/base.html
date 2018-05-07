@@ -7,7 +7,7 @@
     <head>
         <link href="//fonts.googleapis.com/css?family=Material+Icons" type="text/css" rel="stylesheet">
         {% compress css file bootstrap %}
-            <link href="{% static 'vendor/bootstrap@4.0.0/bootstrap.min.css' %}" rel="stylesheet">
+            <link href="{% static 'vendor/bootstrap@4.1.0/bootstrap.min.css' %}" rel="stylesheet">
             <link href="{% static 'scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
         {% endcompress %}
         {% block styles %}{% endblock %}
@@ -29,9 +29,9 @@
         {% block main %}{% block content %}{% endblock %}{% endblock %}
         {% block vue_templates %}{% endblock %}
 
-            <script src="{% static 'vendor/jquery@3.2.1/jquery.min.js' %}"></script>
-            <script src="{% static 'vendor/popper.js@1.12.9/popper.min.js' %}"></script>
-            <script src="{% static 'vendor/bootstrap@4.0.0/bootstrap.min.js' %}"></script>
+            <script src="{% static 'vendor/jquery@3.3.1/jquery.min.js' %}"></script>
+            <script src="{% static 'vendor/popper.js@1.14.0/popper.min.js' %}"></script>
+            <script src="{% static 'vendor/bootstrap@4.1.0/bootstrap.min.js' %}"></script>
             <script src="{% static 'vendor/marked@0.3.17/marked.min.js' %}"></script>
             <script src="{% static 'vendor/moment@2.19.2/moment.min.js' %}"></script>
             <script src="{% static 'vendor/underscore@1.8.3/underscore-min.js' %}"></script>

@@ -1,6 +1,5 @@
 # flake8: noqa
 
-from .auth import *
 from .editor import *
 from .events import *
 from .institutions import *

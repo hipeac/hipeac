@@ -63,6 +63,12 @@ INSTALLED_APPS = [
     'crispy_forms',
     'pipeline',
 
+    # auth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.linkedin_oauth2',
+
     # api
     'corsheaders',
     'rest_framework',
@@ -104,14 +110,14 @@ FIXTURE_DIRS = [
 
 
 # Time zones
-# https://docs.djangoproject.com/en/1.8/topics/i18n/timezones/
+# https://docs.djangoproject.com/en/2.0/topics/i18n/timezones/
 
 USE_TZ = True
 TIME_ZONE = 'Europe/Brussels'
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
+# https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'en'
 USE_I18N = False
@@ -123,19 +129,43 @@ TIME_FORMAT = 'H:i'
 DATETIME_FORMAT = DATE_FORMAT + ', ' + TIME_FORMAT
 
 
-# Security
+# Security / Accounts
+# https://django-allauth.readthedocs.io/en/latest/
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 LOGOUT_REDIRECT_URL = '/'
 
-ACCOUNT_ACTIVATION_DAYS = 7
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'linkedin': {
+        'SCOPE': [
+            'r_emailaddress',
+        ],
+        'PROFILE_FIELDS': [
+            'id',
+            'first-name',
+            'last-name',
+            'email-address',
+            'picture-url',
+            'public-profile-url',
+        ]
+    }
+}
+
 
 # CSRF / Cookie
 
@@ -195,8 +225,8 @@ MESSAGE_TAGS = {
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.8/howto/static-files/
-# https://docs.djangoproject.com/en/1.8/howto/static-files/deployment/
+# https://docs.djangoproject.com/en/2.0/howto/static-files/
+# https://docs.djangoproject.com/en/2.0/howto/static-files/deployment/
 # http://django-pipeline.readthedocs.org/en/latest/index.html
 
 STATIC_URL = '/static/'
@@ -227,7 +257,7 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 
 # wkhtmltopdf requires MEDIA configuration to be set
 # http://stackoverflow.com/questions/24071290/
-# https://docs.djangoproject.com/en/1.8/ref/settings/#media-root
+# https://docs.djangoproject.com/en/2.0/ref/settings/#media-root
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'www', 'media')

@@ -18,24 +18,6 @@ sitemaps = {
     'sessions': SessionSitemap,
 }
 
-auth_patterns = [
-    # https://github.com/ubernostrum/django-registration/blob/master/registration/backends/hmac/urls.py
-    re_path(r'^activate/complete/$', views.ActivationCompleteView.as_view(), name='registration_activation_complete'),
-    re_path(r'^activate/(?P<activation_key>[-:\w]+)/$', views.ActivationView.as_view(), name='registration_activate'),
-    re_path(r'^join/$', views.RegistrationView.as_view(), name='registration_register'),
-    re_path(r'^register/complete/$', views.RegistrationCompleteView.as_view(), name='registration_complete'),
-    # https://github.com/django/django/blob/master/django/contrib/auth/urls.py
-    re_path(r'^login/$', views.LoginView.as_view(), name='login'),
-    re_path(r'^logout/$', views.LogoutView.as_view(), name='logout'),
-    re_path(r'^password/change/$', views.PasswordChangeView.as_view(), name='password_change'),
-    re_path(r'^password/change/done/$', views.PasswordChangeDoneView.as_view(), name='password_change_done'),
-    re_path(r'^password/reset/$', views.PasswordResetView.as_view(), name='password_reset'),
-    re_path(r'^password/reset/sent/$', views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    re_path(r'^reset/(?P<uidb64>[0-9A-Za-z]+)/(?P<token>.+)/$', views.PasswordResetConfirmView.as_view(),
-            name='password_reset_confirm'),
-    re_path(r'^reset/done/$', views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-]
-
 urlpatterns = [
     # Main sections
     re_path(r'^$', TemplateView.as_view(template_name='flatpages/homepage.html'), name='homepage'),
@@ -59,7 +41,6 @@ urlpatterns = [
     # Editor
     re_path(r'^editor/(?P<ct>\d+)/(?P<pk>\d+)/$', views.EditorView.as_view(), name='editor'),
     # Users
-    re_path(r'^', include(auth_patterns)),
     re_path(r'^~(?P<username>[\w.@-]+)/$', views.JobDetail.as_view(), name='user'),
     # Sitemap
     re_path(r'^sitemap\.xml$', sitemap_views.index, {'sitemaps': sitemaps}),

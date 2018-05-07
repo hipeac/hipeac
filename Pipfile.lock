@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5223ef9b5ce2f003685d653337fa27463c6818647cfb854d7b92b61e1ada2a68"
+            "sha256": "b23ecbdef0edaceaba15f3de499ff2c96b7296936f61719d2f21a97a2f5630c4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -74,6 +74,13 @@
             ],
             "version": "==0.0.4"
         },
+        "defusedxml": {
+            "hashes": [
+                "sha256:24d7f2f94f7f3cb6061acb215685e5125fbcdc40a857eff9de22518820b0a4f4",
+                "sha256:702a91ade2968a82beb0db1e0766a6a273f33d4616a6ce8cde475d8e09853b20"
+            ],
+            "version": "==0.5.0"
+        },
         "django": {
             "hashes": [
                 "sha256:26b34f4417aa38d895b6b5307177b51bc3f4d53179d8696a5c19dcb50582523c",
@@ -81,6 +88,13 @@
             ],
             "index": "pypi",
             "version": "==2.0.5"
+        },
+        "django-allauth": {
+            "hashes": [
+                "sha256:7b31526cccd1c46f9f09acf0703068e8a9669337d29eb065f7e8143c2d897339"
+            ],
+            "index": "pypi",
+            "version": "==0.35.0"
         },
         "django-anymail": {
             "hashes": [
@@ -159,11 +173,6 @@
             ],
             "index": "pypi",
             "version": "==4.9.0"
-        },
-        "django-registration": {
-            "editable": true,
-            "git": "https://github.com/ubernostrum/django-registration.git",
-            "ref": "f957d2824cf77820287da2993fca44d6445c592d"
         },
         "django-wkhtmltopdf": {
             "hashes": [
@@ -311,11 +320,10 @@
         },
         "nltk": {
             "hashes": [
-                "sha256:2661f9971d983db314bbebd51ba770811a362c6597fd0f303bb1d3beadcb4834",
-                "sha256:8a3bad9ff7f67d2828a7915c2fab93e6ca910c2015ef40799e1805fccf2354e5"
+                "sha256:fe0eda251be65843be86d7de9abfbf7161732256f742e623b21243ec47bdb718"
             ],
             "index": "pypi",
-            "version": "==3.2.5"
+            "version": "==3.3.0"
         },
         "oauth2client": {
             "hashes": [
@@ -323,6 +331,13 @@
                 "sha256:cf061f52f75e91d489bf5c276498f8af2655fe331b454f10022441513cf445a6"
             ],
             "version": "==4.1.2"
+        },
+        "oauthlib": {
+            "hashes": [
+                "sha256:09d438bcac8f004ae348e721e9d8a7792a9e23cd574634e973173344046287f5",
+                "sha256:909665297635fa11fe9914c146d875f2ed41c8c2d78e21a529dd71c0ba756508"
+            ],
+            "version": "==2.0.7"
         },
         "pillow": {
             "hashes": [
@@ -407,6 +422,13 @@
             ],
             "version": "==0.2.1"
         },
+        "python3-openid": {
+            "hashes": [
+                "sha256:0086da6b6ef3161cfe50fb1ee5cceaf2cda1700019fda03c2c5c440ca6abe4fa",
+                "sha256:628d365d687e12da12d02c6691170f4451db28d6d68d050007e4a40065868502"
+            ],
+            "version": "==3.1.0"
+        },
         "pytz": {
             "hashes": [
                 "sha256:65ae0c8101309c45772196b21b74c46b2e5d11b6275c45d251b150d5da334555",
@@ -442,6 +464,13 @@
             ],
             "index": "pypi",
             "version": "==2.18.4"
+        },
+        "requests-oauthlib": {
+            "hashes": [
+                "sha256:50a8ae2ce8273e384895972b56193c7409601a66d4975774c60c2aed869639ca",
+                "sha256:883ac416757eada6d3d07054ec7092ac21c7f35cb1d2cf82faf205637081f468"
+            ],
+            "version": "==0.8.0"
         },
         "rjsmin": {
             "hashes": [
@@ -600,8 +629,6 @@
         },
         "pycodestyle": {
             "hashes": [
-                "sha256:1ec08a51c901dfe44921576ed6e4c1f5b7ecbad403f871397feedb5eb8e4fa14",
-                "sha256:5ff2fbcbab997895ba9ead77e1b38b3ebc2e5c3b8a6194ef918666e4c790a00e",
                 "sha256:682256a5b318149ca0d2a9185d365d8864a768a28db66a84a2ea946bcc426766",
                 "sha256:6c4245ade1edfad79c3446fadfc96b0de2759662dc29d07d80a6f27ad1ca6ba9"
             ],
