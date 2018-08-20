@@ -42,6 +42,8 @@ urlpatterns = [
     path('editor/<int:ct>/<int:pk>/', views.EditorView.as_view(), name='editor'),
     # Users
     re_path(r'^~(?P<username>[\w.@-]+)/$', views.JobDetail.as_view(), name='user'),
+    # Mailing lists
+    path('sympa/<slug:mailing_list>/', views.DataSourceView.as_view(), name='datasource'),
     # Sitemap
     path('sitemap.xml', sitemap_views.index, {'sitemaps': sitemaps}),
     path('sitemap-<slug:section>.xml', sitemap_views.sitemap, {'sitemaps': sitemaps},

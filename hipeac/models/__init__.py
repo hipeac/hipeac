@@ -1,6 +1,7 @@
 # flake8: noqa
 
 from .generic import *
+from .project import *
 
 from .events import *
 from .institutions import *
