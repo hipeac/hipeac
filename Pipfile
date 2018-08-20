@@ -4,13 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
 
 [packages]
 carbonize = "*"
-celery = "==4.0.2"
+celery = "*"
 coreapi = "*"
-django = ">=2.0.0"
+django = "*"
 djangorestframework = "*"
 django-allauth = "*"
 django-anymail = "*"
@@ -18,6 +18,7 @@ django-compressor = "*"
 django-cors-headers = "*"
 django-countries = "*"
 django-crispy-forms = "*"
+django-dnt = "*"
 django-libsass = "*"
 django-pipeline = "*"
 django-recaptcha = "*"

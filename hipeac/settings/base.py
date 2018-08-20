@@ -92,17 +92,19 @@ MIDDLEWARE = [
     'django.middleware.http.ConditionalGetMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'pipeline.middleware.MinifyHTMLMiddleware',
+    # 'pipeline.middleware.MinifyHTMLMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'dnt.middleware.DoNotTrackMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
 ROOT_URLCONF = 'hipeac.urls'
-WSGI_APPLICATION = 'hipeac.wsgi.application'
+WSGI_APPLICATION = 'hipeac.wsgi.app'
 
 FIXTURE_DIRS = [
     os.path.join(PROJECT_ROOT, 'fixtures'),
@@ -290,16 +292,8 @@ NOCAPTCHA = True  # For using reCAPTCHA v2
 # https://django-crispy-forms.readthedocs.io/en/latest/index.html
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_FAIL_SILENTLY = False
 
-
-# Administration area
-# https://docs.djangoproject.com/en/1.11/ref/contrib/admin/
-# http://django-suit.readthedocs.org/en/develop/
-# http://getbootstrap.com/2.3.2/base-css.html#icons
-
-GRAPPELLI_ADMIN_TITLE = 'HiPEAC'
-GRAPPELLI_CLEAN_INPUT_TYPES = False
-# GRAPPELLI_INDEX_DASHBOARD = 'hipeac.apps.core.dashboard.AdminDashboard'
 
 COUNTRIES_OVERRIDE = {
     'US': 'United States',

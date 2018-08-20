@@ -17,6 +17,8 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 CSRF_USE_SESSIONS = True
 
+CRISPY_FAIL_SILENTLY = True
+
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -71,7 +73,8 @@ ANYMAIL = {
     'MAILGUN_API_KEY': os.environ.get('MAILGUN_API_KEY', 'MAILGUN_API_KEY'),
     'MAILGUN_SEND_DEFAULTS': {
         'esp_extra': {
-            'sender_domain': APP_DOMAIN,
+            'sender_domain': os.environ.get('MAILGUN_SENDER_DOMAIN', 'MAILGUN_SENDER_DOMAIN'),
+            'o:tag': 'hipeac',
             'o:testmode': 'no',
         }
     }
