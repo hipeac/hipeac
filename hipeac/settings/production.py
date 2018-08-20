@@ -70,6 +70,7 @@ SERVER_EMAIL = 'root@{0}'.format(APP_DOMAIN)
 EMAIL_SUBJECT_PREFIX = '[{0}] '.format(APP_DOMAIN)
 
 ANYMAIL = {
+    'MAILGUN_API_URL': os.environ.get('MAILGUN_API_URL', 'https://api.mailgun.net/v3'),
     'MAILGUN_API_KEY': os.environ.get('MAILGUN_API_KEY', 'MAILGUN_API_KEY'),
     'MAILGUN_SEND_DEFAULTS': {
         'esp_extra': {
