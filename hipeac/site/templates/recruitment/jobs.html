@@ -6,14 +6,14 @@
 
 {% block head_title %}Jobs - {{ block.super }}{% endblock %}
 
-{% block subtitle %}HiPEAC Jobs{% endblock %}
+{% block subtitle %}{{ flatpage.title }}{% endblock %}
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'jobs'}" class="nav-link" exact>Open positions</router-link>
+        <router-link :to="{name: 'about'}" class="nav-link">About</router-link>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'about'}" class="nav-link">For recruiters</router-link>
+        <router-link :to="{name: 'jobs'}" class="nav-link" exact>Open positions</router-link>
     </li>
     <li class="nav-item">
         <router-link :to="{name: 'careerCenter'}" class="nav-link">Career center</router-link>
@@ -36,8 +36,8 @@
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' %}
-    {% include './v-career-center.html' with id='v-career-center' %}
+    {% include './v-about.html' with id='v-about' display=flatpage.content blck=flatpage.page.tbs.about recruiters=flatpage.page.tbs.about_recruiters students=flatpage.page.tbs.about_students %}
+    {% include './v-career-center.html' with id='v-career-center' blck=flatpage.page.tbs.career_center %}
     {% include './v-jobs.html' with id='v-jobs' %}
 {% endblock %}
 

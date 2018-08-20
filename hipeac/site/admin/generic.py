@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.admin import GenericTabularInline
 
-from hipeac.models import Link, Permission
+from hipeac.models import Image, Link, Permission
 
 
 class HideDeleteActionMixin:
@@ -11,14 +11,17 @@ class HideDeleteActionMixin:
         return actions
 
 
-class LinksInline(GenericTabularInline):
-    classes = ['collapse']
+class ImagesInline(GenericTabularInline):
+    model = Image
     extra = 0
+
+
+class LinksInline(GenericTabularInline):
     model = Link
+    extra = 0
 
 
 class PermissionsInline(GenericTabularInline):
-    classes = ['collapse']
-    extra = 0
     model = Permission
     raw_id_fields = ['user']
+    extra = 0

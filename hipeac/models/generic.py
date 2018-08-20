@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -9,6 +11,27 @@ from hipeac.functions import european_countries, h2020_associated_countries
 
 class H2020Countries(Countries):
     only = european_countries() + h2020_associated_countries()
+
+
+class Image(models.Model):
+    """
+    Application images.
+    """
+    FOLDER = 'public/images'
+
+    image = models.ImageField('Image', upload_to=FOLDER, null=True, blank=True)
+    position = models.PositiveSmallIntegerField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='images')
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ['content_type', 'object_id', 'position']
+
+    def delete(self, *args, **kwargs):
+        if os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        super().delete(*args, **kwargs)
 
 
 class Link(models.Model):

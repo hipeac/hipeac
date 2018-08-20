@@ -796,3 +796,13 @@ class Command(BaseCommand):
 
         Redirect.objects.bulk_create(bulk_redirects)
         self.out('success', '✔ Redirects created! ({0} records)'.format(len(bulk_redirects)))
+
+        # Flatpages
+
+        self.out('std', 'Creating flatpages...')
+        flatpages = (
+            ('/events/', 'events/events.html'),
+            ('/news/', 'news/news.html'),
+            ('/press/', 'press/press.html'),
+            ('/vision/', 'vision/vision.html'),
+        )

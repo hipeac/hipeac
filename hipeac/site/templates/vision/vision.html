@@ -6,7 +6,7 @@
 
 {% block head_title %}Vision - {{ block.super }}{% endblock %}
 
-{% block subtitle %}HiPEAC Vision{% endblock %}
+{% block subtitle %}{{ flatpage.title }}{% endblock %}
 
 {% block submenu %}
     <li class="nav-item">
@@ -24,8 +24,8 @@
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' %}
-    {% include './v-archive.html' with id='v-archive' %}
+    {% include './v-about.html' with id='v-about' blck=flatpage.page.tbs.about %}
+    {% include './v-archive.html' with id='v-archive' blck=flatpage.page.tbs.archive %}
 {% endblock %}
 
 {% block scripts %}

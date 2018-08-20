@@ -1,31 +1,33 @@
+{% load hipeac %}
+
+
 <script type="text/x-template" id="{{ id }}">
-{% verbatim %}
     <div>
-        <display-lg>Since 2004, the HiPEAC project has provided a hub for European researchers and industry representatives in computing systems.</display-lg>
+        <display-lg>{{ display }}</display-lg>
         <div class="row">
             <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    <catchphrase>Since 2004, the HiPEAC (High Performance and Embedded Architecture and Compilation) project has provided a hub for European researchers and industry representatives in computing systems; today, its network, the biggest of its kind in the world, numbers almost 2,000 specialists. It provides a platform for cross-disciplinary research collaboration, brings together representatives from research, industry and policy, and helps prepare the next generation of world-class computer scientists.</catchphrase>
-                    <p>HiPEAC organizes four networking events per year: the HiPEAC conference, two Computing Systems Weeks and a summer school. It also produces the biennial HiPEAC Vision, an influential roadmap which informs European technology research policy areas. In addition, the project offers training, support for academic and industry placements, help in finding excellent computing candidates, careers activities and dissemination support.</p>
+                    <catchphrase>{{ blck.header }}</catchphrase>
+                    {{ blck.content | markdown }}
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    <h6>For researchers</h6>
+                    <h6>{{ researchers.header }}</h6>
                     <huge-icon>&#xE322;</huge-icon>
-                    <p>Participating in HiPEAC allows academic members to collaborate across disciplines and find partners for research projects or business ventures, as well as attracting new students to their areas of study. It allows them professional development opportunities and gives them greater visibility.</p>
-                    <h6 class="mt-4">For industry</h6>
+                    {{ researchers.content | markdown }}
+                    <h6 class="mt-4">{{ industry.header }}</h6>
                     <huge-icon>&#xE7EE;</huge-icon>
-                    <p>By participating in HiPEAC, industry members gain access to over 800 PhD students with the specialist skills needed for a wide range of computing roles. They can form partnerships with researchers and get access to the latest research developments, as well as influencing the direction of computing systems research through the HiPEAC Vision and European Commission concertation meetings.</p>
-                    <h6 class="mt-4">For projects</h6>
+                    {{ industry.content | markdown }}
+                    <h6 class="mt-4">{{ projects.header }}</h6>
                     <huge-icon>&#xE335;</huge-icon>
-                    <p>HiPEAC helps European Commission-funded project leaders recruit the specialist staff they need to carry out their research. It provides numerous opportunities for the dissemination of project results and helps projects gain greater visibility in the research community while giving them exposure to industry representatives and potential future investors.</p>
-                    <h6 class="mt-4">For students</h6>
+                    {{ projects.content | markdown }}
+                    <h6 class="mt-4">{{ students.header }}</h6>
                     <huge-icon>&#xE80C;</huge-icon>
-                    <p>HiPEAC provides grants for industrial and academic placements, and opportunities to learn from the best computing professors in the world. It is an incubator for the next generation of computing systems talent.</p>
-                    <h6 class="mt-4">For innovators</h6>
+                    {{ students.content | markdown }}
+                    <h6 class="mt-4">{{ innovation.header }}</h6>
                     <huge-icon>&#xE42E;</huge-icon>
-                    <p>HiPEAC allows innovation specialists access to a large network of highly specialized researchers, as well as making them the first to find out about research results which could be turned into disruptive products or services. </p>
+                    {{ innovation.content | markdown }}
                 </div>
             </div>
         </div>
@@ -35,5 +37,4 @@
             </div>
         </div>
     </div>
-{% endverbatim %}
 </script>

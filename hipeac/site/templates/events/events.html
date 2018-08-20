@@ -6,7 +6,7 @@
 
 {% block head_title %}Events - {{ block.super }}{% endblock %}
 
-{% block subtitle %}HiPEAC Events{% endblock %}
+{% block subtitle %}{{ flatpage.title }}{% endblock %}
 
 {% block submenu %}
     <li class="nav-item">
@@ -30,10 +30,10 @@
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' %}
-    {% include './v-acaces.html' with id='v-acaces' %}
-    {% include './v-conference.html' with id='v-conference' %}
-    {% include './v-csw.html' with id='v-csw' %}
+    {% include './v-about.html' with id='v-about' display=flatpage.content blck=flatpage.page.tbs.about %}
+    {% include './v-acaces.html' with id='v-acaces' blck=flatpage.page.tbs.acaces %}
+    {% include './v-conference.html' with id='v-conference' blck=flatpage.page.tbs.conference %}
+    {% include './v-csw.html' with id='v-csw' blck=flatpage.page.tbs.csw %}
 {% endblock %}
 
 {% block scripts %}

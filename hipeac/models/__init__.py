@@ -4,6 +4,7 @@ from .generic import *
 
 from .events import *
 from .institutions import *
+from .pages import *
 from .press import *
 from .projects import *
 from .publicity import *

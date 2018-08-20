@@ -1,11 +1,12 @@
+{% load hipeac %}
+
+
 <script type="text/x-template" id="{{ id }}">
-{% verbatim %}
     <div class="row">
         <div class="col-12 col-md-6">
-            <div class="hipeac-card">
-                <catchphrase>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eget mollis ligula. Donec odio diam, pulvinar quis imperdiet placerat, congue et felis. Maecenas nulla arcu, luctus ac leo scelerisque, sodales mollis mauris. Fusce et odio vel diam consectetur sagittis eget in magna. Suspendisse nunc elit, sollicitudin quis vehicula sed, porttitor quis turpis. Nulla scelerisque sapien vitae nisl suscipit, sit amet luctus sem laoreet.</catchphrase>
-                <p>Sed vulputate faucibus nisl. Maecenas semper, lectus at dapibus vulputate, quam mi elementum nulla, non consequat felis nulla condimentum eros. Sed hendrerit nunc ac velit posuere convallis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin semper orci rutrum nulla varius, ut pulvinar mauris auctor. Etiam dictum nulla non aliquam ullamcorper. Fusce ante lectus, laoreet vitae mauris a, dictum feugiat est. Nunc tincidunt porta dolor vel efficitur. Quisque ut velit euismod, tempor augue vel, maximus velit. Proin varius quam sagittis diam vulputate, non volutpat dui pulvinar. Pellentesque in rutrum ex, ac pellentesque purus. Vivamus sit amet eros sapien. Donec sollicitudin molestie ipsum id hendrerit.</p>
-                <p>Nunc ipsum eros, convallis in magna ac, faucibus ullamcorper ex. Donec laoreet eget sem sed ultrices. Proin hendrerit dictum orci, eget tristique felis tincidunt non. Nulla placerat, nulla eget hendrerit tempus, eros diam volutpat lacus, vel malesuada nisl enim at eros. Curabitur consequat justo lacus, id lacinia justo venenatis sed. Aliquam neque nisi, dignissim nec pharetra eget, maximus quis nisl. Etiam ac quam ultrices, condimentum erat at, condimentum neque. Vivamus sagittis leo eu nibh mollis scelerisque. Sed pulvinar enim ut bibendum hendrerit.</p>
+            <div class="hipeac-card marked">
+                <catchphrase>{{ blck.header }}</catchphrase>
+                {{ blck.content | markdown }}
             </div>
         </div>
         <div class="col-12 col-md-6">
@@ -15,5 +16,4 @@
             </div>
         </div>
     </div>
-{% endverbatim %}
 </script>

@@ -1,11 +1,28 @@
+{% load hipeac %}
+
+
 <script type="text/x-template" id="{{ id }}">
-{% verbatim %}
     <div>
-        <display-lg>HiPEAC Jobs is a service offered by the HiPEAC Network to bring together recruiters (companies large and small, universities and research centres) with the skilled researchers that they need.</display-lg>
+        <display-lg>{{ display }}</display-lg>
         <div class="row">
             <div class="col-12 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed velit nibh, volutpat in rutrum a, varius vitae sapien. Proin sit amet pharetra tellus. Quisque rutrum tellus id neque interdum semper. Quisque non volutpat nibh. Aliquam ac neque ut orci imperdiet feugiat. Nulla purus tellus, ullamcorper convallis ante in, tincidunt varius mauris. Sed quis volutpat sapien, vitae varius lectus. Integer suscipit pellentesque magna, quis pulvinar augue elementum id. Quisque sit amet arcu non metus laoreet imperdiet. In et urna nec arcu laoreet dignissim. Phasellus pulvinar ex vel leo fermentum, eu sollicitudin augue pretium. Donec interdum mi nec libero scelerisque, quis ultrices tortor tincidunt. Nam cursus gravida erat, non varius erat pharetra hendrerit. Aliquam eleifend sollicitudin neque, a dignissim nulla vulputate fermentum.</p>
+                <div class="hipeac-card marked">
+                    {{ blck.content | markdown }}
+                    <hr class="my-4">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="hipeac-card marked">
+                    <display-sm class="transparent">{{ recruiters.header }}</display-sm>
+                    {{ recruiters.content | markdown }}
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="hipeac-card marked">
+                    <display-sm class="transparent">{{ students.header }}</display-sm>
+                    {{ students.content | markdown }}
                 </div>
             </div>
         </div>
@@ -15,5 +32,4 @@
             </div>
         </div>
     </div>
-{% endverbatim %}
 </script>
