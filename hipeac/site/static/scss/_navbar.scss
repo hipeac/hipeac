@@ -1,0 +1,27 @@
+.hipeac.navbar {
+    background: white;
+    border-bottom: 10px solid $primary-color;
+    box-shadow: none;
+    padding: 0 0.75rem;
+
+    .navbar-brand {
+        padding: 0.8rem 0 0;
+
+        svg {
+            height: 48px;
+        }
+    }
+
+    .nav-link {
+        font-size: 0.95rem;
+        color: $text-color;
+        padding: 2.5rem 0.75rem 1.25rem;
+        border-bottom: 5px solid white;
+
+        &.active {
+            border-bottom-color: $primary-color;
+            color: $primary-color;
+            font-weight: bold;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+form {
+    .asteriskField {
+        color: #F44336;  // Red 500
+        margin-left: 0.2rem;
+    }
+
+    #div_id_remember {
+        float: right;
+        color: $light-text-color;
+
+        input {
+            margin-top: 0.1rem;
+        }
+        label {
+            font-size: small;
+        }
+    }
+}
+
+ul.socialaccounts {
+    padding-left: 0;
+
+    li {
+        display: inline;
+        margin-right: 2rem;
+    }
+
+    svg {
+        height: 48px;
+    }
+}

@@ -1,11 +1,12 @@
-$hipeac-blue: #1976D2;  // Blue 700
-$hipeac-dark-blue: #0055A4;  // SVG
-$hipeac-yellow: #FFEE00;
+$hipeac-blue: #005eb8;
+$hipeac-yellow: #ffe800;
+$hipeac-light-yellow: #fef9ab;
 
 $text-color: #37474F;  // Blue Grey 800
 $light-text-color: #607D8B;  // Blue Grey 500
+$dark-text-color: #263238;  // Blue Grey 900
 $primary-color: $hipeac-blue;
-$light-yellow-color: #FFF9C4;  // Yellow 100
+$light-yellow-color: $hipeac-light-yellow;
 $lightest-yellow-color: #FFFDE7;  // Yellow 50
 $lightest-blue-color: #E1F5FE; //
 $navbar-bg-color: #1976D2; // Blue 700
@@ -148,11 +149,23 @@ a {
     }
 }
 
-.display-sm {
+.display-sm, fieldset legend {
     font-weight: 700;
     font-size: small;
     text-transform: uppercase;
     margin-bottom: 0.3em;
+}
+
+fieldset {
+    margin-top: 1.5rem;
+
+    legend {
+        margin-bottom: 1.5rem !important
+    }
+}
+
+input[type="hidden"] + fieldset {
+    margin-top: 0;
 }
 
 .display-block {
@@ -318,7 +331,7 @@ b, strong, .font-weight-bold {
 .huge-icon-wrapper {
     float: right;
     margin: 0 0 2rem 2rem;
-    background: $hipeac-dark-blue;
+    background: $hipeac-blue;
     height: 64px;
     width: 64px;
     border-radius: 99px;
@@ -346,33 +359,6 @@ b, strong, .font-weight-bold {
     height: 400px;
     text-align: center;
     font-size: 3rem;
-}
-
-.hipeac.navbar {
-    background: white;
-    border-bottom: 10px solid $primary-color;
-    box-shadow: none;
-    padding: 0 0.75rem;
-
-    .navbar-brand {
-        padding: 0.8rem 0 0;
-
-        svg {
-            height: 48px;
-        }
-    }
-
-    .nav-link {
-        font-size: 0.95rem;
-        color: $text-color;
-        padding: 2.5rem 0.75rem 1.25rem;
-
-        &.active {
-            border-bottom: 5px solid $primary-color;
-            color: $primary-color;
-            font-weight: bold;
-        }
-    }
 }
 
 .hipeac.subheader {
@@ -426,56 +412,7 @@ b, strong, .font-weight-bold {
     }
 }
 
-.hipeac-card {
-    padding: 1.5rem;
-    border-radius: .25rem;
-    background: white;
-    box-shadow: 0px 8px 24px rgba(13,13,18,0.04);
-    margin-bottom: 30px;
 
-    @media (max-width: $small-breakpoint) {
-        margin-bottom: 15px;
-    }
-
-    &.with-table {
-        padding: 1.5rem 0.75rem;
-    }
-
-    &.account-card {
-        h1, .header {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem !important;
-        }
-
-        .content {}
-
-        hr {
-            margin-top: 1.5rem !important;
-            margin-bottom: 1.5rem !important;
-        }
-
-        .main-action {
-            margin-top: .5rem !important;
-        }
-
-        .asteriskField {
-            color: #F44336;  // Red 500
-            margin-left: 0.2rem;
-        }
-
-        #div_id_remember {
-            float: right;
-            color: $light-text-color;
-
-            input {
-                margin-top: 0.1rem;
-            }
-            label {
-                font-size: small;
-            }
-        }
-    }
-}
 
 .hipeac.list-group {
     .list-group-item {
@@ -502,54 +439,14 @@ b, strong, .font-weight-bold {
     }
 }
 
-.hipeac.carousel {
-    padding-top: 30px;
 
-    .carousel-item {
-        transition: none;
-    }
-
-    .carousel-indicators {
-        top: 0;
-
-        li {
-            height: 5px;
-            background: gainsboro;
-
-            &.active {
-                background: $hipeac-yellow;
-            }
-        }
-    }
-
-    blockquote {
-        margin: 0;
-
-        @media (max-width: $small-breakpoint) {
-            padding: 0 1rem;
-        }
-
-        span {
-            font-size: 1.1rem;
-            font-weight: 300;
-            background: $light-yellow-color;
-        }
-
-        footer {
-            font-weight: bold;
-            font-size: small;
-        }
-    }
-}
-
-#particles {
-    z-index: -100;
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    background-color: $bg-light;
-
-    h1 {
-        display: inline;
-    }
-}
+@import '_alert.scss';
+@import '_badge.scss';
+@import '_card.scss';
+@import '_carousel.scss';
+@import '_dropdown.scss';
+@import '_form.scss';
+@import '_marked.scss';
+@import '_navbar.scss';
+@import '_particles.scss';
+@import '_sidenav.scss';

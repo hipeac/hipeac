@@ -4,7 +4,7 @@
         <ul class="list-with-icons mt-2">
             {% for item in items.all %}
                 <li>
-                    <a href="{{ item.url }}" target="_blank">
+                    <a href="{{ item.url }}" target="_blank" rel="noopener">
                         <i class="material-icons">&#xE250;</i>
                         <span>{{ item.type | capfirst }}</span>
                     </a>

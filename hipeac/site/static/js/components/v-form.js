@@ -62,7 +62,7 @@ Vue.component('markdown-textarea', FormElement.extend({
     template: '' +
         '<div class="form-group">' +
             '<h6>{{ label }} <span v-if="required" class="text-danger">*</span></h6>' +
-            '<help-text>You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank">Markdown syntax here</a>. {{ help }}</help-text>' +
+            '<help-text>You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>. {{ help }}</help-text>' +
             '<textarea ref="el" :value="value" class="form-control form-control-sm" rows="16" @input="updateValue"></textarea>' +
         '</div>' +
     ''

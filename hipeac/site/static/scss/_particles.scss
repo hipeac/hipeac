@@ -1,0 +1,11 @@
+#particles {
+    z-index: -100;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background-color: $bg-light;
+
+    h1 {
+        display: inline;
+    }
+}

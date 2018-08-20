@@ -6,12 +6,17 @@
 {% for provider in socialaccount_providers %}
     {% if provider.id == "openid" %}
         {% for brand in provider.get_brands %}
-            <li class="list-inline-item">
-                <a title="{{brand.name}}" class="btn btn-outline-primary {{ provider.id }} {{ brand.id }}" href="{% provider_login_url provider.id openid=brand.openid_url process=process %}">{{ brand.name }}</a>
+            <li>
+                <a title="{{brand.name}}"
+                    class="socialaccount_provider {{provider.id}} {{brand.id}}"
+                    href="{% provider_login_url provider.id openid=brand.openid_url process=process %}"
+                    >{% include './_logos.svg' with provider=brand.name %}</a>
             </li>
         {% endfor %}
     {% endif %}
-    <li class="list-inline-item">
-        <a title="{{ provider.name }}" class="btn btn-outline-primary {{ provider.id }}" href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">{{ provider.name }}</a>
+    <li>
+        <a title="{{provider.name}}" class="socialaccount_provider {{provider.id}}"
+            href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
+            {% include './_logos.svg' with provider=provider.name %}</a>
     </li>
 {% endfor %}

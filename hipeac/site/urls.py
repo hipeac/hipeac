@@ -42,6 +42,12 @@ urlpatterns = [
     path('editor/<int:ct>/<int:pk>/', views.EditorView.as_view(), name='editor'),
     # Users
     re_path(r'^~(?P<username>[\w.@-]+)/$', views.JobDetail.as_view(), name='user'),
+    path('accounts/', include('allauth.urls')),
+    path('accounts/privacy/', views.PrivacySettings.as_view(), name='user_privacy'),
+    path('accounts/profile/', views.ProfileSettings.as_view(), name='user_profile'),
+    path('accounts/certificates/', views.JobDetail.as_view(), name='user_certificates'),
+    path('accounts/research-group/', views.JobDetail.as_view(), name='user_research_group'),
+    path('accounts/research/', views.JobDetail.as_view(), name='user_research'),
     # Mailing lists
     path('sympa/<slug:mailing_list>/', views.DataSourceView.as_view(), name='datasource'),
     # Sitemap

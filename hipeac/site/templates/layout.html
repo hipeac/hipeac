@@ -13,32 +13,32 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a class="navbar-brand" href="{% url 'homepage' %}">
-                    {% include '_hipeac_logo.html' %}
+                    {% include '_hipeac_logo.svg' %}
                 </a>
                 <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link {% active request '/' %}" href="{% url 'homepage' %}">
+                            <a class="nav-link {% active request 'homepage' %}" href="{% url 'homepage' %}">
                                 <i class="material-icons sm">&#xE88A;</i>
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link {% active request '/network/+' %}" href="{% url 'network' %}">The Network</a>
+                            <a class="nav-link {% active request 'network,institution,project' %}" href="{% url 'network' %}">The Network</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% active request '/events/+,/acaces/+,/csw/+,/conference/+' %}" href="{% url 'events' %}">Events</a>
+                            <a class="nav-link {% active request 'events,acaces,conference,csw' %}" href="{% url 'events' %}">Events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% active request '/jobs/+' %}" href="{% url 'jobs' %}">Jobs</a>
+                            <a class="nav-link {% active request 'jobs,job' %}" href="{% url 'jobs' %}">Jobs</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% active request '/vision/+' %}" href="{% url 'vision' %}">Vision</a>
+                            <a class="nav-link {% active request 'vision' %}" href="{% url 'vision' %}">Vision</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% active request '/news/+' %}" href="{% url 'news' %}">News</a>
+                            <a class="nav-link {% active request 'news' %}" href="{% url 'news' %}">News</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% active request '/press/+' %}" href="{% url 'press' %}">Press room</a>
+                            <a class="nav-link {% active request 'press' %}" href="{% url 'press' %}">Press room</a>
                         </li>
                     </ul>
                 </div>
@@ -51,7 +51,16 @@
                 <ul class="nav nav-tabs">{% block submenu %}{% endblock %}</ul>
             </div>
         </div>
-        {% block content %}{% endblock %}
+        {% if messages %}
+            <div class="container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">{{message}}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content_wrapper %}
+            {% block content %}{% endblock %}
+        {% endblock %}
     </div>
     <div class="container my-5">
         <div class="row">

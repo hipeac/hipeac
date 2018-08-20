@@ -7,7 +7,6 @@ from django.urls import path
 admin.autodiscover()
 
 urlpatterns = [
-    path('accounts/', include('allauth.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('hipeac.api.urls')),
     path('', include('hipeac.site.urls')),

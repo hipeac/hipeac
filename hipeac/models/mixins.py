@@ -1,7 +1,6 @@
 import os
 
 from django.contrib.contenttypes.models import ContentType
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from typing import Dict, Optional
 

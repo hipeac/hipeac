@@ -1,13 +1,13 @@
-{% extends 'account/base.html' %}
+{% extends 'account/signup.html' %}
 
 {% load crispy_forms_tags %}
 
 
-{% block head_title %}Sign up - {{ block.super }}{% endblock %}
-
 {% block content %}
     <h4 class="header">Sign up</h4>
-    <form id="signup_form" method="post" action="{% url 'account_signup' %}">
+    <p class="content">You are about to use your <strong>{{ account.get_provider.name }}</strong> account to login to {{ site.name }}. As a final step, please complete the following form:</p>
+
+    <form method="post" action="{% url 'socialaccount_signup' %}" class="signup" id="signup_form">
         {% csrf_token %}
         {{ form | crispy }}
         {% if redirect_field_value %}
@@ -15,11 +15,4 @@
         {% endif %}
         <button type="submit" class="btn btn-primary mt-2">Sign up</button>
     </form>
-    <hr>
-    <p class="mb-0">
-        <a href="{{ login_url }}">
-            <i class="material-icons sm mr-1">vpn_key</i>
-            <small>Have an account? Log in</small>
-        </a>
-    </p>
 {% endblock %}

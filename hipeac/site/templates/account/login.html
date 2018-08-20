@@ -10,10 +10,11 @@
 {% block content %}
     <h4 class="header">Log in</h4>
 
+<!--
     {% get_providers as socialaccount_providers %}
     {% if socialaccount_providers %}
         <p class="content">Please sign in with one of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a> for a {{ site.name }} account and sign in below:</p>
-        <ul class="list-inline">
+        <ul class="socialaccounts">
             {% include "socialaccount/snippets/provider_list.html" with process="login" %}
         </ul>
         <hr>
@@ -21,6 +22,7 @@
     {% else %}
         <p class="content">If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.</p>
     {% endif %}
+-->
 
     <form method="post" action="{% url 'account_login' %}">
         {% csrf_token %}
@@ -28,15 +30,14 @@
         {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
-        <input class="btn btn-primary mt-2" type="submit" value="Log in">
+        <button type="submit" class="btn btn-primary mt-3">Log in</button>
     </form>
 
     <hr>
     <p class="mb-0">
         <a href="{% url 'account_reset_password' %}">
-            <i class="material-icons sm mr-2">&#xE8FD;</i>
+            <i class="material-icons sm mr-2">help_outline</i>
             <small>Forgot your password?</small>
         </a>
     </p>
-
 {% endblock %}

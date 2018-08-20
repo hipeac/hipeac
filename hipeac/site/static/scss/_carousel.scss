@@ -1,0 +1,40 @@
+.hipeac.carousel {
+    padding-top: 30px;
+
+    .carousel-item {
+        transition: none;
+    }
+
+    .carousel-indicators {
+        top: 0;
+
+        li {
+            cursor: pointer;
+            height: 5px;
+            background: gainsboro;
+
+            &.active {
+                background: $hipeac-yellow;
+            }
+        }
+    }
+
+    blockquote {
+        margin: 0;
+
+        @media (max-width: $small-breakpoint) {
+            padding: 0 1rem;
+        }
+
+        span {
+            font-size: 1.1rem;
+            font-weight: 300;
+            background: $light-yellow-color;
+        }
+
+        footer {
+            font-weight: bold;
+            font-size: small;
+        }
+    }
+}

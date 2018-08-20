@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% load account %}
+{% load compress %}
+{% load hipeac %}
+
+
+{% block subtitle %}{% user_display user %}{% endblock %}
+
+{% block submenu %}
+    <li class="nav-item">
+        <a href="{% url 'user' user.username %}" class="nav-link">Profile</a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'user_profile' %}" class="nav-link active">
+            <i class="material-icons mr-1">settings</i>Settings</a>
+    </li>
+{% endblock %}
+
+{% block content_wrapper %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-2">
+                <div class="hipeac-sidenav p-0 mb-1">
+                    <h6 class="dropdown-header">Account</h6>
+                    <a href="{% url 'user_profile' %}" class="nav-link {% active request 'user_profile' %}">
+                        <i class="material-icons">account_circle</i>Profile</a>
+                    <a href="{% url 'account_change_password' %}" class="nav-link {% active request 'account_change_password,account_set_password' %}">
+                        <i class="material-icons">vpn_key</i>Password</a>
+                    <a href="{% url 'account_email' %}" class="nav-link {% active request 'account_email' %}">
+                        <i class="material-icons">email</i>Emails</a>
+                    <a href="{% url 'socialaccount_connections' %}" class="nav-link {% active request 'socialaccount_connections' %}">
+                        <i class="material-icons">toys</i>Social accounts</a>
+                    <a href="{% url 'user_privacy' %}" class="nav-link {% active request 'user_privacy' %}">
+                        <i class="material-icons">lock</i>Privacy</a>
+                    <h6 class="dropdown-header mt-4">Research</h6>
+                    <a href="{% url 'user_research_group' %}" class="nav-link {% active request 'user_research_group' %}">
+                        <i class="material-icons">group_work</i>Research group</a>
+                    <a href="{% url 'user_research' %}" class="nav-link {% active request 'user_research' %}">
+                        <i class="material-icons">school</i>My PhD</a>
+                    <h6 class="dropdown-header mt-4">Documents</h6>
+                    <a href="{% url 'user_certificates' %}" class="nav-link {% active request 'user_certificates' %}">
+                        <i class="material-icons">description</i>Attendance</a>
+                </div>
+            </div>
+            <div class="col-12 col-md-9 col-lg-7">
+                <div class="hipeac-card">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

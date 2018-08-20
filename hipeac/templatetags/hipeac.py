@@ -16,9 +16,7 @@ register = template.Library()
 @register.simple_tag
 def active(request, patterns):
     for pattern in patterns.split(','):
-        if pattern == request.path or ('+' in pattern and request.path.startswith(pattern[:-1])):
-            return 'active'
-        if pattern.startswith('/conference/') and request.path.split('/')[1].isnumeric():
+        if pattern == request.resolver_match.url_name:
             return 'active'
     return ''
 
