@@ -45,8 +45,9 @@ class InstitutionSerializer(InstitutionNestedSerializer):
     open_positions = serializers.SerializerMethodField()
 
     class Meta(InstitutionNestedSerializer.Meta):
-        fields = None
-        exclude = ['updated_at']
+        fields = InstitutionNestedSerializer.Meta.fields + [
+            'application_areas', 'topics', 'parent', 'children', 'slug', 'open_positions', 'description'
+        ]
 
     def get_open_positions(self, obj):
         from .recruitment import JobNestedSerializer  # noqa

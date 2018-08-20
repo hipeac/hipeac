@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django_countries.fields import CountryField
 
 from hipeac.models import Metadata
@@ -21,15 +23,15 @@ class Profile(models.Model):
     bio = models.TextField(null=True, blank=True)
     country = CountryField(db_index=True)
     gender = models.ForeignKey(Metadata, null=True, blank=True, on_delete=models.SET_NULL,
-                               limit_choices_to={'field': Metadata.GENDER}, related_name=Metadata.GENDER)
+                               limit_choices_to={'type': Metadata.GENDER}, related_name=Metadata.GENDER)
     title = models.ForeignKey(Metadata, null=True, blank=True, on_delete=models.SET_NULL,
-                              limit_choices_to={'field': Metadata.TITLE}, related_name='user_' + Metadata.TITLE)
+                              limit_choices_to={'type': Metadata.TITLE}, related_name='user_' + Metadata.TITLE)
     meal_preference = models.ForeignKey(Metadata, null=True, blank=True, on_delete=models.SET_NULL,
-                                        limit_choices_to={'field': Metadata.MEAL_PREFERENCE},
+                                        limit_choices_to={'type': Metadata.MEAL_PREFERENCE},
                                         related_name='user_' + Metadata.MEAL_PREFERENCE)
 
     position = models.ForeignKey(Metadata, null=True, blank=True, on_delete=models.SET_NULL,
-                                 limit_choices_to={'field': Metadata.JOB_POSITION},
+                                 limit_choices_to={'type': Metadata.JOB_POSITION},
                                  related_name='user_' + Metadata.JOB_POSITION)
     department = models.CharField(max_length=200, null=True, blank=True)
     institution = models.ForeignKey('hipeac.Institution', null=True, blank=False, on_delete=models.SET_NULL,
@@ -39,6 +41,7 @@ class Profile(models.Model):
 
     is_bouncing = models.BooleanField(default=False)
     is_subscribed = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=False)
 
     application_areas = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
@@ -48,3 +51,9 @@ class Profile(models.Model):
 
     def __str__(self) -> str:
         return self.user.username
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)

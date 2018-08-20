@@ -241,6 +241,7 @@ class Command(BaseCommand):
                 # image=u.image,
                 is_bouncing=False,
                 is_subscribed=u.is_subscribed,
+                is_public=u.is_public,
             ))
             if u.membership_type in ['MEMB', 'ASSO'] and u.institution_id:
                 bulk_acl.append(Permission(

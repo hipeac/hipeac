@@ -4,17 +4,20 @@ from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
 from hipeac.models import Profile
+from .generic import MetadataListField
 from .institutions import InstitutionRelatedField
 
 
 class ProfileNestedSerializer(serializers.ModelSerializer):
+    application_areas = MetadataListField()
+    topics = MetadataListField()
     country = CountryField(country_dict=True)
     institution = InstitutionRelatedField()
     second_institution = InstitutionRelatedField()
 
     class Meta:
         model = Profile
-        fields = ['country', 'institution', 'second_institution']
+        fields = ['country', 'bio', 'institution', 'second_institution', 'application_areas', 'topics']
 
 
 class UserPublicListSerializer(serializers.ModelSerializer):
