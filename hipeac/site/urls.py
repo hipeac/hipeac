@@ -6,7 +6,7 @@ from django.urls import path, re_path
 from django.views.generic import TemplateView
 
 import hipeac.site.views as views
-from .sitemaps import EventSitemap, InstitutionSitemap, JobSitemap, ProjectSitemap, SessionSitemap
+from .sitemaps import EventSitemap, InstitutionSitemap, JobSitemap, ProjectSitemap, RoadshowSitemap, SessionSitemap
 
 
 sitemaps = {
@@ -15,6 +15,7 @@ sitemaps = {
     'institutions': InstitutionSitemap,
     'jobs': JobSitemap,
     'projects': ProjectSitemap,
+    'roadshows': RoadshowSitemap,
     'sessions': SessionSitemap,
 }
 
@@ -38,6 +39,7 @@ urlpatterns = [
     path('acaces/<int:year>/<slug:slug>/', views.EventDetail.as_view(), name='acaces'),
     path('csw/<int:year>/<slug:slug>/', views.EventDetail.as_view(), name='csw'),
     path('events/ec/<int:pk>/', views.EventDetail.as_view(), name='ec_meeting'),
+    re_path(r'^events/roadshow/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.RoadshowDetail.as_view(), name='roadshow'),
     # Editor
     path('editor/<int:ct>/<int:pk>/', views.EditorView.as_view(), name='editor'),
     # Users

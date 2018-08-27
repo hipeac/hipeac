@@ -21,6 +21,9 @@
     <li class="nav-item">
         <router-link :to="{name: 'acaces'}" class="nav-link">Summer School</router-link>
     </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'roadshow'}" class="nav-link">Roadshow</router-link>
+    </li>
 {% endblock %}
 
 {% block content %}
@@ -34,6 +37,7 @@
     {% include './v-acaces.html' with id='v-acaces' blck=flatpage.page.tbs.acaces %}
     {% include './v-conference.html' with id='v-conference' blck=flatpage.page.tbs.conference %}
     {% include './v-csw.html' with id='v-csw' blck=flatpage.page.tbs.csw %}
+    {% include './v-roadshow.html' with id='v-roadshow' blck=flatpage.page.tbs.roadshow %}
 {% endblock %}
 
 {% block scripts %}
@@ -90,6 +94,13 @@
             })
         };
 
+        var RoadshowView = {
+            template: '#v-roadshow',
+            computed: _.extend(
+                Vuex.mapGetters(['groupedEvents']), {
+            })
+        };
+
         var Router = new VueRouter({
             linkActiveClass: 'active',
             routes: [
@@ -116,6 +127,12 @@
                     path: '/csw/',
                     pathToRegexpOptions: {strict: true},
                     component: CswView
+                },
+                {
+                    name: 'roadshow',
+                    path: '/roadshow/',
+                    pathToRegexpOptions: {strict: true},
+                    component: RoadshowView
                 }
             ]
         });

@@ -1,7 +1,7 @@
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
-from hipeac.models import Event, Session
+from hipeac.models import Event, Roadshow, Session
 from .generic import MetadataListField
 from .institutions import InstitutionRelatedField
 from .projects import ProjectRelatedField
@@ -38,6 +38,15 @@ class EventListSerializer(EventNestedSerializer):
 
 class EventSerializer(EventNestedSerializer):
     sessions = SessionListSerializer(many=True)
+
+
+class RoadshowListSerializer(serializers.ModelSerializer):
+    country = CountryField(country_dict=True)
+    institutions = InstitutionRelatedField(many=True)
+
+    class Meta:
+        model = Roadshow
+        exclude = ()
 
 
 class SessionSerializer(SessionListSerializer):

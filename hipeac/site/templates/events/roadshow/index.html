@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+
+
+{% block head_title %}{{ roadshow }} - {{ block.super }}{% endblock %}
+
+{% block subtitle %}
+    <span>{{ roadshow.name }}</span>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-2 pt-4">
+            </div>
+            <div class="col-12 col-md-10">
+                <div class="hipeac-card">
+                    <div class="row">
+                        <div class="col-12 col-md-8 pr-md-5">
+                            <div class="markdown">
+                                {{ roadshow.description | markdown }}
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            {% include 'components/links.html' with title='More information' items=roadshow.links %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+    <script>
+        var app = new Vue({
+            el: '#vue'
+        });
+    </script>
+{% endcompress %}
+    <script type="application/ld+json">{% spaceless_json %}
+        {
+            "@context": "http://schema.org",
+            "@type": "Event",
+            "name": "{{ event }}",
+            "url": "{{ request.url }}",
+            "startDate": "{{ roadshow.start_date | date:'c' }}",
+            "endDate": "{{ roadshow.end_date | date:'c' }}",
+            "location": {
+                "@type": "PostalAddress",
+                "addressCountry": "{{ roadshow.country.name }}"
+            }
+        }
+    {% endspaceless_json %}</script>
+{% endblock %}

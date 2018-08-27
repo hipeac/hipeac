@@ -18,6 +18,7 @@ from hipeac.models import (
     Institution, Project, Profile,
     Job,
     Event, Session, Coupon, Fee, Registration,
+    Roadshow,
     Clipping, Quote, Vision
 )
 
@@ -190,7 +191,7 @@ class Command(BaseCommand):
                     content_type=ct,
                     object_id=inst.id,
                     type=Link.TWITTER,
-                    url='https://twitter.com/' + inst.twitter
+                    url=f'https://twitter.com/{inst.twitter}'
                 ))
 
         Institution.objects.bulk_create(bulk_institutions, batch_size=1000)
@@ -201,7 +202,7 @@ class Command(BaseCommand):
                 i.parent_id = inst.parent_id
                 i.save()
 
-        self.out('success', '✔ Institutions migrated! ({0} records)'.format(len(bulk_institutions)))
+        self.out('success', f'✔ Institutions migrated! ({len(bulk_institutions)} records)')
 
         # Users
 
@@ -269,7 +270,7 @@ class Command(BaseCommand):
                     content_type=ct,
                     object_id=u.id,
                     type=Link.TWITTER,
-                    url='https://twitter.com/' + u.twitter
+                    url=f'https://twitter.com/{u.twitter}'
                 ))
             if u.url_cv:
                 bulk_links.append(Link(
@@ -281,7 +282,7 @@ class Command(BaseCommand):
 
         User.objects.bulk_create(bulk_users, batch_size=1000)
         Profile.objects.bulk_create(bulk_profiles, batch_size=1000)
-        self.out('success', '✔ User profiles migrated! ({0} records)'.format(len(bulk_users)))
+        self.out('success', f'✔ User profiles migrated! ({len(bulk_users)} records)')
 
         # Projects
 
@@ -333,25 +334,25 @@ class Command(BaseCommand):
                     content_type=ct,
                     object_id=pr.id,
                     type=Link.TWITTER,
-                    url='https://twitter.com/' + pr.twitter
+                    url=f'https://twitter.com/{pr.twitter}'
                 ))
             if pr.twitter:
                 bulk_links.append(Link(
                     content_type=ct,
                     object_id=pr.id,
                     type=Link.OTHER,
-                    url='http://cordis.europa.eu/project/rcn/{0}_en.html'.format(pr.cordis_record_number)
+                    url=f'http://cordis.europa.eu/project/rcn/{pr.cordis_record_number}_en.html'
                 ))
             if pr.youtube_id:
                 bulk_links.append(Link(
                     content_type=ct,
                     object_id=pr.id,
                     type=Link.YOUTUBE,
-                    url='https://youtu.be/{0}'.format(pr.youtube_id)
+                    url=f'https://youtu.be/{pr.youtube_id}'
                 ))
 
         Project.objects.bulk_create(bulk_projects, batch_size=1000)
-        self.out('success', '✔ Projects migrated! ({0} records)'.format(len(bulk_projects)))
+        self.out('success', f'✔ Projects migrated! ({len(bulk_projects)} records)')
 
         bulk_project_partners = []
         for rel in session.query(Base.classes.core_project_partners).yield_per(10000):
@@ -461,7 +462,7 @@ class Command(BaseCommand):
             ))
 
         Job.objects.bulk_create(bulk_jobs, batch_size=1000)
-        self.out('success', '✔ Jobs migrated! ({0} records)'.format(len(bulk_jobs)))
+        self.out('success', f'✔ Jobs migrated! ({len(bulk_jobs)} records)')
 
         # Events
 
@@ -502,7 +503,7 @@ class Command(BaseCommand):
             ))
 
         Event.objects.bulk_create(bulk_events, batch_size=1000)
-        self.out('success', '✔ Events migrated! ({0} records)'.format(len(bulk_events)))
+        self.out('success', f'✔ Events migrated! ({len(bulk_events)} records)')
 
         # Sessions
 
@@ -551,7 +552,7 @@ class Command(BaseCommand):
                     content_type=ct,
                     object_id=s.id,
                     type=Link.YOUTUBE,
-                    url='https://youtu.be/{0}'.format(s.youtube_id) if 'user' not in s.youtube_id else s.youtube_id
+                    url=f'https://youtu.be/{s.youtube_id}' if 'user' not in s.youtube_id else s.youtube_id
                 ))
 
         for org in session.query(Base.classes.events_activity_organizers).all():
@@ -563,7 +564,7 @@ class Command(BaseCommand):
             ))
 
         Session.objects.bulk_create(bulk_sessions, batch_size=1000)
-        self.out('success', '✔ Sessions migrated! ({0} records)'.format(len(bulk_sessions)))
+        self.out('success', f'✔ Sessions migrated! ({len(bulk_sessions)} records)')
 
         # Coupons
 
@@ -580,7 +581,7 @@ class Command(BaseCommand):
             ))
 
         Coupon.objects.bulk_create(bulk_coupons, batch_size=1000)
-        self.out('success', '✔ Coupons migrated! ({0} records)'.format(len(bulk_coupons)))
+        self.out('success', f'✔ Coupons migrated! ({len(bulk_coupons)} records)')
 
         # Fees
 
@@ -617,7 +618,7 @@ class Command(BaseCommand):
             ))
 
         Fee.objects.bulk_create(bulk_fees, batch_size=1000)
-        self.out('success', '✔ Fees migrated! ({0} records)'.format(len(bulk_fees)))
+        self.out('success', f'✔ Fees migrated! ({len(bulk_fees)} records)')
 
         fees_dict = {}
         for fee in Fee.objects.all():
@@ -654,7 +655,58 @@ class Command(BaseCommand):
 
         bulk_registrations = list(registrations.values())
         Registration.objects.bulk_create(bulk_registrations, batch_size=1000)
-        self.out('success', '✔ Registrations migrated! ({0} records)'.format(len(bulk_registrations)))
+        self.out('success', f'✔ Registrations migrated! ({len(bulk_registrations)} records)')
+
+        # Roadshows
+
+        self.out('std', 'Migrating Roadshows...')
+        bulk_roadshows = []
+        ct = ContentType.objects.get_for_model(Roadshow)
+
+        for ro in session.query(Base.classes.roadshow_event).all():
+            bulk_roadshows.append(Roadshow(
+                id=ro.id,
+                name=ro.name,
+                description=ro.description,
+                start_date=ro.start_date,
+                end_date=ro.end_date,
+                country=ro.country
+            ))
+
+            if ro.url:
+                bulk_links.append(Link(
+                    content_type=ct,
+                    object_id=ro.id,
+                    type=Link.WEBSITE,
+                    url=ro.url
+                ))
+            if ro.twitter:
+                bulk_links.append(Link(
+                    content_type=ct,
+                    object_id=ro.id,
+                    type=Link.TWITTER,
+                    url=f'https://twitter.com/{ro.twitter}'
+                ))
+
+        Roadshow.objects.bulk_create(bulk_roadshows, batch_size=1000)
+
+        bulk_roadshow_institutions = []
+        for rel in session.query(Base.classes.roadshow_event_institutions).yield_per(10000):
+            bulk_roadshow_institutions.append((
+                rel.id,
+                rel.event_id,
+                rel.institution_id,
+            ))
+
+        with connection.cursor() as cursor:
+            for batch in self.batch(bulk_roadshow_institutions, 10000):
+                query = """
+                    INSERT INTO hipeac_roadshow_institutions (id, roadshow_id, institution_id)
+                    VALUES (%s, %s, %s)
+                """
+                cursor.executemany(query, batch)
+
+        self.out('success', f'✔ Roadshows migrated! ({len(bulk_roadshows)} records)')
 
         # Vision
 
@@ -670,7 +722,7 @@ class Command(BaseCommand):
             ))
 
         Vision.objects.bulk_create(bulk_visions, batch_size=1000)
-        self.out('success', '✔ Vision migrated! ({0} records)'.format(len(bulk_visions)))
+        self.out('success', f'✔ Vision migrated! ({len(bulk_visions)} records)')
 
         # Clippings
 
@@ -687,7 +739,7 @@ class Command(BaseCommand):
             ))
 
         Clipping.objects.bulk_create(bulk_clippings, batch_size=1000)
-        self.out('success', '✔ Clippings migrated! ({0} records)'.format(len(bulk_clippings)))
+        self.out('success', f'✔ Clippings migrated! ({len(bulk_clippings)} records)')
 
         # Quotes
 
@@ -718,7 +770,7 @@ class Command(BaseCommand):
             ))
 
         Quote.objects.bulk_create(bulk_quotes, batch_size=1000)
-        self.out('success', '✔ Quotes migrated! ({0} records)'.format(len(bulk_quotes)))
+        self.out('success', f'✔ Quotes migrated! ({len(bulk_quotes)} records)')
 
         # Save permissions and links
 
@@ -796,14 +848,4 @@ class Command(BaseCommand):
             ))
 
         Redirect.objects.bulk_create(bulk_redirects)
-        self.out('success', '✔ Redirects created! ({0} records)'.format(len(bulk_redirects)))
-
-        # Flatpages
-
-        self.out('std', 'Creating flatpages...')
-        flatpages = (
-            ('/events/', 'events/events.html'),
-            ('/news/', 'news/news.html'),
-            ('/press/', 'press/press.html'),
-            ('/vision/', 'vision/vision.html'),
-        )
+        self.out('success', f'✔ Redirects created! ({len(bulk_redirects)} records)')

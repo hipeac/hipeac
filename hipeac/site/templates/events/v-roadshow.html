@@ -1,0 +1,19 @@
+{% load hipeac %}
+
+
+<script type="text/x-template" id="{{ id }}">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="hipeac-card marked">
+                <catchphrase>{{ blck.header }}</catchphrase>
+                {{ blck.content | markdown }}
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <loading v-if="!roadshows"></loading>
+            <div v-else class="hipeac-card">
+                <event-list :items="roadshows"></event-list>
+            </div>
+        </div>
+    </div>
+</script>

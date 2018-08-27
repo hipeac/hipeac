@@ -10,6 +10,7 @@ class Router(DefaultRouter):
         self.schema_title = 'HiPEAC API {0}'.format(version)
 
         self.register(r'events/events', views.EventViewSet, base_name='event')
+        self.register(r'events/roadshows', views.RoadshowViewSet, base_name='roadshow')
         self.register(r'events/sessions', views.SessionViewSet, base_name='session')
         self.register(r'jobs', views.JobViewSet, base_name='job')
         self.register(r'press/clippings', views.ClippingViewSet, base_name='clipping')

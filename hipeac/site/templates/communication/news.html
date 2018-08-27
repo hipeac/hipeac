@@ -19,9 +19,6 @@
         <router-link :to="{name: 'blog'}" class="nav-link">Blog</router-link>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'roadshow'}" class="nav-link">Roadshow</router-link>
-    </li>
-    <li class="nav-item">
         <a class="nav-link" href="https://twitter.com/hipeac" target="_blank"><span is="twitter-icon"></span></a>
     </li>
     <li class="nav-item">
@@ -39,7 +36,6 @@
     {% include './v-magazine.html' with id='v-blog' blck=flatpage.page.tbs.magazine %}
     {% include './v-magazine.html' with id='v-magazine' blck=flatpage.page.tbs.magazine %}
     {% include './v-magazine.html' with id='v-news' blck=flatpage.page.tbs.magazine %}
-    {% include './v-roadshow.html' with id='v-roadshow' blck=flatpage.page.tbs.roadshow %}
 {% endblock %}
 
 {% block scripts %}
@@ -79,13 +75,6 @@
             })
         };
 
-        var RoadshowView = {
-            template: '#v-roadshow',
-            computed: _.extend(
-                Vuex.mapState(['news']), {
-            })
-        };
-
         var Router = new VueRouter({
             linkActiveClass: 'active',
             routes: [
@@ -106,12 +95,6 @@
                     path: '/',
                     pathToRegexpOptions: {strict: true},
                     component: NewsView
-                },
-                {
-                    name: 'roadshow',
-                    path: '/roadshow/',
-                    pathToRegexpOptions: {strict: true},
-                    component: RoadshowView
                 }
             ]
         });

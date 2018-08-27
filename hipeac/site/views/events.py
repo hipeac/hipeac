@@ -1,6 +1,6 @@
 from django.views import generic
 
-from hipeac.models import Event
+from hipeac.models import Event, Roadshow
 from .mixins import SlugMixin
 
 
@@ -25,4 +25,21 @@ class EventDetail(SlugMixin, generic.DetailView):
                     start_date__year=self.kwargs.get('year'),
                     slug=self.kwargs.get('slug')
                 )
+        return self.object
+
+
+class RoadshowDetail(SlugMixin, generic.DetailView):
+    """
+    Displays a Roadshow.
+    If the slug doesn't match we make a 301 Permanent Redirect.
+    """
+    model = Roadshow
+    template_name = 'events/roadshow/index.html'
+
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('institutions')
+
+    def get_object(self, queryset=None):
+        if not hasattr(self, 'object'):
+            self.object = self.get_queryset().get(id=self.kwargs.get('pk'))
         return self.object
