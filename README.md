@@ -19,8 +19,7 @@ While in development, you will need to install all dependencies (includes packag
     
 ### Coverage of the tests
 
-    $ coverage run --source='hipeac' manage.py test hipeac
-    $ coverage report -m
+    $ pytest --cov=hipeac --cov-report=term
 
 ### Run Celery
 

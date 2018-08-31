@@ -8,7 +8,9 @@ __pycache__
 .vscode
 
 .coverage
-categories.json
-confusables.json
+.env
+.pytest_cache
 celerybeat-schedule
 dev.db
+htmlcov
+test-reports

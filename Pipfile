@@ -37,8 +37,10 @@ twitter = "*"
 whitenoise = "*"
 
 [dev-packages]
-coverage = "*"
 django-debug-toolbar = "*"
 flake8 = "*"
 flake8-mypy = "*"
+pytest-cov = "*"
+pytest-django = "*"
+mixer = "*"
 sqlalchemy = "*"

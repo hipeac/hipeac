@@ -3,6 +3,7 @@ image: python:3.7
 pipelines:
     default:
         - step:
+            name: Build and test
             script:
-                - pip install pipenv && pipenv install --deploy --system
-                - python manage.py test hipeac
+                - pip install pipenv && pipenv install --dev --deploy --system
+                - pytest --cov=hipeac --cov-report=term --junitxml=./test-reports/junit.xml
