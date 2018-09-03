@@ -107,7 +107,7 @@ class Permission(models.Model):
     Higher permission levels inherit lower permissions, simplifying queries.
     """
     OWNER = 9
-    ADMIN = 5
+    ADMIN = 7
     GUEST = 1
     LEVEL_CHOICES = (
         (OWNER, 'Owner'),

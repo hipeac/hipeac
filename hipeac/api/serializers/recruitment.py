@@ -27,4 +27,4 @@ class JobNestedSerializer(serializers.ModelSerializer):
 
 class JobSerializer(JobNestedSerializer):
     class Meta(JobNestedSerializer.Meta):
-        exclude = ['share', 'last_reminder', 'created_at']
+        exclude = ['share', 'last_reminder', 'created_at', 'created_by']

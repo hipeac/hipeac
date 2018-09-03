@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from hipeac.models import Clipping, Quote
+from hipeac.models import Clipping, Quote, Video
 from .institutions import InstitutionNestedSerializer
 
 
@@ -20,3 +20,9 @@ class QuoteNestedSerializer(serializers.ModelSerializer):
 
 class QuoteListSerializer(QuoteNestedSerializer):
     pass
+
+
+class VideoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = '__all__'

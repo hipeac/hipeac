@@ -5,11 +5,12 @@ from rest_framework.relations import RelatedField
 
 from hipeac.models import Metadata
 
-
+"""
 try:
     METADATA = dict([(m['id'], m) for m in Metadata.objects.values()])
 except Exception as e:
     pass
+"""
 
 
 class JsonField(serializers.CharField):
@@ -25,6 +26,7 @@ class MetadataListField(serializers.CharField):
         return ','.join([str(metadata['id']) for metadata in data])
 
     def to_representation(self, obj):
+        METADATA = dict([(m['id'], m) for m in Metadata.objects.values()])
         return [] if obj == '' else [{
             'id': METADATA[int(pk)]['id'],
             'value': METADATA[int(pk)]['value']
@@ -43,6 +45,7 @@ class MetadataField(RelatedField):
         return self.get_queryset().get(id=data['id'])
 
     def to_representation(self, obj):
+        METADATA = dict([(m['id'], m) for m in Metadata.objects.values()])
         metadata = METADATA[getattr(obj, self.pk_field)]
         return {
             'id': metadata['id'],

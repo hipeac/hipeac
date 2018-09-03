@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
-from rest_framework.mixins import ListModelMixin
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import Institution, Profile, Project
+from hipeac.models import Institution, Project
+from ..permissions import NetworkAdminPermission
 from ..serializers import (
     InstitutionListSerializer, InstitutionSerializer,
     ProjectListSerializer, ProjectSerializer,
@@ -10,8 +11,9 @@ from ..serializers import (
 )
 
 
-class InstitutionViewSet(ModelViewSet):
+class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = Institution.objects.all()
+    permission_classes = (NetworkAdminPermission,)
     serializer_class = InstitutionSerializer
 
     def list(self, request, *args, **kwargs):
@@ -35,9 +37,10 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
         return super().list(request, *args, **kwargs)
 
 
-class ProjectViewSet(ModelViewSet):
+class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = Project.objects.all()
     pagination_class = None
+    permission_classes = (NetworkAdminPermission,)
     serializer_class = ProjectSerializer
 
     def list(self, request, *args, **kwargs):

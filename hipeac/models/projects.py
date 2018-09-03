@@ -11,10 +11,10 @@ from typing import List
 
 from hipeac.functions import get_images_path
 from hipeac.validators import validate_no_badwords
-from .mixins import ImagesMixin, LinkMixin, UrlMixin
+from .mixins import ContentTypeMixin, ImagesMixin, LinkMixin, UrlMixin
 
 
-class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
+class Project(ImagesMixin, LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
     """
     FP7/H2020 projects related to HiPEAC.
     """

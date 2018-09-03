@@ -24,7 +24,7 @@ class Quote(models.Model):
     is_featured = models.BooleanField(default=False)
 
     class Meta:
-        db_table = 'hipeac_press_quote'
+        db_table = 'hipeac_communication_quote'
         indexes = [
             models.Index(fields=['type']),
         ]

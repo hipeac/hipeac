@@ -194,6 +194,7 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     'DEFAULT_VERSION': 'v1',
     'PAGE_SIZE': 50,
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 

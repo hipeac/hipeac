@@ -8,6 +8,7 @@ from ..serializers import (
     SessionListSerializer, SessionSerializer
 )
 
+
 class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Event.objects.select_related('coordinating_institution')
 

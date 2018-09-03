@@ -2,3 +2,4 @@
 
 from .clipping import *
 from .quote import *
+from .video import *

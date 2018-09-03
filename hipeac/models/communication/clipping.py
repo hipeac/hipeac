@@ -10,7 +10,7 @@ class Clipping(models.Model):
     publication_date = models.DateField(default=timezone.now)
 
     class Meta:
-        db_table = 'hipeac_press_clipping'
+        db_table = 'hipeac_communication_clipping'
         ordering = ['-publication_date']
 
     def __str__(self):

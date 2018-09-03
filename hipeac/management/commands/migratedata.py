@@ -446,6 +446,7 @@ class Command(BaseCommand):
                 keywords=json.dumps([]),
                 topics=','.join(job_topics[job.id]) if job.id in job_topics else '',
                 career_levels=','.join(job_career_levels[job.id]) if job.id in job_career_levels else '',
+                created_by_id=job.created_by_id,
             ))
             if job.url:
                 bulk_links.append(Link(
@@ -454,12 +455,6 @@ class Command(BaseCommand):
                     type=Link.WEBSITE,
                     url=job.url
                 ))
-            bulk_acl.append(Permission(
-                content_type=ct,
-                object_id=job.id,
-                user_id=job.created_by_id,
-                level=Permission.OWNER,
-            ))
 
         Job.objects.bulk_create(bulk_jobs, batch_size=1000)
         self.out('success', f'✔ Jobs migrated! ({len(bulk_jobs)} records)')

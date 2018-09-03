@@ -8,12 +8,13 @@ from django.template.defaultfilters import slugify
 from django_countries.fields import CountryField
 from typing import List
 
+from hipeac.models import Permission
 from hipeac.functions import get_images_path
 from hipeac.validators import validate_no_badwords
-from .mixins import ImagesMixin, LinkMixin, UrlMixin
+from .mixins import ContentTypeMixin, ImagesMixin, LinkMixin, UrlMixin
 
 
-class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
+class Institution(ImagesMixin, LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
     """
     Any institution related to HiPEAC. Institutions are used to determine user affiliation,
     or for managing institution level information like job offers.
