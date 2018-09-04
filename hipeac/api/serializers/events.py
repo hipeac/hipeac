@@ -40,7 +40,7 @@ class EventSerializer(EventNestedSerializer):
     sessions = SessionListSerializer(many=True)
 
 
-class RoadshowListSerializer(serializers.ModelSerializer):
+class RoadshowNestedSerializer(serializers.ModelSerializer):
     country = CountryField(country_dict=True)
     institutions = InstitutionRelatedField(many=True)
 
@@ -49,8 +49,17 @@ class RoadshowListSerializer(serializers.ModelSerializer):
         exclude = ()
 
 
+class RoadshowListSerializer(RoadshowNestedSerializer):
+    pass
+
+
+class RoadshowSerializer(RoadshowNestedSerializer):
+    pass
+
+
 class SessionSerializer(SessionListSerializer):
-    event = EventNestedSerializer()
+    event = EventNestedSerializer(read_only=True)
+    date = serializers.DateField(read_only=True)
     projects = ProjectRelatedField(many=True)
 
     class Meta(SessionNestedSerializer.Meta):

@@ -18,6 +18,7 @@ class ContentTypeMixin:
 
 
 class ImagesMixin:
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__image_path = self.image.path if self.image else None
@@ -45,12 +46,12 @@ class LinkMixin:
                 return link.url
         return None
 
-    def twitter(self) -> Optional[str]:
-        return self.get_link(Link.TWITTER)
-
+    @property
     def twitter_username(self) -> Optional[str]:
-        return self.twitter().split('/')[-1] if self.twitter() else None  # noqa
+        twitter_link = self.get_link(Link.TWITTER)  # noqa
+        return twitter_link.split('/')[-1] if twitter_link else None  # noqa
 
+    @property
     def website(self) -> Optional[str]:
         return self.get_link(Link.WEBSITE)
 

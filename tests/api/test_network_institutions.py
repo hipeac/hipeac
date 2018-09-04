@@ -26,7 +26,7 @@ class TestForAnonymous:
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK
 
     def test_create(self, api_client):
-        assert api_client.post(self.list_url, {}).status_code == status.HTTP_403_FORBIDDEN
+        assert api_client.post(self.list_url).status_code == status.HTTP_403_FORBIDDEN
 
     def test_read(self, api_client):
         assert api_client.get(self.get_detail_url(self.institution.id)).status_code == status.HTTP_200_OK
@@ -45,7 +45,7 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
 
     def test_create(self, api_client):
         api_client.force_authenticate(user=self.user)
-        assert api_client.post(self.list_url, {}).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+        assert api_client.post(self.list_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
     def test_delete(self, api_client):
         api_client.force_authenticate(user=self.user)
@@ -75,13 +75,12 @@ class TestForAdministrator(TestForAuthenticated):
         if not self.institution:
             self.user_admin = mommy.make_recipe('hipeac.user')
             self.institution = mommy.make_recipe('hipeac.institution')
-            Permission.objects.create(content_type=self.institution.get_content_type(), object_id=self.institution.id,
-                                      user=self.user_admin, level=Permission.ADMIN)
+            Permission(content_object=self.institution, user=self.user_admin, level=Permission.ADMIN).save()
         return
 
     def test_update(self, api_client, db):
         api_client.force_authenticate(user=self.user_admin)
         detail_url = self.get_detail_url(self.institution.id)
         assert api_client.patch(detail_url, {'name': 'name'}).status_code == status.HTTP_200_OK
-        assert api_client.post(detail_url, {}).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+        assert api_client.post(detail_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert api_client.put(detail_url, self.institution_data).status_code == status.HTTP_200_OK

@@ -14,7 +14,7 @@ from hipeac.validators import validate_no_badwords
 from .mixins import ContentTypeMixin, ImagesMixin, LinkMixin, UrlMixin
 
 
-class Institution(ImagesMixin, LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
+class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     """
     Any institution related to HiPEAC. Institutions are used to determine user affiliation,
     or for managing institution level information like job offers.

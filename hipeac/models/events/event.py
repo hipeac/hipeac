@@ -20,11 +20,6 @@ def validate_event_dates(event):
             raise ValidationError('Early deadline cannot be later than registration deadline.')
 
 
-def validate_event_day(day):
-    if day.date < day.event.start_date or day.date > day.event.end_date:
-        raise ValidationError('Please check the date: it should be between the start and end dates of the event.')
-
-
 class Event(models.Model):
     ACACES = 'acaces'
     CONFERENCE = 'conference'

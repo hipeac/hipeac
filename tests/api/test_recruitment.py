@@ -1,6 +1,5 @@
 import pytest
 
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from model_mommy import mommy
 from rest_framework import status
@@ -28,7 +27,7 @@ class TestForAnonymous:
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK
 
     def test_create(self, api_client):
-        assert api_client.post(self.list_url, {}).status_code == status.HTTP_403_FORBIDDEN
+        assert api_client.post(self.list_url).status_code == status.HTTP_403_FORBIDDEN
 
     def test_read(self, api_client):
         assert api_client.get(self.get_detail_url(self.job_active.id)).status_code == status.HTTP_200_OK
@@ -46,13 +45,13 @@ class TestForAnonymous:
 
 class TestForAuthenticated(UserMixin, TestForAnonymous):
     job = None
-    job_data = {}
+    test_data = {}
 
     @pytest.fixture(autouse=True)
-    def setup_job_data(self, db, now):
-        if not self.job_data:
+    def setup_test_data(self, db, now):
+        if not self.test_data:
             employment_type = mommy.make_recipe('hipeac.employment_type')
-            self.job_data = {
+            self.test_data = {
                 'title': 'Job title',
                 'description': 'Job description.',
                 'deadline': str(now.add(months=1).date),
@@ -67,7 +66,7 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
 
     def test_create(self, api_client):
         api_client.force_authenticate(user=self.user)
-        res = api_client.post(self.list_url, self.job_data)
+        res = api_client.post(self.list_url, self.test_data)
         self.job = res.json()
         assert res.status_code == status.HTTP_201_CREATED
 
@@ -76,14 +75,14 @@ class TestForAdministrator(TestForAuthenticated):
 
     def test_update(self, api_client):
         api_client.force_authenticate(user=self.user)
-        self.job = api_client.post(self.list_url, self.job_data).json()
+        self.job = api_client.post(self.list_url, self.test_data).json()
         detail_url = self.get_detail_url(self.job['id'])
-        assert api_client.patch(detail_url, {'title': 'Job title'}).status_code == status.HTTP_200_OK
-        assert api_client.post(detail_url, {}).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-        assert api_client.put(detail_url, self.job_data).status_code == status.HTTP_200_OK
+        assert api_client.patch(detail_url, {'title': 'New title'}).status_code == status.HTTP_200_OK
+        assert api_client.post(detail_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+        assert api_client.put(detail_url, self.test_data).status_code == status.HTTP_200_OK
 
     def test_delete(self, api_client):
         api_client.force_authenticate(user=self.user)
-        self.job = api_client.post(self.list_url, self.job_data).json()
+        self.job = api_client.post(self.list_url, self.test_data).json()
         detail_url = self.get_detail_url(self.job['id'])
         assert api_client.delete(detail_url).status_code == status.HTTP_204_NO_CONTENT

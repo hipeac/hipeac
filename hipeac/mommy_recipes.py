@@ -18,7 +18,9 @@ institution = Recipe(
 # projects
 
 project = Recipe(
-    'hipeac.Project'
+    'hipeac.Project',
+    start_date=now.date,
+    end_date=now.add(years=2).date,
 )
 
 
@@ -31,6 +33,18 @@ event = Recipe(
     registration_deadline=now.add(days=60).datetime,
     start_date=now.add(days=60).date,
     end_date=now.add(days=65).date,
+)
+
+roadshow = Recipe(
+    'hipeac.Roadshow',
+    start_date=now.add(days=30).date,
+    end_date=now.add(days=35).date,
+)
+
+session = Recipe(
+    'hipeac.Session',
+    date=now.add(days=62).date,
+    event=foreign_key(event),
 )
 
 

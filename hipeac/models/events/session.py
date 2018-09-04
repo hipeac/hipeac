@@ -3,9 +3,9 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.urls import reverse
 
 from hipeac.models import Permission
+from ..mixins import ContentTypeMixin, LinkMixin
 
 
 def validate_date(date, event) -> None:
@@ -13,7 +13,7 @@ def validate_date(date, event) -> None:
         raise ValidationError('Date is not valid for this event.')
 
 
-class Session(models.Model):
+class Session(ContentTypeMixin, LinkMixin, models.Model):
     event = models.ForeignKey('hipeac.Event', on_delete=models.CASCADE, related_name='sessions')
     is_private = models.BooleanField(default=False)
 
@@ -50,9 +50,6 @@ class Session(models.Model):
 
     def __str__(self) -> str:
         return self.title
-
-    def get_absolute_url(self) -> str:
-        return reverse('project', args=[self.id, self.slug])
 
     @property
     def slug(self) -> str:

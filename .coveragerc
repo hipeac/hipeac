@@ -11,6 +11,8 @@ omit =
 
 [report]
 exclude_lines =
+    pragma: no cover
     def __repr__
     def __str__
     def slug
+    send_task

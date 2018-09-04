@@ -8,9 +8,3 @@ pipelines:
                 - pip install pipenv && pipenv install --dev --deploy --system
                 - pytest --cov=hipeac --junitxml=./test-reports/junit.xml
                 - coverage report -m
-        - step:
-            name: Deploy to production
-            deployment: production
-            trigger: manual
-            script:
-                - git push --force $DOKKU_PRODUCTION HEAD:master

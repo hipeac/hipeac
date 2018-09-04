@@ -4,9 +4,9 @@ from django.urls import reverse
 from rest_framework import status
 
 
+@pytest.mark.django_db
 class TestForAnonymous:
-    list_url = reverse('v1:clipping-list')
-    detail_url = None
+    list_url = reverse('v1:metadata-list')
 
     def test_list(self, api_client, db):
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK

@@ -15,7 +15,7 @@ from hipeac.validators import validate_no_badwords
 from .mixins import ContentTypeMixin, ImagesMixin, LinkMixin, UrlMixin
 
 
-class Project(ImagesMixin, LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
+class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     """
     FP7/H2020 projects related to HiPEAC.
     """

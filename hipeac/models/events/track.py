@@ -13,10 +13,6 @@ class Track(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    @staticmethod
-    def autocomplete_search_fields() -> List[str]:
-        return ['name__icontains']
-
     @property
     def slug(self) -> str:
         return slugify(self.name)
