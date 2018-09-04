@@ -5,16 +5,16 @@ from hipeac.models import Block
 from .generic import ImagesInline
 
 
+admin.site.unregister(FlatPage)
+
+
+@admin.register(Block)
 class BlockAdmin(admin.ModelAdmin):
+    inlines = (ImagesInline,)
     list_display = ('id', 'page', 'key')
     list_filter = ('page',)
-    inlines = (ImagesInline,)
 
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
             return ('key', 'notes')
         return ()
-
-
-admin.site.unregister(FlatPage)
-admin.site.register(Block, BlockAdmin)

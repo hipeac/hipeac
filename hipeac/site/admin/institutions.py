@@ -4,14 +4,15 @@ from hipeac.models import Institution
 from .generic import HideDeleteActionMixin, LinksInline, PermissionsInline
 
 
+@admin.register(Institution)
 class InstitutionAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     exclude = ['application_areas', 'topics', 'updated_at']
     inlines = [LinksInline, PermissionsInline]
+    list_display = ('id', 'name', 'type', 'country')
+    list_filter = ('type',)
     raw_id_fields = ['parent']
     search_fields = ['name', 'local_name', 'colloquial_name']
 
-    list_display = ('id', 'name', 'type', 'country')
-    list_filter = ('type',)
     fieldsets = (
         (None, {
             'fields': ('type', 'name', 'local_name', 'colloquial_name'),
@@ -23,6 +24,3 @@ class InstitutionAdmin(HideDeleteActionMixin, admin.ModelAdmin):
             'fields': ('recruitment_contact', 'recruitment_email'),
         }),
     )
-
-
-admin.site.register(Institution, InstitutionAdmin)

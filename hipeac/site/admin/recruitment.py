@@ -4,14 +4,15 @@ from hipeac.models import Job
 from .generic import HideDeleteActionMixin, LinksInline, PermissionsInline
 
 
+@admin.register(Job)
 class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     date_hierarchy = 'created_at'
     exclude = ['application_areas', 'topics', 'updated_at']
     inlines = [LinksInline, PermissionsInline]
+    list_display = ('id', 'title', 'institution', 'deadline', 'created_at')
     radio_fields = {'employment_type': admin.VERTICAL}
     raw_id_fields = ['institution', 'project']
 
-    list_display = ('id', 'title', 'institution', 'deadline', 'created_at')
     fieldsets = (
         (None, {
             'fields': ('title', 'institution', 'project'),
@@ -26,6 +27,3 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related('institution')
-
-
-admin.site.register(Job, JobAdmin)

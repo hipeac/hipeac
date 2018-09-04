@@ -1,7 +1,6 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.urls import reverse
 from django.utils import timezone
 
 from ..mixins import UrlMixin
@@ -46,7 +45,7 @@ class Article(UrlMixin, models.Model):
 
     objects = ArticleManager()
 
-    class Meta(object):
+    class Meta:
         ordering = ['-publication_date']
 
     def __str__(self) -> str:

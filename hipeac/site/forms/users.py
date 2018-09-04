@@ -15,7 +15,7 @@ class UserPrivacyForm(forms.ModelForm):
         required=True,
     )
 
-    class Meta(object):
+    class Meta:
         model = Profile
         fields = ('is_public', 'is_subscribed')
 
@@ -38,7 +38,7 @@ class UserProfileForm(forms.ModelForm):
     bio = forms.CharField(required=True)
     country = CountryField().formfield()
 
-    class Meta(object):
+    class Meta:
         model = Profile
         fields = (
             'country', 'bio',

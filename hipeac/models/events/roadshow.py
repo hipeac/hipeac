@@ -22,8 +22,8 @@ class Roadshow(UrlMixin, models.Model):
     images = GenericRelation('hipeac.Image')
     links = GenericRelation('hipeac.Link')
 
-    class Meta(object):
-        ordering = ['start_date']
+    class Meta:
+        ordering = ['-start_date']
 
     def __str__(self) -> str:
         return f'{self.name} ({self.start_date.strftime("%B %Y")})'
