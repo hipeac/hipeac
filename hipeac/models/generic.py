@@ -123,4 +123,4 @@ class Permission(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self) -> str:
-        return '{0} ({1})'.format(self.user, self.get_level_display())
+        return f'{self.user} ({self.get_level_display()})'

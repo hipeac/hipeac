@@ -30,4 +30,4 @@ class Quote(models.Model):
         ]
 
     def __str__(self):
-        return 'Quote: {1} ({0})'.format(self.type, self.author)
+        return f'Quote: {self.type} ({self.author})'

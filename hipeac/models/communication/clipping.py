@@ -14,4 +14,4 @@ class Clipping(models.Model):
         ordering = ['-publication_date']
 
     def __str__(self):
-        return 'Clipping @ {0}: {1}'.format(self.media, self.title)
+        return f'Clipping @ {self.media}: {self.title}'

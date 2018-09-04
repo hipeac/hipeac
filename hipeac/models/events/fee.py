@@ -28,4 +28,4 @@ class Fee(models.Model):
         db_table = 'hipeac_event_fee'
 
     def __str__(self) -> str:
-        return '{0} ({1})'.format(self.type, self.value)
+        return f'{self.type} ({self.value})'

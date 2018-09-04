@@ -29,7 +29,7 @@ class Coupon(models.Model):
         ordering = ['event', 'id']
 
     def __str__(self) -> str:
-        return '{0} ({1})'.format(self.code, self.value)
+        return f'{self.code} ({self.value})'
 
 
 class RegistrationManager(models.Manager):
@@ -69,7 +69,7 @@ class Registration(models.Model):
         unique_together = ('event', 'user')
 
     def __str__(self) -> str:
-        return '{0} ({1})'.format(self.uuid, self.user)
+        return f'{self.uuid} ({self.user})'
 
     def editable_by_user(self, user) -> bool:
         return self.user_id == user.id
@@ -86,12 +86,12 @@ class Registration(models.Model):
 def registration_post_save(sender, instance, created, *args, **kwargs):
     if created:
         msg = EmailMessage(
-            '[{0}] Your registration for {1}'.format(instance.event.hashtag.upper(), instance.event),
+            f'[{instance.event.hashtag.upper()}] Your registration for {instance.event}',
             get_template('hipeac/emails/registration.txt').render({
                 'registration': instance
             }),
             to=[instance.user.profile.to_email],
-            from_email='{0} <{1}>'.format(instance.event.hashtag.upper(), settings.HIPEAC_REGISTRATIONS_EMAIL)
+            from_email=f'{instance.event.hashtag.upper()} <{settings.HIPEAC_REGISTRATIONS_EMAIL}>'
         )
         msg.send()
 

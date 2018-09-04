@@ -65,7 +65,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
 
     @property
     def full_name(self) -> str:
-        return '{0}: {1}'.format(self.acronym, self.name)
+        return f'{self.acronym}: {self.name}'  # pragma: no cover
 
     def is_active(self) -> bool:
         try:
@@ -75,7 +75,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
 
     @property
     def short_name(self) -> str:
-        return '{0} ({1} project)'.format(self.acronym, self.get_programme_display())
+        return f'{self.acronym} ({self.get_programme_display()} project)'  # pragma: no cover
 
     @property
     def slug(self) -> str:
