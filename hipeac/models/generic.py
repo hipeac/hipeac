@@ -6,11 +6,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django_countries import Countries
 
-from hipeac.functions import european_countries, h2020_associated_countries
+from hipeac.functions import get_european_countries, get_h2020_associated_countries
 
 
-class H2020Countries(Countries):
-    only = european_countries() + h2020_associated_countries()
+class HipeacCountries(Countries):
+    only = get_european_countries() + get_h2020_associated_countries()
 
 
 class Image(models.Model):

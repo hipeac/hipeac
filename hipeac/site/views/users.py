@@ -15,7 +15,7 @@ class UserSettings(generic.edit.UpdateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return Profile.objects.get(user=self.request.user)
 
 

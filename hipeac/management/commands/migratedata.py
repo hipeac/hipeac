@@ -9,6 +9,7 @@ from django.contrib.sites.models import Site
 from django.core.management.base import BaseCommand
 from django.db import connection
 from django.template.defaultfilters import slugify
+from django.utils import timezone
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session as OrmSession
 from sqlalchemy import create_engine
@@ -534,6 +535,8 @@ class Command(BaseCommand):
                 is_private=s.is_private,
                 application_areas=','.join(session_areas[s.id]) if s.id in session_areas else '',
                 topics=','.join(session_topics[s.id]) if s.id in session_topics else '',
+                created_at=timezone.now(),
+                updated_at=timezone.now(),
             ))
             if s.url:
                 bulk_links.append(Link(

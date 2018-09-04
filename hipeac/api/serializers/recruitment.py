@@ -1,8 +1,8 @@
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
-from hipeac.functions import HipeacCountries
 from hipeac.models import Job
+from hipeac.models.generic import HipeacCountries
 from .generic import JsonField, MetadataField, MetadataListField
 from .institutions import InstitutionRelatedField
 from .projects import ProjectRelatedField

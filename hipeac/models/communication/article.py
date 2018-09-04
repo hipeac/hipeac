@@ -3,8 +3,6 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils import timezone
-from imagekit.models import ProcessedImageField
-from imagekit.processors import ResizeToFit
 
 from hipeac.apps.core.functions import massage_tweet, clean_markdown, get_asset_path
 from hipeac.apps.core.models import AbstractAsset, User, Institution, Project

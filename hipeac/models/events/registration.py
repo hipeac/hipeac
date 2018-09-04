@@ -20,7 +20,7 @@ class Coupon(models.Model):
     value = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
     notes = models.CharField(max_length=190, null=True, blank=True)
 
-    created_at = models.DateTimeField()  # TODO: auto_now=True
+    created_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         indexes = [
@@ -56,8 +56,8 @@ class Registration(models.Model):
     visa_requested = models.BooleanField()
     visa_sent = models.BooleanField(default=False)
 
-    created_at = models.DateTimeField()  # TODO: auto_now_add=True
-    updated_at = models.DateTimeField()  # TODO: auto_now=True
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = RegistrationManager()
 
@@ -120,7 +120,7 @@ class RegistrationLog(models.Model):
     registration = models.ForeignKey(Registration, on_delete=models.CASCADE, related_name='logs')
     session = models.ForeignKey('hipeac.Session', on_delete=models.CASCADE, related_name='logs')
 
-    created_at = models.DateTimeField()  # TODO: auto_now_add=True
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('registration', 'session')

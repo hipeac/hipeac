@@ -7,9 +7,9 @@ from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django_countries.fields import CountryField
 
-from hipeac.functions import HipeacCountries
 from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
+from .generic import HipeacCountries
 from .mixins import ContentTypeMixin, LinkMixin, UrlMixin
 
 
@@ -50,10 +50,10 @@ class Job(LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
 
     keywords = models.TextField(null=True, blank=True, editable=False)
     last_reminder = models.DateTimeField(null=True, blank=True, editable=False)
-    created_at = models.DateTimeField(auto_now_add=True)  # TODO: auto_now_add=True
+    created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL,
                                    related_name='posted_jobs')
-    updated_at = models.DateTimeField(auto_now=True)  # TODO: auto_now=True
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = JobManager()
 
