@@ -2,6 +2,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from hipeac.models import Event, Roadshow, Session
+from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import (
     EventListSerializer, EventSerializer,
     RoadshowListSerializer,
@@ -34,6 +35,7 @@ class RoadshowViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
 class SessionViewSet(ModelViewSet):
     queryset = Session.objects.all()
+    permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = SessionSerializer
 
     def list(self, request, *args, **kwargs):

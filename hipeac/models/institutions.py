@@ -8,8 +8,8 @@ from django.template.defaultfilters import slugify
 from django_countries.fields import CountryField
 from typing import List
 
-from hipeac.models import Permission
 from hipeac.functions import get_images_path
+from hipeac.models import Permission
 from hipeac.validators import validate_no_badwords
 from .mixins import ContentTypeMixin, ImagesMixin, LinkMixin, UrlMixin
 
@@ -62,9 +62,8 @@ class Institution(ImagesMixin, LinkMixin, UrlMixin, ContentTypeMixin, models.Mod
     def __str__(self) -> str:
         return self.short_name
 
-    @staticmethod
-    def autocomplete_search_fields() -> List['str']:
-        return ['name__icontains', 'local_name__icontains']
+    def can_be_managed_by(self, user) -> bool:
+        return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
 
     @property
     def schema_org_type(self) -> str:

@@ -71,7 +71,7 @@ class Registration(models.Model):
     def __str__(self) -> str:
         return f'{self.uuid} ({self.user})'
 
-    def editable_by_user(self, user) -> bool:
+    def can_be_managed_by(self, user) -> bool:
         return self.user_id == user.id
 
     def get_absolute_url(self) -> str:

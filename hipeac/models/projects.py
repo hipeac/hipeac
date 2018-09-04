@@ -10,6 +10,7 @@ from django.utils import timezone
 from typing import List
 
 from hipeac.functions import get_images_path
+from hipeac.models import Permission
 from hipeac.validators import validate_no_badwords
 from .mixins import ContentTypeMixin, ImagesMixin, LinkMixin, UrlMixin
 
@@ -59,9 +60,8 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
     def __str__(self) -> str:
         return self.acronym
 
-    @staticmethod
-    def autocomplete_search_fields() -> List['str']:
-        return ['acronym__icontains', 'name__icontains']
+    def can_be_managed_by(self, user) -> bool:
+        return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
 
     @property
     def full_name(self) -> str:

@@ -42,14 +42,14 @@ class Session(models.Model):
         ]
         ordering = ['date', 'start_at', 'end_at']
 
+    def can_be_managed_by(self, user) -> bool:
+        return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+
     def clean(self) -> None:
         validate_date(self.date, self.event)
 
     def __str__(self) -> str:
         return self.title
-
-    def editable_by_user(self, user) -> bool:
-        return user.is_staff or self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
 
     def get_absolute_url(self) -> str:
         return reverse('project', args=[self.id, self.slug])

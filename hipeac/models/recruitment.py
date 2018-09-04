@@ -8,7 +8,7 @@ from django.utils import timezone
 from django_countries.fields import CountryField
 
 from hipeac.functions import HipeacCountries
-from hipeac.models import Metadata
+from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
 from .mixins import ContentTypeMixin, LinkMixin, UrlMixin
 
@@ -62,6 +62,12 @@ class Job(LinkMixin, UrlMixin, ContentTypeMixin, models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    def can_be_managed_by(self, user) -> bool:
+        return (
+            self.created_by_id == user.id or
+            self.institution.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+        )
 
     def deadline_is_near(self) -> bool:
         return (self.deadline - timezone.now().date()).days < 7
