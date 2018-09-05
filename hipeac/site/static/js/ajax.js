@@ -69,7 +69,7 @@ var ajax = function () {
 var api = function () {
     return {
         getQuotes: function (url) {
-            return ajax().get('/api/v1/press/quotes/');
+            return ajax().get('/api/v1/communication/quotes/');
         },
         getMetadata: function (url) {
             return ajax().get('/api/v1/metadata/');
