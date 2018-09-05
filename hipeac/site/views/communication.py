@@ -1,4 +1,10 @@
+import datetime
+
+from django.contrib.syndication.views import Feed
+from django.urls import reverse_lazy
 from django.views import generic
+from markdown import markdown as marked
+from typing import List
 
 from hipeac.models import Article
 from .mixins import SlugMixin
@@ -14,3 +20,23 @@ class ArticleDetail(SlugMixin, generic.DetailView):
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related('images', 'institutions', 'projects')
+
+
+class NewsFeed(Feed):
+    title = 'HiPEAC News'
+    link = reverse_lazy('news')
+
+    def items(self):
+        return Article.objects.published().order_by('-publication_date')[:30]
+
+    def item_categories(self, item) -> List[str]:
+        return [item.get_type_display()]
+
+    def item_title(self, item) -> str:
+        return item.title
+
+    def item_description(self, item) -> str:
+        return f'{marked(item.excerpt)}{marked(item.content)}'
+
+    def item_pubdate(self, item):
+        return datetime.datetime.combine(item.publication_date, datetime.time.min)

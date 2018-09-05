@@ -2,6 +2,7 @@ from django.contrib.syndication.views import Feed
 from django.urls import reverse_lazy
 from django.views import generic
 from markdown import markdown as marked
+from typing import List
 from wkhtmltopdf.views import PDFTemplateResponse
 
 from hipeac.models import Job
@@ -27,11 +28,20 @@ class JobsFeed(Feed):
     def items(self):
         return Job.objects.active().select_related('institution').order_by('-created_at')
 
-    def item_title(self, item):
-        return '{0} @ {1}'.format(item.title, item.institution)
+    def item_categories(self, item) -> List[str]:
+        return [topic.value for topic in item.get_metadata('topics')]
 
-    def item_description(self, item):
+    def item_title(self, item) -> str:
+        return f'{item.title} @ {item.institution}'
+
+    def item_description(self, item)-> str:
         return marked(item.description)
+
+    def item_pubdate(self, item):
+        return item.created_at
+
+    def item_updateddate(self, item):
+        return item.updated_at
 
 
 class JobsPdf(generic.DetailView):

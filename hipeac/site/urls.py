@@ -34,6 +34,7 @@ urlpatterns = [
     re_path(r'^network/projects/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ProjectDetail.as_view(), name='project'),
     # Communication
     path('news/', flatpage, {'url': '/news/'}, name='news'),
+    path('news/feed/', views.NewsFeed(), name='news_feed'),
     re_path(r'^news/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ArticleDetail.as_view(), name='article'),
     path('press/', flatpage, {'url': '/press/'}, name='press'),
     path('vision/', flatpage, {'url': '/vision/'}, name='vision'),
