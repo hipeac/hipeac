@@ -3,14 +3,7 @@ import json
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
 
-from hipeac.models import Metadata
-
-"""
-try:
-    METADATA = dict([(m['id'], m) for m in Metadata.objects.values()])
-except Exception as e:
-    pass
-"""
+from hipeac.models import Metadata, get_cached_metadata
 
 
 class JsonField(serializers.CharField):
@@ -26,11 +19,11 @@ class MetadataListField(serializers.CharField):
         return ','.join([str(metadata['id']) for metadata in data])
 
     def to_representation(self, obj):
-        METADATA = dict([(m['id'], m) for m in Metadata.objects.values()])
+        metadata = get_cached_metadata()
         return [] if obj == '' else [{
-            'id': METADATA[int(pk)]['id'],
-            'value': METADATA[int(pk)]['value']
-        } for pk in obj.split(',') if int(pk) in METADATA]
+            'id': metadata[int(pk)].id,
+            'value': metadata[int(pk)].value
+        } for pk in obj.split(',') if int(pk) in metadata]
 
 
 class MetadataField(RelatedField):
@@ -45,11 +38,10 @@ class MetadataField(RelatedField):
         return self.get_queryset().get(id=data['id'])
 
     def to_representation(self, obj):
-        METADATA = dict([(m['id'], m) for m in Metadata.objects.values()])
-        metadata = METADATA[getattr(obj, self.pk_field)]
+        metadata = get_cached_metadata()[getattr(obj, self.pk_field)]
         return {
-            'id': metadata['id'],
-            'value': metadata['value']
+            'id': metadata.id,
+            'value': metadata.value
         }
 
 

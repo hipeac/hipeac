@@ -10,7 +10,7 @@ from django_countries.fields import CountryField
 from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
 from .generic import HipeacCountries
-from .mixins import LinkMixin, UrlMixin
+from .mixins import LinkMixin, MetadataMixin, UrlMixin
 
 
 class JobManager(models.Manager):
@@ -18,7 +18,7 @@ class JobManager(models.Manager):
         return self.filter(deadline__gte=timezone.now().date()).order_by('deadline')
 
 
-class Job(LinkMixin, UrlMixin, models.Model):
+class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     """
     A job opening by any HiPEAC institution.
     Jobs are linked to different topics, so that we can send

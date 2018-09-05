@@ -1,5 +1,4 @@
 import json
-import operator
 import lxml.html
 
 from django import template
@@ -7,7 +6,7 @@ from django.template.base import Node
 from django.utils.safestring import mark_safe
 from markdown import markdown as marked
 
-from hipeac.api.serializers import MetadataListField
+from hipeac.models import get_cached_metadata
 
 
 register = template.Library()
@@ -26,12 +25,6 @@ def join_json(json_string, separator=','):
     return mark_safe(separator.join(json.loads(json_string)))
 
 
-def convert_metadata(ids):
-    metadata = MetadataListField().to_representation(ids)
-    metadata.sort(key=operator.itemgetter('value'))
-    return metadata
-
-
 @register.filter
 def markdown(text):
     return mark_safe(marked(text))
@@ -42,10 +35,13 @@ def metadata_list(ids, title):
     if not ids:
         return ''
 
+    keys = [int(key) for key in ids.split(',')]
+    metadata = get_cached_metadata()
+
     output = []
-    output.append('<div class="mb-4"><h5 class="display-sm">{0}</h5><ul class="list-unstyled">'.format(title))
-    for m in convert_metadata(ids):
-        output.append('<li><small>{0}</small></li>'.format(m['value']))
+    output.append(f'<div class="mb-4"><h5 class="display-sm">{title}</h5><ul class="list-unstyled">')
+    for m in [metadata[key] for key in keys if key in metadata]:
+        output.append(f'<li><small>{m.value}</small></li>')
     output.append('</ul></div>')
     return mark_safe(''.join(output))
 
@@ -55,10 +51,13 @@ def metadata_badges(ids, title):
     if not ids:
         return ''
 
+    keys = [int(key) for key in ids.split(',')]
+    metadata = get_cached_metadata()
+
     output = []
-    output.append('<div class="mb-4"><h5 class="display-sm">{0}</h5>'.format(title))
-    for m in convert_metadata(ids):
-        output.append('<span class="badge badge-primary mr-1">{0}</span>'.format(m['value']))
+    output.append(f'<div class="mb-4"><h5 class="display-sm">{title}</h5>')
+    for m in [metadata[key] for key in keys if key in metadata]:
+        output.append(f'<span class="badge badge-primary mr-1">{m.value}</span>')
     output.append('</div>')
     return mark_safe(''.join(output))
 

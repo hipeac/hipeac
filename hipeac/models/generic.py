@@ -3,7 +3,9 @@ import os
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.db import models
+from typing import Dict
 from django_countries import Countries
 
 from hipeac.functions import get_european_countries, get_h2020_associated_countries
@@ -100,6 +102,14 @@ class Metadata(models.Model):
 
     def __str__(self) -> str:
         return self.value
+
+
+def get_cached_metadata() -> Dict[int, Metadata]:
+    objects = cache.get('cached_metadata_objects')
+    if not objects:
+        objects = {m.id: m for m in Metadata.objects.all()}
+        cache.set('cached_metadata_objects', objects, 30)
+    return objects
 
 
 class Permission(models.Model):

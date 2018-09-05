@@ -5,7 +5,7 @@ from django.urls import reverse
 from typing import Dict, Optional
 
 from hipeac.functions import get_absolute_uri
-from hipeac.models import Link
+from hipeac.models import Link, get_cached_metadata
 
 
 class ImagesMixin:
@@ -45,6 +45,16 @@ class LinkMixin:
     @property
     def website(self) -> Optional[str]:
         return self.get_link(Link.WEBSITE)
+
+
+class MetadataMixin:
+
+    def get_metadata(self, field_name: str):
+        if field_name not in ['application_areas', 'career_levels', 'topics']:
+            return []
+        keys = [int(key) for key in getattr(self, field_name).split(',')]
+        metadata = get_cached_metadata()
+        return [metadata[key] for key in keys if key in metadata]
 
 
 class UrlMixin:
