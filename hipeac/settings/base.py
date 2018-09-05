@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     'captcha',
     'compressor',
     'crispy_forms',
-    'pipeline',
 
     # auth
     'allauth',
@@ -92,7 +91,6 @@ MIDDLEWARE = [
     'django.middleware.http.ConditionalGetMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'pipeline.middleware.MinifyHTMLMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -198,7 +196,7 @@ REST_FRAMEWORK = {
 }
 
 
-# http://django-pipeline.readthedocs.org/en/latest/index.html
+# https://docs.djangoproject.com/en/2.1/topics/templates/
 
 TEMPLATES = [
     {
@@ -231,7 +229,6 @@ MESSAGE_TAGS = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 # https://docs.djangoproject.com/en/2.0/howto/static-files/deployment/
-# http://django-pipeline.readthedocs.org/en/latest/index.html
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(SITE_ROOT, 'www', 'static')
@@ -249,8 +246,6 @@ COMPRESS_OFFLINE = True
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
-
-PIPELINE = {}
 
 
 # File uploads
