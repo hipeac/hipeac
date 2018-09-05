@@ -3,6 +3,7 @@ from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.contrib.flatpages.views import flatpage
 from django.contrib.sitemaps import views as sitemap_views
 from django.urls import path, re_path
+from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
 import hipeac.site.views as views
@@ -44,7 +45,7 @@ urlpatterns = [
     path('events/ec/<int:pk>/', views.EventDetail.as_view(), name='ec_meeting'),
     re_path(r'^events/roadshow/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.RoadshowDetail.as_view(), name='roadshow'),
     # Editor
-    path('editor/<int:ct>/<int:pk>/', views.EditorView.as_view(), name='editor'),
+    path('editor/<int:ct>/<int:pk>/', never_cache(views.EditorView.as_view()), name='editor'),
     # Users
     re_path(r'^~(?P<username>[\w.@-]+)/$', views.JobDetail.as_view(), name='user'),
     path('accounts/', include('allauth.urls')),

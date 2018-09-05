@@ -30,7 +30,7 @@ class MetadataListField(serializers.CharField):
         return [] if obj == '' else [{
             'id': METADATA[int(pk)]['id'],
             'value': METADATA[int(pk)]['value']
-        } for pk in obj.split(',')]
+        } for pk in obj.split(',') if int(pk) in METADATA]
 
 
 class MetadataField(RelatedField):
