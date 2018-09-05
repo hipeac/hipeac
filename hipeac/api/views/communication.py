@@ -1,8 +1,14 @@
 from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import Clipping, Quote, Video
-from ..serializers import ClippingListSerializer, QuoteListSerializer, VideoListSerializer
+from hipeac.models import Article, Clipping, Quote, Video
+from ..serializers import ArticleListSerializer, ClippingListSerializer, QuoteListSerializer, VideoListSerializer
+
+
+class ArticleViewSet(ListModelMixin, GenericViewSet):
+    queryset = Article.objects.all()
+    pagination_class = None
+    serializer_class = ArticleListSerializer
 
 
 class ClippingViewSet(ListModelMixin, GenericViewSet):

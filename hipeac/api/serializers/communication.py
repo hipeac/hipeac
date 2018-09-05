@@ -1,7 +1,13 @@
 from rest_framework import serializers
 
-from hipeac.models import Clipping, Quote, Video
+from hipeac.models import Article, Clipping, Quote, Video
 from .institutions import InstitutionNestedSerializer
+
+
+class ArticleListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        exclude = ('content',)
 
 
 class ClippingListSerializer(serializers.ModelSerializer):

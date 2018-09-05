@@ -8,15 +8,6 @@ from hipeac.functions import get_absolute_uri
 from hipeac.models import Link
 
 
-class ContentTypeMixin:
-    content_type = None
-
-    def get_content_type(self) -> ContentType:
-        if not self.content_type:
-            self.content_type = ContentType.objects.get_for_model(self)
-        return self.content_type
-
-
 class ImagesMixin:
 
     def __init__(self, *args, **kwargs):
@@ -56,11 +47,12 @@ class LinkMixin:
         return self.get_link(Link.WEBSITE)
 
 
-class UrlMixin(ContentTypeMixin):
+class UrlMixin:
     route_name = None
 
     def get_absolute_url(self) -> str:
         return reverse(self.route_name, args=[str(self.id), self.slug])  # noqa
 
     def get_editor_url(self) -> str:
-        return reverse('editor', args=[self.get_content_type().id, self.id])  # noqa
+        content_type = ContentType.objects.get_for_model(self)
+        return reverse('editor', args=[content_type.id, self.id])  # noqa

@@ -11,7 +11,7 @@ from typing import List
 from hipeac.functions import get_images_path
 from hipeac.models import Permission
 from hipeac.validators import validate_no_badwords
-from .mixins import ContentTypeMixin, ImagesMixin, LinkMixin, UrlMixin
+from .mixins import ImagesMixin, LinkMixin, UrlMixin
 
 
 class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):

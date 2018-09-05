@@ -20,17 +20,20 @@ sitemaps = {
 }
 
 urlpatterns = [
-    # Main sections
+    # Recruitment
     path('', TemplateView.as_view(template_name='flatpages/homepage.html'), name='homepage'),
     path('jobs/', flatpage, {'url': '/jobs/'}, name='jobs'),
     path('jobs/feed/', views.JobsFeed(), name='jobs_feed'),
     path('jobs/<int:pk>.pdf', views.JobsPdf.as_view(), name='jobs_pdf'),
     re_path(r'^jobs/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.JobDetail.as_view(), name='job'),
+    # Network
     path('network/', flatpage, {'url': '/network/'}, name='network'),
     re_path(r'^network/institutions/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$',
             views.InstitutionDetail.as_view(), name='institution'),
     re_path(r'^network/projects/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ProjectDetail.as_view(), name='project'),
+    # Communication
     path('news/', flatpage, {'url': '/news/'}, name='news'),
+    re_path(r'^news/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ArticleDetail.as_view(), name='article'),
     path('press/', flatpage, {'url': '/press/'}, name='press'),
     path('vision/', flatpage, {'url': '/vision/'}, name='vision'),
     # Events

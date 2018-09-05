@@ -1,100 +1,72 @@
-from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils import timezone
 
-from hipeac.apps.core.functions import massage_tweet, clean_markdown, get_asset_path
-from hipeac.apps.core.models import AbstractAsset, User, Institution, Project
-from hipeac.apps.core.models import WideCharField
+from ..mixins import UrlMixin
 
 
 class ArticleManager(models.Manager):
     def published(self):
         return self.filter(
-            status='OK',
-            release_date__lte=timezone.now().date()
+            is_ready=True,
+            publication_date__lte=timezone.now().date()
         )
 
 
-class Article(models.Model):
-    """
-    HiPEAC articles and news.
-    """
-    STATUS_CHOICES = (
-        ('NO', 'Draft'),
-        ('OK', 'Published'),
-    )
-    TYPE_BLOG = 'BLOG'
-    TYPE_NEWS = 'NEWS'
-    TYPE_RELEASE = 'RELEASE'
-    TYPE_JOBS = 'JOBS'
-    TYPE_PROJECT = 'PROJECT'
+class Article(UrlMixin, models.Model):
+    route_name = 'article'
+
+    TYPE_BLOG = 'blog'
+    TYPE_NEWS = 'news'
+    TYPE_RELEASE = 'release'
+    TYPE_JOBS = 'jobs'
     TYPE_CHOICES = (
-        (TYPE_BLOG, 'HiPEAC blog'),
-        (TYPE_NEWS, 'HiPEAC news'),
-        (TYPE_RELEASE, 'HiPEAC press release'),
-        (TYPE_JOBS, 'Career news'),
-        (TYPE_PROJECT, 'Project news'),
+        (TYPE_BLOG, 'HiPEAC Blog'),
+        (TYPE_NEWS, 'HiPEAC News'),
+        (TYPE_RELEASE, 'HiPEAC Press Release'),
+        (TYPE_JOBS, 'HiPEAC Career News'),
     )
 
-    release_date = models.DateField()
+    is_ready = models.BooleanField(default=False)
     type = models.CharField(max_length=7, choices=TYPE_CHOICES, default=TYPE_NEWS)
-    project = models.ForeignKey(Project, related_name='articles', null=True, blank=True,
-                                help_text='Only necessary for "Project news".')
-    institutions = models.ManyToManyField(Institution, blank=True, related_name='articles',
-                                          help_text='Optionally, indicate institutions mentioned in the article.')
-    author = models.ForeignKey(User, related_name='authored_articles', default=1)
-    title = WideCharField(max_length=250)
-    slug = models.SlugField(max_length=250, editable=False)
+    publication_date = models.DateField()
+    title = models.CharField(max_length=250)
     excerpt = models.TextField()
-    body = models.TextField()
-    url = models.URLField('More info', null=True, blank=True,
-                          help_text='Add the source URL if this is not a HiPEAC generated content.')
-    url_banner = models.URLField('Banner URL', null=True, blank=True,
-                                 help_text='Use a banner from the hipeac.net website.')
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='NO')
-    created_at = models.DateTimeField(auto_now_add=True)
+    content = models.TextField()
+
+    images = GenericRelation('hipeac.Image')
+    projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='articles')
+    institutions = models.ManyToManyField('hipeac.Institution', blank=True, related_name='articles')
+
+    created_at = models.DateTimeField()  # TODO: auto_now_add=True
+    created_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL,
+                                   related_name='authored_articles')
 
     objects = ArticleManager()
 
     class Meta(object):
-        ordering = ['-release_date']
+        ordering = ['-publication_date']
 
-    def clean(self):
-        """
-        Validates the model before saving.
-        """
-        if self.type == self.TYPE_PROJECT and self.project is None:
-            raise ValidationError('You need to choose a project for "Project news".')
+    def __str__(self) -> str:
+        return self.title
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super(Article, self).save(*args, **kwargs)
-
-    def __unicode__(self):
-        return u'%s' % self.title
-
-    def get_absolute_url(self):
-        return reverse('press:article', args=[str(self.id), self.slug])
-
+    """
     def get_parent_section(self):
         return {
             self.TYPE_BLOG: 'blog',
             self.TYPE_NEWS: 'news',
             self.TYPE_RELEASE: 'releases',
-            self.TYPE_PROJECT: 'news'
         }[self.type]
 
     def get_parent_url(self):
         return reverse('press:articles', args=[self.get_parent_section()])
+    """
 
     def is_published(self):
-        return self.status == 'OK' and self.release_date <= timezone.now().date()
-    is_published.boolean = True
+        return self.is_ready and self.publication_date <= timezone.now().date()
 
-    def clean_excerpt(self):
-        return clean_markdown(self.excerpt)
-
-    def get_tweet_for_share_widget(self):
-        return massage_tweet(self.title, True, True)
+    @property
+    def slug(self) -> str:
+        return slugify(self.title)

@@ -155,7 +155,7 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ('-created_at',),
             },
-            bases=(hipeac.models.mixins.LinkMixin, hipeac.models.mixins.UrlMixin, hipeac.models.mixins.ContentTypeMixin, models.Model),
+            bases=(hipeac.models.mixins.LinkMixin, hipeac.models.mixins.UrlMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Link',
@@ -227,7 +227,6 @@ class Migration(migrations.Migration):
                 ('meal_preference', models.ForeignKey(blank=True, limit_choices_to={'type': 'meal_preference'}, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_meal_preference', to='hipeac.Metadata')),
                 ('position', models.ForeignKey(blank=True, limit_choices_to={'type': 'job_position'}, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_job_position', to='hipeac.Metadata')),
             ],
-            bases=(hipeac.models.mixins.ContentTypeMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Project',
@@ -356,7 +355,7 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['date', 'start_at', 'end_at'],
             },
-            bases=(hipeac.models.mixins.ContentTypeMixin, hipeac.models.mixins.LinkMixin, models.Model),
+            bases=(hipeac.models.mixins.LinkMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Track',

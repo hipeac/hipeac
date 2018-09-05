@@ -20,7 +20,7 @@ from hipeac.models import (
     Job,
     Event, Session, Coupon, Fee, Registration,
     Roadshow,
-    Clipping, Quote, Vision
+    Article, Clipping, Quote, Vision
 )
 
 
@@ -721,6 +721,27 @@ class Command(BaseCommand):
 
         Vision.objects.bulk_create(bulk_visions, batch_size=1000)
         self.out('success', f'✔ Vision migrated! ({len(bulk_visions)} records)')
+
+        # Articles
+
+        self.out('std', 'Migrating articles...')
+        bulk_articles = []
+
+        for article in session.query(Base.classes.press_article).all():
+            bulk_articles.append(Article(
+                id=article.id,
+                type=article.type.lower(),
+                publication_date=article.release_date,
+                title=article.title,
+                excerpt=article.excerpt,
+                content=article.body,
+                is_ready=(article.status == 'OK'),
+                created_at=tz.localize(article.created_at, is_dst=None).astimezone(pytz.utc),
+                created_by_id=article.author_id
+            ))
+
+        Article.objects.bulk_create(bulk_articles, batch_size=1000)
+        self.out('success', f'✔ Articles migrated! ({len(bulk_articles)} records)')
 
         # Clippings
 

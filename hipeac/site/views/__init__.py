@@ -2,6 +2,7 @@
 
 from .project import *
 
+from .communication import *
 from .editor import *
 from .events import *
 from .institutions import *

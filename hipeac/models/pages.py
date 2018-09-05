@@ -21,6 +21,7 @@ class Block(models.Model):
     notes = models.CharField(max_length=255)
     header = models.TextField(blank=True)
     content = models.TextField()
+
     images = GenericRelation('hipeac.Image')
 
     class Meta:

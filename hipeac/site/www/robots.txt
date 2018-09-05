@@ -15,6 +15,7 @@ User-agent: Facebot
 
 Disallow: /accounts/
 Disallow: /admin/
+Disallow: /api/
 Disallow: /assets/private/
 Disallow: /ec/
 Disallow: /sc/

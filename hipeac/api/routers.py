@@ -15,7 +15,7 @@ class Router(DefaultRouter):
         self.register(r'jobs', views.JobViewSet, base_name='job')
         self.register(r'communication/clippings', views.ClippingViewSet, base_name='clipping')
         self.register(r'communication/quotes', views.QuoteViewSet, base_name='quote')
-        #self.register(r'communication/news', views.QuoteViewSet, base_name='post')
+        self.register(r'communication/articles', views.ArticleViewSet, base_name='article')
         self.register(r'communication/videos', views.VideoViewSet, base_name='video')
         # self.register(r'press/releases', views.QuoteViewSet, base_name='press_release')
         self.register(r'metadata', views.MetadataViewSet, base_name='metadata')

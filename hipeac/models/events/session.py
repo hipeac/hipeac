@@ -5,7 +5,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from hipeac.models import Permission
-from ..mixins import ContentTypeMixin, LinkMixin
+from ..mixins import LinkMixin
 
 
 def validate_date(date, event) -> None:
@@ -13,7 +13,7 @@ def validate_date(date, event) -> None:
         raise ValidationError('Date is not valid for this event.')
 
 
-class Session(ContentTypeMixin, LinkMixin, models.Model):
+class Session(LinkMixin, models.Model):
     event = models.ForeignKey('hipeac.Event', on_delete=models.CASCADE, related_name='sessions')
     is_private = models.BooleanField(default=False)
 

@@ -7,7 +7,6 @@ from django.dispatch import receiver
 from django_countries.fields import CountryField
 
 from hipeac.models import Metadata
-from .mixins import ContentTypeMixin
 
 
 class ProfileManager(models.Manager):
@@ -15,7 +14,7 @@ class ProfileManager(models.Manager):
         return super().get_queryset().select_related('user', 'gender', 'title', 'meal_preference')
 
 
-class Profile(ContentTypeMixin, models.Model):
+class Profile(models.Model):
     """
     Extends Django User model with extra profile fields.
     """
