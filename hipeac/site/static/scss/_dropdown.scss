@@ -20,3 +20,8 @@
 .dropdown-item:hover {
     background-color: #E1F5FE; // Light Blue 50
 }
+
+.dropdown-toggle::after {
+    margin-left: .4em;
+    vertical-align: 0.1em;
+}

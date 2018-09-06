@@ -8,7 +8,7 @@ from .base import *  # noqa
 DEBUG = False
 
 APP_DOMAIN = 'hipeac.net'
-ALLOWED_HOSTS = ('v5.{0}'.format(APP_DOMAIN),)
+ALLOWED_HOSTS = (f'v5.{APP_DOMAIN}',)
 MEDIA_ROOT = '/storage/sites/hipeac/'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -65,9 +65,9 @@ CELERY_BROKER_URL = os.environ.get('RABBITMQ_URL')
 
 EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
 
-DEFAULT_FROM_EMAIL = 'HiPEAC <dev@{0}>'.format(APP_DOMAIN)
-SERVER_EMAIL = 'root@{0}'.format(APP_DOMAIN)
-EMAIL_SUBJECT_PREFIX = '[{0}] '.format(APP_DOMAIN)
+DEFAULT_FROM_EMAIL = f'HiPEAC <dev@{APP_DOMAIN}>'
+SERVER_EMAIL = f'root@{APP_DOMAIN}'
+EMAIL_SUBJECT_PREFIX = f'[{APP_DOMAIN}] '
 
 ANYMAIL = {
     'MAILGUN_API_URL': os.environ.get('MAILGUN_API_URL', 'https://api.eu.mailgun.net/v3'),

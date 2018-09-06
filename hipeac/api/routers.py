@@ -7,7 +7,7 @@ class Router(DefaultRouter):
     def __init__(self, version='v1'):
         super().__init__()
 
-        self.schema_title = 'HiPEAC API {0}'.format(version)
+        self.schema_title = f'HiPEAC API {version}'
 
         self.register(r'events/events', views.EventViewSet, base_name='event')
         self.register(r'events/roadshows', views.RoadshowViewSet, base_name='roadshow')

@@ -126,6 +126,10 @@ a {
         background: $hipeac-yellow;
     }
 
+    &.transparent span {
+        background: none;
+    }
+
     @media (max-width: $small-breakpoint) {
         margin: 2rem 0;
     }

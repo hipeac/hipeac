@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 
 
-def get_absolute_uri():
+def get_absolute_uri() -> str:
     protocol = 'https://' if settings.SESSION_COOKIE_SECURE else 'http://'
     return protocol + Site.objects.get_current().domain
 

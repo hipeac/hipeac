@@ -17,33 +17,13 @@ ADMINS = (('eillarra', 'e@illarra.com'),)
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'DJANGO_SECRET_KEY')
 SITE_ID = int(os.environ.get('SITE_ID', 1))
 
-PUBLICITY_BOT_PASSWORD = os.environ.get('PUBLICITY_BOT_PASSWORD', 'PUBLICITY_BOT_PASSWORD')
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', 'GOOGLE_API_KEY')
+OGONE_PSPID = os.environ.get('OGONE_PSPID', 'OGONE_PSPID')
+OGONE_SALT = os.environ.get('OGONE_SALT', 'OGONE_SALT')
+OGONE_URL = os.environ.get('OGONE_URL', 'OGONE_URL')
+PUBLICITY_BOT_PASSWORD = os.environ.get('PUBLICITY_BOT_PASSWORD', 'PUBLICITY_BOT_PASSWORD')
 SYMPA_USER = os.environ.get('SYMPA_USER', 'SYMPA_USER')
 SYMPA_PASSWORD = os.environ.get('SYMPA_PASSWORD', 'SYMPA_PASSWORD')
-"""
-# Social media OAuth settings
-OAUTH_TWITTER = CONFIG_VARS['twitter']
-OAUTH_LINKEDIN = CONFIG_VARS['linkedin']
-
-
-# Check `production` settings
-# if no file is found in a certain location, we suppose we are in LOCAL/DEV environment
-
-if os.path.isfile('/var/www/sites/hipeac/my.cnf'):
-    OGONE_URL = CONFIG_VARS['ogone']['production_url']
-
-else:
-    OGONE_URL = CONFIG_VARS['ogone']['test_url']
-
-
-# Payment settings
-# https://helpdesk.ugent.be/webhosting/betalingen.php
-
-OGONE_PSPID = CONFIG_VARS['ogone']['pspid']
-OGONE_SALT = CONFIG_VARS['ogone']['salt']
-"""
-
 
 INSTALLED_APPS = [
     'django.contrib.auth',

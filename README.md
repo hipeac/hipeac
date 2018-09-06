@@ -1,10 +1,9 @@
-The HiPEAC api/website uses [Django](https://www.djangoproject.com/) and the
-[Django REST Framework](http://www.django-rest-framework.org/).
+The HiPEAC api/website uses [Django][1] and the [Django REST Framework][2].
 
 ### Application dependencies
 
-The application uses [Pipenv](https://docs.pipenv.org/#install-pipenv-today) to manage Python packages.
-While in development, you will need to install all dependencies (includes packages like `debug_toolbar`):
+The application uses [Pipenv][3] to manage Python packages. While in development, you will need to install
+all dependencies (includes packages like `debug_toolbar`):
 
     $ pipenv install --dev
     $ pipenv shell
@@ -27,6 +26,11 @@ While in development, you will need to install all dependencies (includes packag
 
 ### Style guide
 
-Unless otherwise specified, follow
-[Django Coding Style](https://docs.djangoproject.com/en/1.11/internals/contributing/writing-code/coding-style/).
-Tab size is 4 **spaces**. Maximum line length is 120. All changes should include tests and pass `flake8`.
+Unless otherwise specified, follow [Django Coding Style][4]. Tab size is 4 **spaces**.
+Maximum line length is 120. All changes should include tests and pass `flake8`.
+
+
+[1]: https://www.djangoproject.com/
+[2]: https://www.django-rest-framework.org/
+[3]: https://docs.pipenv.org/#install-pipenv-today
+[4]: https://docs.djangoproject.com/en/1.11/internals/contributing/writing-code/coding-style/

@@ -39,8 +39,9 @@ BADWORDS = [
     'whore',
 ]
 
+
 def validate_no_badwords(text):
     words = text.lower().split(' ')
     for word in BADWORDS:
         if word in words:
-            raise ValidationError('"{0}" is not a valid word'.format(word))
+            raise ValidationError(f'"{word}" is not a valid word')

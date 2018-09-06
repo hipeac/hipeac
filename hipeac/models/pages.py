@@ -27,7 +27,7 @@ class Block(models.Model):
     class Meta:
         ordering = ['page', 'key']
         unique_together = ('page', 'key')
-        verbose_name = 'Page block'
+        verbose_name = 'page block'
 
     def __str__(self) -> str:
         return self.key
