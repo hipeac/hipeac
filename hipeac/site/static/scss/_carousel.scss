@@ -38,3 +38,35 @@
         }
     }
 }
+
+.carousel-logos {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    overflow: hidden;
+    font-size: 0;
+
+    ul {
+        position: absolute;
+        width: 20000rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            float: left;
+            width: 110px;
+            margin: 0 1rem;
+        }
+
+        span {
+            display: block;
+            max-width: 110px;
+            height: 50px;
+            margin: 0;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+    }
+}

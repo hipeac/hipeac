@@ -7,8 +7,9 @@
         <div class="row">
             <div class="col-12 d-flex align-items-stretch">
                 <div class="hipeac-card marked">
-                    {{ blck.content | markdown }}
+                    <catchphrase>{{ blck.content | markdown }}</catchphrase>
                     <hr class="my-4">
+                    <jobs-carousel :jobs="jobs"></jobs-carousel>
                 </div>
             </div>
         </div>
