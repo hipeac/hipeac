@@ -92,11 +92,10 @@ SENDFILE_URL = '/media/private'
 # https://docs.djangoproject.com/en/1.11/topics/logging/#django-security
 # https://docs.sentry.io/clients/python/integrations/django/
 
-INSTALLED_APPS += ['raven.contrib.django.raven_compat']  # noqa
-
 RAVEN_CONFIG = {
     'dsn': os.environ.get('SENTRY_DSN', 'SENTRY_DSN'),
     'release': os.environ.get('GIT_REV', None),
+    'environment': 'production',
     'IGNORE_EXCEPTIONS': ['django.security.DisallowedHost'],
 }
 

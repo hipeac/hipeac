@@ -15,8 +15,11 @@ register = template.Library()
 @register.simple_tag
 def active(request, patterns):
     for pattern in patterns.split(','):
-        if pattern == request.resolver_match.url_name:
-            return 'active'
+        try:
+            if pattern == request.resolver_match.url_name:
+                return 'active'
+        except Exception as e:
+            return ''
     return ''
 
 

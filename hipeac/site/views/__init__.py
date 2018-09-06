@@ -1,5 +1,6 @@
 # flake8: noqa
 
+from .errors import *
 from .project import *
 
 from .communication import *

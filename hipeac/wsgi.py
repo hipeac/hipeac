@@ -4,6 +4,7 @@ import os
 
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
+from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
 from whitenoise import WhiteNoise
 
 
@@ -11,4 +12,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hipeac.settings')
 os.environ['HTTPS'] = 'on'
 
 app = get_wsgi_application()
-app = WhiteNoise(app, root=os.path.join(settings.SITE_ROOT, 'www'), max_age=31536000)
+app = Sentry(WhiteNoise(app, root=os.path.join(settings.SITE_ROOT, 'www'), max_age=31536000))
