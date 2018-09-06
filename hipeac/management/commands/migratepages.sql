@@ -49,3 +49,11 @@ VALUES
 	(17, 'about_students', '', 'For students', 'HiPEAC provides grants for industrial and academic placements, and opportunities to learn from the best computing professors in the world. It is an incubator for the next generation of computing systems talent.', 8),
 	(18, 'about_innovation', '', 'For innovators', 'HiPEAC allows innovation specialists access to a large network of highly specialized researchers, as well as making them the first to find out about research results which could be turned into disruptive products or services.', 8),
 	(19, 'roadshow', '-', 'Every year, HiPEAC participates in external events, giving the HiPEAC community the chance to share their research findings, new products and services, or job openings with new audiences.', 'From trade shows to job fairs, the HiPEAC roadshow offers you numerous opportunities to spread the word about your work. If you\'re participating in a European project, you can disseminate results without the expense or administrative burden of booking a booth yourself. The travelling HiPEAC jobs wall, meanwhile, means that your job vacancies uploaded to the [HiPEAC Jobs portal](/jobs/) will be browsed by computing systems experts throughout Europe. \n\nFor further information about our current programme, and to participate in the roadshow, email: [communication@hipeac.net](mailto:communication@hipeac.net).', 3);
+
+INSERT INTO `hipeac_block` (`id`, `key`, `notes`, `header`, `content`, `page_id`)
+VALUES
+	(20, 'about_team_coordinator', 'Avatar should be an square image.', 'Koen De Booschere', 'Contact for: general information on the network.', 8),
+	(21, 'about_team_management', 'Avatar should be an square image.', 'Vicky Wandels', 'Contact for: finances, registration and organisation of activities, administrative issues, meetings.', 8),
+	(22, 'about_team_recruitment', 'Avatar should be an square image.', 'Xavi Salazar', 'Contact for: recruitment activities.', 8),
+	(23, 'about_team_communication', 'Avatar should be an square image.', 'Madeleine Gray', 'Contact for: communication, newsletter, HiPEAC related projects, organisation of activities.', 8),
+	(24, 'about_team_tech', 'Avatar should be an square image.', 'Eneko Illarramendi', 'Contact for: server issues, website issues and suggestions, mailing lists, newsletter, organisation of activities.', 8);

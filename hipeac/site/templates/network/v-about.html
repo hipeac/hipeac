@@ -7,33 +7,65 @@
         <div class="row">
             <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    <catchphrase>{{ blck.header }}</catchphrase>
-                    {{ blck.content | markdown }}
+                    <catchphrase>{{ tbs.about.header }}</catchphrase>
+                    {{ tbs.about.content | markdown }}
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    <h6>{{ researchers.header }}</h6>
+                    <h6>{{ tbs.about_researchers.header }}</h6>
                     <huge-icon>&#xE322;</huge-icon>
-                    {{ researchers.content | markdown }}
-                    <h6 class="mt-4">{{ industry.header }}</h6>
+                    {{ tbs.about_researchers.content | markdown }}
+                    <h6 class="mt-4">{{ tbs.about_industry.header }}</h6>
                     <huge-icon>&#xE7EE;</huge-icon>
-                    {{ industry.content | markdown }}
-                    <h6 class="mt-4">{{ projects.header }}</h6>
+                    {{ tbs.about_industry.content | markdown }}
+                    <h6 class="mt-4">{{ tbs.about_projects.header }}</h6>
                     <huge-icon>&#xE335;</huge-icon>
-                    {{ projects.content | markdown }}
-                    <h6 class="mt-4">{{ students.header }}</h6>
+                    {{ tbs.about_projects.content | markdown }}
+                    <h6 class="mt-4">{{ tbs.about_students.header }}</h6>
                     <huge-icon>&#xE80C;</huge-icon>
-                    {{ students.content | markdown }}
-                    <h6 class="mt-4">{{ innovation.header }}</h6>
+                    {{ tbs.about_students.content | markdown }}
+                    <h6 class="mt-4">{{ tbs.about_innovation.header }}</h6>
                     <huge-icon>&#xE42E;</huge-icon>
-                    {{ innovation.content | markdown }}
+                    {{ tbs.about_innovation.content | markdown }}
                 </div>
             </div>
         </div>
         <div class="row justify-content-md-center">
             <div class="mt-5 col-12 col-md-8">
                 <quotes-carousel types="network"></quotes-carousel>
+            </div>
+        </div>
+        <hr class="my-5">
+        <div class="row text-sm">
+            <div class="col-12">
+                <h5 class="display-sm mb-4">Our team</h5>
+            </div>
+            <div class="col-12 col-lg-2"></div>
+            <div class="col-12 col-md-4 col-lg-2 mb-3 pr-lg-4">
+                <img src="{{ MEDIA_URL }}{{ tbs.about_team_coordinator.images.first.image }}" class="avatar b lg mb-3">
+                <p><strong>{{ tbs.about_team_coordinator.header }}</strong><br><em>Coordinator</em></p>
+                {{ tbs.about_team_coordinator.content | markdown }}
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 mb-3 pr-lg-4">
+                <img src="{{ MEDIA_URL }}{{ tbs.about_team_management.images.first.image }}" class="avatar b lg mb-3">
+                <p><strong>{{ tbs.about_team_management.header }}</strong><br><em>Project Manager</em></p>
+                {{ tbs.about_team_management.content | markdown }}
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 mb-3 pr-lg-4">
+                <img src="{{ MEDIA_URL }}{{ tbs.about_team_recruitment.images.first.image }}" class="avatar b lg mb-3">
+                <p><strong>{{ tbs.about_team_recruitment.header }}</strong><br><em>Recruitment Officer</em></p>
+                {{ tbs.about_team_recruitment.content | markdown }}
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 mb-3 pr-lg-4">
+                <img src="{{ MEDIA_URL }}{{ tbs.about_team_communication.images.first.image }}" class="avatar b lg mb-3">
+                <p><strong>{{ tbs.about_team_communication.header }}</strong><br><em>Communication Officer</em></p>
+                {{ tbs.about_team_communication.content | markdown }}
+            </div>
+            <div class="col-12 col-md-4 col-lg-2 mb-3 pr-lg-4">
+                <img src="{{ MEDIA_URL }}{{ tbs.about_team_tech.images.first.image }}" class="avatar b lg mb-3">
+                <p><strong>{{ tbs.about_team_tech.header }}</strong><br><em>Technical Officer</em></p>
+                {{ tbs.about_team_tech.content | markdown }}
             </div>
         </div>
     </div>

@@ -298,9 +298,20 @@ b, strong, .font-weight-bold {
     max-width: 100%;
 }
 
-.avatar-md {
+.avatar {
     border-radius: 999px;
-    height: 60px;
+
+    &.b {
+        border: 3px solid lightblue;
+    }
+
+    &.lg {
+        height: 90px;
+    }
+
+    &.md {
+        height: 60px;
+    }
 }
 
 .logo-sm {

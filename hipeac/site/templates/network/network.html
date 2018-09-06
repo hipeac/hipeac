@@ -33,7 +33,7 @@
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' display=flatpage.content blck=flatpage.page.tbs.about researchers=flatpage.page.tbs.about_researchers industry=flatpage.page.tbs.about_industry projects=flatpage.page.tbs.about_projects innovation=flatpage.page.tbs.about_innovation students=flatpage.page.tbs.about_students %}
+    {% include './v-about.html' with id='v-about' display=flatpage.content tbs=flatpage.page.tbs %}
     {% include './v-industry.html' with id='v-industry' %}
     {% include './v-members.html' with id='v-members' %}
     {% include './v-projects.html' with id='v-projects' %}
