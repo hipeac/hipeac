@@ -24,8 +24,8 @@
                         <div class="col-12 pr-md-5">
                             <small class="display display-sm">{{ article.publication_date }}</small>
                             <h2 class="display-lg mt-3 mb-4">{{ article.title }}</h2>
-                            <h5 class="catchphrase mb-4">{{ article.excerpt }}</h2>
-                            <div class="markdown">
+                            <div class="marked catchphrase mb-4">{{ article.excerpt | markdown }}</div>
+                            <div class="marked">
                                 {{ article.content | markdown }}
                             </div>
                         </div>

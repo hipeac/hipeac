@@ -30,15 +30,15 @@
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-event-list="{% url 'v1:event-list' %}" class="container">
+    <div class="container">
         <router-view></router-view>
     </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-magazine.html' with id='v-blog' blck=flatpage.page.tbs.magazine %}
+    {% include './v-blog.html' with id='v-blog' %}
     {% include './v-magazine.html' with id='v-magazine' blck=flatpage.page.tbs.magazine %}
-    {% include './v-magazine.html' with id='v-news' blck=flatpage.page.tbs.magazine %}
+    {% include './v-news.html' with id='v-news' blck=flatpage.page.tbs.magazine %}
 {% endblock %}
 
 {% block scripts %}
@@ -46,13 +46,19 @@
     <script>
         var Store = new Vuex.Store({
             state: {
-                news: []
+                articles: []
             },
             mutations: {
-                fetchNews: function (state) {
-                    ajax().get($('#urls').data('job-list')).done(function (res) {
-                        state.news = res;
+                fetchArticles: function (state) {
+                    api().getArticles().done(function (res) {
+                        state.articles = mapper().articles(res);
                     });
+                }
+            },
+            getters: {
+                groupedArticles: function (state) {
+                    if (!state.articles) return null;
+                    return _.groupBy(state.articles, 'type');
                 }
             }
         });
@@ -60,21 +66,21 @@
         var BlogView = {
             template: '#v-blog',
             computed: _.extend(
-                Vuex.mapState(['news']), {
+                Vuex.mapGetters(['groupedArticles']), {
             })
         };
 
         var MagazineView = {
             template: '#v-magazine',
             computed: _.extend(
-                Vuex.mapState(['news']), {
+                Vuex.mapGetters(['groupedArticles']), {
             })
         };
 
         var NewsView = {
             template: '#v-news',
             computed: _.extend(
-                Vuex.mapState(['news']), {
+                Vuex.mapGetters(['groupedArticles']), {
             })
         };
 
@@ -108,7 +114,7 @@
             router: Router,
             created: function () {
                 $.when(
-                    this.$store.commit('fetchNews')
+                    this.$store.commit('fetchArticles')
                 );
             }
         });

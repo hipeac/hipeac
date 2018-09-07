@@ -11,12 +11,18 @@
             <h5 class="d-none d-md-block display display-md"><span>It provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.</span></h5>
         </div>
         <div class="row">
-            <div class="col-12 col-md-8 col-lg-9">
+            <div class="col-12 col-md-12 col-lg-4 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    <event-list :items="events" :min="6" :max="15"></event-list>
+                    <div is="event-list" :items="events" :min="10" :max="15"></div>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-5 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <h5 class="display-sm transparent mb-3">Latest news</h5>
+                    <div is="article-list" :items="articles" :max="10" :show-more="true"></div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
                 <div class="hipeac-card p-3">
                     <a class="twitter-timeline" data-height="600" data-dnt="true" href="https://twitter.com/hipeac"></a>
                 </div>
@@ -32,14 +38,29 @@
             el: '#vue',
             data: function () {
                 return {
+                    articles: null,
                     events: null
                 }
             },
+            methods: {
+                fetchArticles: function () {
+                    var self = this;
+                    api().getArticles().done(function (res) {
+                        self.articles = mapper().articles(res);
+                    });
+                },
+                fetchEvents: function () {
+                    var self = this;
+                    api().getEvents().done(function (res) {
+                        self.events = mapper().events(res);
+                    });
+                }
+            },
             created: function () {
-                var self = this;
-                api().getEvents().done(function (res) {
-                    self.events = mapper().events(res);
-                });
+                $.when(
+                    this.fetchArticles(),
+                    this.fetchEvents()
+                );
             }
         });
     </script>

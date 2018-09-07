@@ -15,7 +15,7 @@ class JobDetail(SlugMixin, generic.DetailView):
     If the slug doesn't match we make a 301 Permanent Redirect.
     """
     model = Job
-    template_name = 'recruitment/job.html'
+    template_name = 'recruitment/job/job.html'
 
     def get_queryset(self):
         return super().get_queryset().select_related('institution').prefetch_related('links')
@@ -51,7 +51,7 @@ class JobsPdf(generic.DetailView):
         job = self.get_object()
         return PDFTemplateResponse(
             request=request,
-            template='recruitment/jobs.pdf.html',
+            template='recruitment/job/jobs.pdf.html',
             filename='hipeac-jobs--%s.pdf' % job.id,
             context={
                 'jobs': [job],

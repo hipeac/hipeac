@@ -1,0 +1,18 @@
+{% load hipeac %}
+
+
+<script type="text/x-template" id="{{ id }}">
+    <div>
+        <display-lg>{{ blck.header }}</display-lg>
+        <div class="row">
+            <div class="col-12 d-flex align-items-stretch">
+                <div class="hipeac-card marked">
+                    {{ blck.content | markdown }}
+                    <hr class="my-4">
+                    <loading v-if="!groupedArticles"></loading>
+                    <article-list v-else :items="groupedArticles.news"></article-list>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

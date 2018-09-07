@@ -1,0 +1,15 @@
+{% load hipeac %}
+
+
+<script type="text/x-template" id="{{ id }}">
+    <div>
+        <div class="row">
+            <div class="col-12 d-flex align-items-stretch">
+                <div class="hipeac-card marked">
+                    <loading v-if="!groupedArticles"></loading>
+                    <article-list v-else :items="groupedArticles.blog"></article-list>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

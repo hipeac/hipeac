@@ -138,20 +138,49 @@ Vue.component('catchphrase', {
     ''
 });
 
-Vue.component('simple-list', {
-    props: ['items', 'prop'],
-    template: '' +
-        '<table class="table">' +
-            '<tbody>' +
-                '<tr v-for="item in items" :key="item.id">' +
-                    '<td>{{ item[prop] }}</td>' +
-                '</tr>' +
-            '</tbody>' +
-        '</table>' +
-    ''
+var SimpleList = Vue.extend({
+    methods: {
+        updateLocation: function (url) {
+            document.location = url;
+        }
+    }
 });
 
-Vue.component('event-list', {
+Vue.component('article-list', SimpleList.extend({
+    props: ['items', 'max', 'showMore'],
+    template: '' +
+        '<div v-if="items">' +
+            '<table class="table pointer m-0 border-bottom mb-3">' +
+                '<tbody>' +
+                    '<tr v-for="item in visibleItems" :key="item.id" @click="updateLocation(item.href)">' +
+                        '<td class="pl-0">' +
+                            '<small><strong>{{ item.type_display }}</strong>, {{ item.publication_date | moment }}</small></br>' +
+                            '{{ item.title }}' +
+                        '</td>' +
+                        '<td class="text-right align-middle pr-0">' +
+                            '<a :href="item.href">' +
+                                '<i class="material-icons sm">arrow_forward</i>' +
+                            '</a>' +
+                        '</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            '<div v-if="showMore" class="text-center mt-4">' +
+                '<a href="/news/" class="btn btn-light text-secondary ml-3">'+
+                    '<small>All news <i class="material-icons sm">arrow_forward</i></small>' +
+                '</a>' +
+            '</div>' +
+        '</div>' +
+    '',
+    computed: {
+        visibleItems: function () {
+            if (!this.items) return [];
+            return _.first(this.items, (this.max || 1000));
+        }
+    }
+}));
+
+Vue.component('event-list', SimpleList.extend({
     data: function () {
         return {
             showMore: false
@@ -163,28 +192,31 @@ Vue.component('event-list', {
             '<div v-if="items" v-for="(data, isPast) in visibleItems">' +
                 '<display-sm v-if="isPast == \'false\'" transparent="true">Upcoming events</display-sm>' +
                 '<display-sm v-else transparent="true">Past events</display-sm>' +
-                '<table class="table m-0 border-bottom mb-3">' +
+                '<table class="table pointer mt-0 mb-3 border-bottom">' +
                     '<tbody>' +
-                        '<tr v-for="item in data" :key="item.id">' +
+                        '<tr v-for="item in data" :key="item.id" @click="updateLocation(item.href)">' +
                             '<td class="px-0" style="width:50px"><img src="https://s3-eu-west-1.amazonaws.com/brussels-images/content/gallery/visit/place/Square-du-Petit-Sablon_0902b14f5af72ee0281ceb05658afbc9b3252130_sq_640.jpg" class="rounded w-100"></td>' +
                             '<td>' +
                                 '{{ item.name }} {{ item.is_past }}<br>' +
                                 '<small><strong>{{ item.country.name }}</strong>, {{ item.dates }}</small>'+
                             '</td>' +
                             '<td class="text-right align-middle pr-0">' +
-                                '<a :href="item.href"><i class="material-icons sm">arrow_forward</i></a>' +
+                                '<a :href="item.href">' +
+                                    '<i v-if="item.redirect_url" class="material-icons sm">open_in_new</i>' +
+                                    '<i v-else class="material-icons sm">arrow_forward</i>' +
+                                '</a>' +
                             '</td>' +
                         '</tr>' +
                     '</tbody>' +
                 '</table>' +
             '</div>' +
-            '<div v-if="items && items.length > limits.min" class="text-center">' +
+            '<div v-if="items && items.length > limits.min" class="text-center mt-4">' +
                 '<button @click="showMore = !showMore" type="button" class="btn btn-light text-secondary">'+
                     '<small v-if="showMore"><i class="material-icons sm">remove</i> Show less</small>' +
                     '<small v-else><i class="material-icons sm">add</i> Show more</small>' +
                 '</button>' +
-                '<a v-if="limits.max < items.length" href="/events/" class="btn btn-light text-secondary ml-4">'+
-                    '<small>See all</small>' +
+                '<a v-if="limits.max < items.length" href="/events/" class="btn btn-light text-secondary ml-3">'+
+                    '<small>All events <i class="material-icons sm">arrow_forward</i></small>' +
                 '</a>' +
             '</div>' +
         '</div>' +
@@ -205,16 +237,16 @@ Vue.component('event-list', {
             return items;
         }
     }
-});
+}));
 
-Vue.component('metadata-list', {
+Vue.component('metadata-list', SimpleList.extend({
     props: ['items'],
     template: '' +
         '<p class="m-0 text-secondary compact-height">' +
             '<small class="mr-1" v-for="i in items">{{ i.value }}</small>' +
         '</p>' +
     ''
-});
+}));
 
 Vue.component('filter-label', {
     props: ['text', 'selected'],
@@ -228,7 +260,6 @@ Vue.component('filter-label', {
         }
     }
 });
-
 
 Vue.component('quotes-carousel-row', {
     data: function () {

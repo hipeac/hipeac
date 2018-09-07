@@ -16,7 +16,7 @@ class ArticleDetail(SlugMixin, generic.DetailView):
     If the slug doesn't match we make a 301 Permanent Redirect.
     """
     model = Article
-    template_name = 'communication/article.html'
+    template_name = 'communication/article/article.html'
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related('images', 'institutions', 'projects')

@@ -6,15 +6,20 @@ var mapper = function () {
                 return obj;
             });
         },
-        projects: function (items) {
+        articles: function (items) {
             return items.map(function (obj) {
-                obj.topicIds = _.pluck(obj.topics, 'id');
-                obj.q = [
-                    obj.acronym.toLowerCase(),
-                    obj.name.toLowerCase(),
-                    _.map(obj.application_areas, function (o) { return o.value.toLowerCase(); }).join(' '),
-                    _.map(obj.topics, function (o) { return o.value.toLowerCase(); }).join(' ')
-                ].join(' ');
+                obj.markedExcerpt = marked(obj.excerpt);
+                return obj;
+            });
+        },
+        events: function (items) {
+            return items.map(function (obj) {
+                obj.href = obj.redirect_url || obj.href;
+                obj.past = moment().isAfter(obj.end_date);
+                obj.dates = [
+                    moment(obj.start_date).format('MMMM D'),
+                    moment(obj.end_date).format('D, YYYY'),
+                ].join('-');
                 return obj;
             });
         },
@@ -45,15 +50,17 @@ var mapper = function () {
                 return obj;
             });
         },
-        events: function (items) {
+        projects: function (items) {
             return items.map(function (obj) {
-                obj.past = moment().isAfter(obj.end_date);
-                obj.dates = [
-                    moment(obj.start_date).format('MMMM D'),
-                    moment(obj.end_date).format('D, YYYY'),
-                ].join('-');
+                obj.topicIds = _.pluck(obj.topics, 'id');
+                obj.q = [
+                    obj.acronym.toLowerCase(),
+                    obj.name.toLowerCase(),
+                    _.map(obj.application_areas, function (o) { return o.value.toLowerCase(); }).join(' '),
+                    _.map(obj.topics, function (o) { return o.value.toLowerCase(); }).join(' ')
+                ].join(' ');
                 return obj;
             });
-        }
+        },
     };
 };

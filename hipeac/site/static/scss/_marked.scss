@@ -3,6 +3,14 @@ $max-width: 40%;
 
 
 .marked {
+    h1, h2, h3, h4, h5 {
+        font-size: 1rem;
+    }
+
+    > p:last-child {
+        margin-bottom: 0;
+    }
+
     img {
         display: block;
         float: right;
@@ -31,5 +39,15 @@ $max-width: 40%;
 
     > p:last-child {
         margin-bottom: 0;
+    }
+}
+
+.catchphrase.marked {
+    p {
+        font-size: 1.25rem;
+
+        em {
+            font-style: inherit;
+        }
     }
 }
