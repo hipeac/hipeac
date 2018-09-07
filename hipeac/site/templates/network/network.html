@@ -22,6 +22,9 @@
         <router-link :to="{name: 'industry'}" class="nav-link">Industry</router-link>
     </li>
     <li class="nav-item">
+        <router-link :to="{name: 'innovation'}" class="nav-link">Innovation</router-link>
+    </li>
+    <li class="nav-item">
         <router-link :to="{name: 'students'}" class="nav-link">Students</router-link>
     </li>
 {% endblock %}
@@ -35,6 +38,7 @@
 {% block vue_templates %}
     {% include './v-about.html' with id='v-about' display=flatpage.content tbs=flatpage.page.tbs %}
     {% include './v-industry.html' with id='v-industry' %}
+    {% include './v-innovation.html' with id='v-innovation' %}
     {% include './v-members.html' with id='v-members' %}
     {% include './v-projects.html' with id='v-projects' %}
     {% include './v-students.html' with id='v-students' %}
@@ -68,6 +72,10 @@
 
         var IndustryView = {
             template: '#v-industry'
+        };
+
+        var InnovationView = {
+            template: '#v-innovation'
         };
 
         var MembersView = {
@@ -112,6 +120,12 @@
                     path: '/industry/',
                     pathToRegexpOptions: {strict: true},
                     component: IndustryView
+                },
+                {
+                    name: 'innovation',
+                    path: '/innovation/',
+                    pathToRegexpOptions: {strict: true},
+                    component: InnovationView
                 },
                 {
                     name: 'members',

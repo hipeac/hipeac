@@ -190,25 +190,29 @@ Vue.component('filter-label', {
 });
 
 
-Vue.component('quotes-carousel', {
+Vue.component('quotes-carousel-row', {
     data: function () {
         return {
-            interval: 8,  // seconds
+            interval: 8 * 1000,
             limit: 5,
             quotes: []
         }
     },
     props: ['types'],
     template: '' +
-        '<div id="carousel" class="hipeac carousel slide" data-ride="carousel" :data-interval="interval * 1000">' +
-            '<ol class="carousel-indicators">' +
-                '<li v-for="(item, index) in items" :key="item.id" :data-slide-to="index" :class="{active: index == 0}" data-target="#carousel"></li>' +
-            '</ol>' +
-            '<div class="carousel-inner">' +
-                '<blockquote class="carousel-item" v-for="(item, index) in items" :key="item.id" :class="{active: index == 0}">' +
-                    '<p><span>{{ item.text }}</span></p>' +
-                    '<footer>— {{ item.author }}</footer>' +
-                '</blockquote>' +
+        '<div v-if="items.length > 0" class="row justify-content-md-center mt-5">' +
+            '<div class="col-12 col-md-8">' +
+                '<div id="carousel" class="hipeac carousel slide" data-ride="carousel" :data-interval="interval">' +
+                    '<ol class="carousel-indicators">' +
+                        '<li v-for="(item, index) in items" :key="item.id" :data-slide-to="index" :class="{active: index == 0}" data-target="#carousel"></li>' +
+                    '</ol>' +
+                    '<div class="carousel-inner">' +
+                        '<blockquote class="carousel-item" v-for="(item, index) in items" :key="item.id" :class="{active: index == 0}">' +
+                            '<p><span>{{ item.text }}</span></p>' +
+                            '<footer>— {{ item.author }}</footer>' +
+                        '</blockquote>' +
+                    '</div>' +
+                '</div>' +
             '</div>' +
         '</div>' +
     '',

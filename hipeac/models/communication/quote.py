@@ -8,6 +8,7 @@ class Quote(models.Model):
         ('jobs', 'Jobs'),
         ('internships', 'PhD Internships'),
         ('industry', 'Industry'),
+        ('innovation', 'Innovation community'),
         ('csw', 'Computing Systems Week'),
         ('conference', 'HiPEAC Conference'),
         ('acaces', 'ACACES'),
