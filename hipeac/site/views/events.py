@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.views import generic
 
 from hipeac.models import Event, Roadshow
@@ -26,6 +27,12 @@ class EventDetail(SlugMixin, generic.DetailView):
                     slug=self.kwargs.get('slug')
                 )
         return self.object
+
+    def dispatch(self, request, *args, **kwargs):
+        redirect_url = self.get_object().redirect_url
+        if redirect_url:
+            return redirect(redirect_url)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class RoadshowDetail(SlugMixin, generic.DetailView):

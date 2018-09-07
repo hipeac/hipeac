@@ -45,6 +45,7 @@ class Event(models.Model):
     city = models.CharField(max_length=100)
     country = CountryField(db_index=True)
     slug = models.CharField(max_length=100, editable=False)
+    redirect_url = models.URLField(null=True, editable=False)
 
     def clean(self) -> None:
         validate_event_dates(self)
