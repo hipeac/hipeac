@@ -44,6 +44,16 @@ var mapper = function () {
                 ].join(' ');
                 return obj;
             });
+        },
+        events: function (items) {
+            return items.map(function (obj) {
+                obj.past = moment().isAfter(obj.end_date);
+                obj.dates = [
+                    moment(obj.start_date).format('MMMM D'),
+                    moment(obj.end_date).format('D, YYYY'),
+                ].join('-');
+                return obj;
+            });
         }
     };
 };

@@ -68,6 +68,9 @@ var ajax = function () {
 
 var api = function () {
     return {
+        getEvents: function (url) {
+            return ajax().get('/api/v1/events/events/');
+        },
         getQuotes: function (url) {
             return ajax().get('/api/v1/communication/quotes/');
         },

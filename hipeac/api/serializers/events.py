@@ -26,6 +26,7 @@ class EventNestedSerializer(serializers.ModelSerializer):
     country = CountryField(country_dict=True)
     url = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
     href = serializers.CharField(source='get_absolute_url', read_only=True)
+    name = serializers.CharField(read_only=True)
 
     class Meta:
         model = Event
@@ -43,6 +44,7 @@ class EventSerializer(EventNestedSerializer):
 class RoadshowNestedSerializer(serializers.ModelSerializer):
     country = CountryField(country_dict=True)
     institutions = InstitutionRelatedField(many=True)
+    href = serializers.CharField(source='get_absolute_url', read_only=True)
 
     class Meta:
         model = Roadshow

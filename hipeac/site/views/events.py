@@ -10,7 +10,7 @@ class EventDetail(SlugMixin, generic.DetailView):
     If the slug doesn't match we make a 301 Permanent Redirect.
     """
     model = Event
-    template_name = 'events/event/index.html'
+    template_name = 'events/event/event.html'
 
     def get_queryset(self):
         return super().get_queryset().select_related('coordinating_institution')
@@ -34,7 +34,7 @@ class RoadshowDetail(SlugMixin, generic.DetailView):
     If the slug doesn't match we make a 301 Permanent Redirect.
     """
     model = Roadshow
-    template_name = 'events/roadshow/index.html'
+    template_name = 'events/roadshow/roadshow.html'
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related('institutions')

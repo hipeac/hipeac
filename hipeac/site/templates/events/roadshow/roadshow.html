@@ -7,7 +7,7 @@
 {% block head_title %}{{ roadshow }} - {{ block.super }}{% endblock %}
 
 {% block subtitle %}
-    <span>{{ roadshow.name }}</span>
+    <span>HiPEAC Roadshow</span>
 {% endblock %}
 
 {% block content %}
@@ -19,6 +19,8 @@
                 <div class="hipeac-card">
                     <div class="row">
                         <div class="col-12 col-md-8 pr-md-5">
+                            <small class="display display-sm">{{ roadshow.start_date }}</small>
+                            <h2 class="display-lg mt-3 mb-4">{{ roadshow.name }}</h2>
                             <div class="markdown">
                                 {{ roadshow.description | markdown }}
                             </div>

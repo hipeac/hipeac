@@ -17,6 +17,16 @@ form {
     }
 }
 
+.form-control.search-bar {
+    border: 0;
+    padding: 0;
+    width: 90%;
+
+    &:focus {
+        box-shadow: none;
+    }
+}
+
 ul.socialaccounts {
     padding-left: 0;
 

@@ -57,11 +57,7 @@ class Event(models.Model):
         ordering = ['-start_date']
 
     def __str__(self) -> str:
-        return self.short_name
-
-    @property
-    def full_name(self) -> str:
-        return f'{self.city}, {self.start_date.strftime("%B %d")}-{self.end_date.strftime("%d, %Y")}'
+        return self.name
 
     def get_absolute_url(self) -> str:
         if self.type == self.EC_MEETING:
@@ -76,5 +72,13 @@ class Event(models.Model):
         return self.registration_start_date <= now.date() and now <= self.registration_deadline
 
     @property
-    def short_name(self) -> str:
+    def name(self) -> str:
+        if self.type == self.ACACES:
+            return f'ACACES {self.start_date.year}, {self.city}'
+        elif self.type == self.CONFERENCE:
+            return f'HiPEAC {self.start_date.year}, {self.city}'
+        elif self.type == self.CSW:
+            season = 'Spring' if (self.start_date.month < 8) else 'Autumn'
+            return f'CSW {season} {self.start_date.year}, {self.city}'
+
         return f'{self.city}, {self.start_date.strftime("%B %Y")}'

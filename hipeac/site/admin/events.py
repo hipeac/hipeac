@@ -10,7 +10,7 @@ from .generic import ImagesInline, LinksInline
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     date_hierarchy = 'start_date'
-    list_display = ('id', 'start_date', 'end_date', 'short_name', 'type', 'sessions_link', 'registrations_link',
+    list_display = ('id', 'start_date', 'end_date', 'name', 'type', 'sessions_link', 'registrations_link',
                     'is_active', 'is_open')
     list_filter = ('type',)
     list_per_page = 20

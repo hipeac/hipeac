@@ -143,7 +143,7 @@ Vue.component('simple-list', {
     template: '' +
         '<table class="table">' +
             '<tbody>' +
-                '<tr v-for="item in items" :key="item.id" :item="item">' +
+                '<tr v-for="item in items" :key="item.id">' +
                     '<td>{{ item[prop] }}</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -152,19 +152,59 @@ Vue.component('simple-list', {
 });
 
 Vue.component('event-list', {
-    props: ['items'],
+    data: function () {
+        return {
+            showMore: false
+        }
+    },
+    props: ['items', 'min', 'max'],
     template: '' +
-        '<table class="table">' +
-            '<tbody>' +
-                '<tr v-for="item in items" :key="item.id" :item="item">' +
-                    '<td>' +
-                        '<a :href="item.href">{{ item.city }}<br>' +
-                        '{{ item.dates }}, {{ item.city }}, {{ item.country.name }}</a>' +
-                    '</td>' +
-                '</tr>' +
-            '</tbody>' +
-        '</table>' +
-    ''
+        '<div>' +
+            '<div v-if="items" v-for="(data, isPast) in visibleItems">' +
+                '<display-sm v-if="isPast == \'false\'" transparent="true">Upcoming events</display-sm>' +
+                '<display-sm v-else transparent="true">Past events</display-sm>' +
+                '<table class="table m-0 border-bottom mb-3">' +
+                    '<tbody>' +
+                        '<tr v-for="item in data" :key="item.id">' +
+                            '<td class="px-0" style="width:50px"><img src="https://s3-eu-west-1.amazonaws.com/brussels-images/content/gallery/visit/place/Square-du-Petit-Sablon_0902b14f5af72ee0281ceb05658afbc9b3252130_sq_640.jpg" class="rounded w-100"></td>' +
+                            '<td>' +
+                                '{{ item.name }} {{ item.is_past }}<br>' +
+                                '<small><strong>{{ item.country.name }}</strong>, {{ item.dates }}</small>'+
+                            '</td>' +
+                            '<td class="text-right align-middle pr-0">' +
+                                '<a :href="item.href"><i class="material-icons sm">arrow_forward</i></a>' +
+                            '</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
+            '</div>' +
+            '<div v-if="items && items.length > limits.min" class="text-center">' +
+                '<button @click="showMore = !showMore" type="button" class="btn btn-light text-secondary">'+
+                    '<small v-if="showMore"><i class="material-icons sm">remove</i> Show less</small>' +
+                    '<small v-else><i class="material-icons sm">add</i> Show more</small>' +
+                '</button>' +
+                '<a v-if="limits.max < items.length" href="/events/" class="btn btn-light text-secondary ml-4">'+
+                    '<small>See all</small>' +
+                '</a>' +
+            '</div>' +
+        '</div>' +
+    '',
+    computed: {
+        limits: function () {
+            return {
+                'max': this.max || 1000,
+                'min': this.min || 8
+            }
+        },
+        visibleItems: function () {
+            if (!this.items) return [];
+
+            var size = (this.showMore) ? this.limits.max : this.limits.min;
+            var items = _.groupBy(_.first(this.items, size), 'past');
+            if (_.has(items, false)) items[false].reverse();
+            return items;
+        }
+    }
 });
 
 Vue.component('metadata-list', {

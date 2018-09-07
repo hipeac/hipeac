@@ -27,7 +27,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-event-list="{% url 'v1:event-list' %}" class="container">
+    <div id="urls" data-event-list="{% url 'v1:event-list' %}" data-roadshow-list="{% url 'v1:roadshow-list' %}" class="container">
         <router-view></router-view>
     </div>
 {% endblock %}
@@ -45,19 +45,18 @@
     <script>
         var Store = new Vuex.Store({
             state: {
-                events: null
+                events: null,
+                roadshows: null
             },
             mutations: {
                 fetchEvents: function (state) {
-                    ajax().get($('#urls').data('event-list')).done(function (res) {
-                        res.map(function (obj) {
-                            obj.dates = [
-                                moment(obj.start_date).format('MMMM D'),
-                                moment(obj.end_date).format('D YYYY'),
-                            ].join('-');
-                            return obj;
-                        });
-                        state.events = res;
+                    api().getEvents().done(function (res) {
+                        state.events = mapper().events(res);
+                    });
+                },
+                fetchRoadshows: function (state) {
+                    ajax().get($('#urls').data('roadshow-list')).done(function (res) {
+                        state.roadshows = mapper().events(res);
                     });
                 }
             },
@@ -97,8 +96,11 @@
         var RoadshowView = {
             template: '#v-roadshow',
             computed: _.extend(
-                Vuex.mapGetters(['groupedEvents']), {
-            })
+                Vuex.mapState(['roadshows']), {
+            }),
+            created: function () {
+                this.$store.commit('fetchRoadshows');
+            }
         };
 
         var Router = new VueRouter({
