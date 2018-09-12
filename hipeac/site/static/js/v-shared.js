@@ -5,11 +5,19 @@ var FETCH_WAIT = 250;
 var ComponentStore = new Vuex.Store({
     state: {
         options: null,
+        quotes: [],
         metadata: [],
         institutions: [],
         projects: []
     },
     mutations: {
+        fetchQuotes: _.debounce(function (state) {
+            if (!state.quotes.length) {
+                api().getQuotes().then(function (res) {
+                    state.quotes = res;
+                });
+            }
+        }, FETCH_WAIT),
         fetchMetadata: _.debounce(function (state) {
             if (!state.metadata.length) {
                 api().getMetadata().then(function (res) {
@@ -262,11 +270,11 @@ Vue.component('filter-label', {
 });
 
 Vue.component('quotes-carousel-row', {
+    store: ComponentStore,
     data: function () {
         return {
             interval: 8 * 1000,
             limit: 5,
-            quotes: []
         }
     },
     props: ['types'],
@@ -287,7 +295,8 @@ Vue.component('quotes-carousel-row', {
             '</div>' +
         '</div>' +
     '',
-    computed: {
+    computed: _.extend(
+        Vuex.mapState(['quotes']), {
         items: function () {
             if (!this.quotes) return [];
             if (!this.types) return _.sample(this.quotes, this.limit);
@@ -296,11 +305,8 @@ Vue.component('quotes-carousel-row', {
                 return _.contains(types, obj.type);
             }), this.limit);
         }
-    },
+    }),
     created: function () {
-        var self = this;
-        api().getQuotes().then(function (res) {
-            self.quotes = res;
-        });
+        this.$store.commit('fetchQuotes');
     }
 });

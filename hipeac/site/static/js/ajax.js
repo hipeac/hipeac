@@ -68,20 +68,26 @@ var ajax = function () {
 
 var api = function () {
     return {
-        getArticles: function (url) {
+        getAllProjects: function () {
+            return ajax().get('/api/v1/network/projects/all/');
+        },
+        getAllInstitutions: function () {
+            return ajax().get('/api/v1/network/institutions/all/');
+        },
+        getArticles: function () {
             return ajax().get('/api/v1/communication/articles/');
         },
-        getQuotes: function (url) {
+        getQuotes: function () {
             return ajax().get('/api/v1/communication/quotes/');
         },
-        getEvents: function (url) {
+        getEvents: function () {
             return ajax().get('/api/v1/events/events/');
         },
-        getMetadata: function (url) {
-            return ajax().get('/api/v1/metadata/');
+        getSession: function (id) {
+            return ajax().get('/api/v1/events/sessions/' + id + '/');
         },
-        getProjects: function (url) {
-            return ajax().get('/api/v1/network/projects/');
+        getMetadata: function () {
+            return ajax().get('/api/v1/metadata/');
         }
     };
 };
