@@ -10,8 +10,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for institution in Institution.objects.all():
             if institution.image:
-                send_task('hipeac.tasks.imaging.generate_image_variants', (institution.image.path,))
+                send_task('hipeac.tasks.imaging.generate_logo_variants', (institution.image.path,))
 
         for project in Project.objects.all():
             if project.image:
-                send_task('hipeac.tasks.imaging.generate_image_variants', (project.image.path,))
+                send_task('hipeac.tasks.imaging.generate_logo_variants', (project.image.path,))

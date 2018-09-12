@@ -107,3 +107,9 @@ class Event(ImagesMixin, LinkMixin, models.Model):
             return f'CSW {season} {self.start_date.year}, {self.city}'
 
         return f'{self.city}, {self.start_date.strftime("%B %Y")}'
+
+
+@receiver(post_save, sender=Event)
+def event_post_save(sender, instance, created, *args, **kwargs):
+    if instance.image_has_changed():
+        send_task('hipeac.tasks.imaging.generate_banner_variants', (instance.image.path,))

@@ -84,4 +84,4 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
 @receiver(post_save, sender=Project)
 def project_post_save(sender, instance, created, *args, **kwargs):
     if instance.image_has_changed():
-        send_task('hipeac.tasks.imaging.generate_image_variants', (instance.image.path,))
+        send_task('hipeac.tasks.imaging.generate_logo_variants', (instance.image.path,))
