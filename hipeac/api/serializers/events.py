@@ -1,10 +1,19 @@
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
-from hipeac.models import Event, Roadshow, Session
-from .generic import MetadataListField
-from .institutions import InstitutionRelatedField
-from .projects import ProjectRelatedField
+from hipeac.models import Event, Registration, Roadshow, Session
+from .generic import JsonField, LinkSerializer, MetadataListField
+from .institutions import InstitutionNestedSerializer
+from .projects import ProjectNestedSerializer
+from .users import UserPublicListSerializer
+
+
+class RegistrationListSerializer(serializers.ModelSerializer):
+    user = UserPublicListSerializer()
+
+    class Meta:
+        model = Registration
+        fields = ('created_at', 'user')
 
 
 class SessionNestedSerializer(serializers.ModelSerializer):
@@ -13,7 +22,7 @@ class SessionNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Session
-        exclude = ['created_at', 'updated_at', 'summary']
+        exclude = ('summary', 'max_attendees', 'extra_attendees_fee', 'created_at', 'updated_at')
 
 
 class SessionListSerializer(SessionNestedSerializer):
@@ -21,12 +30,24 @@ class SessionListSerializer(SessionNestedSerializer):
     topics = MetadataListField()
 
 
+class SessionSerializer(SessionListSerializer):
+    event = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
+    date = serializers.DateField(read_only=True)
+
+    class Meta(SessionNestedSerializer.Meta):
+        exclude = ('created_at', 'updated_at')
+
+
 class EventNestedSerializer(serializers.ModelSerializer):
-    coordinating_institution = InstitutionRelatedField()
+    coordinating_institution = InstitutionNestedSerializer()
     country = CountryField(country_dict=True)
     url = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
+    url_articles = serializers.HyperlinkedIdentityField(view_name='v1:event-articles')
+    url_registrations = serializers.HyperlinkedIdentityField(view_name='v1:event-registrations')
     href = serializers.CharField(source='get_absolute_url', read_only=True)
     name = serializers.CharField(read_only=True)
+    links = LinkSerializer(many=True)
+    images = serializers.DictField(read_only=True)
 
     class Meta:
         model = Event
@@ -43,7 +64,7 @@ class EventSerializer(EventNestedSerializer):
 
 class RoadshowNestedSerializer(serializers.ModelSerializer):
     country = CountryField(country_dict=True)
-    institutions = InstitutionRelatedField(many=True)
+    institutions = InstitutionNestedSerializer(many=True)
     href = serializers.CharField(source='get_absolute_url', read_only=True)
 
     class Meta:
@@ -57,12 +78,3 @@ class RoadshowListSerializer(RoadshowNestedSerializer):
 
 class RoadshowSerializer(RoadshowNestedSerializer):
     pass
-
-
-class SessionSerializer(SessionListSerializer):
-    event = EventNestedSerializer(read_only=True)
-    date = serializers.DateField(read_only=True)
-    projects = ProjectRelatedField(many=True)
-
-    class Meta(SessionNestedSerializer.Meta):
-        exclude = ['created_at', 'updated_at']

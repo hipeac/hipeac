@@ -24,7 +24,7 @@ class QuoteNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Quote
-        exclude = ['user']
+        exclude = ('user',)
 
 
 class QuoteListSerializer(QuoteNestedSerializer):

@@ -2,8 +2,15 @@ from rest_framework import serializers
 from rest_framework.relations import RelatedField
 
 from hipeac.models import Project
-from .generic import MetadataListField
-from .institutions import InstitutionRelatedField
+from .generic import LinkSerializer, MetadataListField
+from .institutions import InstitutionNestedSerializer
+
+
+class ProjectAllSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Project
+        fields = ('id', 'acronym', 'name', 'ec_project_id')
 
 
 class ProjectNestedSerializer(serializers.ModelSerializer):
@@ -12,8 +19,8 @@ class ProjectNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        read_only_fields = ['image', 'images']
-        fields = ['id', 'acronym', 'name', 'images', 'url', 'href']
+        read_only_fields = ('image', 'images')
+        fields = ['id', 'acronym', 'name', 'programme', 'images', 'url', 'href']
 
 
 class ProjectListSerializer(ProjectNestedSerializer):
@@ -27,9 +34,8 @@ class ProjectListSerializer(ProjectNestedSerializer):
 class ProjectSerializer(ProjectNestedSerializer):
     application_areas = MetadataListField()
     topics = MetadataListField()
-    coordinating_institution = InstitutionRelatedField()
-    partners = InstitutionRelatedField(many=True, required=False)
     slug = serializers.CharField(read_only=True)
+    links = LinkSerializer(read_only=True, many=True)
 
     open_positions = serializers.SerializerMethodField()
 
@@ -41,13 +47,3 @@ class ProjectSerializer(ProjectNestedSerializer):
         from .recruitment import JobNestedSerializer  # noqa
         jobs = obj.jobs.active().defer('description')
         return JobNestedSerializer(jobs, many=True, context=self.context).data
-
-
-class ProjectRelatedField(RelatedField):
-    queryset = Project.objects.all()
-
-    def to_internal_value(self, data):
-        return self.get_queryset().get(id=data['id'])
-
-    def to_representation(self, obj):
-        return ProjectNestedSerializer(obj, context=self.context).data

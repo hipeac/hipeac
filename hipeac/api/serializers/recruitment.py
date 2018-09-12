@@ -4,14 +4,12 @@ from rest_framework import serializers
 from hipeac.models import Job
 from hipeac.models.generic import HipeacCountries
 from .generic import JsonField, MetadataField, MetadataListField
-from .institutions import InstitutionRelatedField
-from .projects import ProjectRelatedField
+from .institutions import InstitutionNestedSerializer
+from .projects import ProjectNestedSerializer
 
 
-class JobNestedSerializer(serializers.ModelSerializer):
+class JobBaseSerializer(serializers.ModelSerializer):
     country = CountryField(country_dict=True, countries=HipeacCountries())
-    institution = InstitutionRelatedField()
-    project = ProjectRelatedField(required=False, allow_null=True)
     application_areas = MetadataListField()
     topics = MetadataListField()
     career_levels = MetadataListField()
@@ -22,9 +20,15 @@ class JobNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Job
-        exclude = ['description', 'share', 'last_reminder', 'created_at']
+        exclude = ('description', 'share', 'last_reminder', 'created_at')
 
 
-class JobSerializer(JobNestedSerializer):
-    class Meta(JobNestedSerializer.Meta):
-        exclude = ['share', 'last_reminder', 'created_at', 'created_by']
+class JobNestedSerializer(JobBaseSerializer):
+    institution = InstitutionNestedSerializer()
+    project = ProjectNestedSerializer(required=False, allow_null=True)
+
+
+class JobSerializer(JobBaseSerializer):
+
+    class Meta(JobBaseSerializer.Meta):
+        exclude = ('share', 'last_reminder', 'created_at', 'created_by')

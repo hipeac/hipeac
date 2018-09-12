@@ -6,7 +6,7 @@ from ..serializers import ArticleListSerializer, ClippingListSerializer, QuoteLi
 
 
 class ArticleViewSet(ListModelMixin, GenericViewSet):
-    queryset = Article.objects.all()
+    queryset = Article.objects.prefetch_related('event', 'institutions', 'projects')
     pagination_class = None
     serializer_class = ArticleListSerializer
 

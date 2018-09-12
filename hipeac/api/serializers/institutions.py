@@ -3,7 +3,15 @@ from rest_framework import serializers
 from rest_framework.relations import RelatedField
 
 from hipeac.models import Institution
-from .generic import MetadataListField
+from .generic import LinkSerializer, MetadataListField
+
+
+class InstitutionAllSerializer(serializers.ModelSerializer):
+    short_name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Institution
+        fields = ('id', 'name', 'local_name', 'short_name', 'type')
 
 
 class InstitutionNestedSerializer(serializers.ModelSerializer):
@@ -14,18 +22,8 @@ class InstitutionNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Institution
-        read_only_fields = ['image', 'images']
+        read_only_fields = ('image', 'images')
         fields = ['id', 'name', 'local_name', 'short_name', 'images', 'url', 'href', 'location', 'country', 'type']
-
-
-class InstitutionRelatedField(RelatedField):
-    queryset = Institution.objects.all()
-
-    def to_internal_value(self, data):
-        return self.get_queryset().get(id=data['id'])
-
-    def to_representation(self, obj):
-        return InstitutionNestedSerializer(obj, context=self.context).data
 
 
 class InstitutionListSerializer(InstitutionNestedSerializer):
@@ -38,15 +36,14 @@ class InstitutionListSerializer(InstitutionNestedSerializer):
 class InstitutionSerializer(InstitutionNestedSerializer):
     application_areas = MetadataListField()
     topics = MetadataListField()
-    parent = InstitutionRelatedField(required=False, allow_null=True)
-    children = InstitutionRelatedField(many=True, required=False)
     slug = serializers.CharField(read_only=True)
+    links = LinkSerializer(read_only=True, many=True)
 
-    open_positions = serializers.SerializerMethodField()
+    open_positions = serializers.SerializerMethodField(read_only=True)
 
     class Meta(InstitutionNestedSerializer.Meta):
         fields = InstitutionNestedSerializer.Meta.fields + [
-            'application_areas', 'topics', 'parent', 'children', 'slug', 'open_positions', 'description'
+            'application_areas', 'topics', 'parent', 'children', 'slug', 'open_positions', 'description', 'links'
         ]
 
     def get_open_positions(self, obj):

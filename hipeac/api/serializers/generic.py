@@ -3,7 +3,7 @@ import json
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
 
-from hipeac.models import Metadata, get_cached_metadata
+from hipeac.models import Link, Metadata, get_cached_metadata, get_cached_metadata_queryset
 
 
 class JsonField(serializers.CharField):
@@ -14,20 +14,33 @@ class JsonField(serializers.CharField):
         return json.loads(obj)
 
 
+class LinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Link
+        fields = ('type', 'url')
+
+
 class MetadataListField(serializers.CharField):
+    metadata = None
+
+    def get_metadata(self):
+        if not self.metadata:
+            self.metadata = get_cached_metadata()
+        return self.metadata
+
     def to_internal_value(self, data):
         return ','.join([str(metadata['id']) for metadata in data])
 
     def to_representation(self, obj):
-        metadata = get_cached_metadata()
+        self.get_metadata()
         return [] if obj == '' else [{
-            'id': metadata[int(pk)].id,
-            'value': metadata[int(pk)].value
-        } for pk in obj.split(',') if int(pk) in metadata]
+            'id': self.metadata[int(pk)].id,
+            'value': self.metadata[int(pk)].value
+        } for pk in obj.split(',') if int(pk) in self.metadata]
 
 
 class MetadataField(RelatedField):
-    queryset = Metadata.objects.all()
+    queryset = get_cached_metadata_queryset()
     pk_field = 'pk'
 
     def __init__(self, **kwargs):
@@ -48,7 +61,7 @@ class MetadataField(RelatedField):
 class MetadataNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Metadata
-        exclude = []
+        exclude = ()
 
 
 class MetadataListSerializer(MetadataNestedSerializer):

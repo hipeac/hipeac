@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
+from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import Institution, Project
 from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import (
-    InstitutionListSerializer, InstitutionSerializer,
-    ProjectListSerializer, ProjectSerializer,
+    InstitutionAllSerializer, InstitutionListSerializer, InstitutionSerializer,
+    ProjectAllSerializer, ProjectListSerializer, ProjectSerializer,
     UserPublicListSerializer, UserPublicSerializer
 )
 
@@ -19,6 +20,11 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.defer('description')
         self.serializer_class = InstitutionListSerializer
+        return super().list(request, *args, **kwargs)
+
+    @action(detail=False, pagination_class=None, serializer_class=InstitutionAllSerializer)
+    def all(self, request, *args, **kwargs):
+        self.queryset = self.queryset.only('id', 'name', 'local_name', 'colloquial_name', 'type')
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
@@ -46,4 +52,9 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.defer('description')
         self.serializer_class = ProjectListSerializer
+        return super().list(request, *args, **kwargs)
+
+    @action(detail=False, serializer_class=ProjectAllSerializer)
+    def all(self, request, *args, **kwargs):
+        self.queryset = self.queryset.only('id', 'programme', 'acronym', 'name')
         return super().list(request, *args, **kwargs)
