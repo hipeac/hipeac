@@ -10,7 +10,7 @@ class InstitutionDetail(SlugMixin, generic.DetailView):
     If the slug doesn't match we make a 301 Permanent Redirect.
     """
     model = Institution
-    template_name = 'network/institution.html'
+    template_name = 'network/institution/institution.html'
 
     def get_queryset(self):
         return super().get_queryset() \

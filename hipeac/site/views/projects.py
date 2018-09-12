@@ -10,7 +10,7 @@ class ProjectDetail(SlugMixin, generic.DetailView):
     If the slug doesn't match we make a 301 Permanent Redirect.
     """
     model = Project
-    template_name = 'network/project.html'
+    template_name = 'network/project/project.html'
 
     def get_queryset(self):
         return super().get_queryset() \
