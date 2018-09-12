@@ -4,6 +4,7 @@ from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from django_countries.fields import CountryField
 
 from hipeac.models import Metadata
@@ -49,11 +50,16 @@ class Profile(models.Model):
     links = GenericRelation('hipeac.Link')
     objects = ProfileManager()
 
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self) -> str:
         return self.user.username
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_user_profile(sender, instance, created, **kwargs):
+def post_save_user(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+    else:
+        instance.profile.updated_at = timezone.now()
+        instance.profile.save()

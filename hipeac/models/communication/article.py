@@ -36,6 +36,7 @@ class Article(UrlMixin, models.Model):
     content = models.TextField()
 
     images = GenericRelation('hipeac.Image')
+    event = models.ForeignKey('hipeac.Event', null=True, blank=True, on_delete=models.SET_NULL, related_name='articles')
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='articles')
     institutions = models.ManyToManyField('hipeac.Institution', blank=True, related_name='articles')
 

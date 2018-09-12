@@ -373,6 +373,24 @@ class Command(BaseCommand):
 
         self.out('success', '✔ Partners added to projects!')
 
+        bulk_profile_projects = []
+        for rel in session.query(Base.classes.core_user_projects).yield_per(10000):
+            bulk_profile_projects.append((
+                rel.id,
+                rel.user_id,
+                rel.project_id,
+            ))
+
+        with connection.cursor() as cursor:
+            for batch in self.batch(bulk_profile_projects, 10000):
+                query = """
+                    INSERT INTO hipeac_profile_projects (id, profile_id, project_id)
+                    VALUES (%s, %s, %s)
+                """
+                cursor.executemany(query, batch)
+
+        self.out('success', '✔ Projects added to users!')
+
         # HiPEAC
 
         hipeac_ids = {
@@ -491,17 +509,34 @@ class Command(BaseCommand):
                 city=ev.city,
                 slug=slugify(ev.city),
                 country=ev.country,
+                hashtag=ev.hashtag,
                 start_date=ev.start_date,
                 end_date=ev.end_date,
                 registration_start_date=ev.registration_start_date,
                 registration_early_deadline=tz_ear,
                 registration_deadline=ev.end_date if ev.registration_deadline == '1970-01-01' else tz_dead
             ))
+            if ev.google_album_url:
+                bulk_links.append(Link(
+                    content_type=ct,
+                    object_id=ev.id,
+                    type=Link.GOOGLE_PHOTOS,
+                    url=ev.google_album_url
+                ))
+            if ev.google_mid:
+                bulk_links.append(Link(
+                    content_type=ct,
+                    object_id=ev.id,
+                    type=Link.GOOGLE_MAPS,
+                    url=f'https://drive.google.com/open?id={ev.google_mid}&usp=sharing'
+                ))
 
         Event.objects.bulk_create(bulk_events, batch_size=1000)
         self.out('success', f'✔ Events migrated! ({len(bulk_events)} records)')
 
         # Sessions
+
+        event_urls = {e.id: e.get_absolute_url() for e in Event.objects.all()}
 
         self.out('std', 'Migrating event sessions...')
         bulk_sessions = []
@@ -552,6 +587,12 @@ class Command(BaseCommand):
                     type=Link.YOUTUBE,
                     url=f'https://youtu.be/{s.youtube_id}' if 'user' not in s.youtube_id else s.youtube_id
                 ))
+
+            Redirect.objects.create(
+                site_id=1,
+                old_path=f'/events/activities/{s.id}/{s.slug}/',
+                new_path=f'{event_urls[s.event_id]}#/programme/{s.id}/',
+            )
 
         for org in session.query(Base.classes.events_activity_organizers).all():
             bulk_acl.append(Permission(
@@ -654,6 +695,12 @@ class Command(BaseCommand):
         bulk_registrations = list(registrations.values())
         Registration.objects.bulk_create(bulk_registrations, batch_size=1000)
         self.out('success', f'✔ Registrations migrated! ({len(bulk_registrations)} records)')
+
+        # Update counters
+
+        for event in Event.objects.all():
+            event.registrations_count = event.registrations.count()
+            event.save()
 
         # Roadshows
 

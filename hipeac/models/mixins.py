@@ -23,7 +23,10 @@ class ImagesMixin:
             return None
 
         parts = os.path.splitext(self.image.url)  # noqa
-        return {size: ''.join([get_absolute_uri(), parts[0], '_', size, parts[1]]) for size in ['sm', 'md', 'th']}
+        extension = parts[1].lower()
+        extension = '.jpg' if extension == '.jpeg' else extension
+        sizes = ['sm', 'md', 'lg', 'th']
+        return {size: ''.join([get_absolute_uri(), parts[0], '_', size, extension]) for size in sizes}
 
 
 class LinkMixin:

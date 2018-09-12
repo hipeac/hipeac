@@ -1,9 +1,17 @@
+from celery.execute import send_task
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django_countries.fields import CountryField
+
+from hipeac.functions import get_images_path
+from hipeac.models import Link
+from ..mixins import ImagesMixin, LinkMixin
 
 
 def validate_event_dates(event):
@@ -21,7 +29,7 @@ def validate_event_dates(event):
             raise ValidationError('Early deadline cannot be later than registration deadline.')
 
 
-class Event(models.Model):
+class Event(ImagesMixin, LinkMixin, models.Model):
     ACACES = 'acaces'
     CONFERENCE = 'conference'
     CSW = 'csw'
@@ -44,11 +52,19 @@ class Event(models.Model):
                                                  related_name='coordinated_events')
     city = models.CharField(max_length=100)
     country = CountryField(db_index=True)
+    hashtag = models.CharField(max_length=32, null=True, blank=True)
     slug = models.CharField(max_length=100, editable=False)
     redirect_url = models.URLField(null=True, editable=False)
+    image = models.ImageField('Banner', upload_to=get_images_path, null=True, blank=True, help_text='4:1 format')
+
+    registrations_count = models.PositiveIntegerField(default=0)
+
+    links = GenericRelation('hipeac.Link')
 
     def clean(self) -> None:
         validate_event_dates(self)
+        if self.hashtag:
+            self.hashtag = self.hashtag[1:] if self.hashtag.startswith('#') else self.hashtag
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.city)
@@ -64,6 +80,14 @@ class Event(models.Model):
         if self.type == self.EC_MEETING:
             return reverse(self.type, args=[self.id])
         return reverse(self.type, args=[self.start_date.year, self.slug])
+
+    @property
+    def google_maps_url(self) -> str:
+        self.get_link(Link.GOOGLE_MAPS)
+
+    @property
+    def google_photos_url(self) -> str:
+        self.get_link(Link.GOOGLE_PHOTOS)
 
     def is_active(self) -> bool:
         return self.start_date <= timezone.now().date() <= self.end_date

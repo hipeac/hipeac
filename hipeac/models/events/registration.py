@@ -85,6 +85,11 @@ class Registration(models.Model):
 @receiver(post_save, sender=Registration)
 def registration_post_save(sender, instance, created, *args, **kwargs):
     if created:
+        event = instance.event
+        event.registrations_count = event.registrations.count()
+        event.save()
+
+        """
         msg = EmailMessage(
             f'[{instance.event.hashtag.upper()}] Your registration for {instance.event}',
             get_template('hipeac/emails/registration.txt').render({
@@ -94,6 +99,7 @@ def registration_post_save(sender, instance, created, *args, **kwargs):
             from_email=f'{instance.event.hashtag.upper()} <{settings.HIPEAC_REGISTRATIONS_EMAIL}>'
         )
         msg.send()
+        """
 
         # if instance.visa_requested:
         #    visa_reminder_email(Registration.objects.filter(pk=instance.id))
