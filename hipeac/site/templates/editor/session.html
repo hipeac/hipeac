@@ -1,0 +1,41 @@
+{% extends 'editor.html' %}
+
+
+{% block subtitle %}
+{% verbatim %}
+    <small>Session</small><span v-cloak v-if="obj"> #{{ obj.id }} / {{ obj.title }}</span>
+{% endverbatim %}
+{% endblock %}
+
+{% block vue_templates %}
+{% verbatim %}
+    <script type="text/x-template" id="v-editor">
+        <div class="hipeac-card">
+            <hipeac-logo class="hipeac logo-sm mb-3 float-right"></hipeac-logo>
+            <display-sm>Please add a detailed description of the job offer and fill in the Career level section of the form to target specific HiPEAC users. The job will be automatically shared on HiPEAC's Twitter and LinkedIn accounts.</display-sm>
+            <form class="mt-4">
+                <custom-input v-model.trim="obj.title" type="text" label="Title" :required="true"></custom-input>
+                <markdown-textarea v-model.trim="obj.summary" label="Summary" :required="true"></markdown-textarea>
+                <metadata-checkboxes v-model="obj.topics" type="topic" label="Topics" sorting="value"></metadata-checkboxes>
+                <metadata-checkboxes v-model="obj.application_areas" type="application_area" label="Application areas" sorting="value"></metadata-checkboxes>
+            </form>
+        </div>
+    </script>
+    <script type="text/x-template" id="v-preview">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="display-lg mb-4">{{ obj.title }}</h2>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
+                    </div>
+                </div>
+                <div class="marked mod" v-html="mark"></div>
+            </div>
+        </div>
+    </script>
+{% endverbatim %}
+{% endblock %}

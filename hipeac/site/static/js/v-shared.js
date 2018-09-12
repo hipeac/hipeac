@@ -25,10 +25,35 @@ var ComponentStore = new Vuex.Store({
                 });
             }
         }, FETCH_WAIT),
+        fetchInstitutions: _.debounce(function (state) {
+            if (!state.institutions.length) {
+                api().getAllInstitutions().then(function (res) {
+                    state.institutions = res.map(function (obj) {
+                        obj.display = obj.name;
+                        obj.q = [
+                            obj.name,
+                            obj.local_name,
+                            obj.short_name
+                        ].join(' ').toLowerCase();
+                        return obj;
+                    });
+                });
+            }
+        }, FETCH_WAIT),
         fetchProjects: _.debounce(function (state) {
-            if (!state.metadata.length) {
-                api().getProjects().then(function (res) {
-                    state.projects = res;
+            if (!state.projects.length) {
+                api().getAllProjects().then(function (res) {
+                    state.projects = res.map(function (obj) {
+                        obj.display = [
+                            obj.acronym,
+                            (obj.ec_project_id) ? ' #' + obj.ec_project_id : ''
+                        ].join('');
+                        obj.q = [
+                            obj.display,
+                            obj.name
+                        ].join(' ').toLowerCase();
+                        return obj;
+                    });
                 });
             }
         }, FETCH_WAIT),
@@ -45,8 +70,9 @@ var ComponentStore = new Vuex.Store({
             return _.indexBy(state.metadata, 'id');
         },
         countries: function (state) {
-            if (!state.options || !_.has(state.options.actions.POST, 'country')) return null;
-            return state.options.actions.POST.country.choices;
+            try { return state.options.actions.POST.country.choices; } catch {};
+            try { return state.options.actions.PUT.profile.children.country.choices; } catch {};
+            return null;
         }
     }
 });
@@ -82,7 +108,7 @@ Vue.component('editor-link', {
     props: ['url'],
     template: '' +
         '<li v-if="show" class="nav-item">' +
-            '<a class="nav-link" :href="url"><i class="material-icons">&#xE150;</i> Edit</a>' +
+            '<a class="nav-link" :href="url"><i class="material-icons mr-2">&#xE150;</i>Edit</a>' +
         '</li>' +
     '',
     created: function () {
@@ -136,13 +162,13 @@ Vue.component('display-md', {
 Vue.component('display-sm', {
     props: ['transparent'],
     template: '' +
-        '<h6 class="display display-sm text-left m-0 mb-3" :class="{\'transparent\': transparent}"><span><slot></slot></span></h6>' +
+        '<h6 class="display display-sm text-left m-0" :class="{\'transparent\': transparent}"><span><slot></slot></span></h6>' +
     ''
 });
 
 Vue.component('catchphrase', {
     template: '' +
-        '<h5 class="mb-4 catchphrase"><slot></slot></h5>' +
+        '<h5 class="catchphrase"><slot></slot></h5>' +
     ''
 });
 
@@ -158,7 +184,7 @@ Vue.component('article-list', SimpleList.extend({
     props: ['items', 'max', 'showMore'],
     template: '' +
         '<div v-if="items">' +
-            '<table class="table pointer m-0 border-bottom mb-3">' +
+            '<table class="table pointer m-0 border-bottom">' +
                 '<tbody>' +
                     '<tr v-for="item in visibleItems" :key="item.id" @click="updateLocation(item.href)">' +
                         '<td class="pl-0">' +
@@ -198,12 +224,12 @@ Vue.component('event-list', SimpleList.extend({
     template: '' +
         '<div>' +
             '<div v-if="items" v-for="(data, isPast) in visibleItems">' +
-                '<display-sm v-if="isPast == \'false\'" transparent="true">Upcoming events</display-sm>' +
-                '<display-sm v-else transparent="true">Past events</display-sm>' +
+                '<display-sm v-if="isPast == \'false\'" :transparent="true" class="mb-3">Upcoming events</display-sm>' +
+                '<display-sm v-else :transparent="true" class="mb-3">Past events</display-sm>' +
                 '<table class="table pointer mt-0 mb-3 border-bottom">' +
                     '<tbody>' +
                         '<tr v-for="item in data" :key="item.id" @click="updateLocation(item.href)">' +
-                            '<td class="px-0" style="width:50px"><img src="https://s3-eu-west-1.amazonaws.com/brussels-images/content/gallery/visit/place/Square-du-Petit-Sablon_0902b14f5af72ee0281ceb05658afbc9b3252130_sq_640.jpg" class="rounded w-100"></td>' +
+                            '<td class="px-0" style="width:50px"><img v-if="item.images" :src="item.images.th" class="rounded w-100"></td>' +
                             '<td>' +
                                 '{{ item.name }} {{ item.is_past }}<br>' +
                                 '<small><strong>{{ item.country.name }}</strong>, {{ item.dates }}</small>'+

@@ -58,7 +58,7 @@
 
 {% block extra_scripts %}
     {% compress js file editor_extras %}
-        <script src="{% static 'js/components/v-form.js' %}"></script>
+        <script src="{% static 'js/v-forms.js' %}"></script>
         <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
     {% endcompress %}
 {% endblock %}
@@ -134,7 +134,9 @@
                 Vuex.mapState(['obj']), {
                 mark: function () {
                     if (!this.obj) return '';
-                    return marked(this.obj['description'], {sanitize: true});
+                    if (_.has(this.obj, 'description')) return marked(this.obj.description, {sanitize: true});
+                    if (_.has(this.obj, 'summary')) return marked(this.obj.summary, {sanitize: true});
+                    return '';
                 }
             }),
         };

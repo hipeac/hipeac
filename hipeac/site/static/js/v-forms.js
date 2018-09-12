@@ -40,7 +40,7 @@ Vue.component('custom-input', FormElement.extend({
     props: ['type', 'placeholder'],
     template: '' +
         '<div class="form-group">' +
-            '<h6>{{ label }} <span v-if="required" class="text-danger">*</span></h6>' +
+            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
             '<help-text v-if="help">{{ help }}</help-text>' +
             '<input ref="el" :value="value" @input="updateValue" :placeholder="placeholder" :type="type" class="form-control form-control-sm">' +
         '</div>' +
@@ -51,7 +51,7 @@ Vue.component('date-input', FormElement.extend({
     props: ['placeholder'],
     template: '' +
         '<div class="form-group">' +
-            '<h6>{{ label }} <span v-if="required" class="text-danger">*</span></h6>' +
+            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
             '<help-text v-if="help">{{ help }}</help-text>' +
             '<input ref="el" :value="value" @input="updateValue" :placeholder="placeholder" type="date" class="form-control form-control-sm">' +
         '</div>' +
@@ -61,7 +61,7 @@ Vue.component('date-input', FormElement.extend({
 Vue.component('markdown-textarea', FormElement.extend({
     template: '' +
         '<div class="form-group">' +
-            '<h6>{{ label }} <span v-if="required" class="text-danger">*</span></h6>' +
+            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
             '<help-text>You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>. {{ help }}</help-text>' +
             '<textarea ref="el" :value="value" class="form-control form-control-sm" rows="16" @input="updateValue"></textarea>' +
         '</div>' +
@@ -71,7 +71,7 @@ Vue.component('markdown-textarea', FormElement.extend({
 Vue.component('country-select', FormElement.extend({
     template: '' +
         '<div class="form-group" ref="el" :value="value">' +
-            '<h6>{{ label }} <span v-if="required" class="text-danger">*</span></h6>' +
+            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
             '<help-text v-if="help">{{ help }}</help-text>' +
             '<select @change="updateValue" class="form-control form-control-sm">' +
                 '<option v-for="c in countries" :key="c.value" :value="c.value" :selected="c.value == value.code">{{ c.display_name }}</option>' +
@@ -147,7 +147,7 @@ var MetadataListElement = MetadataElement.extend({
 Vue.component('metadata-select', MetadataElement.extend({
     template: '' +
         '<div class="form-group" ref="el" :value="value">' +
-            '<h6>{{ label }} <span v-if="required" class="text-danger">*</span></h6>' +
+            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
             '<help-text v-if="help">{{ help }}</help-text>' +
             '<select @change="updateValue" class="form-control form-control-sm">' +
                 '<option v-for="o in options" :key="o.id" :value="o.id" :selected="o.id == value.id">{{ o.value }}</option>' +
@@ -159,12 +159,12 @@ Vue.component('metadata-select', MetadataElement.extend({
 Vue.component('metadata-checkboxes', MetadataListElement.extend({
     template: '' +
         '<div class="form-group" ref="el" :value="value">' +
-            '<h6>{{ label }} <span v-if="required" class="text-danger">*</span></h6>' +
+            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
             '<help-text v-if="help">{{ help }}</help-text>' +
             '<div v-for="o in options" :key="o.id" class="form-check form-check-inline mr-2">' +
-                '<label class="form-check-label">' +
+                '<label class="form-check-label pointer">' +
                     '<input v-model="values" :value="o.id" type="checkbox" class="form-check-input">' +
-                    '<small>{{ o.value }}</small>' +
+                    '{{ o.value }}' +
                 '</label>' +
             '</div>' +
         '</div>' +
@@ -175,36 +175,66 @@ Vue.component('metadata-checkboxes', MetadataListElement.extend({
 var AucompletePopupElement = FormElement.extend({
     data: function () {
         return {
+            values: [],
             q: ''
         }
     },
     props: ['type'],
     computed: _.extend(
         Vuex.mapState(['institutions', 'projects']), {
-        prop: function () {
-            if (this.type == 'institution') return 'short_name';
-            if (this.type == 'project') return 'acronym';
-            return 'id';
+        rows: function() {
+            return (this.many) ? 4 : 1;
+        },
+        many: function () {
+            return _.isArray(this.value);
         },
         items: function () {
-            if (this.type == 'institution') return mapper().institutions(this.institutions);
-            if (this.type == 'project') return mapper().projects(this.projects);
+            if (this.type == 'institution') return this.institutions;
+            if (this.type == 'project') return this.projects;
             return [];
         },
+        indexedItems: function () {
+            return _.indexBy(this.items, 'id');
+        },
         filteredItems: function () {
+            if (this.q == '') return [];
             return filterMultiple(this.items, this.q);
+        },
+        selectedItems: function () {
+            if (!this.items.length || !this.value) return [];
+            var items = this.indexedItems;
+            return _.map(this.values, function (id) {
+                return items[id];
+            });;
         },
         text: function () {
             if (!this.value) return '(None)';
-            return this.value[this.prop];
+            return _.map(this.selectedItems, function (item) { return item.display; }).join(', ');
         }
     }),
     methods: {
+        add: function (id) {
+            if (this.many) this.values.push(id);
+            else this.values = [id];
+            this.updateValue();
+        },
+        remove: function (id) {
+            if (this.many) this.values = _.without(this.values, id);
+            else this.values = [];
+        },
         showModal: function () {
             $(this.$refs.modal).modal();
         }
     },
+    watch: {
+        'values': function (val, oldVal) {
+            if (!oldVal) return;
+            this.$emit('input', (this.many) ? val : val[0]);
+        }
+    },
     created: function () {
+        this.values = (this.many) ? this.value : [this.value];
+        if (this.type == 'institution') this.$store.commit('fetchInstitutions');
         if (this.type == 'project') this.$store.commit('fetchProjects');
     }
 });
@@ -213,22 +243,51 @@ Vue.component('autocomplete-popup', AucompletePopupElement.extend({
     template: '' +
         '<div>' +
             '<div class="form-group">' +
-                '<h6>{{ label }} <span v-if="required" class="text-danger">*</span></h6>' +
+                '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
                 '<help-text v-if="help">{{ help }}</help-text>' +
-                '<input ref="el" :value="text" @click="showModal" type="text" class="form-control form-control-sm" readonly>' +
+                '<textarea ref="el" :rows="rows" :value="text" @click="showModal" type="text" class="form-control form-control-sm pointer" readonly></textarea>' +
             '</div>' +
             '<div ref="modal" class="modal" tabindex="-1" role="dialog">' +
                 '<div class="modal-dialog modal-md" role="document">' +
-                    '<div class="modal-content position-fixed">' +
-                        '<div class="modal-body scrollable">' +
-                            '<div class="input-group mb-3">' +
+                    '<div class="modal-content">' +
+                        '<div class="modal-header bg-light pb-0">' +
+                            '<ul class="nav nav-tabs d-flex w-100">' +
+                                '<li class="nav-item">' +
+                                    '<a class="nav-link active" href="#"><i class="material-icons mr-2">search</i>Search</a>' +
+                                '</li>' +
+                                '<li class="nav-item pointer ml-auto" data-dismiss="modal">' +
+                                    '<a class="nav-link" href="#"><i class="material-icons">close</i></a>' +
+                                '</li>' +
+                            '</ul>' +
+                        '</div>' +
+                        '<div class="modal-body">' +
+                            '<div class="input-group input-group-sm mb-3">' +
                                 '<input v-model="q" type="text" class="form-control" placeholder="Search...">' +
-                                '<div class="input-group-append">' +
-                                    '<span class="input-group-text" id="basic-addon2">&times;</span>' +
+                                '<div v-if="q" class="input-group-append pointer" @click="q = \'\'">' +
+                                    '<span class="input-group-text"><i class="material-icons sm">delete</i></span>' +
                                 '</div>' +
-                            '</div>{{ q }}' +
+                            '</div>' +
+                            '<table class="table table-sm pointer mb-4">' +
+                                '<tbody class="no-top-line">' +
+                                '<tr v-for="item in selectedItems" :key="\'s\' + item.id" @click="remove(item.id)">' +
+                                    '<td><strong>{{ item.display }}</strong></td>' +
+                                    '<td class="text-right"><i class="material-icons sm text-danger">close</i></td>' +
+                                '</tr>' +
+                                '</tbody>' +
+                            '</table>' +
                             '<!-- data-dismiss="modal" -->' +
-                            '<simple-list :items="filteredItems" :prop="prop"></simple-list>' +
+                            '<strong v-if="q" class="d-block text-secondary mb-2">' +
+                                '<small>{{ filteredItems.length }} matches for "{{ q }}"</small>' +
+                                '<div v-if="filteredItems.length == 0" class="text-center">'+
+                                    '<hr><catchphrase class="mb-4"><a href="mailto:webmaster@hipeac.net">Contact us</a> if you cannot find your {{ type }} in our list. We will add it to the website as soon as possible.</catchphrase>' +
+                                '</div>'+
+                            '</strong>' +
+                            '<table class="table table-sm pointer table-hover">' +
+                                '<tr v-for="item in filteredItems" :key="item.id" v-show="values.indexOf(item.id) == -1" @click="add(item.id)">' +
+                                    '<td>{{ item.display }}</td>' +
+                                    '<td class="text-right"><i class="material-icons sm text-success">add</i></td>' +
+                                '</tr>' +
+                            '</table>' +
                         '</div>' +
                     '</div>' +
                 '</div>' +

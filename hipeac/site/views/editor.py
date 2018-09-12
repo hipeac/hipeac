@@ -26,6 +26,7 @@ class EditorView(generic.TemplateView):
         context = super().get_context_data(**kwargs)
         context['obj_id'] = kwargs.get('pk', None)
         context['base_url'] = ''.join(['/api/v1', {
+            'session': '/events/sessions/',
             'job': '/jobs/',
             'project': '/network/projects/',
             'institution': '/network/institutions/',

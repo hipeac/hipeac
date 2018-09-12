@@ -1,3 +1,11 @@
+var linkTransform = function (items) {
+    var output = {};
+    _.each(items, function(obj){
+        output[obj.type] = obj.url;
+    });
+    return output;
+};
+
 var mapper = function () {
     return {
         base: function (items) {
@@ -14,6 +22,10 @@ var mapper = function () {
         },
         events: function (items) {
             return items.map(function (obj) {
+                obj.registrations_round = (obj.registrations_count)
+                    ? Math.floor(obj.registrations_count / 10) * 10
+                    : 0;
+                obj.links = linkTransform(obj.links);
                 obj.href = obj.redirect_url || obj.href;
                 obj.past = moment().isAfter(obj.end_date);
                 obj.dates = [
@@ -25,6 +37,7 @@ var mapper = function () {
         },
         institutions: function (items) {
             return items.map(function (obj) {
+                obj.links = linkTransform(obj.links);
                 obj.q = '';
                 return obj;
             });
@@ -52,6 +65,7 @@ var mapper = function () {
         },
         projects: function (items) {
             return items.map(function (obj) {
+                obj.links = linkTransform(obj.links);
                 obj.topicIds = _.pluck(obj.topics, 'id');
                 obj.q = [
                     obj.acronym.toLowerCase(),
@@ -62,5 +76,11 @@ var mapper = function () {
                 return obj;
             });
         },
+        sessions: function (items) {
+            return items.map(function (obj) {
+                obj.markedSummary = marked(obj.summary);
+                return obj;
+            });
+        }
     };
 };
