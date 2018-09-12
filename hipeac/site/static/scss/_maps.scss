@@ -1,0 +1,14 @@
+.iframe-container {
+    overflow: hidden;
+}
+
+iframe.google-embedded-map {
+    width: 100%;
+    background: white;
+    border: 0;
+    height: 342px;
+
+    @media (max-width: $small-breakpoint) {
+        height: 280px;
+    }
+}

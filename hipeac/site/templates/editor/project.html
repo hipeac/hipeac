@@ -30,13 +30,13 @@
                 <h2 class="display-lg mb-4">{{ obj.acronym }}: {{ obj.name }}</h2>
                 <div class="row">
                     <div class="col-12 col-md-6">
-                        <metadata-badges :title="'Topics'" :items="obj.topics" color="secondary"></metadata-badges>
+                        <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
                     </div>
                     <div class="col-12 col-md-6">
-                        <metadata-badges :title="'Application areas'" :items="obj.application_areas" color="secondary"></metadata-badges>
+                        <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
                     </div>
                 </div>
-                <div v-html="mark"></div>
+                <div class="marked" v-html="mark"></div>
             </div>
         </div>
     </script>

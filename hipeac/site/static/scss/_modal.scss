@@ -1,0 +1,20 @@
+.modal-content {
+    border: 0;
+
+    .modal-header {
+        padding: .5rem;
+
+        .nav-tabs .nav-link {
+            color: $light-text-color;
+
+            &.active {
+                color: inherit;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+}

@@ -25,3 +25,20 @@
         }
     }
 }
+
+.hipeac.subheader {
+    background: $primary-color;
+
+    .title {
+        font-size: 1.5rem;
+        font-weight: 300;
+        display: inline-block;
+        color: white;
+        padding: 0.5rem 0;
+
+        .badge {
+            font-size: small;
+            vertical-align: middle;
+        }
+    }
+}

@@ -1,0 +1,55 @@
+.nav-tabs {
+    border: 0;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+
+    @media (max-width: $small-breakpoint) {
+        overflow-y: scroll;
+        margin: 0 -15px;
+        padding: 0 15px;
+    }
+
+    .nav-link {
+        font-size: 0.85rem;
+
+        &.active {
+            border-color: #ECEFF1 #ECEFF1 transparent;
+        }
+
+        &.disabled {
+            text-decoration: line-through;
+            cursor: default;
+        }
+
+        .svg-icon svg {
+            fill: white;
+            vertical-align: text-bottom;
+        }
+
+        .material-icons {
+            font-size: 17px;
+            vertical-align: text-bottom;
+        }
+    }
+}
+
+.hipeac.subheader {
+    .nav-tabs {
+        .nav-link {
+            color: white;
+            border: 0;
+            white-space: nowrap;
+
+            &.active {
+                background: $bg-light;
+                color: $primary-color;
+                font-weight: bold;
+            }
+        }
+
+        .btn-sm {
+            padding: .10rem .5rem;
+            margin-top: .25rem;
+        }
+    }
+}
