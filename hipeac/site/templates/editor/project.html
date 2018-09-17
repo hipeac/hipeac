@@ -10,7 +10,7 @@
 {% block vue_templates %}
 {% verbatim %}
     <script type="text/x-template" id="v-editor">
-        <div class="hipeac-card">
+        <div v-if="obj" class="hipeac-card">
             <hipeac-logo class="hipeac logo-sm mb-3 float-right"></hipeac-logo>
             <display-sm>Please add a detailed description of the job offer and fill in the Career level section of the form to target specific HiPEAC users. The job will be automatically shared on HiPEAC's Twitter and LinkedIn accounts.</display-sm>
             <form class="mt-4">
@@ -19,13 +19,14 @@
                 <markdown-textarea v-model.trim="obj.description" label="Description" :required="true"></markdown-textarea>
                 <metadata-checkboxes v-model="obj.topics" type="topic" label="Topics" sorting="value"></metadata-checkboxes>
                 <metadata-checkboxes v-model="obj.application_areas" type="application_area" label="Application areas" sorting="value"></metadata-checkboxes>
-                <display-sm class="mt-4">Consortium</display-sm>
-                <autocomplete-popup v-model="obj.institution" type="institution" label="Coordinating institution" :required="true"></autocomplete-popup>
+                <display-sm class="my-4">Consortium</display-sm>
+                <autocomplete-popup v-model="obj.coordinating_institution" type="institution" label="Coordinating institution" :required="true"></autocomplete-popup>
+                <autocomplete-popup v-model="obj.partners" type="institution" label="Coordinating institution" :required="true"></autocomplete-popup>
             </form>
         </div>
     </script>
     <script type="text/x-template" id="v-preview">
-        <div class="row">
+        <div v-if="obj" class="row">
             <div class="col-12">
                 <h2 class="display-lg mb-4">{{ obj.acronym }}: {{ obj.name }}</h2>
                 <div class="row">

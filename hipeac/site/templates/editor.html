@@ -82,7 +82,8 @@
                     });
                 },
                 fetchOptions: function (state) {
-                    ajax().options($('#urls').data('base')).done(function (res) {
+                    var url = $('#urls').data('base') + $('#urls').data('obj-id') + '/';
+                    ajax().options(url).done(function (res) {
                         ComponentStore.commit('setOptions', res);
                     });
                 },

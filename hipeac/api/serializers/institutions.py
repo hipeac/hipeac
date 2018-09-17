@@ -38,7 +38,7 @@ class InstitutionSerializer(InstitutionNestedSerializer):
     topics = MetadataListField()
     slug = serializers.CharField(read_only=True)
     links = LinkSerializer(read_only=True, many=True)
-
+    children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     open_positions = serializers.SerializerMethodField(read_only=True)
 
     class Meta(InstitutionNestedSerializer.Meta):

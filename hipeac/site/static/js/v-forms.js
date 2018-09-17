@@ -5,7 +5,7 @@ var FormElement = Vue.extend({
     store: ComponentStore,
     props: ['value', 'default', 'label', 'help', 'required'],
     computed: _.extend(
-        Vuex.mapGetters(['requiredFields']), {
+        Vuex.mapGetters([]), {
     }),
     methods: {
         transformValue: function (value) {

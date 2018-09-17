@@ -62,15 +62,11 @@ var ComponentStore = new Vuex.Store({
         }
     },
     getters: {
-        requiredFields: function (state) {
-            if (!state.options) return null;
-            return _.keys(state.options.actions.POST);
-        },
         metadataDict: function (state) {
             return _.indexBy(state.metadata, 'id');
         },
         countries: function (state) {
-            try { return state.options.actions.POST.country.choices; } catch {};
+            try { return state.options.actions.PUT.country.choices; } catch {};
             try { return state.options.actions.PUT.profile.children.country.choices; } catch {};
             return null;
         }
