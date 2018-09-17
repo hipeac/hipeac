@@ -45,13 +45,14 @@
                 <script async src="//www.googletagmanager.com/gtag/js?id=UA-79856831-1"></script>
                 {% compress js inline %}
                     <script>
+                        var userId = document.getElementsByTagName('html')[0].getAttribute('data-user');
                         window.dataLayer = window.dataLayer || [];
                         function gtag() {
                             dataLayer.push(arguments);
                         };
                         gtag('js', new Date());
                         gtag('config', 'UA-2857653-1', {
-                            'user_id': {% if user.is_authenticated %} '{{ user.id }}' {% else %} undefined {% endif %}
+                            'user_id': (userId == 0) ? undefined : userId
                         });
                     </script>
                 {% endcompress %}
