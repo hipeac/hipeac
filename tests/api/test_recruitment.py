@@ -57,7 +57,7 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
                 'deadline': str(now.add(months=1).date),
                 'employment_type': {'id': employment_type.id},
                 'country': 'BE',
-                'institution': {'id': 1},
+                'institution': 1,
                 'application_areas': [],
                 'career_levels': [],
                 'topics': []

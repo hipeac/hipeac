@@ -53,14 +53,6 @@ class TestForAdministrator(TestForAuthenticated):
     test_data = None
 
     @pytest.fixture(autouse=True)
-    def setup_session(self, db):
-        if not self.session:
-            self.user_admin = mommy.make_recipe('hipeac.user')
-            self.session = mommy.make_recipe('hipeac.session')
-            Permission(content_object=self.session, user=self.user_admin, level=Permission.ADMIN).save()
-        return
-
-    @pytest.fixture(autouse=True)
     def setup_test_data(self, db, now):
         if not self.test_data:
             self.test_data = {
@@ -69,6 +61,14 @@ class TestForAdministrator(TestForAuthenticated):
                 'topics': [],
                 'projects': [],
             }
+        return
+
+    @pytest.fixture(autouse=True)
+    def setup_session(self, db):
+        if not self.session:
+            self.user_admin = mommy.make_recipe('hipeac.user')
+            self.session = mommy.make_recipe('hipeac.session')
+            Permission(content_object=self.session, user=self.user_admin, level=Permission.ADMIN).save()
         return
 
     def test_update(self, api_client):

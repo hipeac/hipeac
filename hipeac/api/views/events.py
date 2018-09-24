@@ -14,7 +14,7 @@ from ..serializers import (
 
 
 class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Event.objects.select_related('coordinating_institution')
+    queryset = Event.objects.public().select_related('coordinating_institution')
     serializer_class = EventSerializer
 
     def list(self, request, *args, **kwargs):

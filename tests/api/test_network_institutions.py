@@ -55,13 +55,13 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
 
 class TestForAdministrator(TestForAuthenticated):
     institution = None
-    institution_data = {}
+    test_data = {}
     user_admin = None
 
     @pytest.fixture(autouse=True)
-    def setup_institution_data(self, db):
-        if not self.institution_data:
-            self.institution_data = {
+    def setup_test_data(self, db):
+        if not self.test_data:
+            self.test_data = {
                 'name': 'Institution',
                 'type': Institution.UNIVERSITY,
                 'country': 'BE',
@@ -83,4 +83,4 @@ class TestForAdministrator(TestForAuthenticated):
         detail_url = self.get_detail_url(self.institution.id)
         assert api_client.patch(detail_url, {'name': 'name'}).status_code == status.HTTP_200_OK
         assert api_client.post(detail_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-        assert api_client.put(detail_url, self.institution_data).status_code == status.HTTP_200_OK
+        assert api_client.put(detail_url, self.test_data).status_code == status.HTTP_200_OK

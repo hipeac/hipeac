@@ -14,6 +14,9 @@ from hipeac.models import Link
 from ..mixins import ImagesMixin, LinkMixin
 
 
+EC_MEETING = 'ec_meeting'
+
+
 def validate_event_dates(event):
     if event.end_date < event.start_date:
         raise ValidationError('End date cannot be earlier than start date.')
@@ -29,11 +32,16 @@ def validate_event_dates(event):
             raise ValidationError('Early deadline cannot be later than registration deadline.')
 
 
+class EventManager(models.Manager):
+    def public(self):
+        return super().get_queryset().exclude(type=EC_MEETING)
+
+
 class Event(ImagesMixin, LinkMixin, models.Model):
     ACACES = 'acaces'
     CONFERENCE = 'conference'
     CSW = 'csw'
-    EC_MEETING = 'ec_meeting'
+    EC_MEETING = EC_MEETING
     TYPE_CHOICES = (
         (CSW, 'CSW'),
         (CONFERENCE, 'Conference'),
@@ -60,6 +68,8 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     registrations_count = models.PositiveIntegerField(default=0)
 
     links = GenericRelation('hipeac.Link')
+
+    objects = EventManager()
 
     def clean(self) -> None:
         validate_event_dates(self)

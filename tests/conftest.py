@@ -1,7 +1,6 @@
 import maya
 import pytest
 
-from django.contrib.contenttypes.models import ContentType
 from rest_framework.test import APIClient
 
 

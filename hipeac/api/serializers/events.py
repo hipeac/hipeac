@@ -1,10 +1,9 @@
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
-from hipeac.models import Event, Registration, Roadshow, Session
-from .generic import JsonField, LinkSerializer, MetadataListField
+from hipeac.models import Event, Registration, Roadshow, Session, Project
+from .generic import LinkSerializer, MetadataListField
 from .institutions import InstitutionNestedSerializer
-from .projects import ProjectNestedSerializer
 from .users import UserPublicListSerializer
 
 
@@ -33,6 +32,7 @@ class SessionListSerializer(SessionNestedSerializer):
 class SessionSerializer(SessionListSerializer):
     event = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
     date = serializers.DateField(read_only=True)
+    projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
 
     class Meta(SessionNestedSerializer.Meta):
         exclude = ('created_at', 'updated_at')
