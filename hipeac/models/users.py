@@ -1,4 +1,4 @@
-from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
@@ -19,8 +19,7 @@ class Profile(models.Model):
     """
     Extends Django User model with extra profile fields.
     """
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='profile', primary_key=True,
-                                on_delete=models.CASCADE)
+    user = models.OneToOneField(get_user_model(), related_name='profile', primary_key=True, on_delete=models.CASCADE)
     bio = models.TextField(null=True, blank=True)
     country = CountryField(db_index=True)
     gender = models.ForeignKey(Metadata, null=True, blank=True, on_delete=models.SET_NULL,
@@ -56,7 +55,7 @@ class Profile(models.Model):
         return self.user.username
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@receiver(post_save, sender=get_user_model())
 def post_save_user(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)

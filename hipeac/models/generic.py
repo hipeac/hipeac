@@ -1,6 +1,6 @@
 import os
 
-from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
@@ -137,8 +137,7 @@ class Permission(models.Model):
         (GUEST, 'Guest'),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, on_delete=models.CASCADE,
-                             related_name='xpermissions')
+    user = models.ForeignKey(get_user_model(), blank=True, on_delete=models.CASCADE, related_name='xpermissions')
     level = models.PositiveSmallIntegerField(db_index=True, choices=LEVEL_CHOICES)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='xpermissions')
     object_id = models.PositiveIntegerField()

@@ -1,5 +1,5 @@
 from celery.execute import send_task
-from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
@@ -30,17 +30,17 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     acronym = models.CharField(max_length=50)
     name = models.CharField(max_length=190)
     description = models.TextField(null=True, blank=True, validators=[validate_no_badwords])
-    coordinator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+    coordinator = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL,
                                     related_name='coordinated_projects')
     coordinating_institution = models.ForeignKey('hipeac.Institution', null=True, on_delete=models.SET_NULL,
                                                  related_name='coordinated_projects')
     partners = models.ManyToManyField('hipeac.Institution', blank=True, related_name='participated_projects')
-    communication_officer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
+    communication_officer = models.ForeignKey(get_user_model(), null=True, blank=True,
                                               on_delete=models.SET_NULL, related_name='communicating_projects')
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     ec_project_id = models.PositiveIntegerField('Project ID', unique=True, null=True, blank=True)
-    project_officer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+    project_officer = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL,
                                         related_name='officed_projects')
     image = models.ImageField('Logo', upload_to=get_images_path, null=True, blank=True)
     poster_file = models.FileField('Poster', upload_to=ASSETS_FOLDER, null=True, blank=True)
