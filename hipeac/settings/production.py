@@ -89,56 +89,10 @@ SENDFILE_ROOT = '/mnt/hipeac/sites/hipeac/private'
 SENDFILE_URL = '/media/private'
 
 
-# https://docs.djangoproject.com/en/1.11/topics/logging/#django-security
-# https://docs.sentry.io/clients/python/integrations/django/
-
-RAVEN_CONFIG = {
-    'dsn': os.environ.get('SENTRY_DSN', 'SENTRY_DSN'),
-    'release': os.environ.get('GIT_REV', None),
-    'environment': 'production',
-    'IGNORE_EXCEPTIONS': ['django.security.DisallowedHost'],
-}
+# https://docs.djangoproject.com/en/2.1/topics/logging/#django-security
+# https://docs.sentry.io/platforms/python/?platform=python
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry'],
-    },
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
-        },
-    },
-    'handlers': {
-        'sentry': {
-            'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            'tags': {'custom-tag': 'x'},
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-    },
 }

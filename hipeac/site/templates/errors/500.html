@@ -4,10 +4,10 @@
     <h1>Ops, a server error.</h1>
     <p>You know how computers are: they just do what you tell them... so we probably made a mistake somewhere.</p>
     <p>We will start working on a fix asap.</p>
-    {% if request.sentry.id %}
+    {% if sentry_event_id %}
         <p class="text-sm text-danger">
             <span>Error reference:</span><br>
-            <strong>{{ request.sentry.id }}</strong>
+            <strong>{{ sentry_event_id }}</strong>
         </p>
     {% endif %}
     <hr>

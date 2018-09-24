@@ -64,6 +64,7 @@
         <div id="particles"></div>
         {% block main %}{% block content %}{% endblock %}{% endblock %}
         {% block vue_templates %}{% endblock %}
+        <script src="//browser.sentry-cdn.com/4.0.4/bundle.min.js" crossorigin="anonymous"></script>
         {% compress js file bootstrap %}
             <script src="{% static 'vendor/jquery@3.3.1/jquery.min.js' %}"></script>
             <script src="{% static 'vendor/popper.js@1.14.3/popper.min.js' %}"></script>
@@ -75,6 +76,7 @@
             <script src="{% static 'vendor/underscore@1.9.1/underscore.min.js' %}"></script>
             <script src="{% static 'vendor/es6-promise@4.2.4/es6-promise.auto.min.js' %}"></script>
             <script src="{% static 'js/__init__.js' %}"></script>
+            <script src="{% static 'js/sentry.js' %}"></script>
         {% endcompress %}
         {% compress js file vue %}
             {% if debug %}
@@ -85,8 +87,6 @@
                 <script src="{% static 'vendor/vue@2.5.17/vue.min.js' %}"></script>
                 <script src="{% static 'vendor/vuex@3.0.1/vuex.min.js' %}"></script>
                 <script src="{% static 'vendor/vue-router@3.0.1/vue-router.min.js' %}"></script>
-                <script src="{% static 'vendor/vue-raven@3.24.1/raven.min.js' %}"></script>
-                <script src="{% static 'js/sentry.js' %}"></script>
             {%endif %}
             <script src="{% static 'js/ajax.js' %}"></script>
             <script src="{% static 'js/helpers.js' %}"></script>
