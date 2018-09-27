@@ -63,7 +63,7 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     hashtag = models.CharField(max_length=32, null=True, blank=True)
     slug = models.CharField(max_length=100, editable=False)
     redirect_url = models.URLField(null=True, editable=False)
-    image = models.ImageField('Banner', upload_to=get_images_path, null=True, blank=True, help_text='4:1 format')
+    image = models.FileField('Banner', upload_to=get_images_path, null=True, blank=True, help_text='4:1 format')
 
     registrations_count = models.PositiveIntegerField(default=0)
 

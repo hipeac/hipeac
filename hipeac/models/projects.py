@@ -42,7 +42,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     ec_project_id = models.PositiveIntegerField('Project ID', unique=True, null=True, blank=True)
     project_officer = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL,
                                         related_name='officed_projects')
-    image = models.ImageField('Logo', upload_to=get_images_path, null=True, blank=True)
+    image = models.FileField('Logo', upload_to=get_images_path, null=True, blank=True)
     poster_file = models.FileField('Poster', upload_to=ASSETS_FOLDER, null=True, blank=True)
 
     application_areas = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])

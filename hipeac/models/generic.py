@@ -21,7 +21,7 @@ class Image(models.Model):
     """
     FOLDER = 'public/images'
 
-    image = models.ImageField('Image', upload_to=FOLDER, null=True, blank=True)
+    image = models.FileField('Image', upload_to=FOLDER, null=True, blank=True)
     position = models.PositiveSmallIntegerField()
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='images')
     object_id = models.PositiveIntegerField()

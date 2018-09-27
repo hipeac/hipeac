@@ -47,7 +47,7 @@ class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     description = models.TextField(null=True, blank=True, validators=[validate_no_badwords])
     recruitment_contact = models.CharField(max_length=190, null=True, blank=True)
     recruitment_email = models.EmailField(null=True, blank=True)
-    image = models.ImageField('Logo', upload_to=get_images_path, null=True, blank=True)
+    image = models.FileField('Logo', upload_to=get_images_path, null=True, blank=True)
 
     application_areas = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
