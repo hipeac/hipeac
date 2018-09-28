@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "86059530be0b4732f2968a4b74ac797e84ab670c1ac58f59a4a69771d0c166b1"
+            "sha256": "f12cd813fbc4dcb17cf1376b934eaef4aec3c20be5913153196aa12249dc235e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -201,6 +201,14 @@
             ],
             "index": "pypi",
             "version": "==1.7.1"
+        },
+        "django-wkhtmltopdf": {
+            "hashes": [
+                "sha256:4cf07226332b89102e2ab1302fdd6cad402677ebfb2d50efad7cb3056a54151b",
+                "sha256:5dc89264b970d63f41b99c6722ccd47b15292598bec84248f3b94e5673dcfeac"
+            ],
+            "index": "pypi",
+            "version": "==3.2.0"
         },
         "djangorestframework": {
             "hashes": [

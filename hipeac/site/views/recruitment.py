@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from markdown import markdown as marked
 from typing import List
-# from wkhtmltopdf.views import PDFTemplateResponse
+from wkhtmltopdf.views import PDFTemplateResponse
 
 from hipeac.models import Job
 from .mixins import SlugMixin
@@ -48,8 +48,6 @@ class JobsPdf(generic.DetailView):
     model = Job
 
     def get(self, request, *args, **kwargs):
-        return ''
-        """
         job = self.get_object()
         return PDFTemplateResponse(
             request=request,
@@ -60,4 +58,3 @@ class JobsPdf(generic.DetailView):
             },
             show_content_in_browser=True
         )
-        """

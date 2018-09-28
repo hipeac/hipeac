@@ -1,5 +1,9 @@
 FROM python:3.7-alpine
 
+# install wkhtmltopdf
+RUN apk add --no-cache wkhtmltopdf \
+        --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
+
 # ensure Alpine Linux includes the necessary packages
 RUN apk add --no-cache bash \
         libxml2 libxslt \
