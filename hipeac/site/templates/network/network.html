@@ -19,13 +19,16 @@
         <router-link :to="{name: 'projects'}" class="nav-link">Projects</router-link>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'industry'}" class="nav-link">Industry</router-link>
+        <router-link :to="{name: 'researchers'}" class="nav-link">{{ flatpage.page.tbs.about_researchers.header }}</router-link>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'innovation'}" class="nav-link">Innovation</router-link>
+        <router-link :to="{name: 'industry'}" class="nav-link">{{ flatpage.page.tbs.about_industry.header }}</router-link>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'students'}" class="nav-link">Students</router-link>
+        <router-link :to="{name: 'students'}" class="nav-link">{{ flatpage.page.tbs.about_students.header }}</router-link>
+    </li>
+    <li class="nav-item">
+        <router-link :to="{name: 'innovation'}" class="nav-link">{{ flatpage.page.tbs.about_innovation.header }}</router-link>
     </li>
 {% endblock %}
 
@@ -37,11 +40,12 @@
 
 {% block vue_templates %}
     {% include './v-about.html' with id='v-about' display=flatpage.content tbs=flatpage.page.tbs %}
-    {% include './v-industry.html' with id='v-industry' %}
-    {% include './v-innovation.html' with id='v-innovation' %}
+    {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
+    {% include './v-innovation.html' with id='v-innovation' header=flatpage.page.tbs.about_innovation.content benefits=flatpage.page.tbs.innovation_benefits get_involved=flatpage.page.tbs.innovation_get_involved %}
     {% include './v-members.html' with id='v-members' %}
     {% include './v-projects.html' with id='v-projects' %}
-    {% include './v-students.html' with id='v-students' %}
+    {% include './v-researchers.html' with id='v-researchers' header=flatpage.page.tbs.about_researchers.content benefits=flatpage.page.tbs.researchers_benefits get_involved=flatpage.page.tbs.researchers_get_involved %}
+    {% include './v-students.html' with id='v-students' header=flatpage.page.tbs.about_students.content benefits=flatpage.page.tbs.students_benefits get_involved=flatpage.page.tbs.students_get_involved %}
 {% endblock %}
 
 {% block scripts %}
@@ -102,6 +106,10 @@
             }
         };
 
+        var ResearchersView = {
+            template: '#v-researchers'
+        };
+
         var StudentsView = {
             template: '#v-students'
         };
@@ -138,6 +146,12 @@
                     path: '/projects/',
                     pathToRegexpOptions: {strict: true},
                     component: ProjectsView
+                },
+                {
+                    name: 'researchers',
+                    path: '/researchers/',
+                    pathToRegexpOptions: {strict: true},
+                    component: ResearchersView
                 },
                 {
                     name: 'students',

@@ -135,10 +135,18 @@ Vue.component('twitter-icon', {
     ''
 });
 
+Vue.component('icon', {
+    props: ['name'],
+    template: '' +
+        '<i class="material-icons">{{ name }}</i>' +
+    ''
+});
+
 Vue.component('huge-icon', {
+    props: ['name'],
     template: '' +
         '<div class="huge-icon-wrapper">' +
-            '<i class="material-icons"><slot></slot></i>' +
+            '<i class="material-icons">{{ name }}</i>' +
         '</div>' +
     ''
 });

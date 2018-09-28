@@ -6,11 +6,43 @@
 
 {% block content %}
     <div class="container">
-        <div class="display-block">
+        <div class="display-block mb-4">
             <h2 class="display display-lg"><span>HiPEAC is a European network of almost 2,000 world-class computing systems researchers, industry representatives and students.</span></h2>
             <h5 class="d-none d-md-block display display-md"><span>It provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.</span></h5>
         </div>
-        <div class="row">
+        <div class="row text-center text-sm">
+            <div class="col">
+                <a href="{% url 'network' %}#/researchers/" class="d-block inherit">
+                    <strong class="text-secondary">For researchers <i class="material-icons sm">arrow_forward</i></strong>
+                    <i is="huge-icon" name="memory" class="mt-2"></i>
+                </a>
+            </div>
+            <div class="col">
+                <a href="{% url 'network' %}#/industry/" class="d-block inherit">
+                    <strong class="text-secondary">For industry <i class="material-icons sm">arrow_forward</i></strong>
+                    <i is="huge-icon" name="business" class="mt-2"></i>
+                </a>
+            </div>
+            <div class="col">
+                <a href="{% url 'network' %}#/projects/" class="d-block inherit">
+                    <strong class="text-secondary">For projects <i class="material-icons sm">arrow_forward</i></strong>
+                    <i is="huge-icon" name="device_hub" class="mt-2"></i>
+                </a>
+            </div>
+            <div class="col">
+                <a href="{% url 'network' %}#/students/" class="d-block inherit">
+                    <strong class="text-secondary">For students <i class="material-icons sm">arrow_forward</i></strong>
+                    <i is="huge-icon" name="school" class="mt-2"></i>
+                </a>
+            </div>
+            <div class="col">
+                <a href="{% url 'network' %}#/innovation/" class="d-block inherit">
+                    <strong class="text-secondary">For innovators <i class="material-icons sm">arrow_forward</i></strong>
+                    <i is="huge-icon" name="wb_incandescent" class="mt-2"></i>
+                </a>
+            </div>
+        </div>
+        <div class="row mt-5">
             <div class="col-12 col-md-12 col-lg-4 d-flex align-items-stretch">
                 <div class="hipeac-card">
                     <div is="event-list" :items="events" :min="10" :max="15"></div>

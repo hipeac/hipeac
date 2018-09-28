@@ -1,14 +1,24 @@
+{% load hipeac %}
+
+
 <script type="text/x-template" id="{{ id }}">
-{% verbatim %}
     <div>
         <div class="row mt-5">
-            <div class="col-12">
+            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+                <div class="hipeac-card d-flex flex-column">
+                    <catchphrase class="marked mb-auto">{{ header }}</catchphrase>
+                    <a href="mailto:membership@hipeac.net" class="btn btn-block btn-success mt-5">Become a Member</a>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    Industry
+                    <display-sm :transparent="true" class="mb-3">{{ benefits.header }}</display-sm>
+                    <div class="marked icon-list">{{ benefits.content | markdown }}</div>
+                    <display-sm :transparent="true" class="mt-4 mb-3">{{ get_involved.header }}</display-sm>
+                    <div class="marked">{{ get_involved.content | markdown }}</div>
                 </div>
             </div>
         </div>
         <quotes-carousel-row types="industry"></quotes-carousel-row>
     </div>
-{% endverbatim %}
 </script>

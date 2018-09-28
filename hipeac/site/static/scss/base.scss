@@ -199,10 +199,10 @@ input[type="hidden"] + fieldset {
 }
 
 .display-block {
-    margin: 3rem 0;
+    margin: 3rem 0 0;
 
     @media (max-width: $small-breakpoint) {
-        margin: 2rem 0;
+        margin: 2rem 0 0;
     }
 
     .display {
@@ -347,18 +347,29 @@ b, strong, .font-weight-bold {
 }
 
 .huge-icon-wrapper {
-    float: right;
-    margin: 0 0 2rem 2rem;
     background: $hipeac-blue;
+    color: white;
     height: 64px;
     width: 64px;
     border-radius: 99px;
     text-align: center;
 
+    &.float-right {
+        margin: 0 0 2rem 2rem;
+    }
+
+    .text-center & {
+        margin: 0 auto;
+    }
+
     .material-icons {
         font-size: 2.5rem;
-        color: white;
         margin-top: 0.75rem;
+    }
+
+    a:hover & {
+        background: $hipeac-yellow;
+        color: $hipeac-blue;
     }
 }
 
