@@ -8,15 +8,15 @@ all dependencies (includes packages like `debug_toolbar`):
     $ pipenv install --dev
     $ pipenv shell
 
+Update dependencies (and manually update `requirements.txt`):
+
+    $ pipenv update --dev && pipenv lock -r
+
 ### Running the server
 
     $ python manage.py runserver
 
 ### Running tests
-
-    $ python manage.py test hipeac
-    
-### Coverage of the tests
 
     $ pytest --cov=hipeac --cov-report=term
 
