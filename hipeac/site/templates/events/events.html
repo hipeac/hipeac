@@ -64,12 +64,21 @@
                 groupedEvents: function (state) {
                     if (!state.events) return null;
                     return _.groupBy(state.events, 'type');
+                },
+                upcomingEvents: function (state) {
+                    if (!state.events) return null;
+                    return _.filter(state.events, function (obj) {
+                        return obj.past == false;
+                    });
                 }
             }
         });
 
         var AboutView = {
-            template: '#v-about'
+            template: '#v-about',
+            computed: _.extend(
+                Vuex.mapGetters(['upcomingEvents']), {
+            })
         };
 
         var AcacesView = {
