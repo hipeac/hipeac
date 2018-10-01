@@ -22,6 +22,9 @@ class Router(DefaultRouter):
         self.register(r'network/institutions', views.InstitutionViewSet, base_name='institution')
         self.register(r'network/members', views.MemberViewSet, base_name='member')
         self.register(r'network/projects', views.ProjectViewSet, base_name='project')
+        self.register(r'research/paper-awards', views.PaperAwardViewSet, base_name='paper-award')
+        self.register(r'research/paper-awards/conferences', views.PublicationConferenceViewSet,
+                      base_name='publication-conference')
         self.register(r'user', views.AuthUserViewSet, base_name='auth-user')
         self.register(r'users', views.UserViewSet, base_name='user')
         self.register(r'vision', views.VisionViewSet, base_name='vision')

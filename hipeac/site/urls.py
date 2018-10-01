@@ -38,6 +38,8 @@ urlpatterns = [
     re_path(r'^news/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ArticleDetail.as_view(), name='article'),
     path('press/', flatpage, {'url': '/press/'}, name='press'),
     path('vision/', flatpage, {'url': '/vision/'}, name='vision'),
+    # Research
+    path('research/', flatpage, {'url': '/research/'}, name='research'),
     # Events
     path('events/', flatpage, {'url': '/events/'}, name='events'),
     path('<int:year>/<slug:slug>/', views.EventDetail.as_view(), name='conference'),

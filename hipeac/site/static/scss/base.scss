@@ -79,6 +79,10 @@ a {
     color: $hipeac-yellow !important;
 }
 
+.text-light-grey {
+    color: #ccc !important;
+}
+
 .badge-light {
     background-color: gainsboro !important;
 }
@@ -251,6 +255,13 @@ b, strong, .font-weight-bold {
         font-size: 2rem;
         vertical-align: -15%;
     }
+}
+
+span.avatar {
+    display: block;
+    background: whitesmoke;
+    height: 50px;
+    width: 50px;
 }
 
 

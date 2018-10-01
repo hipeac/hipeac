@@ -45,6 +45,14 @@ CACHES = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
+# http://www.django-rest-framework.org/api-guide/settings/
+
+REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (  # noqa
+    'rest_framework.renderers.JSONRenderer',
+    'rest_framework.renderers.BrowsableAPIRenderer',
+)
+
+
 # https://github.com/johnsensible/django-sendfile
 
 SENDFILE_BACKEND = 'sendfile.backends.development'

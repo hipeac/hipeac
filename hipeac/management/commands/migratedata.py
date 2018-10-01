@@ -214,6 +214,23 @@ class Command(BaseCommand):
         cti = ContentType.objects.get_for_model(Institution)
 
         for u in session.query(Base.classes.core_user).all():
+
+            membership_tags = []
+            if u.membership_type == 'MEMB':
+                membership_tags.append('member-eu')
+            if u.membership_type == 'ASSO':
+                membership_tags.append('member-non-eu')
+            if u.membership_type in ['AFFI', 'APHD', 'STAF']:
+                membership_tags.append('affiliated')
+            if u.membership_type == 'APHD':
+                membership_tags.append('phd')
+            if u.membership_type == 'STAF':
+                membership_tags.append('staff')
+            if u.is_innovation:
+                membership_tags.append('innovation')
+            if u.membership_type and u.gender:
+                membership_tags.append('female' if u.gender == 'F' else 'male')
+
             title = 'MR' if u.title == 'M~R' else u.title
             meal_preference = CHOICES_DICT[Metadata.MEAL_PREFERENCE][u.meal_preference] if u.meal_preference else None
             bulk_users.append(User(
@@ -240,10 +257,13 @@ class Command(BaseCommand):
                 institution_id=u.institution_id if u.institution_id != 916 else None,  # hack
                 second_institution_id=u.second_institution_id if u.second_institution_id != 2979 else None,  # hack
                 bio=u.bio,
-                # image=u.image,
                 is_bouncing=False,
                 is_subscribed=u.is_subscribed,
                 is_public=u.is_public,
+                membership_tags=','.join(sorted(membership_tags)),
+                membership_date=u.membership_date,
+                membership_revocation_date=u.membership_revocation_date,
+                advisor_id=u.advisor_id,
             ))
             if u.membership_type in ['MEMB', 'ASSO'] and u.institution_id:
                 bulk_acl.append(Permission(
@@ -420,6 +440,72 @@ class Command(BaseCommand):
                 ))
 
         self.out('success', '✔ HiPEAC project permissions migrated!')
+
+        # Publications
+
+        self.out('std', 'Migrating publications...')
+        from hipeac.models import PublicationConference
+
+        conference_ids = {
+            1: 'DAC',
+            2: 'POPL',
+            3: 'PLDI',
+            4: 'ASPLOS',
+            5: 'ISCA',
+            6: 'HPCA',
+            7: 'MICRO',
+            8: 'FCCM',
+        }
+
+        for conf in session.query(Base.classes.research_event).all():
+            if p.hipeac_id in hipeac_ids:
+                PublicationConference.objects.create(
+                    id=conf.id,
+                    acronym=conference_ids[conf.conference_id],
+                    year=conf.year,
+                    country=conf.country,
+                    url=conf.url,
+                )
+
+        bulk_publications = []
+        for pub in session.query(Base.classes.research_publication).yield_per(10000):
+            bulk_publications.append((
+                pub.id,
+                pub.year,
+                pub.title,
+                pub.authors_string,
+                pub.dblp_key,
+                pub.url,
+                pub.itemtype,
+                pub.event_id,
+            ))
+
+        with connection.cursor() as cursor:
+            for batch in self.batch(bulk_publications, 10000):
+                query = """
+                    INSERT INTO hipeac_publication (
+                        id, year, title, authors_string, dblp_key, url, itemtype, conference_id)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """
+                cursor.executemany(query, batch)
+
+        bulk_publication_authors = []
+        for rel in session.query(Base.classes.research_publication_authors).yield_per(10000):
+            bulk_publication_authors.append((
+                rel.id,
+                rel.publication_id,
+                rel.user_id,
+            ))
+
+        with connection.cursor() as cursor:
+            for batch in self.batch(bulk_publication_authors, 10000):
+                query = """
+                    INSERT INTO hipeac_publication_authors (id, publication_id, profile_id)
+                    VALUES (%s, %s, %s)
+                """
+                cursor.executemany(query, batch)
+
+        self.out('success', f'✔ Publications migrated! ({len(bulk_publications)} records)')
 
         # Jobs
 
@@ -904,6 +990,7 @@ class Command(BaseCommand):
             ('/cloud/', 'https://cloud.hipeac.net/'),
             ('/linkedin/', 'https://www.linkedin.com/company/hipeac/'),
             ('/twitter/', 'https://twitter.com/hipeac'),
+            ('/research/paper-awards/', '/research/#/paper-awards/'),
         )
 
         for r in redirects:

@@ -2,19 +2,19 @@ UPDATE hipeac_event
 SET image = CONCAT('public/images/18/', id, '.jpg')
 WHERE id IN (
 	6779, 6783, 6785, 6787, 6790, 6791, 6792, 6793, 6794, 6795, 6796
-)
+);
 
 
 UPDATE hipeac_event
 SET redirect_url = CONCAT('http://old.hipeac.net/hipeac', YEAR(start_date))
 WHERE id IN (
 	1, 2, 6, 7, 10, 12, 14, 16, 6780
-)
+);
 
 
 UPDATE hipeac_event
 SET redirect_url = CONCAT('http://acaces.hipeac.net/', YEAR(start_date), '/')
-WHERE id > 25 and id < 40
+WHERE id > 25 and id < 40;
 
 
 INSERT INTO `django_flatpage` (`id`, `url`, `title`, `content`, `enable_comments`, `template_name`, `registration_required`)
@@ -26,7 +26,8 @@ VALUES
 	(5, '/jobs/', 'HiPEAC Jobs', 'HiPEAC Jobs is a service offered by the HiPEAC Network to bring together recruiters (companies large and small, universities and research centres) with the skilled researchers that they need.', 0, 'recruitment/jobs.html', 0),
 	(6, '/news/', 'HiPEAC News', '-', 0, 'communication/news.html', 0),
 	(7, '/press/', 'Press room', '-', 0, 'communication/press.html', 0),
-	(8, '/network/', 'HiPEAC Network', 'Since 2004, the HiPEAC project has provided a hub for European researchers and industry representatives in computing systems.', 0, 'network/network.html', 0);
+	(8, '/network/', 'HiPEAC Network', 'Since 2004, the HiPEAC project has provided a hub for European researchers and industry representatives in computing systems.', 0, 'network/network.html', 0),
+    (9, '/research/', 'HiPEAC Research', 'The HiPEAC Paper Award aims to encourage HiPEAC members to publish their work at conferences in which Europe is not strongly represented. The award consists of a certificate.', 0, 'research/research.html', 0);
 
 
 INSERT INTO `django_flatpage_sites` (`id`, `flatpage_id`, `site_id`)
@@ -38,7 +39,8 @@ VALUES
 	(5, 5, 1),
 	(6, 6, 1),
 	(7, 7, 1),
-	(8, 8, 1);
+	(8, 8, 1),
+    (9, 9, 1);
 
 
 INSERT INTO `hipeac_page` (`flatpage_ptr_id`)
@@ -48,7 +50,8 @@ VALUES
 	(5),
 	(6),
 	(7),
-	(8);
+	(8),
+    (9);
 
 
 INSERT INTO `hipeac_block` (`id`, `key`, `notes`, `header`, `content`, `page_id`)
@@ -82,4 +85,7 @@ VALUES
 	(31, 'researchers_benefits', 'Custom icons can be used: <icon name=\"lock\"></icon>', 'Membership benefits', '- <icon name=\"accessibility_new\"></icon>Build partnerships and form project consortia with computing systems researchers all over Europe\r\n- <icon name=\"how_to_reg\"></icon>Find highly qualified, specialist staff and interns\r\n- <icon name=\"search\"></icon>Learn about the latest computing systems research\r\n- <icon name=\"record_voice_over\"></icon>Gain greater visibility for your research\r\n- <icon name=\"memory\"></icon>Grow your technology user base or ecosystem\r\n- <icon name=\"wb_incandescent\"></icon>Transform your research results into market-ready innovations\r\n- <icon name=\"star\"></icon>Find out about the latest policy directions and influence European Union work programmes and strategic agendas', 8),
 	(32, 'researchers_get_involved', '', 'Get involved', '- Advertise vacancies for your team on hipeac.net/jobs\n- Organize a workshop at the HiPEAC conference or Computing Systems Week\n- Attend the HiPEAC conference and participate in the exhibition\n- Attend HiPEAC’s annual summer school, ACACES – or send your students\n- Participate in an Inspiring Futures careers event\n- Contribute to the HiPEAC Vision\n- Contribute to the HiPEAC magazine', 8),
     (33, 'projects_benefits', 'Custom icons can be used: <icon name=\"lock\"></icon>', 'Membership benefits', '- <icon name=\"device_hub\"></icon>Build partnerships and form project consortia with computing systems researchers all over Europe\n- <icon name=\"how_to_reg\"></icon>Find specialist staff and interns qualified in the right technology for your project\n- <icon name=\"record_voice_over\"></icon>Meet your project dissemination objectives through activities organized by HiPEAC\n- <icon name=\"important_devices\"></icon>Take advantage of HiPEAC’s ready-made hub for project meetings\n- <icon name=\"memory\"></icon>Grow your technology user base or ecosystem\n- <icon name=\"star\"></icon>Influence European Union work programmes and strategic agendas', 8),
-	(34, 'projects_get_involved', '', 'Get involved', '- Advertise project vacancies on hipeac.net/jobs\n- Submit an internship proposal\n- Organize a workshop at the HiPEAC conference or Computing Systems Week\n- Showcase project at the HiPEAC conference exhibition\n- Present your project at a HiPEAC roadshow event\n- Contribute to the HiPEAC magazine', 8);
+	(34, 'projects_get_involved', '', 'Get involved', '- Advertise project vacancies on hipeac.net/jobs\n- Submit an internship proposal\n- Organize a workshop at the HiPEAC conference or Computing Systems Week\n- Showcase project at the HiPEAC conference exhibition\n- Present your project at a HiPEAC roadshow event\n- Contribute to the HiPEAC magazine', 8),
+    (35, 'about', 'Main header is taken from the parent page.', 'Since 2004, the HiPEAC (High Performance and Embedded Architecture and Compilation) project has provided a hub for European researchers and industry representatives in computing systems; today, its network, the biggest of its kind in the world, numbers almost 2,000 specialists. It provides a platform for cross-disciplinary research collaboration, brings together representatives from research, industry and policy, and helps prepare the next generation of world-class computer scientists.', 'HiPEAC organizes four networking events per year: the HiPEAC conference, two Computing Systems Weeks and a summer school. It also produces the biennial HiPEAC Vision, an influential roadmap which informs European technology research policy areas. In addition, the project offers training, support for academic and industry placements, help in finding excellent computing candidates, careers activities and dissemination support.', 9),
+	(36, 'paper_awards', '', 'The HiPEAC Paper Award aims to encourage HiPEAC members to publish their work at conferences in which Europe is not strongly represented. The award consists of a certificate.', 'The award is given to a HiPEAC member who presents a full paper in one of the following list of conferences (decision of the HiPEAC Steering Committee):\n\n- **ASPLOS**, Conference on Architectural Support for Programming Languages and Operating Systems\n- **DAC**, Design Automation Conference\n- **FCCM**, Symposium on Field-Programmable Custom Computing Machines\n- **HPCA**, International Symposium on High Performance Computer Architecture\n- **ISCA**, International Symposium on Computer Architecture\n- **MICRO**, Symposium on Microarchitecture\n- **PLDI,** Conference on Programming Language Design and Implementation\n- **POPL**, Symposium on Principles of Programming Languages', 9);
+;

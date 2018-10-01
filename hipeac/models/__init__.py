@@ -10,5 +10,6 @@ from .pages import *
 from .projects import *
 from .publicity import *
 from .recruitment import *
+from .research import *
 from .users import *
 from .vision import *

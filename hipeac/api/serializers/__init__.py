@@ -7,5 +7,6 @@ from .events import *
 from .institutions import *
 from .projects import *
 from .recruitment import *
+from .research import *
 from .users import *
 from .vision import *

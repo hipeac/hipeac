@@ -12,10 +12,11 @@ var ajax = function () {
                 url: url
             });
         },
-        get: function (url) {
+        get: function (url, data) {
             return $.ajax({
                 method: 'GET',
-                url: url
+                url: url,
+                data: data
             });
         },
         post: function (url, data) {

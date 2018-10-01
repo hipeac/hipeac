@@ -6,6 +6,16 @@ from rest_framework.relations import RelatedField
 from hipeac.models import Link, Metadata, get_cached_metadata, get_cached_metadata_queryset
 
 
+class CustomChoiceField(serializers.ChoiceField):
+    def to_representation(self, value):
+        if value is None:
+            return value
+        return {
+            'display': self.choices[value],
+            'value': value,
+        }
+
+
 class JsonField(serializers.CharField):
     def to_internal_value(self, data):
         return json.dumps(data)
