@@ -8,7 +8,7 @@ from .base import *  # noqa
 DEBUG = False
 
 APP_DOMAIN = 'hipeac.net'
-ALLOWED_HOSTS = (f'v5.{APP_DOMAIN}',)
+ALLOWED_HOSTS = (os.environ.get('DJANGO_ALLOWED_HOST', 'www.hipeac.net'),)
 MEDIA_ROOT = '/storage/sites/hipeac/'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
