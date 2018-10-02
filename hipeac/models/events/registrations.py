@@ -53,7 +53,7 @@ class Registration(models.Model):
     invoice_requested = models.BooleanField(default=False)
     invoice_sent = models.BooleanField(default=False)
 
-    visa_requested = models.BooleanField()
+    visa_requested = models.BooleanField(default=False)
     visa_sent = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)

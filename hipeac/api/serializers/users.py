@@ -23,10 +23,11 @@ class ProfileSerializer(UniqueFieldsMixin, serializers.ModelSerializer):
 class ProfileNestedSerializer(ProfileSerializer):
     institution = InstitutionNestedSerializer()
     second_institution = InstitutionNestedSerializer()
+    name = serializers.CharField(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ('country', 'bio', 'institution', 'second_institution', 'application_areas', 'topics')
+        fields = ('name', 'country', 'institution', 'second_institution', 'application_areas', 'topics')
 
 
 class UserPublicListSerializer(serializers.ModelSerializer):

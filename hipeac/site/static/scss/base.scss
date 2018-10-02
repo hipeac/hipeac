@@ -160,6 +160,10 @@ a {
         background: $hipeac-yellow;
     }
 
+    &.blue span {
+        background: $lightest-blue-color;
+    }
+
     &.transparent span {
         background: none;
     }

@@ -18,7 +18,7 @@ from hipeac.models import (
     Image, Link, Metadata, Permission,
     Institution, Project, Profile,
     Job,
-    Event, Session, Coupon, Fee, Registration,
+    Event, Session, Coupon, Fee, Registration, Poster,
     Roadshow,
     Article, Clipping, Quote, Vision
 )
@@ -61,7 +61,7 @@ class Command(BaseCommand):
         self.out('info', 'Show must go on!')
 
         site = Site.objects.get(pk=1)
-        site.domain = 'www.hipeac.net'
+        site.domain = 'v5.hipeac.net'
         site.name = 'HiPEAC'
         site.save()
 
@@ -70,6 +70,7 @@ class Command(BaseCommand):
         bulk_acl = []
         bulk_images = []
         bulk_links = []
+        bulk_redirects = []
 
         # Metadatas
 
@@ -601,7 +602,8 @@ class Command(BaseCommand):
                 end_date=ev.end_date,
                 registration_start_date=ev.registration_start_date,
                 registration_early_deadline=tz_ear,
-                registration_deadline=ev.end_date if ev.registration_deadline == '1970-01-01' else tz_dead
+                registration_deadline=ev.end_date if ev.registration_deadline == '1970-01-01' else tz_dead,
+                travel_info=ev.travel_information,
             ))
             if ev.google_album_url:
                 bulk_links.append(Link(
@@ -629,6 +631,7 @@ class Command(BaseCommand):
         bulk_sessions = []
         session_areas = {}
         session_topics = {}
+        session_ids = []
         ct = ContentType.objects.get_for_model(Session)
 
         for a in session.query(Base.classes.events_activity_areas).all():
@@ -644,6 +647,8 @@ class Command(BaseCommand):
         for s in session.query(Base.classes.events_activity).all():
             if s.event_id is None:
                 continue
+
+            session_ids.append(s.id)
             bulk_sessions.append(Session(
                 id=s.id,
                 event_id=s.event_id,
@@ -675,11 +680,11 @@ class Command(BaseCommand):
                     url=f'https://youtu.be/{s.youtube_id}' if 'user' not in s.youtube_id else s.youtube_id
                 ))
 
-            Redirect.objects.create(
+            bulk_redirects.append(Redirect(
                 site_id=1,
                 old_path=f'/events/activities/{s.id}/{s.slug}/',
                 new_path=f'{event_urls[s.event_id]}#/programme/{s.id}/',
-            )
+            ))
 
         for org in session.query(Base.classes.events_activity_organizers).all():
             bulk_acl.append(Permission(
@@ -782,6 +787,72 @@ class Command(BaseCommand):
         bulk_registrations = list(registrations.values())
         Registration.objects.bulk_create(bulk_registrations, batch_size=1000)
         self.out('success', f'✔ Registrations migrated! ({len(bulk_registrations)} records)')
+
+        registration_ids = list(registrations.keys())
+
+        bulk_session_regs = []
+        for rel in session.query(Base.classes.events_attendance).yield_per(10000):
+            if rel.registration_id in registration_ids and rel.activity_id in session_ids:
+                bulk_session_regs.append((
+                    rel.id,
+                    rel.registration_id,
+                    rel.activity_id,
+                ))
+
+        with connection.cursor() as cursor:
+            for batch in self.batch(bulk_session_regs, 10000):
+                query = """
+                    INSERT INTO hipeac_registration_sessions (id, registration_id, session_id)
+                    VALUES (%s, %s, %s)
+                """
+                cursor.executemany(query, batch)
+
+        bulk_session_logs = []
+        for rel in session.query(Base.classes.events_attendance_cache).yield_per(10000):
+            if rel.registration_id in registration_ids and rel.activity_id in session_ids:
+                bulk_session_logs.append((
+                    rel.id,
+                    rel.registration_id,
+                    rel.activity_id,
+                    tz.localize(rel.created_at).astimezone(pytz.utc),
+                ))
+
+        with connection.cursor() as cursor:
+            for batch in self.batch(bulk_session_logs, 10000):
+                query = """
+                    INSERT INTO hipeac_registrationlog (id, registration_id, session_id, created_at)
+                    VALUES (%s, %s, %s, %s)
+                """
+                cursor.executemany(query, batch)
+
+        self.out('success', '✔ Session registrations migrated!')
+
+        # Update posters
+
+        for reg in session.query(Base.classes.conferences_registration).all():
+            if reg.registration_ptr_id in registration_ids:
+                if reg.poster and reg.poster != '0':
+                    Poster.objects.create(
+                        registration_id=reg.registration_ptr_id,
+                        title=reg.poster if reg.poster != '1' else '(untitled)',
+                        type=Poster.STUDENT,
+                    )
+
+                if reg.poster_eu_project and reg.poster_eu_project != '':
+                    Poster.objects.create(
+                        registration_id=reg.registration_ptr_id,
+                        title=reg.poster_eu_project,
+                        type=Poster.PROJECT,
+                    )
+
+                if reg.poster_industrial and reg.poster_industrial != '':
+                    Poster.objects.create(
+                        registration_id=reg.registration_ptr_id,
+                        title=reg.poster_industrial,
+                        type=Poster.INDUSTRY,
+                    )
+
+        self.out('success', '✔ Posters migrated!')
 
         # Update counters
 
@@ -992,7 +1063,6 @@ class Command(BaseCommand):
         """
 
         self.out('std', 'Updating redirects...')
-        bulk_redirects = []
         redirects = (
             ('/acaces/', '/events/#/acaces/'),
             ('/csw/', '/events/#/csw/'),

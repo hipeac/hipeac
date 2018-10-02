@@ -1,0 +1,15 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div v-if="event" class="row">
+        <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+            <div class="hipeac-card"></div>
+        </div>
+        <div v-if="event.travel_info" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+            <div class="hipeac-card">
+                <display-sm class="mb-3">Travel information</display-sm>
+                <div class="marked" v-html="event.markedTravelInfo"></div>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

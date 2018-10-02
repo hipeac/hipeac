@@ -10,6 +10,7 @@ from .generic import ImagesInline, LinksInline
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     date_hierarchy = 'start_date'
+    inlines = (LinksInline,)
     list_display = ('id', 'start_date', 'end_date', 'name', 'type', 'sessions_link', 'registrations_link',
                     'is_active', 'is_open')
     list_filter = ('type',)
@@ -56,7 +57,7 @@ class RegistrationAdmin(admin.ModelAdmin):
 @admin.register(Roadshow)
 class RoadshowAdmin(admin.ModelAdmin):
     date_hierarchy = 'start_date'
-    inlines = [ImagesInline, LinksInline]
+    inlines = (ImagesInline, LinksInline)
     list_display = ('id', 'name', 'country', 'start_date', 'end_date')
 
 

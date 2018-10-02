@@ -17,7 +17,6 @@ class Router(DefaultRouter):
         self.register(r'communication/quotes', views.QuoteViewSet, base_name='quote')
         self.register(r'communication/articles', views.ArticleViewSet, base_name='article')
         self.register(r'communication/videos', views.VideoViewSet, base_name='video')
-        # self.register(r'press/releases', views.QuoteViewSet, base_name='press_release')
         self.register(r'metadata', views.MetadataViewSet, base_name='metadata')
         self.register(r'network/institutions', views.InstitutionViewSet, base_name='institution')
         self.register(r'network/members', views.MemberViewSet, base_name='member')
@@ -26,6 +25,7 @@ class Router(DefaultRouter):
         self.register(r'research/paper-awards/conferences', views.PublicationConferenceViewSet,
                       base_name='publication-conference')
         self.register(r'user', views.AuthUserViewSet, base_name='auth-user')
+        self.register(r'user/registrations', views.RegistrationViewSet, base_name='auth-registration')
         self.register(r'users', views.UserViewSet, base_name='user')
         self.register(r'vision', views.VisionViewSet, base_name='vision')
 

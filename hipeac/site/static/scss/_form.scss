@@ -50,3 +50,20 @@ ul.socialaccounts {
         height: 40px;
     }
 }
+
+.big-checkbox {
+    input[type="checkbox"] {
+        transform: scale(1.2);
+        float: left;
+        margin-top: .25rem;
+        margin-left: -1.5rem;
+    }
+
+    label {
+        cursor: pointer;
+        padding-left: 1.5rem;
+        font-size: 1rem;
+        font-weight: normal;
+        margin: 0;
+    }
+}

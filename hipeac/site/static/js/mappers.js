@@ -21,7 +21,9 @@ var mapper = function () {
             });
         },
         events: function (items) {
+            var sessionsMapper = this.sessions;
             return items.map(function (obj) {
+                obj.markedTravelInfo = (obj.travel_info) ? marked(obj.travel_info) : '';
                 obj.registrations_round = (obj.registrations_count)
                     ? Math.floor(obj.registrations_count / 10) * 10
                     : 0;
@@ -32,6 +34,9 @@ var mapper = function () {
                     moment(obj.start_date).format('MMMM D'),
                     moment(obj.end_date).format('D, YYYY'),
                 ].join('-');
+                if (obj.sessions) {
+                    obj.sessions = sessionsMapper(obj.sessions);
+                }
                 return obj;
             });
         },
@@ -78,8 +83,12 @@ var mapper = function () {
         },
         sessions: function (items) {
             return items.map(function (obj) {
-                obj.markedSummary = marked(obj.summary);
-                obj.q = '';
+                obj.markedSummary = (obj.summary) ? marked(obj.summary) : '';
+                obj.startAt = obj.start_at.substring(0, 5);
+                obj.endAt = obj.end_at.substring(0, 5);
+                obj.q = [
+                    obj.title
+                ].join(' ').toLowerCase();;
                 return obj;
             });
         },

@@ -1,0 +1,39 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div ref="modal" v-if="active" class="modal" tabindex="-1" role="dialog">
+        <div v-if="session" class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-light pb-0">
+                    <ul class="nav nav-tabs d-flex w-100">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#"><i class="material-icons mr-2">category</i>Keynote</a>
+                        </li>
+                        <!--<li class="nav-item">
+                            <a class="nav-link" href="#"><i class="material-icons mr-2">people</i>Attendees</a>
+                        </li>-->
+                        <editor-link :url="session.editor_href"></editor-link>
+                        <li class="nav-item pointer ml-auto">
+                            <a class="nav-link" @click.prevent="closeModal"><i class="material-icons">close</i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <display-md class="mt-0 mb-4 text-left">{{ session.title }}</display-md>
+                        </div>
+                        <div class="col-12 col-md-8 pr-md-4">
+                            <div class="marked mod" v-if="session.markedSummary" v-html="session.markedSummary"></div>
+                        </div>
+                        <div class="col-12 col-md-4 border-left pl-md-4">
+                            <display-sm :transparent="true" class="mb-3"><i class="material-icons sm mr-2">today</i>{{ session.date | moment }}</display-sm>
+                            <metadata-badges v-if="session.topics.length" title="Topics" :items="session.topics"></metadata-badges>
+                            <metadata-badges v-if="session.application_areas.length" title="Application areas" :items="session.application_areas" color="secondary"></metadata-badges>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

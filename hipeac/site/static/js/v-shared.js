@@ -83,6 +83,47 @@ Vue.filter('markdown', function (text) {
 });
 
 Vue.component('loading', {
+    data: function () {
+        return {
+            visible: false
+        }
+    },
+    props: {
+        text: {
+            type: String,
+            default: 'Loading...'
+        },
+        icon: {
+            type: String,
+            default: 'graph_eq'
+        },
+        delay: {
+            type: Number,
+            default: 500
+        }
+    },
+    template: '' +
+        '<span v-show="visible" class="navbar-text text-primary pt-0">' +
+            '<i class="material-icons sm mr-2">{{ icon }}</i>{{ text }}' +
+        '</span>' +
+    '',
+    methods: {
+        show: function (val) {
+            var self = this;
+            setTimeout(function () {
+                self.visible = val;
+            }, (val) ? 0 : this.delay);
+        }
+    },
+    created: function () {
+        EventHub.$on('loading', this.show);
+    },
+    beforeDestroy: function () {
+        EventHub.$off('loading');
+    }
+});
+
+Vue.component('loading2', {
     template: '' +
         '<div class="text-center my-5">' +
             '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="80px" height="80px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">' +
@@ -254,10 +295,13 @@ Vue.component('event-list', SimpleList.extend({
             '<div v-if="items" v-for="(data, isPast) in visibleItems">' +
                 '<display-sm v-if="isPast == \'false\'" :transparent="true" class="mb-3">Upcoming events</display-sm>' +
                 '<display-sm v-else :transparent="true" class="mb-3">Past events</display-sm>' +
-                '<table class="table pointer mt-0 mb-3 border-bottom">' +
+                '<table class="table pointer mt-0 mb-3">' +
                     '<tbody>' +
                         '<tr v-for="item in data" :key="item.id" @click="updateLocation(item.href)">' +
-                            '<td class="px-0" style="width:50px"><img v-if="item.images" :src="item.images.th" class="rounded w-100"></td>' +
+                            '<td class="px-0" style="width:50px">' +
+                                '<img v-if="item.images" :src="item.images.th" class="rounded w-100">' +
+                                '<span v-else class="avatar rounded"></span>' +
+                            '</td>' +
                             '<td>' +
                                 '{{ item.name }} {{ item.is_past }}<br>' +
                                 '<small><strong>{{ item.country.name }}</strong>, {{ item.dates }}</small>'+

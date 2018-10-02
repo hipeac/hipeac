@@ -1,10 +1,18 @@
 from django_countries.serializer_fields import CountryField
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
-from hipeac.models import Event, Registration, Roadshow, Session, Project
+from hipeac.models import Event, Registration, Poster, Roadshow, Session, Project
 from .generic import LinkSerializer, MetadataListField
 from .institutions import InstitutionNestedSerializer
 from .users import UserPublicListSerializer
+
+
+class PosterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Poster
+        fields = ('id', 'title', 'authors', 'type')
 
 
 class RegistrationListSerializer(serializers.ModelSerializer):
@@ -13,6 +21,19 @@ class RegistrationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
         fields = ('created_at', 'user')
+
+
+class AuthRegistrationSerializer(WritableNestedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='v1:auth-registration-detail', read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    posters = PosterSerializer(many=True)
+
+    class Meta:
+        model = Registration
+        exclude = ('user',)
+        write_only_fields = ('event',)
+        read_only_fields = ('fee', 'saldo', 'invoice_sent', 'visa_sent')
 
 
 class SessionNestedSerializer(serializers.ModelSerializer):
@@ -33,6 +54,7 @@ class SessionSerializer(SessionListSerializer):
     event = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
     date = serializers.DateField(read_only=True)
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
+    editor_href = serializers.CharField(source='get_editor_url', read_only=True)
 
     class Meta(SessionNestedSerializer.Meta):
         exclude = ('created_at', 'updated_at')

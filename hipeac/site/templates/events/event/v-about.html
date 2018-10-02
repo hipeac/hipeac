@@ -1,0 +1,69 @@
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div v-if="event" class="row">
+        <div class="col-12">
+            <div class="hipeac-card">
+                <div class="row text-center text-sm text-secondary">
+                    <div class="col-6 col-md-3 mb-3 mb-md-0">
+                        <router-link :to="{name: 'programme'}" class="d-block inherit">
+                            <i class="material-icons lg mb-2">today</i><br>
+                            <strong>{{ event.dates }}</strong>
+                            <i class="material-icons sm ml-1">arrow_forward</i>
+                        </router-link>
+                    </div>
+                    <div class="col-6 col-md-3 mb-3 mb-md-0">
+                        <router-link :to="{name: 'venue'}" class="d-block inherit">
+                            <i class="material-icons lg mb-2">location_on</i><br>
+                            <strong>{{ event.city }}, {{ event.country.name }}</strong>
+                            <i class="material-icons sm ml-1">arrow_forward</i>
+                        </router-link>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <router-link :to="{name: 'programme'}" class="d-block inherit">
+                            <i class="material-icons lg mb-2">category</i><br>
+                            <strong>{{ event.sessions.length }} sessions</strong>
+                            <i class="material-icons sm ml-1">arrow_forward</i>
+                        </router-link>
+                    </div>
+                    <div v-if="event.registrations_count" class="col-6 col-md-3">
+                        <router-link v-if="user.isRegistered" :to="{name: 'attendees'}" class="d-block inherit">
+                            <i class="material-icons lg mb-2">people</i><br>
+                            <strong>
+                                <span>{{ event.registrations_round }}</span>
+                                <span v-if="event.registrations_round < event.registrations_count">+</span>
+                                <span> attendees</span>
+                            </strong>
+                            <i class="material-icons sm ml-1">arrow_forward</i>
+                        </router-link>
+                        <router-link v-else :to="{name: 'registration'}" class="d-block text-success no-underline">
+                            <i class="material-icons lg mb-2">edit</i><br>
+                            <strong>REGISTER</strong>
+                        </router-link>
+                    </div>
+                    <div v-else class="col"></div>
+                    <div v-if="event.images" class="col-12 mt-4">
+                        <img :src="event.images.lg" class="rounded w-100">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-8">
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="hipeac-card" v-if="user.isRegistered && event.links.google_photos">
+                {% endverbatim %}
+                    <img src="{% static 'images/google-photos.png' %}" class="float-right">
+                {% verbatim %}
+                <catchphrase class="mb-0">Share your pictures from this event <a :href="event.links.google_photos">here</a>!</catchphrase>
+            </div>
+            <div class="hipeac-card" v-if="articles.length">
+                <display-sm :transparent="true">Latest news</display-sm>
+                <article-list :items="articles" :max="10" :show-more="false"></article-list>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

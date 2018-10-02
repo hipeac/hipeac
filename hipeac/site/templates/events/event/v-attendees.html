@@ -1,0 +1,11 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div>
+        <div class="hipeac-card">
+            <ul>
+                <li v-for="reg in registrations" :key="reg.id">{{ reg.user.profile.name }}</li>
+            </ul>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

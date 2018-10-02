@@ -1,0 +1,91 @@
+<script type="text/x-template" id="{{ id }}">
+    <div v-if="!user.isAuthenticated" class="text-center">
+        <display-lg class="blue">You need to log in to your HiPEAC account to register for an event.</display-lg>
+        <a href="{% url 'account_login' %}" class="btn btn-outline-primary">Log in</a>
+    </div>
+{% verbatim %}
+    <div v-else>
+        <div v-if="registration">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+                    <div class="hipeac-card text-sm">
+                        <catchphrase>{{ event.name }}<br>{{ event.dates }}</catchphrase>
+                        <hr>
+                        <div v-if="registration.id">
+                            <strong>Registration ID:</strong> {{ registration.id }}<br>
+                            <strong>Created:</strong> {{ registration.created_at | moment('LLL') }}<br>
+                            <strong>Last updated:</strong> {{ registration.updated_at | moment('LLL') }}<br>
+                            <hr>
+                        </div>
+                        <display-sm class="mb-3">Practical information</display-sm>
+                        <div class="big-checkbox">
+                            <label>
+                                <input type="checkbox" v-model="registration.visa_requested">
+                                <span>I require a visa to attend this event.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+                    <div v-if="event" class="hipeac-card">
+                        <loading text="Saving..." icon="save" class="float-right mt-2"></loading>
+                        <button @click.prevent="save" class="btn btn-success">Save registration</button>
+                        <hr class="my-4">
+                        <display-sm class="mb-3">Present a poster</display-sm>
+                        <p v-if="!registration.posters.length" class="text-sm">
+                            <a href @click.prevent="addPoster">Click here</a> if you want to present a poster during this event.</p>
+                        <table v-else class="table table-sm">
+                            <thead>
+                                <tr class="text-sm">
+                                    <th>Title</th>
+                                    <th>Authors</th>
+                                    <th>Type</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="poster in registration.posters">
+                                    <td class="pl-0">
+                                        <input v-model="poster.title" class="form-control form-control-sm">
+                                    </td>
+                                    <td><input v-model="poster.authors" class="form-control form-control-sm"></td>
+                                    <td>
+                                        <select v-model="poster.type" class="form-control form-control-sm">
+                                            <option value="student">Student poster</option>
+                                            <option value="industry">Company poster</option>
+                                            <option value="project">EU Project poster</option>
+                                        </select>
+                                    </td>
+                                    <td><a href @click.prevent="removePoster(poster)" class="text-danger"><icon name="remove_circle" class="sm mt-2"></icon></a></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <small><a href @click.prevent="addPoster"><icon name="add" class="sm mr-1"></icon>Present another poster</a></small>
+                            </tfoot>
+                        </table>
+                        <display-sm class="mt-5 mb-3">Choose sessions</display-sm>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr v-for="session in event.sessions" :key="session.id">
+                                    <td class="big-checkbox">
+                                        <label>
+                                            <input type="checkbox" v-model="registration.sessions" :value="session.id">
+                                            <span>{{ session.title }}</span>
+                                        </label>
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <small>{{ session.date | moment }}, {{ session.startAt }}</small>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr class="my-4">
+                        <loading text="Saving..." icon="save" class="float-right mt-2"></loading>
+                        <button @click.prevent="save" class="btn btn-success">Save registration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
