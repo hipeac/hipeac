@@ -21,21 +21,26 @@
         <meta name="twitter:site" content="@hipeac">
         {% block structured_data %}{% endblock %}
         {% if not debug %}
-            <link href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" type="text/css" rel="stylesheet">
-            <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+            <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
             {% compress js inline %}
                 <script>
-                    window.addEventListener('load', function() {
+                    window.addEventListener('load', function () {
                         window.cookieconsent.initialise({
                             'palette': {
                                 'popup': {
-                                    'background': '#252e39'
+                                    'background': '#eaf7f7',
+                                    'text': '#5c7291'
                                 },
                                 'button': {
-                                    'background': '#14a7d0'
+                                    'background': '#ffe800'
                                 }
                             },
-                            'theme': 'classic'
+                            "theme": "classic",
+                            "position": "bottom-right",
+                            "content": {
+                                "href": "/privacy-policy/"
+                            }
                         });
                     });
                 </script>
