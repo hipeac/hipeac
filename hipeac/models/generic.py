@@ -22,7 +22,7 @@ class Image(models.Model):
     FOLDER = 'public/images'
 
     image = models.FileField('Image', upload_to=FOLDER, null=True, blank=True)
-    position = models.PositiveSmallIntegerField()
+    position = models.PositiveSmallIntegerField(default=0)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='images')
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')

@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session as OrmSession
 from sqlalchemy import create_engine
 
 from hipeac.models import (
-    Link, Metadata, Permission,
+    Image, Link, Metadata, Permission,
     Institution, Project, Profile,
     Job,
     Event, Session, Coupon, Fee, Registration,
@@ -68,6 +68,7 @@ class Command(BaseCommand):
         # Related
 
         bulk_acl = []
+        bulk_images = []
         bulk_links = []
 
         # Metadatas
@@ -843,13 +844,32 @@ class Command(BaseCommand):
 
         self.out('std', 'Migrating Vision...')
         bulk_visions = []
+        ct = ContentType.objects.get_for_model(Vision)
 
         for v in session.query(Base.classes.publications_vision).all():
             bulk_visions.append(Vision(
                 id=v.id,
                 title=v.title,
-                description=v.description,
+                introduction=v.description,
+                summary=v.summary,
                 publication_date=v.release_date,
+                file=v.file,
+                file_draft=v.file_draft,
+                downloads=v.downloads,
+                downloads_draft=v.draft_downloads,
+            ))
+
+            bulk_images.append(Image(
+                content_type=ct,
+                object_id=v.id,
+                image=v.image,
+            ))
+
+            bulk_links.append(Link(
+                content_type=ct,
+                object_id=v.id,
+                type=Link.YOUTUBE,
+                url=f'https://www.youtube.com/watch?v={v.youtube_id}'
             ))
 
         Vision.objects.bulk_create(bulk_visions, batch_size=1000)
@@ -859,6 +879,7 @@ class Command(BaseCommand):
 
         self.out('std', 'Migrating articles...')
         bulk_articles = []
+        ct = ContentType.objects.get_for_model(Article)
 
         for article in session.query(Base.classes.press_article).all():
             bulk_articles.append(Article(
@@ -871,6 +892,14 @@ class Command(BaseCommand):
                 is_ready=(article.status == 'OK'),
                 created_at=tz.localize(article.created_at, is_dst=None).astimezone(pytz.utc),
                 created_by_id=article.author_id
+            ))
+
+        for art_photo in session.query(Base.classes.press_article_photos).all():
+            bulk_images.append(Image(
+                content_type=ct,
+                object_id=art_photo.article_id,
+                image=art_photo.file,
+                position=art_photo.position,
             ))
 
         Article.objects.bulk_create(bulk_articles, batch_size=1000)
@@ -928,6 +957,7 @@ class Command(BaseCommand):
 
         Permission.objects.bulk_create(bulk_acl, batch_size=1000)
         Link.objects.bulk_create(bulk_links, batch_size=1000)
+        Image.objects.bulk_create(bulk_images, batch_size=1000)
 
         with connection.cursor() as cursor:
             for batch in self.batch(bulk_job_profiles, 10000):

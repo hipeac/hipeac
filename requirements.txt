@@ -47,7 +47,7 @@ oauthlib==2.1.0
 pyasn1-modules==0.2.2
 pyasn1==0.4.4
 pysocks==1.6.8
-python-dateutil==2.7.3; python_version >= '2.7'
+python-dateutil==2.7.3
 python3-openid==3.1.0
 pytz==2018.5
 rcssmin==1.0.6
@@ -57,7 +57,7 @@ requests==2.19.1
 rjsmin==1.0.12
 rsa==4.0
 s3transfer==0.1.13
-sentry-sdk==0.3.6
+sentry-sdk==0.3.7
 six==1.11.0
 tweepy==3.6.0
 uritemplate==3.0.0

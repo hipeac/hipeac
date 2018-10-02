@@ -10,21 +10,21 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'about'}" class="nav-link" exact>About</router-link>
+        <router-link :to="{name: 'latest'}" class="nav-link" exact>Latest</router-link>
     </li>
-    <li class="nav-item">
+    <!--<li class="nav-item">
         <router-link :to="{name: 'archive'}" class="nav-link">Archive</router-link>
-    </li>
+    </li>-->
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-event-list="{% url 'v1:event-list' %}" class="container">
+    <div id="urls" data-vision-list="{% url 'v1:vision-list' %}" class="container">
         <router-view></router-view>
     </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' blck=flatpage.page.tbs.about %}
+    {% include './v-latest.html' with id='v-latest' blck=flatpage.page.tbs.about %}
     {% include './v-archive.html' with id='v-archive' blck=flatpage.page.tbs.archive %}
 {% endblock %}
 
@@ -33,46 +33,42 @@
     <script>
         var Store = new Vuex.Store({
             state: {
-                events: null
+                visions: null
             },
             mutations: {
-                fetchEvents: function (state) {
-                    ajax().get($('#urls').data('event-list')).done(function (res) {
-                        res.map(function (obj) {
-                            obj.dates = [
-                                moment(obj.start_date).format('MMMM D'),
-                                moment(obj.end_date).format('D YYYY'),
-                            ].join('-');
-                            return obj;
-                        });
-                        state.events = res;
+                fetchVisions: function (state) {
+                    ajax().get($('#urls').data('vision-list')).done(function (res) {
+                        state.visions = mapper().visions(res);
                     });
-                }
-            },
-            getters: {
-                groupedEvents: function (state) {
-                    if (!state.events) return null;
-                    return _.groupBy(state.events, 'type');
                 }
             }
         });
 
-        var AboutView = {
-            template: '#v-about'
+        var LatestView = {
+            template: '#v-latest',
+            computed: _.extend(
+                Vuex.mapState(['visions']), {
+                vision: function () {
+                    return this.visions[0];
+                }
+            })
         };
 
         var ArchiveView = {
-            template: '#v-archive'
+            template: '#v-archive',
+            computed: _.extend(
+                Vuex.mapState(['visions']), {
+            })
         };
 
         var Router = new VueRouter({
             linkActiveClass: 'active',
             routes: [
                 {
-                    name: 'about',
+                    name: 'latest',
                     path: '/',
                     pathToRegexpOptions: {strict: true},
-                    component: AboutView
+                    component: LatestView
                 },
                 {
                     name: 'archive',
@@ -89,7 +85,7 @@
             router: Router,
             created: function () {
                 $.when(
-                    this.$store.commit('fetchEvents')
+                    this.$store.commit('fetchVisions')
                 );
             }
         });

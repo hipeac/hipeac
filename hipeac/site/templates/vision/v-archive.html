@@ -1,5 +1,8 @@
 <script type="text/x-template" id="{{ id }}">
-{% verbatim %}
-    <display-lg></display-lg>
-{% endverbatim %}
+    <div v-if="visions">
+        <display-lg>{{ blck.header }}</display-lg>
+        {% verbatim %}
+            {{ visions }}
+        {% endverbatim %}
+    </div>
 </script>

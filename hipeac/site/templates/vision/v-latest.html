@@ -1,0 +1,29 @@
+{% load compress %}
+
+
+<script type="text/x-template" id="{{ id }}">
+    <div v-if="visions">
+        <display-lg>{{ blck.header }}</display-lg>
+        <div class="row">
+        {% verbatim %}
+            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <h5 class="mb-3">{{ vision.title }}</h5>
+                    <div v-if="vision.file">
+                        <a :href="vision.file" class="btn btn-sm btn-primary btn-block">Download Vision document</a>
+                        <hr>
+                    </div>
+                    <div v-html="vision.markedIntroduction" class="marked catchphrase-first"></div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <youtube-embed v-if="vision.youtube_url" :url="vision.youtube_url" :hideInfo="true" class="rounded mb-4"></youtube-embed>
+                    <display-sm class="mb-3">Summary</display-sm>
+                    <div v-html="vision.markedSummary" class="marked"></div>
+                </div>
+            </div>
+        {% endverbatim %}
+        </div>
+    </div>
+</script>

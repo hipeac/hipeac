@@ -50,16 +50,16 @@ var mapper = function () {
                 obj.internship = obj.employment_type.id == INTERNSHIP;
                 obj.q = [
                     (obj.internship) ? 'internships' : '',
-                    obj.title.toLowerCase(),
-                    (obj.institution) ? obj.institution.name.toLowerCase() : '',
-                    (obj.project) ? obj.project.acronym.toLowerCase() : '',
-                    (obj.project) ? obj.project.name.toLowerCase() : '',
-                    (obj.country) ? obj.country.name.toLowerCase() : '',
+                    obj.title,
+                    (obj.institution) ? obj.institution.name : '',
+                    (obj.project) ? obj.project.acronym : '',
+                    (obj.project) ? obj.project.name : '',
+                    (obj.country) ? obj.country.name : '',
                     obj.city,
                     obj.keywords.join(' '),
-                    _.map(obj.application_areas, function (o) { return o.value.toLowerCase(); }).join(' '),
-                    _.map(obj.topics, function (o) { return o.value.toLowerCase(); }).join(' ')
-                ].join(' ');
+                    _.map(obj.application_areas, function (o) { return o.value; }).join(' '),
+                    _.map(obj.topics, function (o) { return o.value; }).join(' ')
+                ].join(' ').toLowerCase();
                 return obj;
             });
         },
@@ -68,17 +68,26 @@ var mapper = function () {
                 obj.links = linkTransform(obj.links);
                 obj.topicIds = _.pluck(obj.topics, 'id');
                 obj.q = [
-                    obj.acronym.toLowerCase(),
-                    obj.name.toLowerCase(),
-                    _.map(obj.application_areas, function (o) { return o.value.toLowerCase(); }).join(' '),
-                    _.map(obj.topics, function (o) { return o.value.toLowerCase(); }).join(' ')
-                ].join(' ');
+                    obj.acronym,
+                    obj.name,
+                    _.map(obj.application_areas, function (o) { return o.value; }).join(' '),
+                    _.map(obj.topics, function (o) { return o.value; }).join(' ')
+                ].join(' ').toLowerCase();
                 return obj;
             });
         },
         sessions: function (items) {
             return items.map(function (obj) {
                 obj.markedSummary = marked(obj.summary);
+                obj.q = '';
+                return obj;
+            });
+        },
+        visions: function (items) {
+            return items.map(function (obj) {
+                obj.markedIntroduction = marked(obj.introduction);
+                obj.markedSummary = marked(obj.summary);
+                obj.q = '';
                 return obj;
             });
         }

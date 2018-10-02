@@ -176,6 +176,30 @@ Vue.component('catchphrase', {
     ''
 });
 
+Vue.component('youtube-embed', {
+    props: ['url', 'hideInfo'],
+    template: '' +
+        '<div class="embed-responsive embed-responsive-16by9">' +
+            '<iframe class="embed-responsive-item" :src="src" allowfullscreen></iframe>' +
+        '</div>' +
+    '',
+    computed: {
+        youtubeId: function () {
+            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+            var match = this.url.match(regExp);
+            return (match && match[7].length == 11) ? match[7] : null;
+        },
+        src: function () {
+            if (!this.youtubeId) return null;
+            return [
+                'https://www.youtube.com/embed/',
+                this.youtubeId,
+                (this.hideInfo) ? '?showinfo=0' : ''
+            ].join('');
+        }
+    }
+});
+
 var SimpleList = Vue.extend({
     methods: {
         updateLocation: function (url) {
