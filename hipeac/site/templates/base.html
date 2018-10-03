@@ -68,7 +68,7 @@
         <div id="particles"></div>
         {% block main %}{% block content %}{% endblock %}{% endblock %}
         {% block vue_templates %}{% endblock %}
-        <script src="//browser.sentry-cdn.com/4.0.4/bundle.min.js" crossorigin="anonymous"></script>
+
         {% compress js file bootstrap %}
             <script src="{% static 'vendor/jquery@3.3.1/jquery.min.js' %}"></script>
             <script src="{% static 'vendor/popper.js@1.14.3/popper.min.js' %}"></script>
@@ -78,11 +78,10 @@
             <script src="{% static 'vendor/marked@0.5.1/marked.js' %}"></script>
             <script src="{% static 'vendor/moment@2.22.2/moment.min.js' %}"></script>
             <script src="{% static 'vendor/underscore@1.9.1/underscore.min.js' %}"></script>
-            <script src="{% static 'vendor/es6-promise@4.2.5/es6-promise.auto.min.js' %}"></script>
             <script src="{% static 'js/__init__.js' %}"></script>
-            <script src="{% static 'js/sentry.js' %}"></script>
         {% endcompress %}
         {% compress js file vue %}
+            <script src="{% static 'vendor/es6-promise@4.2.5/es6-promise.auto.min.js' %}"></script>
             {% if debug %}
                 <script src="{% static 'vendor/vue@2.5.17/vue.js' %}"></script>
                 <script src="{% static 'vendor/vuex@3.0.1/vuex.js' %}"></script>
@@ -105,70 +104,66 @@
             <script>
                 if (!isSmallDevice() && !isIE()) {
                     particlesJS('particles', {
-                        'particles': {
-                            'number': {
-                                'value': 200,
-                                'density': {
-                                    'enable': true,
-                                    'value_area': 600
+                        "particles": {
+                            "number": {
+                                "value": 160,
+                                "density": {
+                                    "enable": true,
+                                    "value_area": 800
                                 }
                             },
-                            'color': {
-                                'value': '#ccc'
+                            "color": {
+                                "value": "#cccccc"
                             },
-                            'shape': {
-                                'type': 'circle',
-                                'stroke': {
-                                    'width': 0,
-                                    'color': '#ccc'
+                            "shape": {
+                                "type": "circle",
+                                "stroke": {
+                                    "width": 0
                                 },
-                                'polygon': {
-                                    'nb_sides': 6
+                                "polygon": {
+                                    "nb_sides": 5
                                 }
                             },
-                            'opacity': {
-                                'value': 0.5,
-                                'random': false,
-                                'anim': {
-                                    'enable': false,
-                                    'speed': 1,
-                                    'opacity_min': 0.1,
-                                    'sync': false
+                            "opacity": {
+                                "value": 1,
+                                "random": true,
+                                "anim": {
+                                    "enable": false,
+                                    "sync": false
                                 }
                             },
-                            'size': {
-                                'value': 3,
-                                'random': true,
-                                'anim': {
-                                    'enable': false,
-                                    'speed': 40,
-                                    'size_min': 0.1,
-                                    'sync': false
+                            "size": {
+                                "value": 3,
+                                "random": true,
+                                "anim": {
+                                    "enable": false,
+                                    "sync": false
                                 }
                             },
-                            'line_linked': {
-                                'enable': true,
-                                'distance': 150,
-                                'color': '#ddd',
-                                'opacity': 0.4,
-                                'width': 1
+                            "line_linked": {
+                                "enable": true,
+                                "distance": 150,
+                                "color": "#dddddd",
+                                "opacity": 0.5,
+                                "width": 1
                             },
-                            'move': {
-                                'enable': false,
-                                'speed': 5,
-                                'direction': 'none',
-                                'random': false,
-                                'straight': false,
-                                'out_mode': 'out',
-                                'bounce': false,
-                                'attract': {
-                                    'enable': false,
-                                    'rotateX': 600,
-                                    'rotateY': 1200
-                                }
+                            "move": {
+                                "enable": false
                             }
                         },
-                        'retina_detect': true
+                        "interactivity": {
+                            "detect_on": "canvas",
+                            "events": {
+                                "onhover": {
+                                    "enable": false
+                                },
+                                "onclick": {
+                                    "enable": false
+                                },
+                                "resize": true
+                            }
+                        },
+                        "retina_detect": true
                     });
                 }
             </script>

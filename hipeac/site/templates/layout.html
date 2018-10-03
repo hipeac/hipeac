@@ -9,12 +9,12 @@
     <div id="vue">
         <nav class="hipeac navbar sticky-top navbar-expand-lg navbar-light">
             <div class="container">
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
                 <a class="navbar-brand" href="{% url 'homepage' %}">
                     {% include '_hipeac_logo.svg' %}
                 </a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
@@ -69,25 +69,24 @@
                 <div class="col-12">
                     <hr class="my-5">
                 </div>
-                <div class="col-12 col-lg-2">
-                    <p class="text-sm">&copy; 2004-{% now 'Y' %} <strong>HiPEAC</strong></p>
-                </div>
-                <div class="col-12 col-lg-10">
+                <div class="col-12">
                     <img class="float-right flag-sm ml-3" src="{% static 'images/eu-flag.png' %}">
                     <p class="text-sm">
+                        <strong>&copy; 2004-{% now 'Y' %} HiPEAC, </strong>
                         <strong>European Network on High Performance and Embedded Architecture and Compilation</strong><br>
                         <span class="color-lightest-text">The HiPEAC project has received funding from the European Union’s Horizon2020 research and innovation programme under grant agreement number 779656.</span>
                     </p>
                     <ul class="list-inline">
-                        <li class="list-inline-item m-0"><a href="/api/v1/"><small>Open data</small></a></li>
-                        <li class="list-inline-item mx-3">|</li>
                         <li class="list-inline-item m-0">
-                            <a href="https://bitbucket.org/elis-eu/hipeac/issues" target="_blank"><small>Report an issue</small></a>
+                            <a href="https://bitbucket.org/elis-eu/hipeac/issues" target="_blank">
+                                <i class="material-icons sm mr-1">bug_report</i>
+                                <small>Report an issue</small>
+                            </a>
                         </li>
                         <li class="list-inline-item mx-3">|</li>
                         <li class="list-inline-item mr-3"><a href="/privacy-policy/"><small>Privacy policy</small></a></li>
                         <li class="list-inline-item"><a href="/disclaimer/"><small>Disclaimer</small></a></li>
-                    </nav>
+                    </ul>
                 </div>
             </div>
         </div>

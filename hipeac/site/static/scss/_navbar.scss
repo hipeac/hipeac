@@ -5,10 +5,12 @@
     padding: 0 0.75rem;
 
     .navbar-brand {
-        padding: 0.8rem 0 0;
+        width: 65px;
+        padding: .35rem 0 0;
 
         svg {
-            height: 48px;
+            width: 65px;
+            height: 46px;
         }
     }
 
