@@ -1,3 +1,5 @@
+import datetime
+
 from celery.execute import send_task
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
@@ -8,6 +10,7 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django_countries.fields import CountryField
+from typing import List
 
 from hipeac.functions import get_images_path
 from hipeac.models import Link
@@ -15,6 +18,11 @@ from ..mixins import ImagesMixin, LinkMixin
 
 
 EC_MEETING = 'ec_meeting'
+
+
+def validate_date(date, event) -> None:
+    if date < event.start_date or date > event.end_date:
+        raise ValidationError('Date is not valid for this event.')
 
 
 def validate_event_dates(event):
@@ -86,6 +94,10 @@ class Event(ImagesMixin, LinkMixin, models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def dates(self) -> List[datetime.date]:
+        dates_range = range(0, self.end_date.toordinal() - self.start_date.toordinal() + 1)
+        return [self.start_date + datetime.timedelta(days=x) for x in dates_range]
 
     def get_absolute_url(self) -> str:
         if self.type == self.EC_MEETING:

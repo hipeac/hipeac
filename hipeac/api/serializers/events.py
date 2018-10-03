@@ -2,10 +2,27 @@ from django_countries.serializer_fields import CountryField
 from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
-from hipeac.models import Event, Registration, Poster, Roadshow, Session, Project
+from hipeac.models import Event, Registration, Poster, Roadshow, Session, Break, Sponsor, Project
 from .generic import LinkSerializer, MetadataListField
 from .institutions import InstitutionNestedSerializer
+from .projects import ProjectNestedSerializer
 from .users import UserPublicListSerializer
+
+
+class BreakSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Break
+        exclude = ('event',)
+
+
+class SponsorSerializer(serializers.ModelSerializer):
+    institution = InstitutionNestedSerializer()
+    project = ProjectNestedSerializer()
+
+    class Meta:
+        model = Sponsor
+        exclude = ('event',)
 
 
 class PosterSerializer(serializers.ModelSerializer):
@@ -70,6 +87,9 @@ class EventNestedSerializer(serializers.ModelSerializer):
     name = serializers.CharField(read_only=True)
     links = LinkSerializer(many=True)
     images = serializers.DictField(read_only=True)
+    sponsors = SponsorSerializer(many=True, read_only=True)
+    breaks = BreakSerializer(many=True, read_only=True)
+    dates = serializers.ListField()
 
     class Meta:
         model = Event

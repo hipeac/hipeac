@@ -14,7 +14,7 @@
         <router-link :to="{name: 'about'}" class="nav-link" exact>About</router-link>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'programme'}" class="nav-link">Programme</router-link>
+        <router-link :to="{name: 'schedule'}" class="nav-link">Programme</router-link>
     </li>
     <li class="nav-item">
         <router-link :to="{name: 'venue'}" class="nav-link">Venue and travel</router-link>
@@ -55,8 +55,8 @@
 {% block vue_templates %}
     {% include './v-about.html' with id='v-about' %}
     {% include './v-attendees.html' with id='v-attendees' %}
-    {% include './v-programme.html' with id='v-programme' %}
     {% include './v-registration.html' with id='v-registration' %}
+    {% include './v-schedule.html' with id='v-schedule' %}
     {% include './v-session.html' with id='v-session' %}
     {% include './v-venue.html' with id='v-venue' %}
 {% endblock %}
@@ -114,13 +114,6 @@
             })
         };
 
-        var ProgrammeView = {
-            template: '#v-programme',
-            computed: _.extend(
-                Vuex.mapState(['event']), {
-            })
-        };
-
         var RegistrationView = {
             template: '#v-registration',
             data: function () {
@@ -132,6 +125,10 @@
             },
             computed: _.extend(
                 Vuex.mapState(['user', 'event']), {
+                emptySessions: function () {
+                    if (!this.registration) return true;
+                    return this.registration.sessions.length == 0;
+                }
             }),
             methods: {
                 fetchRegistration: function () {
@@ -150,7 +147,8 @@
                             self.registrationIsNew = true;
                             self.registration = {
                                 event: self.event.id,
-                                sessions: []
+                                sessions: [],
+                                posters: []
                             };
                         }
                     });
@@ -186,6 +184,13 @@
             }
         };
 
+        var ScheduleView = {
+            template: '#v-schedule',
+            computed: _.extend(
+                Vuex.mapState(['event']), {
+            })
+        };
+
         var SessionModalView = {
             template: '#v-session',
             data: function () {
@@ -213,7 +218,7 @@
             beforeRouteEnter: function (to, from, next) {
                 next(function (self) {
                     $(self.$refs['modal']).on('hide.bs.modal', function (e) {
-                        self.$router.push({name: 'programme', params: {}});
+                        self.$router.push({name: 'schedule', params: {}});
                     }).modal('show');
                 });
             },
@@ -252,23 +257,23 @@
                     component: AttendeesView
                 },
                 {
-                    name: 'programme',
-                    path: '/programme/',
-                    pathToRegexpOptions: {strict: true},
-                    component: ProgrammeView
-                },
-                {
                     name: 'registration',
                     path: '/registration/',
                     pathToRegexpOptions: {strict: true},
                     component: RegistrationView
                 },
                 {
+                    name: 'schedule',
+                    path: '/programme/',
+                    pathToRegexpOptions: {strict: true},
+                    component: ScheduleView
+                },
+                {
                     name: 'session',
                     path: '/programme/:sessionId/',
                     pathToRegexpOptions: {strict: true},
                     components: {
-                        default: ProgrammeView,
+                        default: ScheduleView,
                         modal: SessionModalView
                     },
                     props: {

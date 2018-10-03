@@ -13,15 +13,18 @@ class HideDeleteActionMixin:
 
 class ImagesInline(GenericTabularInline):
     model = Image
+    classes = ('collapse',)
     extra = 0
 
 
 class LinksInline(GenericTabularInline):
     model = Link
+    classes = ('collapse',)
     extra = 0
 
 
 class PermissionsInline(GenericTabularInline):
     model = Permission
-    raw_id_fields = ['user']
+    classes = ('collapse',)
     extra = 0
+    raw_id_fields = ('user',)

@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
                     <div class="hipeac-card text-sm">
-                        <catchphrase>{{ event.name }}<br>{{ event.dates }}</catchphrase>
+                        <catchphrase>{{ event.name }}<br>{{ event.datesStr }}</catchphrase>
                         <hr>
                         <div v-if="registration.id">
                             <strong>Registration ID:</strong> {{ registration.id }}<br>
@@ -29,7 +29,8 @@
                 <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
                     <div v-if="event" class="hipeac-card">
                         <loading text="Saving..." icon="save" class="float-right mt-2"></loading>
-                        <button @click.prevent="save" class="btn btn-success">Save registration</button>
+                        <button v-if="registrationIsNew" @click.prevent="save" class="btn btn-primary" :disabled="emptySessions">Create new registration</button>
+                        <button v-else @click.prevent="save" class="btn btn-outline-success" :disabled="emptySessions">Update registration</button>
                         <hr class="my-4">
                         <display-sm class="mb-3">Present a poster</display-sm>
                         <p v-if="!registration.posters.length" class="text-sm">
@@ -64,6 +65,7 @@
                             </tfoot>
                         </table>
                         <display-sm class="mt-5 mb-3">Choose sessions</display-sm>
+                        <small v-if="emptySessions" class="d-block text-danger mb-2">Please choose at list one session to attend.</small>
                         <table class="table table-sm">
                             <tbody>
                                 <tr v-for="session in event.sessions" :key="session.id">
@@ -81,7 +83,8 @@
                         </table>
                         <hr class="my-4">
                         <loading text="Saving..." icon="save" class="float-right mt-2"></loading>
-                        <button @click.prevent="save" class="btn btn-success">Save registration</button>
+                        <button v-if="registrationIsNew" @click.prevent="save" class="btn btn-primary" :disabled="emptySessions">Create new registration</button>
+                        <button v-else @click.prevent="save" class="btn btn-outline-success" :disabled="emptySessions">Update registration</button>
                     </div>
                 </div>
             </div>

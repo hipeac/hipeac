@@ -1,0 +1,43 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div class="row">
+        <ul v-if="event" class="col-12">
+            <div class="hipeac-card">
+                <div v-for="(data, date) in event.schedule" class="row">
+                    <div class="col-12 col-md-2">
+                        <display-md class="mt-0">{{ date | moment }}</display-md>
+                    </div>
+                    <div class="col-12 col-md-10">
+                        <div v-if="data.breaks">
+                            <ul class="list-unstyled text-secondary">
+                                <li v-for="bre in data.breaks" :key="bre.id" class="text-sm">
+                                    <icon :name="bre.icon" class="sm mr-1"></icon>
+                                    <span>{{ bre.startAt }}</span>
+                                    <icon name="arrow_forward" class="sm mx-1"></icon>
+                                    <span>{{ bre.endAt }}</span>
+                                    <span v-if="bre.notes" class="ml-3">{{ bre.notes }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div v-if="data.sessions" v-for="session in data.sessions" :key="session.id" class="row">
+                            <div class="col-12"><hr></div>
+                            <div class="col-3 col-lg-1">
+                                <catchphrase class="mb-0">{{ session.startAt }}</catchphrase>
+                            </div>
+                            <div class="col-9 col-lg-11">
+                                <small class="text-secondary text-nowrap"><icon name="arrow_forward" class="sm mr-1"></icon>{{ session.endAt }}</small><br>
+                                <router-link :to="{name: 'session', params: {sessionId: session.id}}">
+                                    <span>{{ session.title }}</span>
+                                </router-link>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <hr class="my-5">
+                    </div>
+                </div>
+            </div>
+        </ul>
+    </div>
+{% endverbatim %}
+</script>

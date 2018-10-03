@@ -1,16 +1,11 @@
 from django.contrib.contenttypes.fields import GenericRelation
-from django.core.exceptions import ValidationError
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 from django.template.defaultfilters import slugify
 
 from hipeac.models import Permission
+from .events import validate_date
 from ..mixins import LinkMixin
-
-
-def validate_date(date, event) -> None:
-    if date < event.start_date or date > event.end_date:
-        raise ValidationError('Date is not valid for this event.')
 
 
 class Session(LinkMixin, models.Model):

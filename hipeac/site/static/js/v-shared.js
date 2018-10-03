@@ -253,7 +253,7 @@ Vue.component('article-list', SimpleList.extend({
     props: ['items', 'max', 'showMore'],
     template: '' +
         '<div v-if="items">' +
-            '<table class="table pointer m-0 border-bottom">' +
+            '<table class="table pointer m-0">' +
                 '<tbody>' +
                     '<tr v-for="item in visibleItems" :key="item.id" @click="updateLocation(item.href)">' +
                         '<td class="pl-0">' +
@@ -304,7 +304,7 @@ Vue.component('event-list', SimpleList.extend({
                             '</td>' +
                             '<td>' +
                                 '{{ item.name }} {{ item.is_past }}<br>' +
-                                '<small><strong>{{ item.country.name }}</strong>, {{ item.dates }}</small>'+
+                                '<small><strong>{{ item.country.name }}</strong>, {{ item.datesStr }}</small>'+
                             '</td>' +
                             '<td class="text-right align-middle pr-0">' +
                                 '<a :href="item.href">' +

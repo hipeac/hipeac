@@ -3,18 +3,32 @@ from django.db.models import Count
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-from hipeac.models import Event, Registration, Roadshow, Session
+from hipeac.models import Event, Registration, Roadshow, Break, Session, Sponsor
 from .generic import ImagesInline, LinksInline
+
+
+class BreaksInline(admin.TabularInline):
+    model = Break
+    classes = ('collapse',)
+    extra = 0
+
+
+class SponsorsInline(admin.TabularInline):
+    model = Sponsor
+    classes = ('collapse',)
+    extra = 0
+    raw_id_fields = ('institution', 'project')
 
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     date_hierarchy = 'start_date'
-    inlines = (LinksInline,)
+    inlines = (BreaksInline, SponsorsInline, LinksInline,)
     list_display = ('id', 'start_date', 'end_date', 'name', 'type', 'sessions_link', 'registrations_link',
                     'is_active', 'is_open')
     list_filter = ('type',)
     list_per_page = 20
+    readonly_fields = ('registrations_count',)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(Count('sessions', distinct=True)) \
