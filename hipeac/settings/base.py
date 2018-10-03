@@ -22,8 +22,6 @@ OGONE_PSPID = os.environ.get('OGONE_PSPID', 'OGONE_PSPID')
 OGONE_SALT = os.environ.get('OGONE_SALT', 'OGONE_SALT')
 OGONE_URL = os.environ.get('OGONE_URL', 'OGONE_URL')
 PUBLICITY_BOT_PASSWORD = os.environ.get('PUBLICITY_BOT_PASSWORD', 'PUBLICITY_BOT_PASSWORD')
-SYMPA_USER = os.environ.get('SYMPA_USER', 'SYMPA_USER')
-SYMPA_PASSWORD = os.environ.get('SYMPA_PASSWORD', 'SYMPA_PASSWORD')
 
 INSTALLED_APPS = [
     'django.contrib.auth',

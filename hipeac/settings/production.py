@@ -56,30 +56,6 @@ CACHE_MIDDLEWARE_SECONDS = 120
 USE_ETAGS = True
 
 
-# https://docs.djangoproject.com/en/2.1/howto/static-files/deployment/
-# https://django-compressor.readthedocs.io/en/latest/
-
-AWS_ACCESS_KEY_ID = os.environ.get('MINIO_ACCESS_KEY')
-AWS_SECRET_ACCESS_KEY = os.environ.get('MINIO_SECRET_KEY')
-AWS_DEFAULT_ACL = 'public-read'
-AWS_QUERYSTRING_AUTH = False
-AWS_IS_GZIPPED = True
-
-AWS_S3_ENDPOINT_URL = 'https://tw06v070.ugent.be'
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=31536000',
-}
-
-AWS_STORAGE_BUCKET_NAME = 'hipeac'
-AWS_LOCATION = 'statics'
-
-COMPRESS_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/statics/'
-COMPRESS_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-STATIC_URL = COMPRESS_URL
-STATICFILES_STORAGE = 'hipeac.storages.CachedS3Boto3Storage'
-
-
 # http://celery.readthedocs.org/en/latest/django/
 
 CELERY_BROKER_URL = os.environ.get('RABBITMQ_URL')
