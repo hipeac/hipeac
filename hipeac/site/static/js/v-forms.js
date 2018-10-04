@@ -98,7 +98,7 @@ Vue.component('markdown-textarea', FormElement.extend({
     template: '' +
         '<div class="form-group">' +
             '<custom-label :text="label" :required="required" class="mb-0"></custom-label>' +
-            '<help-text>You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.<span v-if="helpText"> {{ helTextp }}</span></help-text>' +
+            '<help-text>You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.<span v-if="helpText"> {{ helpText }}</span></help-text>' +
             '<textarea ref="el" :value="value" class="form-control form-control-sm" rows="16" @input="updateValue"></textarea>' +
         '</div>' +
     ''
