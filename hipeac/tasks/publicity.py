@@ -2,11 +2,11 @@ import email
 import imaplib
 import json
 import lxml.html
+import os
 import re
 
 from celery.decorators import periodic_task
 from celery.task.schedules import crontab
-from django.conf import settings
 from email.header import decode_header, make_header
 from email.utils import parseaddr, parsedate_to_datetime
 from lxml.html.clean import Cleaner
@@ -16,6 +16,7 @@ from hipeac.tools.language import NaturalLanguageAnalyzer
 
 
 MAX_SPAM_LEVEL = 2
+PUBLICITY_BOT_PASSWORD = os.environ.get('PUBLICITY_BOT_PASSWORD')
 
 
 def decode_string(string: str) -> str:
@@ -43,7 +44,7 @@ def process_sympa_msg(msg_subject: str, content: str):
 def sync_emails():
     """Connects with email server and syncs emails sent to `publicity@hipeac.net`."""
     mbox = imaplib.IMAP4_SSL('mail.gandi.net')
-    mbox.login('publicity.bot@hipeac.net', settings.PUBLICITY_BOT_PASSWORD)
+    mbox.login('publicity.bot@hipeac.net', PUBLICITY_BOT_PASSWORD)
     mbox.select(mailbox='INBOX')
 
     res, data = mbox.search(None, 'ALL')

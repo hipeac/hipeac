@@ -5,8 +5,10 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils import timezone
 from django_countries.fields import CountryField
+from typing import Optional, Tuple
 
 from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
@@ -74,6 +76,22 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     def deadline_is_near(self) -> bool:
         return (self.deadline - timezone.now().date()).days < 7
 
+    def get_short_url(self) -> str:
+        return reverse('job_redirect', args=[self.id])
+
+    def get_status(self, social_media: str = 'other', prepend: str = '') -> Tuple[str, str]:
+        at = ''
+        url = f'https://www.hipeac.net{self.get_absolute_url()}'
+
+        if self.institution:
+            at = f' at #{"".join(self.institution.short_name.split())}'
+
+            if social_media == 'twitter' and self.institution.twitter_username:
+                at = f' at @{self.institution.twitter_username}'
+                url = f'hipeac.net{self.get_short_url()}'
+
+        return f'{prepend}#job{at}: {self.title}', url
+
     @property
     def slug(self) -> str:
         return slugify(self.title)
@@ -82,5 +100,11 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
 @receiver(post_save, sender=Job)
 def job_post_save(sender, instance, created, *args, **kwargs):
     if created:
+        try:
+            image_url = instance.institution.images['lg']
+        except Exception as e:
+            image_url = None
+
         send_task('hipeac.tasks.recruitment.process_keywords', (instance.id,))
-        # send_task('hipeac.tasks.twitter.tweet', ('message',))
+        send_task('hipeac.tasks.recruitment.share_in_linkedin', (instance.title, instance.get_status(), image_url))
+        send_task('hipeac.tasks.recruitment.tweet', (instance.get_status('twitter'),))

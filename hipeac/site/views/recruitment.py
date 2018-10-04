@@ -1,4 +1,5 @@
 from django.contrib.syndication.views import Feed
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from markdown import markdown as marked
@@ -7,6 +8,16 @@ from wkhtmltopdf.views import PDFTemplateResponse
 
 from hipeac.models import Job
 from .mixins import SlugMixin
+
+
+class JobRedirect(generic.View):
+    """
+    Redirects short URLs to job page.
+    This short URLs have the "hipeac.net/j7127" structure
+    """
+    def get(self, request, *args, **kwargs):
+        job = get_object_or_404(Job, pk=kwargs.get('pk'))
+        return redirect(job.get_absolute_url())
 
 
 class JobDetail(SlugMixin, generic.DetailView):

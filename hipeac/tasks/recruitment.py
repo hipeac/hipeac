@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from celery.decorators import periodic_task, task
@@ -6,21 +7,25 @@ from datetime import timedelta
 from django.core.mail import send_mail
 from django.db.models import Q, F
 from django.utils import timezone
+from typing import Optional, Tuple
 
 from hipeac.models import Job
 from hipeac.tools.language import NaturalLanguageAnalyzer
+from hipeac.tools.linkedin import LinkedInManager
+from hipeac.tools.twitter import Tweeter
 
 
+JOBS_DIGEST_EMAIL = 'jobs@hipeac.net'
 RECRUITMENT_EMAIL = 'recruitment@hipeac.net'
 
 
 def save_keywords(nl: NaturalLanguageAnalyzer, job: Job):
     job.keywords = json.dumps(nl.get_keywords(' '.join([job.title, job.description])))
-    job.processed_at = timezone.now()
+    job.processed_at = timezone.now() + datetime.timedelta(seconds=5)
     job.save()
 
 
-@task(max_retries=3)
+@task()
 def process_keywords(job_id: int):
     """Updates keywords for a recently created job."""
     nl = NaturalLanguageAnalyzer()
@@ -28,17 +33,24 @@ def process_keywords(job_id: int):
     save_keywords(nl, job)
 
 
-@periodic_task(run_every=crontab(minute=20), max_retries=3)
+@periodic_task(run_every=crontab(minute=20))
 def process_bulk_keywords():
     """Updates keywords for jobs that have been recently created or updated."""
     nl = NaturalLanguageAnalyzer()
-    for job in Job.objects.filter(Q(processed_at__isnull=True) | Q(updated_at__gt=F('processed_at'))):
+    for job in Job.objects.active().filter(Q(processed_at__isnull=True) | Q(updated_at__gt=F('processed_at'))):
         save_keywords(nl, job)
 
 
-@periodic_task(run_every=crontab(day_of_week='mon-fri', hour=10, minute=0), max_retries=3)
+@periodic_task(run_every=crontab(day_of_week='mon-fri', hour=10, minute=0))
 def send_expiration_reminders():
-    """Sends an email when a Job is about to expire."""
+    """Sends a tweet and an email when a Job is about to expire."""
+    today = timezone.now().date()
+    in_five_days = (timezone.now() + timedelta(days=5)).date()
+    jobs = Job.objects.filter(deadline__gte=today, deadline__lte=in_five_days, last_reminder__isnull=True)
+
+    for job in jobs:
+        tweet.delay(job.get_status('twitter', 'Last days to apply for '))
+
     send_mail(
         '[HiPEAC Bot] Job expiration reminders sent (10h)',
         'N reminders have been sent to: company1, company2.',
@@ -48,10 +60,10 @@ def send_expiration_reminders():
     )
 
 
-@periodic_task(run_every=crontab(day_of_week='mon-fri', hour=10, minute=0), max_retries=3)
+@periodic_task(run_every=crontab(day_of_week='mon-fri', hour=10, minute=0))
 def send_evaluations():
     two_weeks_ago = (timezone.now() - timedelta(days=14)).date()
-    jobs = Job.objects.filter(deadline__lte=two_weeks_ago)
+    # jobs = Job.objects.filter(deadline__lte=two_weeks_ago)
     send_mail(
         '[HiPEAC Bot] Job evaluations sent (10h10)',
         'N evalution emails have been sent to: company1, company2.',
@@ -61,7 +73,7 @@ def send_evaluations():
     )
 
 
-@periodic_task(run_every=crontab(day_of_week='fri', hour=10, minute=0), max_retries=3)
+@periodic_task(run_every=crontab(day_of_week='fri', hour=10, minute=0))
 def send_weekly_digest():
     """Sends a digest to publicity@hipeac.net with the Jobs posted in the last 2 weeks, every two weeks."""
     today = timezone.now().date()
@@ -72,21 +84,25 @@ def send_weekly_digest():
     send_mail(
         'Latest computing jobs and opportunities (10h)',
         'Includes jobs posted in the last two weeks.',
-        'noreply@hipeac.net',
+        JOBS_DIGEST_EMAIL,
         ['eneko@illarra.com'],
         fail_silently=True,
     )
 
 
-"""
-from celery.decorators import periodic_task
-from celery.task.schedules import crontab
-from celery.utils.log import get_task_logger
-from datetime import timedelta
-from django.conf import settings
-from django.utils import timezone
-from twitter import *
+@task()
+def share_in_linkedin(title: str, status: Tuple[str, str], thumbnail_url: Optional[str]):
+    """Shares a post in LinkedIn."""
+    LinkedInManager().share_page(title, *status, thumbnail_url)
 
+
+@task(rate_limit='10/h')
+def tweet(status: Tuple[str, str]):
+    """Sends a tweet."""
+    Tweeter(account='hipeacjobs').update_status(*status)
+
+
+"""
 from .emails import send_job_reminder, send_job_evaluation
 from .models import Job
 
@@ -98,14 +114,6 @@ def send_expiration_reminders():
     today = timezone.now().date()
     in_five_days = (timezone.now() + timedelta(days=5)).date()
     jobs = Job.objects.filter(deadline__gte=today, deadline__lte=in_five_days)
-
-    for job in jobs:
-        if job.share and not job.reminder_sent_for and not settings.DEBUG:
-            oauth_twitter = settings.OAUTH_TWITTER
-            t = Twitter(auth=OAuth(oauth_twitter['access_token'], oauth_twitter['access_token_secret'],
-                                   oauth_twitter['api_key'], oauth_twitter['api_secret']))
-            t.statuses.update(status=job.get_status(True, True, True, 'Last days to apply to '))
-
     sent = send_job_reminder(jobs)
 
     if sent:

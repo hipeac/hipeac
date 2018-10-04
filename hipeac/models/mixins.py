@@ -64,7 +64,7 @@ class UrlMixin:
     route_name = None
 
     def get_absolute_url(self) -> str:
-        return reverse(self.route_name, args=[str(self.id), self.slug])  # noqa
+        return reverse(self.route_name, args=[self.id, self.slug])  # noqa
 
     def get_editor_url(self) -> str:
         content_type = ContentType.objects.get_for_model(self)

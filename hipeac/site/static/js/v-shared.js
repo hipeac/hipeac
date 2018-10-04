@@ -515,7 +515,7 @@ Vue.component('open-jobs-row', {
     template: '' +
         '<div v-if="jobs.length" class="row">' +
             '<div class="col-12 col-lg-2">' +
-                '<h5 class="display-sm mb-4">Jobs</h5>' +
+                '<h5 class="display-sm mt-4 mb-1">Jobs</h5><hr>' +
             '</div>' +
             '<div class="col-12 col-lg-10">' +
                 '<job-cards :jobs="jobs"></job-cards>' +
