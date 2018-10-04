@@ -20,6 +20,5 @@ RUN apk add --no-cache bash \
     && apk del .build
 
 COPY . /app
-ENV NLTK_DATA=/app/nltk_data
 
 EXPOSE 5000
