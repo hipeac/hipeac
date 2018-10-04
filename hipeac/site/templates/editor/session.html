@@ -11,13 +11,13 @@
 {% verbatim %}
     <script type="text/x-template" id="v-editor">
         <div v-if="obj" class="hipeac-card">
-            <hipeac-logo class="hipeac logo-sm mb-3 float-right"></hipeac-logo>
-            <display-sm>Please add a detailed description of the job offer and fill in the Career level section of the form to target specific HiPEAC users. The job will be automatically shared on HiPEAC's Twitter and LinkedIn accounts.</display-sm>
+            <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
+            <display-sm>Please update the session's information.</display-sm>
             <form class="mt-4">
-                <custom-input v-model.trim="obj.title" type="text" label="Title" :required="true"></custom-input>
-                <markdown-textarea v-model.trim="obj.summary" label="Summary" :required="true"></markdown-textarea>
-                <metadata-checkboxes v-model="obj.topics" type="topic" label="Topics" sorting="value"></metadata-checkboxes>
-                <metadata-checkboxes v-model="obj.application_areas" type="application_area" label="Application areas" sorting="value"></metadata-checkboxes>
+                <custom-input v-model.trim="obj.title" type="text" field="title"></custom-input>
+                <markdown-textarea v-model.trim="obj.summary" field="summary"></markdown-textarea>
+                <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
+                <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
             </form>
         </div>
     </script>

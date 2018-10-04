@@ -71,7 +71,8 @@ class SessionSerializer(SessionListSerializer):
     event = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
     date = serializers.DateField(read_only=True)
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
-    editor_href = serializers.CharField(source='get_editor_url', read_only=True)
+    href = serializers.URLField(source='get_absolute_url', read_only=True)
+    editor_href = serializers.URLField(source='get_editor_url', read_only=True)
 
     class Meta(SessionNestedSerializer.Meta):
         exclude = ('created_at', 'updated_at')

@@ -19,6 +19,9 @@
         <router-link :to="{name: 'careerCenter'}" class="nav-link">Career center</router-link>
     </li>
     <li class="nav-item">
+        <router-link :to="{name: 'internships'}" class="nav-link">Internship programme</router-link>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="https://twitter.com/hipeacjobs" target="_blank"><span is="twitter-icon"></span></a>
     </li>
     <li class="nav-item">
@@ -38,6 +41,7 @@
 {% block vue_templates %}
     {% include './v-about.html' with id='v-about' display=flatpage.content blck=flatpage.page.tbs.about recruiters=flatpage.page.tbs.about_recruiters students=flatpage.page.tbs.about_students %}
     {% include './v-career-center.html' with id='v-career-center' blck=flatpage.page.tbs.career_center %}
+    {% include './v-internships.html' with id='v-internships' %}
     {% include './v-jobs.html' with id='v-jobs' %}
 {% endblock %}
 
@@ -108,7 +112,7 @@
             mutations: {
                 fetchJobs: function (state) {
                     ajax().get($('#urls').data('job-list')).done(function (res) {
-                        state.jobs = res;
+                        state.jobs = mapper().jobs(res);
                     });
                 }
             }
@@ -125,11 +129,31 @@
             template: '#v-career-center'
         };
 
+        var InternshipsView = {
+            template: '#v-internships'
+        };
+
         var JobsView = {
             template: '#v-jobs',
+            data: function () {
+                return {
+                    q: ''
+                }
+            },
             computed: _.extend(
                 Vuex.mapState(['jobs']), {
-            })
+                filteredIds: function () {
+                    return _.pluck(filterMultiple(this.jobs, this.q), 'id');
+                }
+            }),
+            methods: {
+                updateQuery: function (val) {
+                    this.q = val;
+                }
+            },
+            created: function () {
+                EventHub.$on('query-changed', this.updateQuery);
+            }
         };
 
         var Router = new VueRouter({
@@ -146,6 +170,12 @@
                     path: '/career-center/',
                     pathToRegexpOptions: {strict: true},
                     component: CareerCenterView
+                },
+                {
+                    name: 'internships',
+                    path: '/internships/',
+                    pathToRegexpOptions: {strict: true},
+                    component: InternshipsView
                 },
                 {
                     name: 'jobs',

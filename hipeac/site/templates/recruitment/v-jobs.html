@@ -1,8 +1,19 @@
 <script type="text/x-template" id="{{ id }}">
-{% verbatim %}
     <div v-if="!jobs.length" is="loading"></div>
     <div v-else>
-        <job-list :items="jobs" :show-extra-filters="true" :show-search="true"></job-list>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-2">
+                <div class="hipeac-card">
+                    <a href="{% url 'editor_create' 'job' %}" class="btn btn-sm btn-block btn-primary">Add new</a>
+                    <hr class="my-4">
+                    <display-sm :transparent="true">Find your ideal computing job in Europe. <span v-if="jobs">There are currently <em v-html="jobs.length"></em> open positions!</span></display-sm>
+                    <hr class="my-4">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-10">
+                <search-card placeholder="Search open positions by title, company, country, topic or keywords..." class="mb-2"></search-card>
+                <job-cards :jobs="jobs" :filter="true" :ids="filteredIds"></job-cards>
+            </div>
+        </div>
     </div>
-{% endverbatim %}
 </script>

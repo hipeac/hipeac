@@ -1,3 +1,4 @@
+from celery.execute import send_task
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
@@ -48,12 +49,13 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     topics = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
     links = GenericRelation('hipeac.Link')
 
-    keywords = models.TextField(null=True, blank=True, editable=False)
+    keywords = models.TextField(default='[]', editable=False)
     last_reminder = models.DateTimeField(null=True, blank=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL,
                                    related_name='posted_jobs')
     updated_at = models.DateTimeField(auto_now=True)
+    processed_at = models.DateTimeField(null=True, editable=False)
 
     objects = JobManager()
 
@@ -80,5 +82,5 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
 @receiver(post_save, sender=Job)
 def job_post_save(sender, instance, created, *args, **kwargs):
     if created:
+        send_task('hipeac.tasks.recruitment.process_keywords', (instance.id,))
         # send_task('hipeac.tasks.twitter.tweet', ('message',))
-        pass

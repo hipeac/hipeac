@@ -48,6 +48,7 @@ urlpatterns = [
     path('events/ec/<int:pk>/', views.EventDetail.as_view(), name='ec_meeting'),
     re_path(r'^events/roadshow/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.RoadshowDetail.as_view(), name='roadshow'),
     # Editor
+    path('editor/new/<slug:model>/', never_cache(views.EditorCreateView.as_view()), name='editor_create'),
     path('editor/<int:ct>/<int:pk>/', never_cache(views.EditorView.as_view()), name='editor'),
     # Users
     re_path(r'^~(?P<username>[\w.@-]+)/$', views.JobDetail.as_view(), name='user'),

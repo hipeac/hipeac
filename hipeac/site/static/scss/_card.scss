@@ -42,3 +42,62 @@
         }
     }
 }
+
+$jobs-card-gutter: .25rem;
+$jobs-card-logo-height: 35px;
+
+.row.jobs-gutters {
+    margin-right: -$jobs-card-gutter;
+    margin-left: -$jobs-card-gutter;
+
+    > div {
+        padding-right: $jobs-card-gutter;
+        padding-left: $jobs-card-gutter;
+        margin-bottom: $jobs-card-gutter * 2;
+    }
+}
+
+.jobs-card {
+    padding: 1rem 1.5rem 1rem;
+
+    .header {
+        display: table-cell;
+        height: $jobs-card-logo-height;
+        vertical-align: middle;
+    }
+
+    .title {
+        margin-top: 1rem;
+        padding-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    img {
+        max-height: $jobs-card-logo-height;
+    }
+
+    ul {
+        border-top: 2px solid whitesmoke;
+        margin-top: 1rem;
+        padding-top: .5rem;
+        margin: 0;
+        font-size: small;
+
+        &.soon {
+            .deadline {
+                background: $hipeac-yellow;
+            }
+        }
+
+        li {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    i.sm {
+        margin-right: 0.3rem;
+    }
+}

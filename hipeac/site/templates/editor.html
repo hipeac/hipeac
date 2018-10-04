@@ -35,13 +35,13 @@
                     <li class="nav-item">
                         <a href="#" class="nav-link active">Editor</a>
                     </li>
-                    <li v-cloak v-if="obj" class="nav-item">
+                    <li v-cloak v-if="obj && obj.href" class="nav-item">
                         <a :href="obj.href" class="nav-link">View on hipeac.net</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div id="urls" data-base="{{ base_url }}" data-obj-id="{{ obj_id }}" class="container-fluid">
+        <div id="urls" data-base="{{ base_url }}" data-obj-id="{{ obj_id | default:"0" }}" class="container-fluid">
             <div class="row d-flex align-content-stretch">
                 <div class="col-12 col-lg-6 scrollable">
                     <router-view></router-view>
@@ -64,6 +64,13 @@
 {% endblock %}
 
 {% block scripts %}
+{% compress js inline %}
+    {% block obj %}
+        <script>
+            var OBJ = {};
+        </script>
+    {% endblock %}
+{% endcompress %}
 {% compress js file editor %}
     <script>
         var Store = new Vuex.Store({
@@ -72,17 +79,42 @@
                     status: 'waiting',
                     error: null
                 },
+                objId: +$('#urls').data('obj-id'),
                 obj: null
             },
+            getters: {
+                isNew: function (state) {
+                    return state.objId == 0;
+                }
+            },
             mutations: {
+                createObject: function (state) {
+                    if (state.objId > 0) return;
+                    var self = this;
+                    var url = $('#urls').data('base');
+                    self.commit('startSaving');
+                    ajax().post(url, state.obj).done(function (res) {
+                        state.objId = res.id;
+                        state.obj = res;
+                        self.commit('endSaving');
+                    }).fail(function (err) {
+                        self.commit('logError', err);
+                    });;
+                },
                 fetchObject: function (state) {
-                    var url = $('#urls').data('base') + $('#urls').data('obj-id') + '/';
+                    if (state.objId == 0) {
+                        state.obj = OBJ;
+                        return;
+                    }
+
+                    var url = $('#urls').data('base') + state.objId + '/';
                     ajax().get(url).done(function (res) {
                         state.obj = res;
                     });
                 },
                 fetchOptions: function (state) {
-                    var url = $('#urls').data('base') + $('#urls').data('obj-id') + '/';
+                    if (state.objId == 0) var url = $('#urls').data('base');
+                    else var url = $('#urls').data('base') + state.objId + '/';
                     ajax().options(url).done(function (res) {
                         ComponentStore.commit('setOptions', res);
                     });
@@ -111,10 +143,16 @@
         var EditorView = {
             template: '#v-editor',
             computed: _.extend(
-                Vuex.mapState(['obj']), {
+                Vuex.mapState(['obj']),
+                Vuex.mapGetters(['isNew']), {
             }),
             methods: {
+                createObj: function (e) {
+                    this.$store.commit('createObject');
+                },
                 updateObj: function (e) {
+                    if (this.isNew) return;
+
                     var store = this.$store;
                     store.commit('startSaving');
                     ajax().put(this.obj.url, this.obj).done(function (res) {
@@ -162,7 +200,8 @@
             store: Store,
             router: Router,
             computed: _.extend(
-                Vuex.mapState(['obj', 'ui']), {
+                Vuex.mapState(['obj', 'ui']),
+                Vuex.mapGetters(['isNew']), {
             }),
             created: function () {
                 $.when(

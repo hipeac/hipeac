@@ -1,13 +1,39 @@
-from celery.decorators import periodic_task
+import json
+
+from celery.decorators import periodic_task, task
 from celery.task.schedules import crontab
 from datetime import timedelta
 from django.core.mail import send_mail
+from django.db.models import Q, F
 from django.utils import timezone
 
 from hipeac.models import Job
+from hipeac.tools.language import NaturalLanguageAnalyzer
 
 
 RECRUITMENT_EMAIL = 'recruitment@hipeac.net'
+
+
+def save_keywords(nl: NaturalLanguageAnalyzer, job: Job):
+    job.keywords = json.dumps(nl.get_keywords(' '.join([job.title, job.description])))
+    job.processed_at = timezone.now()
+    job.save()
+
+
+@task(max_retries=3)
+def process_keywords(job_id: int):
+    """Updates keywords for a recently created job."""
+    nl = NaturalLanguageAnalyzer()
+    job = Job.objects.get(pk=job_id)
+    save_keywords(nl, job)
+
+
+@periodic_task(run_every=crontab(minute=20), max_retries=3)
+def process_bulk_keywords():
+    """Updates keywords for jobs that have been recently created or updated."""
+    nl = NaturalLanguageAnalyzer()
+    for job in Job.objects.filter(Q(processed_at__isnull=True) | Q(updated_at__gt=F('processed_at'))):
+        save_keywords(nl, job)
 
 
 @periodic_task(run_every=crontab(day_of_week='mon-fri', hour=10, minute=0), max_retries=3)

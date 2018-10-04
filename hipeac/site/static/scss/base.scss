@@ -1,6 +1,7 @@
 $hipeac-blue: #005eb8;
 $hipeac-yellow: #ffe800;
 $hipeac-light-yellow: #fef9ab;
+$hipeac-light-blue: lightblue;
 
 $text-color: #37474F;  // Blue Grey 800
 $light-text-color: #607D8B;  // Blue Grey 500
@@ -18,7 +19,8 @@ $border-radius: .25rem;
 
 /* Vue.js */
 
-[v-cloak] {
+[v-cloak],
+[v-hide] {
     display: none !important;
 }
 
@@ -40,6 +42,10 @@ html, body {
     font-weight: 400;
     line-height: 1.4;
     color: $text-color;
+}
+
+.container {
+    max-width: 1200px;
 }
 
 [v-cloak] {
@@ -85,6 +91,10 @@ a {
 
 .text-light-grey {
     color: #ccc !important;
+}
+
+.text-light-weight {
+    font-weight: 300 !important;
 }
 
 .badge-light {
@@ -333,7 +343,7 @@ span.avatar {
     border-radius: 999px;
 
     &.b {
-        border: 3px solid lightblue;
+        border: 3px solid $hipeac-light-blue;
     }
 
     &.lg {
@@ -347,7 +357,7 @@ span.avatar {
 
 .logo-sm {
     &.hipeac {
-        width: 80px;
+        width: 50px;
     }
 }
 

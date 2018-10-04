@@ -1,40 +1,3 @@
-Vue.component('search-box', {
-    data: function () {
-        return {
-            q: ''
-        }
-    },
-    props: ['placeholder'],
-    template: '' +
-        '<div class="hipeac-card mb-3">' +
-            '<div>' +
-                '<span class="float-left mr-2 pointer">' +
-                    '<i v-if="q" @click="q = \'\'" class="material-icons">&#xE5CD;</i>' +
-                    '<i v-else class="material-icons text-primary">&#xE8B6;</i>' +
-                '</span>' +
-                '<input v-model="q" type="text" class="form-control search-bar" :placeholder="placeholder">' +
-            '</div>' +
-        '</div>' +
-    '',
-    watch: {
-        'q': function (val, oldVal) {
-            if (val != oldVal) {
-                if (val != '') this.$router.replace({query: {q: val}});
-                else this.$router.replace({name: this.$route.name});
-
-                EventHub.$emit('query-changed', val);
-            }
-        }
-    },
-    created: function () {
-        if (this.$route.query.q) {
-            this.q = this.$route.query.q;
-            EventHub.$emit('query-changed', this.q);
-        }
-    }
-});
-
-
 var SearchList = Vue.extend({
     data: function () {
         return {
@@ -99,7 +62,7 @@ Vue.component('project-list', SearchList.extend({
                 '</label>' +
             '</div>' +
             '<div class="col">' +
-                '<search-box v-if="showSearch" class="container py-4" placeholder="Search projects by name, topic or keywords..."></search-box>' +
+                '<search-card v-if="showSearch" class="container py-4" placeholder="Search projects by name, topic or keywords..."></search-card>' +
                 '<div class="hipeac-card with-table">' +
                     '<table class="table w-100 m-0">' +
                         '<tbody class="no-top-line">' +
@@ -217,7 +180,7 @@ Vue.component('job-list', SearchList.extend({
                 '</div>' +
             '</div>' +
             '<div class="col">' +
-                '<search-box v-if="showSearch" class="container py-4" placeholder="Search open positions by title, company, country, topic or keywords..."></search-box>' +
+                '<search-card v-if="showSearch" class="container py-4" placeholder="Search open positions by title, company, country, topic or keywords..."></search-card>' +
                 '<div class="hipeac-card with-table">' +
                     '<table class="table w-100 m-0">' +
                         '<tbody class="no-top-line">' +
@@ -281,31 +244,3 @@ Vue.component('job-list', SearchList.extend({
         }
     }
 }));
-
-
-Vue.component('open-jobs', {
-    data: function () {
-        return {
-            jobs: []
-        }
-    },
-    props: ['url'],
-    template: '' +
-        '<div v-if="jobs.length" class="mt-4">' +
-            '<a href="/jobs/" class="float-right mr-3"><small>Jobs portal</small></a>' +
-            '<h6 class="px-3 m-0 mb-4"><u>Open positions</u> ({{ jobs.length }})</h6>' +
-            '<job-list :items="jobs"></job-list>' +
-        '</div>' +
-    '',
-    methods: {
-        fetchData: function () {
-            var self = this;
-            ajax().get(this.url).done(function (res) {
-                self.jobs = res.open_positions;
-            });
-        }
-    },
-    created: function () {
-        this.fetchData();
-    }
-});

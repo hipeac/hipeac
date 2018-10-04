@@ -1,7 +1,9 @@
 from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 
 from hipeac.models import Permission
 from .events import validate_date
@@ -45,6 +47,13 @@ class Session(LinkMixin, models.Model):
 
     def can_be_managed_by(self, user) -> bool:
         return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+
+    def get_absolute_url(self) -> str:
+        return ''.join([self.event.get_absolute_url(), '#/programme/', str(self.id), '/'])
+
+    def get_editor_url(self) -> str:
+        content_type = ContentType.objects.get_for_model(self)
+        return reverse('editor', args=[content_type.id, self.id])
 
     @property
     def slug(self) -> str:

@@ -3,9 +3,32 @@ var SAVE_DELAY = 1500;
 
 var FormElement = Vue.extend({
     store: ComponentStore,
-    props: ['value', 'default', 'label', 'help', 'required'],
+    data: function () {
+        return {
+            invalid: false,
+        }
+    },
+    props: ['field', 'value', 'default', 'help'],
     computed: _.extend(
-        Vuex.mapGetters([]), {
+        Vuex.mapGetters(['fields']), {
+        f: function () {
+            if (!this.fields || !this.field) return null;
+            var parts = this.field.split('.');
+            if (parts.length > 1) return this.fields[parts[0]].children[parts[1]];
+            else return this.fields[parts[0]];
+        },
+        label: function () {
+            if (!this.f) return null;
+            return this.f.label;
+        },
+        helpText: function () {
+            if (!this.f) return this.help;
+            return (_.has(this.f, 'help_text')) ? [this.f.help_text, this.help].join('. ') : this.help;
+        },
+        required: function () {
+            if (!this.f) return false;
+            return this.f.required;
+        }
     }),
     methods: {
         transformValue: function (value) {
@@ -19,9 +42,15 @@ var FormElement = Vue.extend({
         }
     },
     watch: {
-        'value': _.debounce(function (val, oldVal) {
-            if (!oldVal) return;
-            EventHub.$emit('form-updated', true);
+        value: _.debounce(function (val, oldVal) {
+            if (oldVal === undefined) return;
+            if (this.required && !val) {
+                this.invalid = true;
+                return;
+            } else {
+                this.invalid = false;
+                EventHub.$emit('form-updated');
+            }
         }, SAVE_DELAY)
     },
     mounted: function () {
@@ -36,12 +65,19 @@ Vue.component('help-text', {
     ''
 });
 
+Vue.component('custom-label', {
+    props: ['text', 'required'],
+    template: '' +
+        '<label>{{ text }} <span v-if="required" class="text-danger">*</span></label>' +
+    ''
+});
+
 Vue.component('custom-input', FormElement.extend({
     props: ['type', 'placeholder'],
     template: '' +
         '<div class="form-group">' +
-            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
-            '<help-text v-if="help">{{ help }}</help-text>' +
+            '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
+            '<help-text v-if="helpText">{{ helpText }}</help-text>' +
             '<input ref="el" :value="value" @input="updateValue" :placeholder="placeholder" :type="type" class="form-control form-control-sm">' +
         '</div>' +
     ''
@@ -51,8 +87,8 @@ Vue.component('date-input', FormElement.extend({
     props: ['placeholder'],
     template: '' +
         '<div class="form-group">' +
-            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
-            '<help-text v-if="help">{{ help }}</help-text>' +
+            '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
+            '<help-text v-if="helpText">{{ helpText }}</help-text>' +
             '<input ref="el" :value="value" @input="updateValue" :placeholder="placeholder" type="date" class="form-control form-control-sm">' +
         '</div>' +
     ''
@@ -61,43 +97,57 @@ Vue.component('date-input', FormElement.extend({
 Vue.component('markdown-textarea', FormElement.extend({
     template: '' +
         '<div class="form-group">' +
-            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
-            '<help-text>You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>. {{ help }}</help-text>' +
+            '<custom-label :text="label" :required="required" class="mb-0"></custom-label>' +
+            '<help-text>You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.<span v-if="helpText"> {{ helTextp }}</span></help-text>' +
             '<textarea ref="el" :value="value" class="form-control form-control-sm" rows="16" @input="updateValue"></textarea>' +
         '</div>' +
     ''
 }));
 
-Vue.component('country-select', FormElement.extend({
+var SelectElement = FormElement.extend({
+    props: ['selectProperty'],
     template: '' +
         '<div class="form-group" ref="el" :value="value">' +
-            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
-            '<help-text v-if="help">{{ help }}</help-text>' +
-            '<select @change="updateValue" class="form-control form-control-sm">' +
-                '<option v-for="c in countries" :key="c.value" :value="c.value" :selected="c.value == value.code">{{ c.display_name }}</option>' +
+            '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
+            '<help-text v-if="helpText">{{ helpText }}</help-text>' +
+            '<select @change="updateValue" class="form-control form-control-sm" :class="{\'is-invalid\': invalid}">' +
+                '<option v-for="choice in choices" :key="choice.value" :value="choice.value" :selected="choice.value == compareValue">{{ choice.display_name }}</option>' +
             '</select>' +
         '</div>' +
     '',
-    computed: _.extend(
-        Vuex.mapGetters(['countries']), {
-    }),
+    computed: {
+        choices: function () {
+            if (!this.f) return [];
+            return this.f.choices;
+        },
+        compareValue: function () {
+            if (this.selectProperty) return this.value[this.selectProperty];
+            return this.value;
+        }
+    }
+});
+
+Vue.component('simple-select', SelectElement.extend({
+
+}));
+
+Vue.component('country-select', SelectElement.extend({
     methods: {
         transformValue: function (value) {
-            obj =  _.findWhere(this.countries, {value: value});
+            var obj = _.findWhere(this.choices, {value: value});
             return {
-                'code': obj.value,
-                'name': obj.display_name
-            };
+                code: obj.value,
+                name: obj.display_name,
+            }
         }
     }
 }));
-
 
 var MetadataElement = FormElement.extend({
     props: ['type', 'sorting'],
     computed: _.extend(
         Vuex.mapState(['metadata']),
-        Vuex.mapGetters(['metadataDict']), {
+        Vuex.mapGetters(['metadataDict', 'fields']), {
         options: function () {
             if (!this.metadata) return [];
             var type = this.type;
@@ -147,8 +197,8 @@ var MetadataListElement = MetadataElement.extend({
 Vue.component('metadata-select', MetadataElement.extend({
     template: '' +
         '<div class="form-group" ref="el" :value="value">' +
-            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
-            '<help-text v-if="help">{{ help }}</help-text>' +
+            '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
+            '<help-text v-if="helpText">{{ helpText }}</help-text>' +
             '<select @change="updateValue" class="form-control form-control-sm">' +
                 '<option v-for="o in options" :key="o.id" :value="o.id" :selected="o.id == value.id">{{ o.value }}</option>' +
             '</select>' +
@@ -159,8 +209,8 @@ Vue.component('metadata-select', MetadataElement.extend({
 Vue.component('metadata-checkboxes', MetadataListElement.extend({
     template: '' +
         '<div class="form-group" ref="el" :value="value">' +
-            '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
-            '<help-text v-if="help">{{ help }}</help-text>' +
+            '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
+            '<help-text v-if="helpText">{{ helpText }}</help-text>' +
             '<div v-for="o in options" :key="o.id" class="form-check form-check-inline mr-2">' +
                 '<label class="form-check-label pointer">' +
                     '<input v-model="values" :value="o.id" type="checkbox" class="form-check-input">' +
@@ -243,8 +293,8 @@ Vue.component('autocomplete-popup', AucompletePopupElement.extend({
     template: '' +
         '<div>' +
             '<div class="form-group">' +
-                '<label>{{ label }} <span v-if="required" class="text-danger">*</span></label>' +
-                '<help-text v-if="help">{{ help }}</help-text>' +
+                '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
+                '<help-text v-if="helpText">{{ helpText }}</help-text>' +
                 '<textarea ref="el" :rows="rows" :value="text" @click="showModal" type="text" class="form-control form-control-sm pointer" readonly></textarea>' +
             '</div>' +
             '<div ref="modal" class="modal" tabindex="-1" role="dialog">' +

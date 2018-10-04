@@ -62,17 +62,23 @@ var ComponentStore = new Vuex.Store({
         }
     },
     getters: {
+        requiredFields: function (state) {
+            if (!state.options) return null;
+            if (_.has(state.options.actions, 'POST')) return _.keys(state.options.actions.POST);
+            if (_.has(state.options.actions, 'PUT')) return _.keys(state.options.actions.PUT);
+            return null;
+        },
+        fields: function (state) {
+            if (!state.options) return null;
+            if (_.has(state.options.actions, 'POST')) return state.options.actions.POST;
+            if (_.has(state.options.actions, 'PUT')) return state.options.actions.PUT;
+            return null;
+        },
         metadataDict: function (state) {
             return _.indexBy(state.metadata, 'id');
-        },
-        countries: function (state) {
-            try { return state.options.actions.PUT.country.choices; } catch {};
-            try { return state.options.actions.PUT.profile.children.country.choices; } catch {};
-            return null;
         }
     }
 });
-
 
 Vue.filter('moment', function (date, format) {
     return moment(date).format(format || 'll');
@@ -190,6 +196,18 @@ Vue.component('huge-icon', {
             '<i class="material-icons">{{ name }}</i>' +
         '</div>' +
     ''
+});
+
+Vue.component('join-metadata', {
+    props: ['values'],
+    template: '' +
+        '<span>{{ string }}</span>' +
+    '',
+    computed: {
+        string: function () {
+            return _.pluck(this.values, 'value').join(', ');
+        }
+    }
 });
 
 Vue.component('display-lg', {
@@ -406,5 +424,113 @@ Vue.component('quotes-carousel-row', {
     }),
     created: function () {
         this.$store.commit('fetchQuotes');
+    }
+});
+
+Vue.component('search-card', {
+    data: function () {
+        return {
+            q: ''
+        }
+    },
+    props: ['placeholder'],
+    template: '' +
+        '<div class="hipeac-card py-3">' +
+            '<div>' +
+                '<span class="float-left mt-2 mr-2 pointer">' +
+                    '<i v-if="q" @click="q = \'\'" class="material-icons text-secondary">&#xE5CD;</i>' +
+                    '<i v-else class="material-icons text-primary">&#xE8B6;</i>' +
+                '</span>' +
+                '<input v-model="q" type="text" class="form-control search-bar" :placeholder="placeholder">' +
+            '</div>' +
+        '</div>' +
+    '',
+    watch: {
+        'q': _.debounce(function (val, oldVal) {
+            if (val != oldVal) {
+                if (val != '') this.$router.replace({query: {q: val}});
+                else this.$router.replace({name: this.$route.name});
+
+                EventHub.$emit('query-changed', val);
+            }
+        }, 50)
+    },
+    created: function () {
+        if (this.$route.query.q) {
+            this.q = this.$route.query.q;
+            EventHub.$emit('query-changed', this.q);
+        }
+    }
+});
+
+Vue.component('job-cards', {
+    props: {
+        jobs: {
+            type: Array
+        },
+        filter: {
+            type: Boolean,
+            default: false
+        },
+        ids: {
+            type: Array,
+            default: function () {
+                return [];
+            }
+        }
+    },
+    template: '' +
+        '<div class="row jobs-gutters">' +
+            '<div v-for="job in jobs" :key="job.id" class="col-12 col-md-6 col-lg-3 d-flex align-items-stretch" '+
+                ':v-hide="!(!filter || ids.indexOf(job.id) !== -1)">' +
+                '<a :href="job.href" class="hipeac-card jobs-card mb-0 inherit d-flex flex-column">' +
+                    '<span class="header">' +
+                        '<img v-if="job.institution.images" :src="job.institution.images.sm">' +
+                    '</span>' +
+                    '<h6 class="title mb-auto">{{ job.title }}<br>' +
+                        '<span class="text-light-weight">@ {{ job.institution.short_name }}</span>' +
+                    '</h6>' +
+                    '<ul class="list-unstyled text-secondary" :class="{soon: job.expiresSoon}">' +
+                        '<li v-if="job.internship" class="text-primary "><icon name="info" class="sm"></icon>' +
+                            '<strong>Internship</strong></li>' +
+                        '<li><icon name="today" class="sm"></icon>' +
+                            '<span class="deadline">{{ job.deadline | moment }}</span></li>' +
+                        '<li><icon name="location_on" class="sm"></icon><span v-if="job.location">{{ job.location }}, </span>{{ job.country.name }}</li>' +
+                        '<li><icon name="how_to_reg" class="sm"></icon><join-metadata :values="job.career_levels"></join-metadata></li>' +
+                        '<li><icon name="label" class="sm"></icon><join-metadata :values="job.topics"></join-metadata></li>' +
+                    '</ul>' +
+                '</a>' +
+            '</div>' +
+        '</div>' +
+    ''
+});
+
+Vue.component('open-jobs-row', {
+    data: function () {
+        return {
+            jobs: []
+        }
+    },
+    props: ['url'],
+    template: '' +
+        '<div v-if="jobs.length" class="row">' +
+            '<div class="col-12 col-lg-2">' +
+                '<h5 class="display-sm mb-4">Jobs</h5>' +
+            '</div>' +
+            '<div class="col-12 col-lg-10">' +
+                '<job-cards :jobs="jobs"></job-cards>' +
+            '</div>' +
+        '</div>' +
+    '',
+    methods: {
+        fetchData: function () {
+            var self = this;
+            ajax().get(this.url).done(function (res) {
+                self.jobs = mapper().jobs(res.open_positions);
+            });
+        }
+    },
+    created: function () {
+        this.fetchData();
     }
 });

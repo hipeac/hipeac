@@ -81,6 +81,7 @@ var mapper = function () {
         },
         jobs: function (items) {
             return items.map(function (obj) {
+                obj.expiresSoon = moment().diff(moment(obj.deadline), 'days') > -7;
                 obj.careerLevelIds = _.pluck(obj.career_levels, 'id');
                 obj.topicIds = _.pluck(obj.topics, 'id');
                 obj.typeId = obj.employment_type.id;
