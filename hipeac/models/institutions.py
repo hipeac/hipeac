@@ -6,7 +6,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django_countries.fields import CountryField
-from typing import List
 
 from hipeac.functions import get_images_path
 from hipeac.models import Permission

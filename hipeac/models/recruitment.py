@@ -8,7 +8,7 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django_countries.fields import CountryField
-from typing import Optional, Tuple
+from typing import Tuple
 
 from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
@@ -76,10 +76,13 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     def deadline_is_near(self) -> bool:
         return (self.deadline - timezone.now().date()).days < 7
 
+    def get_pdf_url(self) -> str:
+        return reverse('job_pdf', args=[self.id])
+
     def get_short_url(self) -> str:
         return reverse('job_redirect', args=[self.id])
 
-    def get_status(self, social_media: str = 'other', prepend: str = '') -> Tuple[str, str]:
+    def get_status(self, social_media: str = 'any', prepend: str = '') -> Tuple[str, str]:
         at = ''
         url = f'https://www.hipeac.net{self.get_absolute_url()}'
 
@@ -105,6 +108,18 @@ def job_post_save(sender, instance, created, *args, **kwargs):
         except Exception as e:
             image_url = None
 
+        email = (
+            'recruitment.jobs.created',
+            f'HiPEAC Job created: "{instance.title}"',
+            'HiPEAC Recruitment <recruitment@hipeac.net>',
+            [instance.created_by.email],
+            {
+                'job_title': instance.title,
+                'job_pdf_url': instance.get_pdf_url(),
+                'user_name': instance.created_by.profile.name,
+            }
+        )
+        send_task('hipeac.tasks.emails.send_from_template', email)
         send_task('hipeac.tasks.recruitment.process_keywords', (instance.id,))
         send_task('hipeac.tasks.recruitment.share_in_linkedin', (instance.title, instance.get_status(), image_url))
         send_task('hipeac.tasks.recruitment.tweet', (instance.get_status('twitter'),))

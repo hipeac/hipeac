@@ -25,7 +25,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='flatpages/homepage.html'), name='homepage'),
     path('jobs/', flatpage, {'url': '/jobs/'}, name='jobs'),
     path('jobs/feed/', views.JobsFeed(), name='jobs_feed'),
-    path('jobs/<int:pk>.pdf', views.JobsPdf.as_view(), name='jobs_pdf'),
+    path('jobs/<int:pk>.pdf', views.JobsPdf.as_view(), name='job_pdf'),
     path('j<int:pk>', views.JobRedirect.as_view(), name='job_redirect'),
     re_path(r'^jobs/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.JobDetail.as_view(), name='job'),
     # Network

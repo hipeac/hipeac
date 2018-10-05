@@ -1,0 +1,27 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block header %}You are now registered for {{ event_name }}.{% endblock %}
+
+{% block body %}
+**Registration number: {{ registration_id }}**
+
+You can visit the event page at any time and [update your registration information](https://www.hipeac.net{{ registration_url }}). We look forward to seeing you in {{ event_city }}!
+{% if visa_requested %}
+---------------
+
+We've noticed in your registration form that *you need an invitation letter to apply for a visa*. To produce this letter, we would need the following information:
+
+- Name and title
+- Address and phone number
+- Passport number
+- Will you present a paper / poster? What is the title of the paper / poster?
+
+As soon as you provide this information, we will send the invitation letter to you.
+
+Please also let us know if the electronic copy is sufficient of if we should send the original signed letter to you by post.
+
+Please contact [Vicky Wandels](vicky@hipeac.net) if you have questions regarding your visa application.{% endif %}
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}

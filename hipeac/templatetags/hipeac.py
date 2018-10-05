@@ -3,6 +3,7 @@ import lxml.html
 
 from django import template
 from django.template.base import Node
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from markdown import markdown as marked
 
@@ -32,6 +33,25 @@ def join_json(json_string, separator=','):
 @register.filter
 def markdown(text):
     return mark_safe(marked(text))
+
+
+@register.tag(name='markdown')
+def do_markdown(parser, token):
+    nodelist = parser.parse(('endmarkdown',))
+    parser.delete_first_token()
+    bits = token.split_contents()
+    if len(bits) > 1:
+        raise template.TemplateSyntaxError('`markdown` tag requires exactly zero arguments')
+    return MarkdownNode(nodelist)
+
+
+class MarkdownNode(Node):
+    def __init__(self, nodelist):
+        self.nodelist = nodelist
+
+    def render(self, context):
+        text = self.nodelist.render(context)
+        return mark_safe(marked(text))
 
 
 @register.filter

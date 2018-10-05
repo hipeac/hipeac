@@ -13,6 +13,7 @@ from hipeac.models import Job
 from hipeac.tools.language import NaturalLanguageAnalyzer
 from hipeac.tools.linkedin import LinkedInManager
 from hipeac.tools.twitter import Tweeter
+from .emails import send_from_template
 
 
 JOBS_DIGEST_EMAIL = 'jobs@hipeac.net'
@@ -46,18 +47,43 @@ def send_expiration_reminders():
     """Sends a tweet and an email when a Job is about to expire."""
     today = timezone.now().date()
     in_five_days = (timezone.now() + timedelta(days=5)).date()
-    jobs = Job.objects.filter(deadline__gte=today, deadline__lte=in_five_days, last_reminder__isnull=True)
+    jobs = Job.objects.filter(deadline__gte=today, deadline__lte=in_five_days).filter(
+        Q(reminded_deadline__isnull=True) | Q(reminded_deadline__lt=F('deadline'))
+    ).select_related('institution', 'created_by__profile')
+
+    # send tweets
+    for job in jobs:
+        tweet(job.get_status('twitter', 'Last days to apply for '))
+
+    # send emails
+    grouped_jobs = {}
 
     for job in jobs:
-        tweet.delay(job.get_status('twitter', 'Last days to apply for '))
+        key = (job.created_by_id, job.institution_id)
+        if key not in grouped_jobs:
+            grouped_jobs[key] = {
+                'user_name': job.created_by.profile.name,
+                'institution_name': job.institution.short_name,
+                'jobs': []
+            }
+        grouped_jobs[key]['jobs'].append({
+            'id': job.id,
+            'title': job.title,
+            'editor_url': job.get_editor_url(),
+        })
 
-    send_mail(
-        '[HiPEAC Bot] Job expiration reminders sent (10h)',
-        'N reminders have been sent to: company1, company2.',
-        'noreply@hipeac.net',
-        ['eneko@illarra.com'],
-        fail_silently=True,
-    )
+    for key, context_data in grouped_jobs.items():
+        send_from_template(
+            'recruitment.jobs.expiration_reminder',
+            f'HiPEAC Jobs: expiring vacancies @ {context_data["institution_name"]}',
+            'HiPEAC Recruitment <recruitment@hipeac.net>',
+            ['eneko@illarra.com'],  # TODO: update
+            context_data,
+        )
+        for job in context_data['jobs']:
+            j = Job.objects.get(id=job['id'])
+            j.reminded_deadline = j.deadline
+            j.save()
 
 
 @periodic_task(run_every=crontab(day_of_week='mon-fri', hour=10, minute=0))
@@ -100,36 +126,3 @@ def share_in_linkedin(title: str, status: Tuple[str, str], thumbnail_url: Option
 def tweet(status: Tuple[str, str]):
     """Sends a tweet."""
     Tweeter(account='hipeacjobs').update_status(*status)
-
-
-"""
-from .emails import send_job_reminder, send_job_evaluation
-from .models import Job
-
-logger = get_task_logger(__name__)
-
-
-@periodic_task(run_every=crontab(hour='9', minute='0', day_of_week='mon-fri'))
-def send_expiration_reminders():
-    today = timezone.now().date()
-    in_five_days = (timezone.now() + timedelta(days=5)).date()
-    jobs = Job.objects.filter(deadline__gte=today, deadline__lte=in_five_days)
-    sent = send_job_reminder(jobs)
-
-    if sent:
-        logger.info('Job reminders sent.')
-    else:
-        logger.warning('No job reminders have been sent.')
-
-
-@periodic_task(run_every=crontab(hour='9', minute='0', day_of_week='mon-fri'))
-def send_evaluations():
-    two_weeks_ago = (timezone.now() - timedelta(days=14)).date()
-    jobs = Job.objects.filter(deadline__lte=two_weeks_ago)
-    sent = send_job_reminder(jobs)
-
-    if sent:
-        logger.info('Job evaluations sent.')
-    else:
-        logger.warning('No job evaluations have been sent.')
-"""

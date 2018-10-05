@@ -1,14 +1,11 @@
 import uuid
 
-from django.conf import settings
+from celery.execute import send_task
 from django.contrib.auth import get_user_model
-from django.core.mail import EmailMessage
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
-from django.template.loader import get_template
-from django.urls import reverse
 
 
 class Coupon(models.Model):
@@ -75,7 +72,7 @@ class Registration(models.Model):
         return self.user_id == user.id
 
     def get_absolute_url(self) -> str:
-        return reverse('registration', args=[self.uuid])
+        return ''.join([self.event.get_absolute_url(), '#/registration/'])
 
     @property
     def is_paid(self) -> bool:
@@ -89,20 +86,21 @@ def registration_post_save(sender, instance, created, *args, **kwargs):
         event.registrations_count = event.registrations.count()
         event.save()
 
-        """
-        msg = EmailMessage(
-            f'[{instance.event.hashtag.upper()}] Your registration for {instance.event}',
-            get_template('hipeac/emails/registration.txt').render({
-                'registration': instance
-            }),
-            to=[instance.user.profile.to_email],
-            from_email=f'{instance.event.hashtag.upper()} <{settings.HIPEAC_REGISTRATIONS_EMAIL}>'
+        email = (
+            'events.registrations.created',
+            f'[HiPEAC] Your registration for #{instance.event.hashtag} / {instance.id}',
+            'HiPEAC <management@hipeac.net>',
+            [instance.user.email],
+            {
+                'event_city': instance.event.city,
+                'event_hashtag': instance.event.hashtag,
+                'event_name': instance.event.name,
+                'registration_id': instance.id,
+                'registration_url': instance.get_absolute_url(),
+                'visa_requested': instance.visa_requested,
+            }
         )
-        msg.send()
-        """
-
-        # if instance.visa_requested:
-        #    visa_reminder_email(Registration.objects.filter(pk=instance.id))
+        send_task('hipeac.tasks.emails.send_from_template', email)
 
 
 @receiver(m2m_changed, sender=Registration.sessions.through)

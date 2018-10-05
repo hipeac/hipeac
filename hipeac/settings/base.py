@@ -238,6 +238,9 @@ COMPRESS_OFFLINE = True
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
+COMPRESS_OFFLINE_CONTEXT = {
+    'email_format': 'txt',
+}
 
 
 # File uploads

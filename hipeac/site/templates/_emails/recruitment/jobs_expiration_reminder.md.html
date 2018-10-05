@@ -1,0 +1,20 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block header %}A number of vacancies are about to expire on the HiPEAC Jobs portal.{% endblock %}
+
+{% block body %}
+Dear {{ user_name }},
+
+The following job vacancies at {{ institution_name }} are about to expire on the HiPEAC Jobs portal.
+{% for job in jobs %}
+- "{{ job.title }}" / [extend](https://www.hipeac.net{{ job.editor_url }})
+{% endfor %}
+If you don’t perform any action, the job vacancies listed in this e-mail will be automatically unpublished. If you wish to extend the visibility of your job vacancies please log in HiPEAC portal from the given links, or through the "Manage my jobs" section.
+
+You can post any new vacancies anytime through the ["Add job"](https://www.hipeac.net/jobs/) option.
+
+Thanks a lot for using the HiPEAC Jobs portal.
+{% endblock %}
+
+{% block footer %}HiPEAC Recruitment{% endblock %}
