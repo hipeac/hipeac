@@ -2,6 +2,7 @@ import os
 
 from django.contrib.messages import constants as messages
 from kombu import Queue
+from urllib.parse import urlparse
 
 
 PACKAGE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -83,6 +84,21 @@ WSGI_APPLICATION = 'hipeac.wsgi.app'
 FIXTURE_DIRS = [
     os.path.join(PROJECT_ROOT, 'fixtures'),
 ]
+
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
+db = urlparse(os.environ.get('DATABASE_URL'))
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': db.path[1:],
+        'USER': db.username,
+        'PASSWORD': db.password,
+        'HOST': db.hostname,
+        'PORT': db.port,
+    }
+}
 
 
 # Time zones

@@ -1,7 +1,5 @@
 import os
 
-from urllib.parse import urlparse
-
 from .base import *  # noqa
 
 
@@ -18,21 +16,6 @@ CSRF_COOKIE_SECURE = True
 CSRF_USE_SESSIONS = True
 
 CRISPY_FAIL_SILENTLY = True
-
-
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-db = urlparse(os.environ.get('DATABASE_URL'))
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': db.path[1:],
-        'USER': db.username,
-        'PASSWORD': db.password,
-        'HOST': db.hostname,
-        'PORT': db.port,
-    }
-}
 
 
 # https://docs.djangoproject.com/en/1.11/topics/cache/

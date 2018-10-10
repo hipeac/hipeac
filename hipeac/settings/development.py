@@ -17,20 +17,6 @@ except Exception as e:
     pass
 
 
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hipeac_dev',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': 3306,
-    }
-}
-
-
 # https://docs.djangoproject.com/en/1.11/topics/cache/
 
 CACHES = {
