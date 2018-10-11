@@ -88,6 +88,23 @@ Vue.filter('markdown', function (text) {
     return marked(text, {sanitize: true});
 });
 
+Vue.component('marked', {
+    props: {
+        text: {
+            type: String,
+            default: ''
+        }
+    },
+    template: '' +
+        '<div class="marked" v-html="compiledMarkdown"></div>' +
+    '',
+    computed: {
+        compiledMarkdown: function () {
+            return marked(this.text, {sanitize: true});
+        }
+    }
+});
+
 Vue.component('loading', {
     data: function () {
         return {

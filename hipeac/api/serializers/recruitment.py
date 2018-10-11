@@ -1,7 +1,7 @@
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
-from hipeac.models import Job
+from hipeac.models import Job, JobEvaluation
 from hipeac.models.generic import HipeacCountries
 from .generic import JsonField, MetadataField, MetadataListField
 from .institutions import InstitutionNestedSerializer
@@ -20,7 +20,7 @@ class JobBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Job
-        exclude = ('description', 'share', 'last_reminder', 'created_at')
+        exclude = ('description', 'share', 'reminder_sent_for', 'evaluation_sent_for', 'created_at')
 
 
 class JobNestedSerializer(JobBaseSerializer):
@@ -31,4 +31,13 @@ class JobNestedSerializer(JobBaseSerializer):
 class JobSerializer(JobBaseSerializer):
 
     class Meta(JobBaseSerializer.Meta):
-        exclude = ('share', 'last_reminder', 'created_at', 'created_by')
+        exclude = ('share', 'reminder_sent_for', 'evaluation_sent_for', 'created_at', 'created_by')
+
+
+class JobEvaluationSerializer(serializers.ModelSerializer):
+    job = JobSerializer(read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name='v1:job-evaluation-detail', read_only=True)
+
+    class Meta:
+        model = JobEvaluation
+        exclude = ()

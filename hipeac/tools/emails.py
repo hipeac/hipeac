@@ -6,6 +6,7 @@ from typing import List
 TEMPLATE_PATHS = {
     'events.registrations.created': '_emails/events/registrations_created.md.html',
     'recruitment.jobs.created': '_emails/recruitment/jobs_created.md.html',
+    'recruitment.jobs.evaluation': '_emails/recruitment/jobs_evaluation.md.html',
     'recruitment.jobs.expiration_reminder': '_emails/recruitment/jobs_expiration_reminder.md.html',
     'users.members.welcome': '_emails/users/members_welcome.md.html',
 }

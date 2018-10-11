@@ -60,12 +60,15 @@ class MetadataMixin:
         return [metadata[key] for key in keys if key in metadata]
 
 
-class UrlMixin:
-    route_name = None
-
-    def get_absolute_url(self) -> str:
-        return reverse(self.route_name, args=[self.id, self.slug])  # noqa
+class EditorMixin:
 
     def get_editor_url(self) -> str:
         content_type = ContentType.objects.get_for_model(self)
         return reverse('editor', args=[content_type.id, self.id])  # noqa
+
+
+class UrlMixin(EditorMixin):
+    route_name = None
+
+    def get_absolute_url(self) -> str:
+        return reverse(self.route_name, args=[self.id, self.slug])  # noqa

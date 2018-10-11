@@ -38,6 +38,7 @@
                     <li v-cloak v-if="obj && obj.href" class="nav-item">
                         <a :href="obj.href" class="nav-link">View on hipeac.net</a>
                     </li>
+                    {% block extra_tabs %}{% endblock %}
                 </ul>
             </div>
         </div>
@@ -171,13 +172,7 @@
             template: '#v-preview',
             computed: _.extend(
                 Vuex.mapState(['obj']), {
-                mark: function () {
-                    if (!this.obj) return '';
-                    if (_.has(this.obj, 'description')) return marked(this.obj.description, {sanitize: true});
-                    if (_.has(this.obj, 'summary')) return marked(this.obj.summary, {sanitize: true});
-                    return '';
-                }
-            }),
+            })
         };
 
         var Router = new VueRouter({

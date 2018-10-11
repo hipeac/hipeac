@@ -33,7 +33,7 @@
                         <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
                     </div>
                 </div>
-                <div class="marked mod" v-html="mark"></div>
+                <marked :text="obj.summary"></marked>
             </div>
         </div>
     </script>

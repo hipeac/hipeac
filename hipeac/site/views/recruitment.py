@@ -6,7 +6,7 @@ from markdown import markdown as marked
 from typing import List
 from wkhtmltopdf.views import PDFTemplateResponse
 
-from hipeac.models import Job
+from hipeac.models import Job, JobEvaluation
 from .mixins import SlugMixin
 
 
@@ -30,6 +30,21 @@ class JobDetail(SlugMixin, generic.DetailView):
 
     def get_queryset(self):
         return super().get_queryset().select_related('institution').prefetch_related('links')
+
+
+class JobEvaluationRedirect(generic.View):
+    """
+    Creates a evaluation for a Job and redirects to the evaluation editor.
+    """
+    def get(self, request, *args, **kwargs):
+        try:
+            evaluation = JobEvaluation.objects.get(job_id=kwargs.get('job_id'))
+            evaluation.value = kwargs.get('value')
+        except JobEvaluation.DoesNotExist:
+            evaluation = JobEvaluation(job_id=kwargs.get('job_id'), value=kwargs.get('value'))
+
+        evaluation.save()
+        return redirect(evaluation.get_editor_url())
 
 
 class JobsFeed(Feed):

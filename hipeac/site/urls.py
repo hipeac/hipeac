@@ -26,6 +26,7 @@ urlpatterns = [
     path('jobs/', flatpage, {'url': '/jobs/'}, name='jobs'),
     path('jobs/feed/', views.JobsFeed(), name='jobs_feed'),
     path('jobs/<int:pk>.pdf', views.JobsPdf.as_view(), name='job_pdf'),
+    path('e/<int:job_id>/<int:value>/', views.JobEvaluationRedirect.as_view(), name='job_evaluation'),
     path('j<int:pk>', views.JobRedirect.as_view(), name='job_redirect'),
     re_path(r'^jobs/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.JobDetail.as_view(), name='job'),
     # Network

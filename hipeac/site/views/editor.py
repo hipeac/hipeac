@@ -20,6 +20,7 @@ class EditorBaseView(generic.TemplateView):
         context['base_url'] = ''.join(['/api/v1', {
             'session': '/events/sessions/',
             'job': '/jobs/',
+            'jobevaluation': '/jobs/evaluations/',
             'project': '/network/projects/',
             'institution': '/network/institutions/',
         }[self.get_model_name(**kwargs)]])

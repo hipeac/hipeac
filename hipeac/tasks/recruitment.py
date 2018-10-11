@@ -16,8 +16,8 @@ from hipeac.tools.twitter import Tweeter
 from .emails import send_from_template
 
 
-JOBS_DIGEST_EMAIL = 'jobs@hipeac.net'
-RECRUITMENT_EMAIL = 'recruitment@hipeac.net'
+JOBS_DIGEST_EMAIL = 'HiPEAC Jobs <jobs@hipeac.net>'
+RECRUITMENT_EMAIL = 'HiPEAC Recruitment <recruitment@hipeac.net>'
 
 
 def save_keywords(nl: NaturalLanguageAnalyzer, job: Job):
@@ -48,7 +48,7 @@ def send_expiration_reminders():
     today = timezone.now().date()
     in_five_days = (timezone.now() + timedelta(days=5)).date()
     jobs = Job.objects.filter(deadline__gte=today, deadline__lte=in_five_days).filter(
-        Q(reminded_deadline__isnull=True) | Q(reminded_deadline__lt=F('deadline'))
+        Q(reminder_sent_for__isnull=True) | Q(reminder_sent_for__lt=F('deadline'))
     ).select_related('institution', 'created_by__profile')
 
     # send tweets
@@ -56,47 +56,39 @@ def send_expiration_reminders():
         tweet(job.get_status('twitter', 'Last days to apply for '))
 
     # send emails
-    grouped_jobs = {}
-
-    for job in jobs:
-        key = (job.created_by_id, job.institution_id)
-        if key not in grouped_jobs:
-            grouped_jobs[key] = {
-                'user_name': job.created_by.profile.name,
-                'institution_name': job.institution.short_name,
-                'jobs': []
-            }
-        grouped_jobs[key]['jobs'].append({
-            'id': job.id,
-            'title': job.title,
-            'editor_url': job.get_editor_url(),
-        })
-
-    for key, context_data in grouped_jobs.items():
+    for key, context_data in Job.objects.grouped_for_email(jobs).items():
         send_from_template(
             'recruitment.jobs.expiration_reminder',
-            f'HiPEAC Jobs: expiring vacancies @ {context_data["institution_name"]}',
-            'HiPEAC Recruitment <recruitment@hipeac.net>',
+            f'[HiPEAC Jobs] Expiring vacancies @ {context_data["institution_name"]}',
+            RECRUITMENT_EMAIL,
             ['eneko@illarra.com'],  # TODO: update
             context_data,
         )
         for job in context_data['jobs']:
             j = Job.objects.get(id=job['id'])
-            j.reminded_deadline = j.deadline
+            j.reminder_sent_for = j.deadline
             j.save()
 
 
-@periodic_task(run_every=crontab(day_of_week='mon-fri', hour=10, minute=0))
+@periodic_task(run_every=crontab(day_of_week='mon-fri', hour=11, minute=0))
 def send_evaluations():
     two_weeks_ago = (timezone.now() - timedelta(days=14)).date()
-    # jobs = Job.objects.filter(deadline__lte=two_weeks_ago)
-    send_mail(
-        '[HiPEAC Bot] Job evaluations sent (10h10)',
-        'N evalution emails have been sent to: company1, company2.',
-        'noreply@hipeac.net',
-        ['eneko@illarra.com'],
-        fail_silently=True,
-    )
+    jobs = Job.objects.filter(deadline__lte=two_weeks_ago, evaluation_sent_for__isnull=True) \
+                      .select_related('institution', 'created_by__profile')
+
+    # send emails
+    for key, context_data in Job.objects.grouped_for_email(jobs).items():
+        send_from_template(
+            'recruitment.jobs.evaluation',
+            f'[HiPEAC Jobs] Satisfaction survey @ {context_data["institution_name"]}',
+            RECRUITMENT_EMAIL,
+            ['eneko@illarra.com'],  # TODO: update
+            context_data,
+        )
+        for job in context_data['jobs']:
+            j = Job.objects.get(id=job['id'])
+            j.evaluation_sent_for = j.deadline
+            j.save()
 
 
 @periodic_task(run_every=crontab(day_of_week='fri', hour=10, minute=0))

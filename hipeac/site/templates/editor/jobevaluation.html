@@ -1,0 +1,41 @@
+{% extends 'editor.html' %}
+
+
+{% block subtitle %}
+{% verbatim %}
+    <small>Job evaluation</small><span v-cloak v-if="obj"> / #{{ obj.id }}</span>
+{% endverbatim %}
+{% endblock %}
+
+{% block extra_tabs %}
+    <li v-cloak v-if="obj && obj.job.href" class="nav-item">
+        <a :href="obj.job.href" class="nav-link">View job on hipeac.net</a>
+    </li>
+{% endblock %}
+
+{% block vue_templates %}
+{% verbatim %}
+    <script type="text/x-template" id="v-editor">
+        <div v-if="obj" class="hipeac-card">
+            <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
+            <display-sm>How was your experience using HiPEAC Jobs? Please send us your feedback and comments regarding the job posting "{{ obj.job.title }}" (expired on {{ obj.job.deadline | moment }})</display-sm>
+            <form class="mt-4">
+                <simple-select v-model="obj.value" field="value" custom-label="Has the position been filled?"></simple-select>
+                <markdown-textarea v-model.trim="obj.comments" field="comments" custom-label="Comments and feedback" :rows="6"></markdown-textarea>
+                <markdown-textarea v-show="obj.value == 1" v-model.trim="obj.selected_candidate" field="selected_candidate" :rows="3" custom-label="Can you tell us more about the candidate you ended up selecting for this position?" :show-help="false"></markdown-textarea>
+            </form>
+        </div>
+    </script>
+    <script type="text/x-template" id="v-preview">
+        <div v-if="obj" class="row">
+            <div class="col-12">
+                <small>Job evaluation</p>
+                <h2 class="display-lg mb-4">{{ obj.job.title }}</h2>
+                <div class="row">
+                </div>
+                <marked :text="obj.comments"></marked>
+            </div>
+        </div>
+    </script>
+{% endverbatim %}
+{% endblock %}

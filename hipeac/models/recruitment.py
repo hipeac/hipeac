@@ -13,12 +13,37 @@ from typing import Tuple
 from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
 from .generic import HipeacCountries
-from .mixins import LinkMixin, MetadataMixin, UrlMixin
+from .mixins import LinkMixin, MetadataMixin, EditorMixin, UrlMixin
 
 
 class JobManager(models.Manager):
     def active(self):
         return self.filter(deadline__gte=timezone.now().date()).order_by('deadline')
+
+    @staticmethod
+    def grouped_for_email(queryset) -> dict:
+        grouped_jobs = {}
+
+        for job in queryset:
+            key = (job.created_by_id, job.institution_id)
+            if key not in grouped_jobs:
+                grouped_jobs[key] = {
+                    'user_email': job.created_by.email,
+                    'user_name': job.created_by.profile.name,
+                    'institution_name': job.institution.short_name if job.institution else 'your institution',
+                    'jobs': []
+                }
+            job_evaluation_url = reverse('job_evaluation', args=[job.id])
+            grouped_jobs[key]['jobs'].append({
+                'id': job.id,
+                'title': job.title,
+                'editor_url': job.get_editor_url(),
+                'no_url': f'{job_evaluation_url}{JobEvaluation.NO}/',
+                'yes_url': f'{job_evaluation_url}{JobEvaluation.YES}/',
+                'yes_hipeac_url': f'{job_evaluation_url}{JobEvaluation.YES_HIPEAC}/',
+            })
+
+        return grouped_jobs
 
 
 class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
@@ -57,7 +82,8 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
                                    related_name='posted_jobs')
     updated_at = models.DateTimeField(auto_now=True)
     processed_at = models.DateTimeField(null=True, editable=False)
-    reminded_deadline = models.DateField(null=True, blank=True, editable=False)
+    reminder_sent_for = models.DateField(null=True, blank=True, editable=False)
+    evaluation_sent_for = models.DateField(null=True, blank=True, editable=False)
 
     objects = JobManager()
 
@@ -123,3 +149,31 @@ def job_post_save(sender, instance, created, *args, **kwargs):
         send_task('hipeac.tasks.recruitment.process_keywords', (instance.id,))
         send_task('hipeac.tasks.recruitment.share_in_linkedin', (instance.title, instance.get_status(), image_url))
         send_task('hipeac.tasks.recruitment.tweet', (instance.get_status('twitter'),))
+
+
+class JobEvaluation(EditorMixin, models.Model):
+    """
+    A job evaluation.
+    """
+    NO = 0
+    YES = 2
+    YES_HIPEAC = 1
+    VALUE_CHOICES = (
+        (NO, 'No'),
+        (YES, 'Yes'),
+        (YES_HIPEAC, 'Yes, via the HiPEAC Jobs portal!'),
+    )
+
+    job = models.OneToOneField(Job, on_delete=models.CASCADE)
+    value = models.SmallIntegerField(choices=VALUE_CHOICES)
+    comments = models.TextField(null=True, blank=True)
+    selected_candidate = models.TextField(null=True, blank=True)
+
+    def __str__(self) -> str:
+        return self.job.title
+
+    def can_be_managed_by(self, user) -> bool:
+        return (
+            self.job.created_by_id == user.id or
+            self.job.institution.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+        )

@@ -13,6 +13,7 @@ class Router(DefaultRouter):
         self.register(r'events/roadshows', views.RoadshowViewSet, base_name='roadshow')
         self.register(r'events/sessions', views.SessionViewSet, base_name='session')
         self.register(r'jobs', views.JobViewSet, base_name='job')
+        self.register(r'jobs/evaluations', views.JobEvaluationViewSet, base_name='job-evaluation')
         self.register(r'communication/clippings', views.ClippingViewSet, base_name='clipping')
         self.register(r'communication/quotes', views.QuoteViewSet, base_name='quote')
         self.register(r'communication/articles', views.ArticleViewSet, base_name='article')

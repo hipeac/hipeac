@@ -16,3 +16,4 @@ exclude_lines =
     def __str__
     def slug
     send_task
+    if settings.DEBUG:

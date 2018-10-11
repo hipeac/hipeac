@@ -8,7 +8,7 @@ var FormElement = Vue.extend({
             invalid: false,
         }
     },
-    props: ['field', 'value', 'default', 'help'],
+    props: ['field', 'value', 'default', 'help', 'customLabel'],
     computed: _.extend(
         Vuex.mapGetters(['fields']), {
         f: function () {
@@ -18,8 +18,8 @@ var FormElement = Vue.extend({
             else return this.fields[parts[0]];
         },
         label: function () {
-            if (!this.f) return null;
-            return this.f.label;
+            if (!this.f) return this.customLabel;
+            return this.customLabel || this.f.label;
         },
         helpText: function () {
             if (!this.f) return this.help;
@@ -95,11 +95,21 @@ Vue.component('date-input', FormElement.extend({
 }));
 
 Vue.component('markdown-textarea', FormElement.extend({
+    props: {
+        rows: {
+            type: Number,
+            default: 12
+        },
+        showHelp: {
+            type: Boolean,
+            default: true
+        }
+    },
     template: '' +
         '<div class="form-group">' +
-            '<custom-label :text="label" :required="required" class="mb-0"></custom-label>' +
-            '<help-text>You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.<span v-if="helpText"> {{ helpText }}</span></help-text>' +
-            '<textarea ref="el" :value="value" class="form-control form-control-sm" rows="16" @input="updateValue"></textarea>' +
+            '<custom-label :text="label" :required="required" :class="{\'mb-0\': showHelp}"></custom-label>' +
+            '<help-text v-if="showHelp">You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.<span v-if="helpText"> {{ helpText }}</span></help-text>' +
+            '<textarea ref="el" :value="value" class="form-control form-control-sm" :rows="rows" @input="updateValue"></textarea>' +
         '</div>' +
     ''
 }));

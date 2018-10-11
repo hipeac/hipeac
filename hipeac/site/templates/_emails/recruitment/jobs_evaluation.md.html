@@ -1,0 +1,23 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block header %}Tell us if the HiPEAC Jobs portal is helping you recruit talent.{% endblock %}
+
+{% block body %}
+Dear {{ user_name }},
+
+A number of job vacancies at {{ institution_name }} expired a couple of weeks ago on the HiPEAC Jobs portal.
+{% for job in jobs %}
+- "{{ job.title }}" / has the position been filled?
+    * [No](https://www.hipeac.net{{ job.no_url }})
+    * [Yes](https://www.hipeac.net{{ job.yes_url }})
+    * [Yes, via the HiPEAC Jobs portal!](https://www.hipeac.net{{ job.yes_hipeac_url }})
+{% endfor %}
+How was your experience of using HiPEAC Jobs? Please send us your comments and feedback to [recruitment@hipeac.net](mailto:recruitment@hipeac.net).
+
+You can post any new vacancies anytime through the ["Add job"](https://www.hipeac.net/jobs/) option.
+
+Thanks a lot for using the HiPEAC Jobs portal.
+{% endblock %}
+
+{% block footer %}HiPEAC Recruitment{% endblock %}

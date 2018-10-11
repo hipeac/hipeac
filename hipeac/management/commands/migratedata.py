@@ -17,7 +17,7 @@ from sqlalchemy import create_engine
 from hipeac.models import (
     Image, Link, Metadata, Permission,
     Institution, Project, Profile,
-    Job,
+    Job, JobEvaluation,
     Event, Session, Coupon, Fee, Registration, Poster,
     Roadshow,
     Article, Clipping, Quote, Vision
@@ -513,6 +513,7 @@ class Command(BaseCommand):
 
         self.out('std', 'Migrating jobs...')
         bulk_jobs = []
+        bulk_job_evaluations = []
         bulk_job_profiles = []
         job_topics = {}
         job_career_levels = {}
@@ -539,7 +540,6 @@ class Command(BaseCommand):
                 country=institution_countries[job.institution_id] if job.institution_id else None,
                 email=job.email.lower() if job.email else None,
                 share=job.share,
-                reminded_deadline=job.reminder_sent_for,
                 created_at=tz.localize(job.created_at).astimezone(pytz.utc),
                 updated_at=tz.localize(job.created_at).astimezone(pytz.utc),
                 institution_id=job.institution_id,
@@ -549,6 +549,8 @@ class Command(BaseCommand):
                 topics=','.join(job_topics[job.id]) if job.id in job_topics else '',
                 career_levels=','.join(job_career_levels[job.id]) if job.id in job_career_levels else '',
                 created_by_id=job.created_by_id,
+                reminder_sent_for=job.reminder_sent_for,
+                evaluation_sent_for=job.evaluation_sent_for,
             ))
             if job.url:
                 bulk_links.append(Link(
@@ -557,8 +559,15 @@ class Command(BaseCommand):
                     type=Link.WEBSITE,
                     url=job.url
                 ))
+            if job.evaluation:
+                bulk_job_evaluations.append(JobEvaluation(
+                    job_id=job.id,
+                    value=job.evaluation,
+                    comments=job.evaluation_comments,
+                ))
 
         Job.objects.bulk_create(bulk_jobs, batch_size=1000)
+        JobEvaluation.objects.bulk_create(bulk_job_evaluations, batch_size=1000)
         self.out('success', f'✔ Jobs migrated! ({len(bulk_jobs)} records)')
 
         # Events
