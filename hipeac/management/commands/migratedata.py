@@ -529,11 +529,6 @@ class Command(BaseCommand):
             job_career_levels[p.job_id].append(str(JOB_POSITIONS_DICT[p.profile_id].id))
 
         for job in session.query(Base.classes.jobs_job).all():
-            if job.reminder_sent_for:
-                t = datetime.min.time()
-                tz_reminder = tz.localize(datetime.combine(job.reminder_sent_for, t)).astimezone(pytz.utc)
-            else:
-                tz_reminder = None
             emp = 'INTERN' if job.is_internship else 'FULL'
             bulk_jobs.append(Job(
                 id=job.id,
@@ -544,7 +539,7 @@ class Command(BaseCommand):
                 country=institution_countries[job.institution_id] if job.institution_id else None,
                 email=job.email.lower() if job.email else None,
                 share=job.share,
-                last_reminder=tz_reminder,
+                reminded_deadline=job.reminder_sent_for,
                 created_at=tz.localize(job.created_at).astimezone(pytz.utc),
                 updated_at=tz.localize(job.created_at).astimezone(pytz.utc),
                 institution_id=job.institution_id,

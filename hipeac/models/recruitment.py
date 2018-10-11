@@ -52,12 +52,12 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     links = GenericRelation('hipeac.Link')
 
     keywords = models.TextField(default='[]', editable=False)
-    last_reminder = models.DateTimeField(null=True, blank=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL,
                                    related_name='posted_jobs')
     updated_at = models.DateTimeField(auto_now=True)
     processed_at = models.DateTimeField(null=True, editable=False)
+    reminded_deadline = models.DateField(null=True, blank=True, editable=False)
 
     objects = JobManager()
 
