@@ -474,7 +474,7 @@ class Command(BaseCommand):
             bulk_publications.append((
                 pub.id,
                 pub.year,
-                pub.title,
+                pub.title.strip(),
                 pub.authors_string,
                 pub.dblp_key,
                 pub.url,
@@ -532,7 +532,7 @@ class Command(BaseCommand):
             emp = 'INTERN' if job.is_internship else 'FULL'
             bulk_jobs.append(Job(
                 id=job.id,
-                title=job.title,
+                title=job.title.strip(),
                 description=job.description,
                 deadline=job.deadline,
                 positions=job.positions,
@@ -650,7 +650,7 @@ class Command(BaseCommand):
                 date=s.date if s.date else '2016-04-27',
                 start_at=s.start_at,
                 end_at=s.end_at,
-                title=s.title,
+                title=s.title.strip(),
                 summary=s.description,
                 max_attendees=s.max_attendants,
                 extra_attendees_fee=s.extra_price,
@@ -829,21 +829,21 @@ class Command(BaseCommand):
                 if reg.poster and reg.poster != '0':
                     Poster.objects.create(
                         registration_id=reg.registration_ptr_id,
-                        title=reg.poster if reg.poster != '1' else '(untitled)',
+                        title=reg.poster.strip() if reg.poster != '1' else '(untitled)',
                         type=Poster.STUDENT,
                     )
 
                 if reg.poster_eu_project and reg.poster_eu_project != '':
                     Poster.objects.create(
                         registration_id=reg.registration_ptr_id,
-                        title=reg.poster_eu_project,
+                        title=reg.poster_eu_project.strip(),
                         type=Poster.PROJECT,
                     )
 
                 if reg.poster_industrial and reg.poster_industrial != '':
                     Poster.objects.create(
                         registration_id=reg.registration_ptr_id,
-                        title=reg.poster_industrial,
+                        title=reg.poster_industrial.strip(),
                         type=Poster.INDUSTRY,
                     )
 
@@ -915,7 +915,7 @@ class Command(BaseCommand):
         for v in session.query(Base.classes.publications_vision).all():
             bulk_visions.append(Vision(
                 id=v.id,
-                title=v.title,
+                title=v.title.strip(),
                 introduction=v.description,
                 summary=v.summary,
                 publication_date=v.release_date,
@@ -952,7 +952,7 @@ class Command(BaseCommand):
                 id=article.id,
                 type=article.type.lower(),
                 publication_date=article.release_date,
-                title=article.title,
+                title=article.title.strip(),
                 excerpt=article.excerpt,
                 content=article.body,
                 is_ready=(article.status == 'OK'),
@@ -980,7 +980,7 @@ class Command(BaseCommand):
             bulk_clippings.append(Clipping(
                 id=clip.id,
                 media=clip.media,
-                title=clip.title,
+                title=clip.title.strip(),
                 url=clip.url,
                 publication_date=clip.published_at,
             ))
