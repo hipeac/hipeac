@@ -10,31 +10,31 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'about'}" class="nav-link" exact>About</router-link>
+        <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'members'}" class="nav-link">Members</router-link>
+        <a is="router-link" :to="{name: 'members'}" class="nav-link">Members</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'projects'}" class="nav-link">Projects</router-link>
+        <a is="router-link" :to="{name: 'projects'}" class="nav-link">Projects</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'researchers'}" class="nav-link">{{ flatpage.page.tbs.about_researchers.header }}</router-link>
+        <a is="router-link" :to="{name: 'researchers'}" class="nav-link">{{ flatpage.page.tbs.about_researchers.header }}</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'industry'}" class="nav-link">{{ flatpage.page.tbs.about_industry.header }}</router-link>
+        <a is="router-link" :to="{name: 'industry'}" class="nav-link">{{ flatpage.page.tbs.about_industry.header }}</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'students'}" class="nav-link">{{ flatpage.page.tbs.about_students.header }}</router-link>
+        <a is="router-link" :to="{name: 'students'}" class="nav-link">{{ flatpage.page.tbs.about_students.header }}</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'innovation'}" class="nav-link">{{ flatpage.page.tbs.about_innovation.header }}</router-link>
+        <a is="router-link" :to="{name: 'innovation'}" class="nav-link">{{ flatpage.page.tbs.about_innovation.header }}</a>
     </li>
 {% endblock %}
 
 {% block content %}
     <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
-        <router-view></router-view>
+        <div is="router-view"></div>
     </div>
 {% endblock %}
 

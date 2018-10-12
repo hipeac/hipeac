@@ -10,25 +10,25 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'about'}" class="nav-link" exact>About</router-link>
+        <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'csw'}" class="nav-link">CSW</router-link>
+        <a is="router-link" :to="{name: 'csw'}" class="nav-link">CSW</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'conference'}" class="nav-link">Conference</router-link>
+        <a is="router-link" :to="{name: 'conference'}" class="nav-link">Conference</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'acaces'}" class="nav-link">Summer School</router-link>
+        <a is="router-link" :to="{name: 'acaces'}" class="nav-link">Summer School</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'roadshow'}" class="nav-link">Roadshow</router-link>
+        <a is="router-link" :to="{name: 'roadshow'}" class="nav-link">Roadshow</a>
     </li>
 {% endblock %}
 
 {% block content %}
     <div id="urls" data-event-list="{% url 'v1:event-list' %}" data-roadshow-list="{% url 'v1:roadshow-list' %}" class="container">
-        <router-view></router-view>
+        <div is="router-view"></div>
     </div>
 {% endblock %}
 

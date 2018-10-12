@@ -11,20 +11,20 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'about'}" class="nav-link" exact>About</router-link>
+        <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'schedule'}" class="nav-link">Programme</router-link>
+        <a is="router-link" :to="{name: 'schedule'}" class="nav-link">Programme</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'venue'}" class="nav-link">Venue and travel</router-link>
+        <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
     </li>
     {% if user.is_authenticated %}
         <!--<li v-if="user.isRegistered" class="nav-item" v-cloak>
-            <router-link :to="{name: 'attendees'}" class="nav-link">Attendees</router-link>
+            <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
         </li>-->
         <li class="nav-item">
-            <router-link :to="{name: 'registration'}" class="nav-link">My registration</router-link>
+            <a is="router-link" :to="{name: 'registration'}" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>
         </li>
     {% endif %}
     {% if event.hashtag %}
@@ -38,17 +38,17 @@
 
 {% block content %}
     <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" class="container">
-        <div class="row">
-            <div class="col-12" v-if="event && event.google_mid" v-show="$route.name == 'venue'">
+        <!--<div v-cloak v-if="$route.name == 'venue'" class="row">
+            <div class="col-12" v-if="event && event.google_mid">
                 <div class="hipeac-card">
                     <div class="iframe-container rounded">
                         <iframe :src="'https://www.google.com/maps/d/embed?mid=' + event.google_mid + '&z=13'" class="google-embedded-map"></iframe>
                     </div>
                 </div>
             </div>
-        </div>
-        <router-view></router-view>
-        <router-view name="modal"></router-view>
+        </div>-->
+        <div is="router-view"></div>
+        <div is="router-view" name="modal"></div>
     </div>
 {% endblock %}
 

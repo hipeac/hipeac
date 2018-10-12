@@ -10,13 +10,13 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'paper-awards'}" class="nav-link">Paper Awards</router-link>
+        <a is="router-link" :to="{name: 'paper-awards'}" class="nav-link">Paper Awards</a>
     </li>
 {% endblock %}
 
 {% block content %}
     <div id="urls" data-publication-conference-list="{% url 'v1:publication-conference-list' %}" data-paper-award-list="{% url 'v1:paper-award-list' %}" class="container">
-        <router-view></router-view>
+        <div is="router-view"></div>
     </div>
 {% endblock %}
 

@@ -10,13 +10,13 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'news'}" class="nav-link" exact>News</router-link>
+        <a is="router-link" :to="{name: 'news'}" class="nav-link" exact>News</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'magazine'}" class="nav-link">Magazine</router-link>
+        <a is="router-link" :to="{name: 'magazine'}" class="nav-link">Magazine</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'blog'}" class="nav-link">Blog</router-link>
+        <a is="router-link" :to="{name: 'blog'}" class="nav-link">Blog</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="https://twitter.com/hipeac" target="_blank"><span is="twitter-icon"></span></a>
