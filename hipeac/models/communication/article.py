@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils import timezone
 
 from ..mixins import UrlMixin
@@ -52,19 +53,15 @@ class Article(UrlMixin, models.Model):
     def __str__(self) -> str:
         return self.title
 
-    """
-    def get_parent_section(self):
+    def get_parent_url(self) -> str:
         return {
-            self.TYPE_BLOG: 'blog',
-            self.TYPE_NEWS: 'news',
-            self.TYPE_RELEASE: 'releases',
+            self.TYPE_BLOG: f'{reverse("news")}#/blog/',
+            self.TYPE_NEWS: reverse('news'),
+            self.TYPE_RELEASE: reverse('press'),
+            self.TYPE_JOBS: f'{reverse("jobs")}#/career-center/',
         }[self.type]
 
-    def get_parent_url(self):
-        return reverse('press:articles', args=[self.get_parent_section()])
-    """
-
-    def is_published(self):
+    def is_published(self) -> bool:
         return self.is_ready and self.publication_date <= timezone.now().date()
 
     @property

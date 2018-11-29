@@ -5,8 +5,9 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db import models
-from typing import Dict, List
+from django.db.utils import ProgrammingError
 from django_countries import Countries
+from typing import Dict, List
 
 from hipeac.functions import get_european_countries, get_h2020_associated_countries
 
@@ -109,19 +110,25 @@ class Metadata(models.Model):
 
 
 def get_cached_metadata_queryset() -> List[Metadata]:
-    queryset = cache.get('cached_metadata_queryset')
-    if not queryset:
-        queryset = Metadata.objects.all()
-        cache.set('cached_metadata_queryset', queryset, 30)
-    return queryset
+    try:
+        queryset = cache.get('cached_metadata_queryset')
+        if not queryset:
+            queryset = Metadata.objects.all()
+            cache.set('cached_metadata_queryset', queryset, 30)
+        return queryset
+    except ProgrammingError:
+        return []
 
 
 def get_cached_metadata() -> Dict[int, Metadata]:
-    objects = cache.get('cached_metadata_objects')
-    if not objects:
-        objects = {m.id: m for m in get_cached_metadata_queryset()}
-        cache.set('cached_metadata_objects', objects, 30)
-    return objects
+    try:
+        objects = cache.get('cached_metadata_objects')
+        if not objects:
+            objects = {m.id: m for m in get_cached_metadata_queryset()}
+            cache.set('cached_metadata_objects', objects, 30)
+        return objects
+    except ProgrammingError:
+        return []
 
 
 class Permission(models.Model):

@@ -28,7 +28,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
 
     programme = models.CharField(max_length=5, null=True, blank=True, choices=PROGRAMME_CHOICES)
     acronym = models.CharField(max_length=50)
-    name = models.CharField(max_length=190)
+    name = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True, validators=[validate_no_badwords])
     coordinator = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL,
                                     related_name='coordinated_projects')
@@ -45,8 +45,8 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     image = models.FileField('Logo', upload_to=get_images_path, null=True, blank=True)
     poster_file = models.FileField('Poster', upload_to=ASSETS_FOLDER, null=True, blank=True)
 
-    application_areas = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
-    topics = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
+    application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+    topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     acl = GenericRelation('hipeac.Permission')
     links = GenericRelation('hipeac.Link')
 
@@ -69,7 +69,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     def is_active(self) -> bool:
         try:
             return self.start_date <= timezone.now().date() <= self.end_date
-        except Exception as e:
+        except Exception:
             return False
 
     @property

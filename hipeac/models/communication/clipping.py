@@ -12,5 +12,5 @@ class Clipping(models.Model):
     class Meta:
         ordering = ['-publication_date']
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Clipping @ {self.media}: {self.title}'

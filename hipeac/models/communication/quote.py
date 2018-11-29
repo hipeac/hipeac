@@ -29,5 +29,5 @@ class Quote(models.Model):
             models.Index(fields=['type']),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Quote: {self.type} ({self.author})'

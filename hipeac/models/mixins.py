@@ -12,10 +12,11 @@ class ImagesMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.__image_path = self.image.path if self.image else None
+        # self.__image_path = self.image.path if self.image else None
 
     def image_has_changed(self):
-        return self.image and self.image.path != self.__image_path
+        # return self.image and self.image.path != self.__image_path
+        pass
 
     @property
     def images(self) -> Optional[Dict[str, str]]:
@@ -55,9 +56,16 @@ class MetadataMixin:
     def get_metadata(self, field_name: str):
         if field_name not in ['application_areas', 'career_levels', 'topics']:
             return []
+        value = getattr(self, field_name)
+        if value == '':
+            return []
         keys = [int(key) for key in getattr(self, field_name).split(',')]
         metadata = get_cached_metadata()
         return [metadata[key] for key in keys if key in metadata]
+
+    def get_metadata_display(self, field_name: str, separator: str = ', ') -> str:
+        metadata = [str(m) for m in self.get_metadata(field_name)]
+        return separator.join(metadata)
 
 
 class EditorMixin:

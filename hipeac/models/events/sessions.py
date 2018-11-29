@@ -23,8 +23,8 @@ class Session(LinkMixin, models.Model):
     max_attendees = models.PositiveSmallIntegerField(default=0, help_text='Leave on `0` for non limiting.')
     extra_attendees_fee = models.PositiveSmallIntegerField(default=0)
 
-    application_areas = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
-    topics = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
+    application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+    topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     acl = GenericRelation('hipeac.Permission')
     projects = models.ManyToManyField('hipeac.Project', related_name='sessions')
     links = GenericRelation('hipeac.Link')

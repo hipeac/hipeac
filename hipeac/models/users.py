@@ -55,7 +55,7 @@ class Profile(models.Model):
     second_institution = models.ForeignKey('hipeac.Institution', null=True, blank=True, on_delete=models.SET_NULL,
                                            related_name='second_profiles')
 
-    membership_tags = models.CharField(max_length=250, null=True, blank=True, validators=[validate_membership_tags])
+    membership_tags = models.CharField(max_length=150, null=True, blank=True, validators=[validate_membership_tags])
     membership_date = models.DateField(null=True, blank=True)
     membership_revocation_date = models.DateField(null=True, blank=True)
     advisor = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='affiliates', null=True,
@@ -65,10 +65,8 @@ class Profile(models.Model):
     is_subscribed = models.BooleanField(default=False)
     is_public = models.BooleanField(default=False)
 
-    application_areas = models.CharField(max_length=250, default='', blank=True,
-                                         validators=[validate_comma_separated_integer_list])
-    topics = models.CharField(max_length=250, default='', blank=True,
-                              validators=[validate_comma_separated_integer_list])
+    application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+    topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='profiles')
     links = GenericRelation('hipeac.Link')
     objects = ProfileManager()
@@ -115,7 +113,7 @@ class Profile(models.Model):
     def avatar_url(self, size: int = 96):
         try:
             email_hash = md5(self.user.email.lower().encode('utf-8')).hexdigest()
-        except Exception as e:
+        except Exception:
             email_hash = md5('hipeac@hipeac.net'.encode('utf-8')).hexdigest()
 
         return f'https://www.gravatar.com/avatar/{email_hash}?s={size}&d=retro&r=PG'

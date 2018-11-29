@@ -68,12 +68,12 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     location = models.CharField(max_length=250, null=True, blank=True)
     country = CountryField(db_index=True, null=True, blank=True, countries=HipeacCountries)
 
-    email = models.EmailField(null=True)
+    email = models.EmailField(null=True, blank=False)
     share = models.BooleanField(default=True, editable=False)
 
-    application_areas = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
-    career_levels = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
-    topics = models.CharField(max_length=250, default='', validators=[validate_comma_separated_integer_list])
+    application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+    career_levels = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+    topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     links = GenericRelation('hipeac.Link')
 
     keywords = models.TextField(default='[]', editable=False)
@@ -131,7 +131,7 @@ def job_post_save(sender, instance, created, *args, **kwargs):
     if created:
         try:
             image_url = instance.institution.images['lg']
-        except Exception as e:
+        except Exception:
             image_url = None
 
         email = (

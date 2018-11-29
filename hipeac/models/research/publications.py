@@ -43,9 +43,9 @@ class PublicationManager(models.Manager):
                     conference__year=year,
                     itemtype='ScholarlyArticle',
                     authors__membership_tags__contains='member-eu'
-                ) &
-                (Q(authors__membership_date__lte=date) | Q(authors__membership_date__isnull=True)) &
-                (Q(authors__membership_date__lte=date) | Q(authors__membership_date__isnull=True)) &
+                ),
+                (Q(authors__membership_date__lte=date) | Q(authors__membership_date__isnull=True)),
+                (Q(authors__membership_date__lte=date) | Q(authors__membership_date__isnull=True)),
                 (Q(authors__membership_revocation_date__gt=date) | Q(authors__membership_revocation_date__isnull=True))
             ) \
             .prefetch_related('conference') \

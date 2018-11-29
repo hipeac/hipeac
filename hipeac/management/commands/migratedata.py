@@ -20,7 +20,7 @@ from hipeac.models import (
     Job, JobEvaluation,
     Event, Session, Coupon, Fee, Registration, Poster,
     Roadshow,
-    Article, Clipping, Quote, Vision
+    Article, Clipping, Quote, Magazine, Vision
 )
 
 
@@ -542,6 +542,7 @@ class Command(BaseCommand):
                 share=job.share,
                 created_at=tz.localize(job.created_at).astimezone(pytz.utc),
                 updated_at=tz.localize(job.created_at).astimezone(pytz.utc),
+                processed_at=tz.localize(job.created_at).astimezone(pytz.utc),
                 institution_id=job.institution_id,
                 project_id=job.project_id,
                 employment_type=CHOICES_DICT[Metadata.EMPLOYMENT][emp],
@@ -785,7 +786,7 @@ class Command(BaseCommand):
 
             try:
                 r.fee_id = fees_dict[(r.event_id, reg.base_fee)].id
-            except Exception as e:
+            except Exception:
                 pass
 
         bulk_registrations = list(registrations.values())
@@ -915,6 +916,30 @@ class Command(BaseCommand):
 
         self.out('success', f'✔ Roadshows migrated! ({len(bulk_roadshows)} records)')
 
+        # Magazine
+
+        self.out('std', 'Migrating magazines...')
+        bulk_magazines = []
+        ct = ContentType.objects.get_for_model(Magazine)
+
+        for m in session.query(Base.classes.publications_newsletter).all():
+            bulk_magazines.append(Magazine(
+                id=m.id,
+                title=m.title.strip(),
+                publication_date=m.release_date,
+                file=m.file,
+                file_tablet=m.file_tablet,
+            ))
+
+            bulk_images.append(Image(
+                content_type=ct,
+                object_id=m.id,
+                image=m.image,
+            ))
+
+        Magazine.objects.bulk_create(bulk_magazines, batch_size=1000)
+        self.out('success', f'✔ Magazines migrated! ({len(bulk_magazines)} records)')
+
         # Vision
 
         self.out('std', 'Migrating Vision...')
@@ -930,8 +955,7 @@ class Command(BaseCommand):
                 publication_date=v.release_date,
                 file=v.file,
                 file_draft=v.file_draft,
-                downloads=v.downloads,
-                downloads_draft=v.draft_downloads,
+                downloads=v.downloads + v.draft_downloads,
             ))
 
             bulk_images.append(Image(
@@ -940,12 +964,13 @@ class Command(BaseCommand):
                 image=v.image,
             ))
 
-            bulk_links.append(Link(
-                content_type=ct,
-                object_id=v.id,
-                type=Link.YOUTUBE,
-                url=f'https://www.youtube.com/watch?v={v.youtube_id}'
-            ))
+            if v.youtube_id:
+                bulk_links.append(Link(
+                    content_type=ct,
+                    object_id=v.id,
+                    type=Link.YOUTUBE,
+                    url=f'https://www.youtube.com/watch?v={v.youtube_id}',
+                ))
 
         Vision.objects.bulk_create(bulk_visions, batch_size=1000)
         self.out('success', f'✔ Vision migrated! ({len(bulk_visions)} records)')
@@ -957,11 +982,16 @@ class Command(BaseCommand):
         ct = ContentType.objects.get_for_model(Article)
 
         for article in session.query(Base.classes.press_article).all():
+            if article.title.startswith('HiPEAC blog: '):
+                art_title = article.title.replace('HiPEAC blog: ', '').strip()
+            else:
+                art_title = article.title.strip()
+
             bulk_articles.append(Article(
                 id=article.id,
                 type=article.type.lower(),
                 publication_date=article.release_date,
-                title=article.title.strip(),
+                title=art_title,
                 excerpt=article.excerpt,
                 content=article.body,
                 is_ready=(article.status == 'OK'),
@@ -1090,10 +1120,13 @@ class Command(BaseCommand):
             ('/press/quotes/', '/press/#/'),
             ('/publications/newsletter/', '/news/#/magazine/'),
             ('/publications/vision/', '/vision/#/'),
+            ('/newsletter/', '/news/#/magazine/'),
+            ('/magazine/', '/news/#/magazine/'),
             ('/jobs/career-center/', '/jobs/#/career-center/'),
             ('/cloud/', 'https://cloud.hipeac.net/'),
             ('/linkedin/', 'https://www.linkedin.com/company/hipeac/'),
             ('/twitter/', 'https://twitter.com/hipeac'),
+            ('/youtube/', 'https://www.youtube.com/channel/UCKnHdjNxf9dyawiLfjPaHhw/videos'),
             ('/research/paper-awards/', '/research/#/paper-awards/'),
         )
 

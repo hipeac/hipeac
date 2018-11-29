@@ -77,6 +77,7 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     registrations_count = models.PositiveIntegerField(default=0)
 
     links = GenericRelation('hipeac.Link')
+    venues = models.ManyToManyField('hipeac.Venue', blank=True, related_name='events')
 
     objects = EventManager()
 
