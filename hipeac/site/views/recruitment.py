@@ -1,11 +1,14 @@
 from commonmark import commonmark as marked
 from django.contrib.syndication.views import Feed
 from django.shortcuts import redirect, get_object_or_404
+from django.template.defaultfilters import date as date_filter
 from django.urls import reverse_lazy
 from django.views import generic
 from typing import List
 
 from hipeac.models import Job, JobEvaluation
+
+from hipeac.tools.pdf import PdfResponse, Pdf
 from .mixins import SlugMixin
 
 
@@ -73,4 +76,37 @@ class JobsPdf(generic.DetailView):
     model = Job
 
     def get(self, request, *args, **kwargs):
-        return
+        job = self.get_object()
+        maker = JobsPdfMaker(jobs=[job], filename=f'hipeac-jobs--{job.id}.pdf', as_attachment=False)
+        return maker.response
+
+
+class JobsPdfMaker:
+
+    def __init__(self, *, jobs, filename: str, as_attachment: bool = False):
+        self._response = PdfResponse(filename=filename, as_attachment=as_attachment)
+        self.jobs = jobs
+        self.make_pdf()
+
+    def make_pdf(self):
+        with Pdf() as pdf:
+            for job in self.jobs:
+                location = f'{job.location}, {job.country.name}' if job.location else job.country.name
+
+                pdf.add_note(f'Find more at hipeac.net/jobs/{job.id}')
+                if job.institution:
+                    pdf.add_text(f'<strong>{job.institution.name}</strong>', 'h4')
+                pdf.add_text(location, 'h4')
+                pdf.add_spacer()
+                pdf.add_text(job.title, 'h1')
+                pdf.add_text(f'<strong>Deadline</strong>: {date_filter(job.deadline)}', 'ul_li')
+                pdf.add_text(f'<strong>Career levels</strong>: {job.get_metadata_display("career_levels")}', 'ul_li')
+                pdf.add_text(f'<strong>Keywords</strong>: {job.get_metadata_display("topics")}', 'ul_li')
+                pdf.add_text(job.description, 'markdown')
+                pdf.add_page_break()
+
+            self._response.write(pdf.get())
+
+    @property
+    def response(self) -> PdfResponse:
+        return self._response
