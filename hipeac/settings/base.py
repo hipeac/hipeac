@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.linkedin_oauth2',
 
     # api
@@ -124,10 +126,22 @@ DATETIME_FORMAT = DATE_FORMAT + ', ' + TIME_FORMAT
 # Security / Accounts
 # https://django-allauth.readthedocs.io/en/latest/
 
+# CSRF / Cookie
+
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_USE_SESSIONS = not DEBUG
+
+# XFRAME
+
+X_FRAME_OPTIONS = 'DENY'
 CORS_ORIGIN_ALLOW_ALL = True
+
+# Account
 
 LOGOUT_REDIRECT_URL = '/'
 
+ACCOUNT_ACTIVATION_DAYS = 7
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -144,6 +158,20 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
 SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'user',
+        ],
+    },
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
     'linkedin': {
         'SCOPE': [
             'r_emailaddress',
@@ -156,19 +184,8 @@ SOCIALACCOUNT_PROVIDERS = {
             'picture-url',
             'public-profile-url',
         ]
-    }
+    },
 }
-
-
-# CSRF / Cookie
-
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
-CSRF_USE_SESSIONS = not DEBUG
-
-# XFRAME
-
-X_FRAME_OPTIONS = 'DENY'
 
 
 # http://www.django-rest-framework.org/api-guide/settings/

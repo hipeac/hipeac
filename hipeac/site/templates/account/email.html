@@ -1,4 +1,4 @@
-{% extends 'users/base_settings.html' %}
+{% extends 'users/user/base_settings.html' %}
 
 {% load crispy_forms_tags %}
 
@@ -6,54 +6,62 @@
 {% block head_title %}Emails - Settings - {{ block.super }}{% endblock %}
 
 {% block content %}
-    <h4 class="display-sm mb-4">Emails</h4>
+    <div class="row">
+        <div class="col-12 col-md-6 d-flex align-items-stretch">
+            <div class="hipeac-card">
+                <h4 class="display-sm mb-4">Emails</h4>
 
-    {% if user.emailaddress_set.all %}
-        <p>The following e-mail addresses are associated with your account:</p>
+                {% if user.emailaddress_set.all %}
+                    <p>The following e-mail addresses are associated with your account:</p>
 
-        <form method="post" action="{% url 'account_email' %}">
-            {% csrf_token %}
-            <table class="table table-sm">
-            {% for emailaddress in user.emailaddress_set.all %}
-                <tr>
-                    <td>
-                        <div class="custom-control custom-radio">
-                            <input id="email_radio_{{ forloop.counter }}" type="radio" name="email" {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{%endif %} value="{{ emailaddress.email }}" class="custom-control-input">
-                            <label class="custom-control-label" for="email_radio_{{ forloop.counter }}">
-                                <span>{{ emailaddress.email }}</span>
-                                {% if emailaddress.primary %}
-                                    <span class="badge badge-success ml-2">primary</span>
-                                {% endif %}
-                            </label>
+                    <form method="post" action="{% url 'account_email' %}">
+                        {% csrf_token %}
+                        <table class="table table-sm">
+                        {% for emailaddress in user.emailaddress_set.all %}
+                            <tr>
+                                <td>
+                                    <div class="custom-control custom-radio">
+                                        <input id="email_radio_{{ forloop.counter }}" type="radio" name="email" {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{%endif %} value="{{ emailaddress.email }}" class="custom-control-input">
+                                        <label class="custom-control-label" for="email_radio_{{ forloop.counter }}">
+                                            <span>{{ emailaddress.email }}</span>
+                                            {% if emailaddress.primary %}
+                                                <span class="badge badge-success ml-2">primary</span>
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    {% if emailaddress.verified %}
+                                        <span class="badge badge-light ml-2">verified</span>
+                                    {% else %}
+                                        <span class="badge badge-warning ml-2">unverified</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </table>
+                        <div class="mt-4">
+                            <button type="submit" name="action_primary" class="btn btn-primary mr-3">Make primary</button>
+                            <button type="submit" name="action_send" class="btn btn-light mr-2">Re-send verification</button>
+                            <button type="submit" name="action_remove" class="btn btn-light text-danger">Remove</button>
                         </div>
-                    </td>
-                    <td class="text-right">
-                        {% if emailaddress.verified %}
-                            <span class="badge badge-light ml-2">verified</span>
-                        {% else %}
-                            <span class="badge badge-warning ml-2">unverified</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </table>
-            <div class="mt-4">
-                <button type="submit" name="action_primary" class="btn btn-primary mr-3">Make primary</button>
-                <button type="submit" name="action_send" class="btn btn-light mr-2">Re-send verification</button>
-                <button type="submit" name="action_remove" class="btn btn-light text-danger">Remove</button>
+                    </form>
+                {% else %}
+                    <p><strong>Warning:</strong> you currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc.</p>
+                {% endif %}
             </div>
-        </form>
-    {% else %}
-        <p><strong>Warning:</strong> you currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc.</p>
-    {% endif %}
-</div>
-<div class="hipeac-card">
-    <h4 class="display-sm mb-4">Add secondary emails</h4>
-    <form method="post" action="{% url 'account_email' %}">
-        {% csrf_token %}
-        {{ form | crispy }}
-        <button name="action_add" type="submit" class="btn btn-outline-primary mt-3">Add email</button>
-    </form>
+        </div>
+        <div class="col-12 col-md-6 d-flex align-items-stretch">
+            <div class="hipeac-card">
+                <h4 class="display-sm mb-4">Add secondary emails</h4>
+                <form method="post" action="{% url 'account_email' %}">
+                    {% csrf_token %}
+                    {{ form | crispy }}
+                    <button name="action_add" type="submit" class="btn btn-outline-primary mt-3">Add email</button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_scripts %}

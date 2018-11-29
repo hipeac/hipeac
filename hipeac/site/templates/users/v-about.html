@@ -1,0 +1,18 @@
+{% load hipeac %}
+
+
+<script type="text/x-template" id="{{ id }}">
+    <div class="hipeac-card">
+        <div class="row">
+            <div class="col-12 col-md-8 pr-md-5">
+                <div class="marked">
+                    {{ the_user.profile.bio | markdown }}
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <hr class="my-4 d-md-none">
+                {% include 'components/links.html' with title='External links' items=the_user.profile.links %}
+            </div>
+        </div>
+    </div>
+</script>

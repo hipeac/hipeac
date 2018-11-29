@@ -1,33 +1,25 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 
-from hipeac.models import Profile
-from hipeac.site.forms import UserPrivacyForm, UserProfileForm
+
+class UserProfile(generic.DetailView):
+    """
+    Displays a User profile.
+    """
+    model = get_user_model()
+    context_object_name = 'the_user'
+    slug_field = 'username'
+    template_name = 'users/profile.html'
+
+    def get_queryset(self):
+        return super().get_queryset()
 
 
-class UserSettings(generic.edit.UpdateView):
-    model = Profile
-    template_name = 'users/settings.html'
+class UserSettings(generic.TemplateView):
+    template_name = 'users/user/settings.html'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
-    def get_object(self, queryset=None):
-        return Profile.objects.get(user=self.request.user)
-
-
-class PrivacySettings(UserSettings):
-    form_class = UserPrivacyForm
-
-    def get_success_url(self):
-        return reverse('user_privacy')
-
-
-class ProfileSettings(UserSettings):
-    form_class = UserProfileForm
-
-    def get_success_url(self):
-        return reverse('user_profile')
