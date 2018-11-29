@@ -28,7 +28,7 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
 
     autocomplete_fields = ('institution', 'project')
     radio_fields = {'employment_type': admin.VERTICAL}
-    inlines = [LinksInline, PermissionsInline]
+    inlines = [LinksInline]
     fieldsets = (
         (None, {
             'fields': ('title', 'institution', 'project'),

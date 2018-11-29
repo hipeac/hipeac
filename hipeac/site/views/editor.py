@@ -31,9 +31,16 @@ class EditorView(EditorBaseView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_staff:
+        obj = self.get_object(**kwargs)
+        if not request.user.is_staff and not obj.can_be_managed_by(request.user):
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, **kwargs):
+        if not hasattr(self, 'object'):
+            ct = ContentType.objects.get(id=kwargs.get('ct', None))
+            self.object = ct.get_object_for_this_type(pk=kwargs.get('pk', None))
+        return self.object
 
     def get_model_name(self, **kwargs):
         if not hasattr(self, 'model_name'):
@@ -43,6 +50,12 @@ class EditorView(EditorBaseView):
 
 
 class EditorCreateView(EditorBaseView):
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
     def get_model_name(self, **kwargs):
         if not hasattr(self, 'model_name'):
