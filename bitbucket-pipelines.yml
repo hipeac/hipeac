@@ -4,6 +4,7 @@ pipelines:
     default:
         - step:
             name: Build and test
+            cache: pip
             script:
                 - pip install pipenv && pipenv install --dev --deploy --system
                 - pytest --cov=hipeac --junitxml=./test-reports/junit.xml

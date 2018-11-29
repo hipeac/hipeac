@@ -1,10 +1,9 @@
+from commonmark import commonmark as marked
 from django.contrib.syndication.views import Feed
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
-from markdown import markdown as marked
 from typing import List
-from wkhtmltopdf.views import PDFTemplateResponse
 
 from hipeac.models import Job, JobEvaluation
 from .mixins import SlugMixin
@@ -74,13 +73,4 @@ class JobsPdf(generic.DetailView):
     model = Job
 
     def get(self, request, *args, **kwargs):
-        job = self.get_object()
-        return PDFTemplateResponse(
-            request=request,
-            template='recruitment/job/jobs.pdf.html',
-            filename='hipeac-jobs--%s.pdf' % job.id,
-            context={
-                'jobs': [job],
-            },
-            show_content_in_browser=True
-        )
+        return

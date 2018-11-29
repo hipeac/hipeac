@@ -1,9 +1,9 @@
 import datetime
 
+from commonmark import commonmark as marked
 from django.contrib.syndication.views import Feed
 from django.urls import reverse_lazy
 from django.views import generic
-from markdown import markdown as marked
 from typing import List
 
 from hipeac.models import Article

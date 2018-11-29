@@ -1,9 +1,5 @@
 FROM python:3.7-alpine
 
-# install wkhtmltopdf
-RUN apk add --no-cache wkhtmltopdf \
-        --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/
-
 WORKDIR /app
 COPY requirements.txt /app/
 

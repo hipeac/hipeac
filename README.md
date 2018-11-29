@@ -33,4 +33,4 @@ Maximum line length is 120. All changes should include tests and pass `flake8`.
 [1]: https://www.djangoproject.com/
 [2]: https://www.django-rest-framework.org/
 [3]: https://docs.pipenv.org/#install-pipenv-today
-[4]: https://docs.djangoproject.com/en/1.11/internals/contributing/writing-code/coding-style/
+[4]: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/

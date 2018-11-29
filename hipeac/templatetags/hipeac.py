@@ -1,11 +1,10 @@
 import json
 import lxml.html
 
+from commonmark import commonmark as marked
 from django import template
 from django.template.base import Node
-from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
-from markdown import markdown as marked
 
 from hipeac.models import get_cached_metadata
 
@@ -20,7 +19,7 @@ def active(request, patterns):
             try:
                 if pattern == request.resolver_match.url_name:
                     return 'active'
-            except Exception as e:
+            except Exception:
                 return ''
     return ''
 

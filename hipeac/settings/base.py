@@ -86,7 +86,7 @@ FIXTURE_DIRS = [
 ]
 
 
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 db = urlparse(os.environ.get('DATABASE_URL'))
 DATABASES = {
@@ -244,26 +244,11 @@ COMPRESS_OFFLINE_CONTEXT = {
 
 
 # File uploads
-# https://docs.djangoproject.com/en/1.11/topics/http/file-uploads/
+# https://docs.djangoproject.com/en/2.0/topics/http/file-uploads/
 
 FILE_UPLOAD_PERMISSIONS = 0o644
 
 
-# wkhtmltopdf
-# http://django-wkhtmltopdf.readthedocs.org/en/latest/
-
-WKHTMLTOPDF_CMD_OPTIONS = {
-    'quiet': True,
-    'page-size': 'A4',
-    'margin-top': 10,
-    'margin-right': 20,
-    'margin-bottom': 15,
-    'margin-left': 20
-}
-
-
-# wkhtmltopdf requires MEDIA configuration to be set
-# http://stackoverflow.com/questions/24071290/
 # https://docs.djangoproject.com/en/2.0/ref/settings/#media-root
 
 MEDIA_URL = '/media/'
