@@ -84,6 +84,7 @@ class Metadata(models.Model):
     JOB_POSITION = 'job_position'
     EMPLOYMENT = 'employment_type'
     APPLICATION_AREA = 'application_area'
+    SESSION_TYPE = 'session_type'
     TOPIC = 'topic'
     TYPE_CHOICES = (
         (GENDER, 'Gender'),
@@ -92,6 +93,7 @@ class Metadata(models.Model):
         (JOB_POSITION, 'Position'),
         (EMPLOYMENT, 'Employment type'),
         (APPLICATION_AREA, 'Application area'),
+        (SESSION_TYPE, 'Session type'),
         (TOPIC, 'Topic'),
     )
 

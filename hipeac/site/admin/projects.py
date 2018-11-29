@@ -1,19 +1,28 @@
 from django.contrib import admin
+from django.forms import ModelForm
 
+from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
 from hipeac.models import Project
 from .generic import HideDeleteActionMixin, LinksInline, PermissionsInline
 
 
+class ProjectAdminForm(ModelForm):
+    application_areas = ApplicationAreasChoiceField()
+    topics = TopicsChoiceField()
+
+
 @admin.register(Project)
 class ProjectAdmin(HideDeleteActionMixin, admin.ModelAdmin):
-    exclude = ['application_areas', 'topics', 'updated_at']
-    filter_horizontal = ['partners']
-    inlines = [LinksInline, PermissionsInline]
+    form = ProjectAdminForm
+    exclude = ['updated_at']
+
     list_display = ('id', 'ec_project_id', 'acronym', 'coordinator', 'programme', 'is_active')
     list_filter = ('programme',)
-    raw_id_fields = ['coordinating_institution', 'coordinator', 'communication_officer', 'project_officer']
     search_fields = ['acronym', 'name']
 
+    filter_horizontal = ['partners']
+    raw_id_fields = ('coordinating_institution', 'coordinator', 'communication_officer', 'project_officer')
+    inlines = [LinksInline, PermissionsInline]
     fieldsets = (
         (None, {
             'fields': ('acronym', 'name'),
@@ -26,6 +35,10 @@ class ProjectAdmin(HideDeleteActionMixin, admin.ModelAdmin):
         }),
         ('EC', {
             'fields': ('programme', 'ec_project_id', 'project_officer'),
+        }),
+        ('METADATA', {
+            'classes': ('collapse',),
+            'fields': ('application_areas', 'topics'),
         }),
     )
 

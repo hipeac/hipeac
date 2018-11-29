@@ -56,8 +56,8 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
 
     title = models.CharField(max_length=250, validators=[validate_no_badwords])
     description = models.TextField(validators=[validate_no_badwords])
-    employment_type = models.ForeignKey(Metadata, null=True, blank=True, on_delete=models.SET_NULL,
-                                        limit_choices_to={'field': Metadata.EMPLOYMENT},
+    employment_type = models.ForeignKey(Metadata, null=True, blank=False, on_delete=models.SET_NULL,
+                                        limit_choices_to={'type': Metadata.EMPLOYMENT},
                                         related_name=Metadata.EMPLOYMENT)
     deadline = models.DateField(null=True)
     positions = models.PositiveSmallIntegerField(default=1, null=True)

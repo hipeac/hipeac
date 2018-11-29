@@ -5,13 +5,16 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 
-from hipeac.models import Permission
+from hipeac.models import Metadata, Permission
 from .events import validate_date
 from ..mixins import LinkMixin
 
 
 class Session(LinkMixin, models.Model):
     event = models.ForeignKey('hipeac.Event', on_delete=models.CASCADE, related_name='sessions')
+    session_type = models.ForeignKey(Metadata, null=True, blank=False, on_delete=models.SET_NULL,
+                                     limit_choices_to={'type': Metadata.SESSION_TYPE},
+                                     related_name=Metadata.SESSION_TYPE)
     is_private = models.BooleanField(default=False)
 
     date = models.DateField()
@@ -26,7 +29,7 @@ class Session(LinkMixin, models.Model):
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     acl = GenericRelation('hipeac.Permission')
-    projects = models.ManyToManyField('hipeac.Project', related_name='sessions')
+    projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='sessions')
     links = GenericRelation('hipeac.Link')
 
     created_at = models.DateTimeField(auto_now_add=True)

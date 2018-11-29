@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.db.models import Count
+from django.forms import ModelForm
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
+from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
 from hipeac.models import Event, Registration, Roadshow, Break, Session, Sponsor
-from .generic import ImagesInline, LinksInline
+from .generic import ImagesInline, LinksInline, PermissionsInline
 
 
 class BreaksInline(admin.TabularInline):
@@ -23,12 +25,13 @@ class SponsorsInline(admin.TabularInline):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     date_hierarchy = 'start_date'
-    inlines = (BreaksInline, SponsorsInline, LinksInline,)
     list_display = ('id', 'start_date', 'end_date', 'name', 'type', 'sessions_link', 'registrations_link',
                     'is_active', 'is_open')
     list_filter = ('type',)
     list_per_page = 20
+
     readonly_fields = ('registrations_count',)
+    inlines = (BreaksInline, SponsorsInline, LinksInline,)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(Count('sessions', distinct=True)) \
@@ -71,14 +74,39 @@ class RegistrationAdmin(admin.ModelAdmin):
 @admin.register(Roadshow)
 class RoadshowAdmin(admin.ModelAdmin):
     date_hierarchy = 'start_date'
-    inlines = (ImagesInline, LinksInline)
     list_display = ('id', 'name', 'country', 'start_date', 'end_date')
+
+    inlines = (ImagesInline, LinksInline)
+
+
+class SessionAdminForm(ModelForm):
+    application_areas = ApplicationAreasChoiceField()
+    topics = TopicsChoiceField()
 
 
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
+    form = SessionAdminForm
+
     date_hierarchy = 'date'
-    list_filter = ('event',)
+    list_display = ('id', 'title', 'date', 'start_at', 'end_at', 'session_type')
+    list_filter = ('session_type', 'event')
+
+    autocomplete_fields = ('projects',)
+    radio_fields = {'session_type': admin.VERTICAL}
+    inlines = [LinksInline, PermissionsInline]
+    fieldsets = (
+        (None, {
+            'fields': (('date', 'start_at', 'end_at'), 'session_type', 'title', 'is_private'),
+        }),
+        ('INFO', {
+            'fields': ('summary', 'projects'),
+        }),
+        ('METADATA', {
+            'classes': ('collapse',),
+            'fields': ('application_areas', 'topics'),
+        }),
+    )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('event')
+        return super().get_queryset(request).prefetch_related('event', 'session_type')

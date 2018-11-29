@@ -143,6 +143,29 @@ class Command(BaseCommand):
                 position=topic.id,
             )
 
+        # Topics
+        SESSION_TYPES_DICT = {}
+        session_type_choices = [
+            ('THEMA', 'Thematic Session'),
+            ('HIPP', 'Industrial Session'),
+            ('WSHOP', 'Workshop'),
+            ('TUTORI', 'Tutorial'),
+            ('KNOTE', 'Keynote'),
+            ('TALK', 'Presentation / Talk'),
+            ('PAPERT', 'Paper Track'),
+            ('INDSES', 'Industrial Poster Session'),
+            ('POSSES', 'Poster Session'),
+            ('PROSES', 'EU Projects Poster Session'),
+            ('SOCIAL', 'Social Event'),
+            ('PROMEE', 'EC Project Meeting'),
+            ('OTHER', 'Other'),
+        ]
+        for item in session_type_choices:
+            SESSION_TYPES_DICT[item[0]] = Metadata.objects.create(
+                type=Metadata.SESSION_TYPE,
+                value=item[1],
+            )
+
         # Institutions
 
         self.out('std', 'Migrating institutions...')
@@ -656,6 +679,7 @@ class Command(BaseCommand):
             session_ids.append(s.id)
             bulk_sessions.append(Session(
                 id=s.id,
+                session_type=SESSION_TYPES_DICT[s.activity_type],
                 event_id=s.event_id,
                 date=s.date if s.date else '2016-04-27',
                 start_at=s.start_at,
