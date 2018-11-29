@@ -33,7 +33,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
+    <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}"data-project-list="{% url 'v1:project-list' %}" class="container">
         <div is="router-view"></div>
     </div>
 {% endblock %}
@@ -53,19 +53,37 @@
     <script>
         var Store = new Vuex.Store({
             state: {
+                institutions: null,
                 members: [],
+                affiliates: [],
                 projects: []
             },
             mutations: {
+                fetchInstitutions: function (state) {
+                    api().getAllInstitutions().done(function (res) {
+                        state.institutions = res;
+                    });
+                },
                 fetchMembers: function (state) {
                     ajax().get($('#urls').data('member-list')).done(function (res) {
                         state.members = res;
                     });
                 },
+                fetchAffiliates: function (state) {
+                    ajax().get($('#urls').data('member-affiliates')).done(function (res) {
+                        state.affiliates = res;
+                    });
+                },
                 fetchProjects: function (state) {
                     ajax().get($('#urls').data('project-list')).done(function (res) {
-                        state.projects = res;
+                        state.projects = mapper().projects(res);
                     });
+                }
+            },
+            getters: {
+                fullMembers: function (state) {
+                    if (!state.members || !state.institutions) return [];
+                    return mapper().members(state.members, state.institutions);
                 }
             }
         });
@@ -84,22 +102,66 @@
 
         var MembersView = {
             template: '#v-members',
+            data: function () {
+                return {
+                    filters: {
+                        topics: []
+                    }
+                }
+            },
             computed: _.extend(
-                Vuex.mapState(['members']), {
+                Vuex.mapGetters(['fullMembers']), {
             }),
+            methods: {
+                resetFilters: function () {
+                    this.filters.topics = [];
+                }
+            },
             created: function () {
                 $.when(
-                    this.$store.commit('fetchMembers')
+                    this.$store.commit('fetchInstitutions'),
+                    this.$store.commit('fetchMembers'),
+                    this.$store.commit('fetchAffiliates')
                 );
             }
         };
 
         var ProjectsView = {
             template: '#v-projects',
+            data: function () {
+                return {
+                    q: '',
+                    filters: {
+                        topics: []
+                    }
+                }
+            },
             computed: _.extend(
                 Vuex.mapState(['projects']), {
+                filteredIds: function () {
+                    var filters = this.filters;
+                    var filteredItems = (!filters.topics.length)
+                        ? this.projects
+                        : this.projects.filter(function (obj) {
+                            return _.intersection(filters.topics, obj.topicIds).length > 0;
+                        });
+
+                    return _.pluck(filterMultiple(filteredItems, this.q), 'id');
+                },
+                topics: function () {
+                    return extractTopics(this.projects);
+                }
             }),
+            methods: {
+                updateQuery: function (val) {
+                    this.q = val;
+                },
+                resetFilters: function () {
+                    this.filters.topics = [];
+                }
+            },
             created: function () {
+                EventHub.$on('query-changed', this.updateQuery);
                 $.when(
                     this.$store.commit('fetchProjects')
                 );
@@ -162,7 +224,7 @@
             ]
         });
 
-        var app = new Vue({
+        new Vue({
             el: '#vue',
             store: Store,
             router: Router

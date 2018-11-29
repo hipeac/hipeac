@@ -14,16 +14,21 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-6">
-                <div class="hipeac-card marked">
-                    <display-sm :transparent="true" class="mb-3">{{ recruiters.header }}</display-sm>
-                    {{ recruiters.content | markdown }}
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <a href="{% url 'editor_create' 'job' %}" class="btn btn-sm btn-block btn-primary text-wrap"><i class="material-icons mr-1">add</i>Add new job or internship</a>
+                    <hr class="my-4">
+                    <display-sm class="mb-3">{{ recruiters.header }}</display-sm>
+                    <div class="marked">{{ recruiters.content | markdown }}</div>
                 </div>
             </div>
-            <div class="col-12 col-md-6">
-                <div class="hipeac-card marked">
-                    <display-sm :transparent="true" class="mb-3">{{ students.header }}</display-sm>
-                    {{ students.content | markdown }}
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <a href="mailto:recruitment@hipeac.net" class="btn btn-sm btn-block btn-outline-secondary text-wrap"><i class="material-icons mr-1">email</i>Got a question?</a>
+                    <hr class="my-4">
+                    <display-sm class="mb-3">{{ students.header }}</display-sm>
+                    <div class="marked">{{ students.content | markdown }}</div>
+                    <img src="{{ MEDIA_URL }}{{ students.images.first.image }}" class="w-100 mt-4 rounded">
                 </div>
             </div>
         </div>

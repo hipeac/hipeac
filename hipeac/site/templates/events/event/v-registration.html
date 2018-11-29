@@ -1,6 +1,6 @@
 <script type="text/x-template" id="{{ id }}">
     <div v-if="!user.isAuthenticated" class="text-center">
-        <display-lg class="blue">You need to log in to your HiPEAC account to register for an event.</display-lg>
+        <display-lg>You need to log in to your HiPEAC account to register for an event.</display-lg>
         <a href="{% url 'account_login' %}" class="btn btn-outline-primary">Log in</a>
     </div>
 {% verbatim %}

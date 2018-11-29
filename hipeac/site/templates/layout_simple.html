@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 
 {% block main %}
     <div class="container">
@@ -8,7 +10,7 @@
                 <div class="d-flex justify-content-center mt-5 mb-4">
                     <div class="logo-container">
                         <a href="{% url 'homepage' %}">
-                            {% include '_hipeac_logo.svg' %}
+                            <img src="{% static 'images/hipeac.svg' %}">
                         </a>
                     </div>
                 </div>

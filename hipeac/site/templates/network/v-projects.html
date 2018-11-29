@@ -1,8 +1,21 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <loading v-if="!projects.length"></loading>
-    <div v-else>
-        <project-list :items="projects" :show-search="true"></project-list>
+    <div class="row">
+        <div class="col-12">
+            <search-card placeholder="Search projects by name, topic or keywords..." :showFiltersButton="topics.length > 0" class="mb-2">
+                <filters-clear :onClick="resetFilters"></filters-clear>
+                <div v-if="topics">
+                    <h6 class="d-inline display-sm mr-2">Topics</h6>
+                    <div v-for="topic in topics" :key="topic.id" class="form-check form-check-inline mr-2">
+                        <label class="form-check-label pointer">
+                            <input v-model="filters.topics" :value="topic.id" type="checkbox" class="form-check-input">{{ topic.value }}</label>
+                    </div>
+                </div>
+            </search-card>
+            <search-results v-if="filteredIds.length < projects.length" :count="filteredIds.length"></search-results>
+            <project-cards v-if="projects.length" :items="projects" :ids="filteredIds"></project-cards>
+            <skeleton-cards v-else></skeleton-cards>
+        </div>
     </div>
 {% endverbatim %}
 </script>

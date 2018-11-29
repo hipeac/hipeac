@@ -1,8 +1,13 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <loading v-if="!members.length"></loading>
-    <div v-else>
-        <div>{{ members }}</div>
+    <div>
+        <table v-if="fullMembers.length" class="table table-sm">
+            <tr v-for="member in fullMembers" :key="member.id">
+                <td>{{ member.profile.name }}</td>
+                <td><span v-if="member.institution">{{ member.institution.short_name }}</span></td>
+                <td>{{ member.profile.membership_tags }}</td>
+            </tr>
+        </table>
     </div>
 {% endverbatim %}
 </script>

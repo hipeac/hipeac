@@ -28,13 +28,24 @@ label {
     }
 }
 
-.form-control.search-bar {
-    border: 0;
-    padding: 0;
-    width: 90%;
+.form-control::placeholder {
+    text-overflow: ellipsis;
+}
 
-    &:focus {
-        box-shadow: none;
+.search-bar {
+    .input-group-text,
+    .form-control {
+        background: transparent;
+        border: 0;
+        padding: 0;
+
+        &:focus {
+            box-shadow: none;
+        }
+    }
+
+    .input-group-text {
+        padding-right: 1rem;
     }
 }
 
@@ -48,6 +59,12 @@ ul.socialaccounts {
 
     svg {
         height: 40px;
+    }
+}
+
+p.socialaccounts {
+    svg {
+        height: 24px;
     }
 }
 

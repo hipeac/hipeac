@@ -5,9 +5,70 @@
     <div>
         <display-lg>{{ blck.header }}</display-lg>
         <div class="row">
-            <div class="col-12 d-flex align-items-stretch">
-                <div class="hipeac-card marked">
-                    {{ blck.content | markdown }}
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <div class="marked catchphrase-first">{{ blck.content | markdown }}</div>
+                    <div class="marked icon-list mt-3">
+                        <ul>
+                            <li><i class="material-icons">import_contacts</i>{{ magazine.header }}</li>
+                            <li><i class="material-icons">accessibility_new</i>{{ csw.header }}</li>
+                            <li><i class="material-icons">wb_sunny</i>{{ acaces.header }}</li>
+                            <li><i class="material-icons">dashboard</i>{{ wall.header }}</li>
+                            <li><i class="material-icons">how_to_reg</i>{{ stem.header }}</li>
+                            <li><i class="material-icons">group_work</i>{{ other.header }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <article-card class="col-12 col-md-6 d-flex align-items-stretch" title="Latest career news" type="jobs" max="8"></article-card>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <display-md class="mt-0 mb-4">{{ magazine.header }}</display-md>
+                    <div class="marked">{{ magazine.content | markdown }}</div>
+                    <div v-if="latestMagazines.length" class="row mini-gutter mt-4">
+                        <div v-for="magazine in latestMagazines" :key="magazine.id" class="col col-3">
+                            <a href="{% url 'news' %}#/magazine/">
+                                <img :src="magazine.images[0].image" class="rounded w-100">
+                            </a>
+                        </div>
+                        <div class="col col-12 mt-4">
+                            <p>All magazines can also be downloaded <a href="{% url 'news' %}#/magazine/">here</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <display-md class="mt-0 mb-4">{{ csw.header }}</display-md>
+                    <div class="marked">{{ csw.content | markdown }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <display-md class="mt-0 mb-4">{{ acaces.header }}</display-md>
+                    <div class="marked">{{ acaces.content | markdown }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card d-flex flex-column align-items-end">
+                    <display-md class="mt-0 mb-4">{{ wall.header }}</display-md>
+                    <div class="marked mb-4">{{ wall.content | markdown }}</div>
+                    <img src="{{ MEDIA_URL }}{{ wall.images.first.image }}" class="w-100 mt-auto rounded">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card d-flex flex-column align-items-end">
+                    <display-md class="mt-0 mb-4">{{ stem.header }}</display-md>
+                    <div class="marked mb-4">{{ stem.content | markdown }}</div>
+                    <img src="{{ MEDIA_URL }}{{ stem.images.first.image }}" class="w-100 mt-auto rounded">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <display-md class="mt-0 mb-4">{{ other.header }}</display-md>
+                    <div class="marked">{{ other.content | markdown }}</div>
                 </div>
             </div>
         </div>

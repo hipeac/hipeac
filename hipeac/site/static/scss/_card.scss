@@ -30,8 +30,6 @@
             margin-bottom: 1.5rem !important;
         }
 
-        .content {}
-
         hr {
             margin-top: 1.5rem !important;
             margin-bottom: 1.5rem !important;
@@ -43,26 +41,26 @@
     }
 }
 
-$jobs-card-gutter: .25rem;
-$jobs-card-logo-height: 35px;
+$mini-card-gutter: .25rem;
+$mini-card-logo-height: 35px;
 
-.row.jobs-gutters {
-    margin-right: -$jobs-card-gutter;
-    margin-left: -$jobs-card-gutter;
+.row.mini-card-gutters {
+    margin-right: -$mini-card-gutter;
+    margin-left: -$mini-card-gutter;
 
     > div {
-        padding-right: $jobs-card-gutter;
-        padding-left: $jobs-card-gutter;
-        margin-bottom: $jobs-card-gutter * 2;
+        padding-right: $mini-card-gutter;
+        padding-left: $mini-card-gutter;
+        margin-bottom: $mini-card-gutter * 2;
     }
 }
 
-.jobs-card {
-    padding: 1rem 1.5rem 1rem;
+.mini-card {
+    padding: 1rem 1.5rem;
 
     .header {
         display: table-cell;
-        height: $jobs-card-logo-height;
+        height: $mini-card-logo-height;
         vertical-align: middle;
     }
 
@@ -72,29 +70,38 @@ $jobs-card-logo-height: 35px;
         font-size: 0.9rem;
     }
 
-    img {
-        max-height: $jobs-card-logo-height;
+    img.logo {
+        max-height: $mini-card-logo-height;
     }
 
-    ul {
-        border-top: 2px solid whitesmoke;
-        margin-top: 1rem;
-        padding-top: .5rem;
-        margin: 0;
-        font-size: small;
+    img.w-100 {
+        min-height: 1px;
+        height: auto;
+    }
+}
 
-        &.soon {
-            .deadline {
-                background: $hipeac-yellow;
-            }
-        }
+.mini-card ul,
+.mini-card-list {
+    border-top: 2px solid whitesmoke;
+    margin: 1rem 0 0;
+    padding-top: .5rem;
+    font-size: small;
 
-        li {
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+    &.soon {
+        .deadline {
+            background: $hipeac-light-yellow;
         }
+    }
+
+    .new {
+        background: $hipeac-light-yellow;
+    }
+
+    li {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     i.sm {

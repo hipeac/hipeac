@@ -55,7 +55,7 @@
         <div v-if="event.sponsors.length" class="row">
             <div class="col-12">
                 <div class="hipeac-card">
-                    <display-sm :transparent="true" class="mb-3">Sponsors</display-sm>
+                    <display-sm class="mb-3">Sponsors</display-sm>
                     <ul class="logos">
                         <li v-for="sponsor in event.sponsors" :key="sponsor.id">
                             <a v-if="sponsor.institution" :href="sponsor.institution.href">
@@ -71,15 +71,12 @@
         </div>
         <div class="row">
             <div class="col-12 col-md-12 col-lg-8">
-                <div class="hipeac-card" v-if="articles.length">
-                    <display-sm :transparent="true" class="mb-3">Event news</display-sm>
-                    <article-list :items="articles" :max="10" :show-more="false"></article-list>
-                </div>
+                <article-card v-if="event" title="Event news" :eventId="event.id" :max="10" :show-more="false"></article-card>
             </div>
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="hipeac-card" v-if="user.isRegistered && event.links.google_photos">
                     {% endverbatim %}
-                        <img src="{% static 'images/google-photos.png' %}" class="float-right">
+                        <img src="{% static 'images/google-photos.svg' %}" class="float-right logo-photos ml-3">
                     {% verbatim %}
                     <catchphrase class="mb-0">Share your pictures from this event <a :href="event.links.google_photos">here</a>!</catchphrase>
                 </div>

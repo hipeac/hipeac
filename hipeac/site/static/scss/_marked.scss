@@ -6,8 +6,20 @@ $max-width: 40%;
         font-size: 1rem;
     }
 
+    h6 {
+        font-size: 0.9rem;
+    }
+
     > p:last-child {
         margin-bottom: 0;
+    }
+
+    ul {
+       padding-left: 1.5rem;
+    }
+
+    ul ul {
+       margin-bottom: 1rem;
     }
 
     img {
@@ -30,18 +42,6 @@ $max-width: 40%;
             width: 100%;
             margin: 1.5rem 0 !important;
         }
-    }
-
-    ul {
-       padding-left: 1.5rem;
-    }
-
-    ul ul {
-       margin-bottom: 1rem;
-    }
-
-    > p:last-child {
-        margin-bottom: 0;
     }
 }
 

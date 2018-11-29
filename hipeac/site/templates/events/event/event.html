@@ -71,16 +71,10 @@
                     isAuthenticated: USER_IS_AUTHENTICATED,
                     isRegistered: false
                 },
-                articles: [],
                 event: null,
                 registrations: []
             },
             mutations: {
-                fetchArticles: function (state) {
-                    ajax().get($('#urls').data('articles-url')).done(function (res) {
-                        state.articles = mapper().articles(res);
-                    });
-                },
                 fetchEvent: function (state) {
                     ajax().get($('#urls').data('event-url')).done(function (res) {
                         obj = mapper().events([res])[0];
@@ -289,7 +283,7 @@
             ]
         });
 
-        var app = new Vue({
+        new Vue({
             el: '#vue',
             store: Store,
             router: Router,
@@ -299,7 +293,6 @@
             created: function () {
                 $.when(
                     this.$store.commit('fetchEvent'),
-                    this.$store.commit('fetchArticles'),
                     this.$store.commit('fetchRegistrations')
                 );
             }

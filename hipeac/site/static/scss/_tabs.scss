@@ -16,6 +16,12 @@
     .nav-link {
         font-size: 0.85rem;
 
+        &.highlight {
+            background: $success-color;
+            height: calc(100% - 2px);
+            margin: 0 1px;
+        }
+
         &.active {
             border-color: #ECEFF1 #ECEFF1 transparent;
         }

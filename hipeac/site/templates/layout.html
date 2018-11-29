@@ -10,7 +10,7 @@
         <nav class="hipeac navbar sticky-top navbar-expand-lg navbar-light">
             <div class="container">
                 <a class="navbar-brand" href="{% url 'homepage' %}">
-                    {% include '_hipeac_logo.svg' %}
+                    <img src="{% static 'images/hipeac.svg' %}">
                 </a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar">
                     <span class="navbar-toggler-icon"></span>
@@ -23,7 +23,7 @@
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link {% active request 'network,institution,project' %}" href="{% url 'network' %}">The Network</a>
+                            <a class="nav-link {% active request 'network,user,institution,project' %}" href="{% url 'network' %}">The Network</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% active request 'events,acaces,conference,csw,roadshow' %}" href="{% url 'events' %}">Events</a>
@@ -40,9 +40,9 @@
                         <li class="nav-item">
                             <a class="nav-link {% active request 'news,article' %}" href="{% url 'news' %}">News</a>
                         </li>
-                        <!--<li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link {% active request 'press' %}" href="{% url 'press' %}">Press room</a>
-                        </li>-->
+                        </li>
                     </ul>
                 </div>
                 {% include '_user_menu.html' %}
@@ -70,7 +70,7 @@
                     <hr class="my-5">
                 </div>
                 <div class="col-12">
-                    <img class="float-right flag-sm ml-3" src="{% static 'images/eu-flag.png' %}">
+                    <img class="float-right flag-sm ml-3" src="{% static 'images/eu-flag.svg' %}">
                     <p class="text-sm">
                         <strong>&copy; 2004-{% now 'Y' %} HiPEAC, </strong>
                         <strong>European Network on High Performance and Embedded Architecture and Compilation</strong><br>

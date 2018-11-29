@@ -17,7 +17,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-2 pt-4">
+            <div class="col-12 col-md-2 d-none d-md-block">
                 {% if institution.images %}
                     <img src="{{ institution.images.md }}" class="max-90">
                 {% endif %}
@@ -62,7 +62,7 @@
                             {{ institution.topics | metadata_badges:'Topics' }}
                             {{ institution.application_areas | metadata_list:'Application areas' }}
                             {% if institution.coordinated_projects.count %}
-                                <h5>Coordinated projects</h5>
+                                <h5 class="display-sm">Coordinated projects</h5>
                                 <ul class="list-inline">
                                 {% for project in institution.coordinated_projects.all %}
                                     <li class="list-inline-item"><a href="{{ project.get_absolute_url }}">{{ project }}</a></li>
@@ -70,7 +70,7 @@
                                 </ul>
                             {% endif %}
                             {% if institution.participated_projects.count %}
-                                <h5>Participated projects</h5>
+                                <h5 class="display-sm">Participated projects</h5>
                                 <ul class="list-inline">
                                 {% for project in institution.participated_projects.all %}
                                     <li class="list-inline-item"><a href="{{ project.get_absolute_url }}">{{ project }}</a></li>
@@ -90,7 +90,7 @@
 {% block scripts %}
 {% compress js inline %}
     <script>
-        var app = new Vue({
+        new Vue({
             el: '#vue'
         });
     </script>

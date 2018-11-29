@@ -8,8 +8,8 @@
         {% verbatim %}
             <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    <div v-if="vision.file">
-                        <a :href="vision.file" class="btn btn-sm btn-primary btn-block">Download Vision document</a>
+                    <div v-if="vision.download_url">
+                        <a :href="vision.download_url" class="btn btn-sm btn-primary btn-block"><i class="material-icons mr-1">get_app</i>Download Vision document</a>
                         <hr class="my-4">
                     </div>
                     <h5 class="mb-3">{{ vision.title }}</h5>
@@ -18,12 +18,20 @@
             </div>
             <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    <youtube-embed v-if="vision.youtube_url" :url="vision.youtube_url" :hideInfo="true" class="rounded mb-4"></youtube-embed>
+                    <youtube-embed v-if="vision.youtube_url" :url="vision.youtube_url" :hideInfo="true" class="mb-4"></youtube-embed>
                     <display-sm class="mb-3">Summary</display-sm>
                     <div v-html="vision.markedSummary" class="marked"></div>
                 </div>
             </div>
         {% endverbatim %}
+        </div>
+    </div>
+    <div v-else class="row">
+        <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+            <skeleton-box></skeleton-box>
+        </div>
+        <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+            <skeleton-box></skeleton-box>
         </div>
     </div>
 </script>

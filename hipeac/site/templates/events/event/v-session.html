@@ -26,7 +26,7 @@
                             <div class="marked mod" v-if="session.markedSummary" v-html="session.markedSummary"></div>
                         </div>
                         <div class="col-12 col-md-4 border-left pl-md-4">
-                            <display-sm :transparent="true" class="mb-3"><i class="material-icons sm mr-2">today</i>{{ session.date | moment }}</display-sm>
+                            <display-sm class="mb-3"><i class="material-icons sm mr-2">today</i>{{ session.date | moment }}</display-sm>
                             <metadata-badges v-if="session.topics.length" title="Topics" :items="session.topics"></metadata-badges>
                             <metadata-badges v-if="session.application_areas.length" title="Application areas" :items="session.application_areas" color="secondary"></metadata-badges>
                         </div>

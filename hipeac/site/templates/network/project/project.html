@@ -9,6 +9,9 @@
 {% block subtitle %}{{ project.acronym }}{% endblock %}
 
 {% block submenu %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'network' %}#/projects/"><i class="material-icons mr-1">arrow_back</i>Back to projects</a>
+    </li>
     {% if user.is_authenticated %}
         <li is="editor-link" url="{{ project.get_editor_url }}"></li>
     {% endif %}
@@ -17,20 +20,16 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-2 pt-4">
+            <div class="col-12 col-md-2 d-none d-md-block">
                 {% if project.images %}
                     <img src="{{ project.images.md }}" class="max-90">
-                    <hr class="my-4">
                 {% endif %}
-                <a href="{% url 'network' %}#/projects/">
-                    <small><i class="material-icons sm mr-1">&#xE5C4;</i>Back to projects</small>
-                </a>
             </div>
-            <div class="col-12 col-md-10">
+            <div class="col-12 col-md-9 col-lg-10">
                 <div class="hipeac-card">
                     <div class="row">
                         <div class="col-12 col-md-8 pr-md-5">
-                            <h2 class="display-lg mb-4">{{ project.name }}</h2>
+                            <h2 class="display-lg text-light-weight mb-4"><strong>{{ project.acronym }}</strong>: {{ project.name }}</h2>
                             <div class="marked">
                                 {{ project.description | markdown }}
                             </div>
@@ -40,7 +39,6 @@
                             {{ project.application_areas | metadata_list:'Application areas' }}
                             <h2 class="display-sm mb-3">Coordinator</h2>
                             <div class="media mb-3">
-                                <img class="avatar md mr-3" src="https://pbs.twimg.com/profile_images/2776491840/d204d4d1627978e3c2e4605498bd7794_400x400.png" alt="Generic placeholder image">
                                 <div class="media-body">
                                     <strong>{{ project.coordinator.profile }}</strong><br>
                                     <span>Lorem ipsum.</span>
@@ -67,14 +65,15 @@
                 </div>
             </div>
         </div>
-        <div is="open-jobs-row" url="{% url 'v1:project-detail' project.id %}"></div>
+        <div is="open-jobs-row" url="{% url 'v1:project-detail' project.id %}" class="mb-4"></div>
+        <div is="videos-row" url="{% url 'v1:project-videos' project.id %}"></div>
     </div>
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
     <script>
-        var app = new Vue({
+        new Vue({
             el: '#vue'
         });
     </script>

@@ -9,6 +9,9 @@
 {% block subtitle %}Position @ {{ job.institution }}{% endblock %}
 
 {% block submenu %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'jobs' %}"><i class="material-icons mr-1">arrow_back</i>Back to jobs</a>
+    </li>
     {% if user.is_authenticated %}
         <li is="editor-link" url="{{ job.get_editor_url }}"></li>
     {% endif %}
@@ -17,14 +20,22 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-2 pt-4">
+            <div class="col-12 col-md-2 d-none d-md-block">
                 {% if job.institution.images %}
-                    <a href="{{ job.institution.get_absolute_url }}">
+                    <a href="{{ job.institution.get_absolute_url }}" class="d-none d-md-block mb-5">
                         <img src="{{ job.institution.images.md }}" class="max-90">
                     </a>
-                    <hr class="my-4">
                 {% endif %}
-                <a href="{% url 'jobs' %}"><small><i class="material-icons sm mr-1">&#xE5C4;</i>Back to jobs</small></a>
+                {% if job.website %}
+                    <a href="{{ job.website }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-block my-3">
+                        <i class="material-icons sm mr-2">done_outline</i>Apply now</a>
+                {% endif %}
+                {% if user.is_authenticated and job.email %}
+                    <a href="mailto:{{ job.email }}" class="btn btn-outline-primary btn-block my-3">
+                        <i class="material-icons sm mr-2">email</i>Contact</a>
+                {% endif %}
+                <a href="{% url 'job_pdf' job.id %}" class="btn btn-outline-secondary btn-block mt-3">
+                <i class="material-icons sm mr-2">picture_as_pdf</i>Download PDF</a>
             </div>
             <div class="col-12 col-md-10">
                 <div class="hipeac-card">
@@ -70,10 +81,15 @@
                                     </a>
                                 </div>
                             {% endif %}
-                            <!--<a href="" class="btn btn-outline-primary btn-block mt-5 mb-3">
-                                <i class="material-icons sm mr-2">&#xE145;</i>Apply</a>-->
-                            <a href="{% url 'job_pdf' job.id %}" class="btn btn-outline-secondary btn-block">
-                                <i class="material-icons sm mr-2">&#xE02F;</i>Download PDF</a>
+                            {% if not request.DNT %}
+                                <div class="mb-4">
+                                    <h5 class="display-sm mb-2">Share</h5>
+                                    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false"></a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                                    <span>&nbsp;&nbsp;</span>
+                                    <script src="//platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
+                                    <script type="IN/Share"></script>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -85,7 +101,7 @@
 {% block scripts %}
 {% compress js inline %}
     <script>
-        var app = new Vue({
+        new Vue({
             el: '#vue'
         });
     </script>

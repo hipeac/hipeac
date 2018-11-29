@@ -36,17 +36,7 @@
                     <div v-for="(papers, conf) in selectedPaperAwards" :key="conf">
                         <small class="text-light-grey float-right">{{ papers.length }} papers</small>
                         <display-sm class="mb-3">{{ conf }}</display-sm>
-                        <table class="table table-sm">
-                            <tr v-for="paper in papers" :key="paper.id">
-                                <td><icon name="description" class="sm"></icon></td>
-                                <td>{{ paper.title }} <small class="text-secondary">{{ paper.authors_string }}</small></td>
-                                <td class="text-right align-middle pr-0">
-                                    <a v-if="paper.url" :href="paper.url" target="_blank">
-                                        <i class="material-icons sm">open_in_new</i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </table>
+                        <papers-table :items="papers"></papers-table>
                     </div>
                 </div>
             {% endverbatim %}

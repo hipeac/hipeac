@@ -3,15 +3,17 @@ $hipeac-yellow: #ffe800;
 $hipeac-light-yellow: #fef9ab;
 $hipeac-light-blue: lightblue;
 
+$primary-color: $hipeac-blue;
 $text-color: #37474F;  // Blue Grey 800
 $light-text-color: #607D8B;  // Blue Grey 500
 $dark-text-color: #263238;  // Blue Grey 900
-$primary-color: $hipeac-blue;
-$light-yellow-color: $hipeac-light-yellow;
+$light-yellow-color: #FFF9C4;  // Yellow 100
 $lightest-yellow-color: #FFFDE7;  // Yellow 50
-$lightest-blue-color: #E1F5FE; //
+$lightest-blue-color: #E1F5FE;
 $navbar-bg-color: #1976D2; // Blue 700
+$bg-display: #E8EAF6;  // Indigo 50
 $bg-light: #f8f9fa;  // Bootstrap color
+$success-color: #28a745;  // Bootstrap color
 
 $small-breakpoint: 768px;
 $border-radius: .25rem;
@@ -40,12 +42,34 @@ html, body {
     font-family: Roboto, 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 16px;
     font-weight: 400;
-    line-height: 1.4;
+    line-height: 1.5;
     color: $text-color;
 }
 
 .container {
     max-width: 1200px;
+}
+
+.row.compact-gutter {
+    margin-left: -.75rem !important;
+    margin-right: -.75rem !important;
+
+    .col {
+        padding-left: .75rem !important;
+        padding-right: .75rem !important;
+        margin-bottom: 1.5rem;
+    }
+}
+
+.row.mini-gutter {
+    margin-left: -.375rem !important;
+    margin-right: -.375rem !important;
+
+    .col {
+        padding-left: .375rem !important;
+        padding-right: .375rem !important;
+        margin-bottom: .75rem;
+    }
 }
 
 [v-cloak] {
@@ -118,9 +142,17 @@ a {
     background: $lightest-blue-color !important;
 }
 
+.bg-filters {
+    background: #ECEFF1;  // Blue Gray 50
+}
+
 .btn {
     .material-icons {
         font-size: 1rem;
+        vertical-align: -10%;
+    }
+
+    &.btn-sm .material-icons {
         vertical-align: -20%;
     }
 }
@@ -159,24 +191,16 @@ a {
 
 /* Typography */
 
+h6 {
+    font-size: 0.9rem;
+}
 
 .display {
+    width: 100%;
     text-align: center;
-    line-height: 1.3;
-    font-weight: 400;
+    line-height: 1.4;
+    font-weight: 300;
     margin: 3rem 0;
-
-    span {
-        background: $hipeac-yellow;
-    }
-
-    &.blue span {
-        background: $lightest-blue-color;
-    }
-
-    &.transparent span {
-        background: none;
-    }
 
     @media (max-width: $small-breakpoint) {
         margin: 2rem 0;
@@ -184,20 +208,27 @@ a {
 }
 
 .display-lg {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
+    font-weight: 300;
+
+    span {
+        background: linear-gradient(to bottom, transparent 80%, $hipeac-yellow 1%, $hipeac-yellow);
+    }
 
     @media (max-width: $small-breakpoint) {
-        font-size: 1.5rem;
-        padding: 0 1rem;
+        font-size: 1.6rem;
     }
 }
 
 .display-md {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+
+    span {
+        background: linear-gradient(to bottom, transparent 75%, whitesmoke 1%, whitesmoke);
+    }
 
     @media (max-width: $small-breakpoint) {
-        font-size: 1.2rem;
-        padding: 0 1rem;
+        font-size: 1.15rem;
     }
 }
 
@@ -206,6 +237,10 @@ a {
     font-size: small;
     text-transform: uppercase;
     margin-bottom: 0.3em;
+
+    span {
+        background: none;
+    }
 }
 
 fieldset {
@@ -251,8 +286,12 @@ input[type="hidden"] + fieldset {
 }
 
 .text-sm {
-    font-size: 80%;
+    font-size: small;
     line-height: 1.5;
+}
+
+.text-wrap {
+    white-space: normal;
 }
 
 .font-weight-light {
@@ -265,7 +304,7 @@ b, strong, .font-weight-bold {
 
 .material-icons {
     &.sm {
-        font-size: 14px;
+        font-size: small;
         vertical-align: -15%;
     }
 
@@ -328,6 +367,10 @@ span.avatar {
     }
 }
 
+.table-sm {
+    line-height: 1.4;
+}
+
 
 /* Images */
 
@@ -368,6 +411,10 @@ span.avatar {
 
 .logo-td {
     width: auto;
+}
+
+.logo-photos {
+    max-width: 40px;
 }
 
 ul.logos {
@@ -421,7 +468,7 @@ ul.logos {
     }
 
     a:hover & {
-        background: $hipeac-yellow;
+        background: $hipeac-light-blue;
         color: $hipeac-blue;
     }
 }
@@ -481,4 +528,5 @@ ul.logos {
 @import '_navbar.scss';
 @import '_particles.scss';
 @import '_sidenav.scss';
+@import '_skeleton.scss';
 @import '_tabs.scss';

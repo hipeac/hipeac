@@ -30,7 +30,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div id="urls" class="container" data-magazine-list="{% url 'v1:magazine-list' %}">
         <router-view></router-view>
     </div>
 {% endblock %}
@@ -46,42 +46,34 @@
     <script>
         var Store = new Vuex.Store({
             state: {
-                articles: []
+                articles: [],
+                magazines: []
             },
             mutations: {
-                fetchArticles: function (state) {
-                    api().getArticles().done(function (res) {
-                        state.articles = mapper().articles(res);
+                fetchMagazines: function (state) {
+                    ajax().get($('#urls').data('magazine-list')).done(function (res) {
+                        state.magazines = res;
                     });
-                }
-            },
-            getters: {
-                groupedArticles: function (state) {
-                    if (!state.articles) return null;
-                    return _.groupBy(state.articles, 'type');
                 }
             }
         });
 
         var BlogView = {
-            template: '#v-blog',
-            computed: _.extend(
-                Vuex.mapGetters(['groupedArticles']), {
-            })
+            template: '#v-blog'
         };
 
         var MagazineView = {
             template: '#v-magazine',
             computed: _.extend(
-                Vuex.mapGetters(['groupedArticles']), {
-            })
+                Vuex.mapState(['magazines']), {
+            }),
+            created: function () {
+                this.$store.commit('fetchMagazines');
+            }
         };
 
         var NewsView = {
-            template: '#v-news',
-            computed: _.extend(
-                Vuex.mapGetters(['groupedArticles']), {
-            })
+            template: '#v-news'
         };
 
         var Router = new VueRouter({
@@ -108,15 +100,10 @@
             ]
         });
 
-        var app = new Vue({
+        new Vue({
             el: '#vue',
             store: Store,
-            router: Router,
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchArticles')
-                );
-            }
+            router: Router
         });
     </script>
 {% endcompress %}

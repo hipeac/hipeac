@@ -8,19 +8,22 @@
 
 {% block subtitle %}{{ article.get_type_display }}{% endblock %}
 
-{% block submenu %}{% endblock %}
+{% block submenu %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ article.get_parent_url }}"><i class="material-icons mr-1">arrow_back</i>Back</a>
+    </li>
+{% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-2 pt-4">
-                <a href="{% url 'news' %}"><small><i class="material-icons sm mr-1">&#xE5C4;</i>Back</small></a>
             </div>
-            <div class="col-12 col-md-10">
+            <div class="col-12 col-md-8">
                 <div class="hipeac-card">
                     <div class="row">
                         <div class="col-12 pr-md-5">
-                            <small class="display display-sm">{{ article.publication_date }}</small>
+                            <small class="display-sm">{{ article.publication_date }}</small>
                             <h2 class="display-lg mt-3 mb-4">{{ article.title }}</h2>
                             <div class="marked catchphrase mb-4">{{ article.excerpt | markdown }}</div>
                             <div class="marked">
@@ -37,7 +40,7 @@
 {% block scripts %}
 {% compress js inline %}
     <script>
-        var app = new Vue({
+        new Vue({
             el: '#vue'
         });
     </script>

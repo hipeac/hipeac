@@ -12,9 +12,9 @@
     <li class="nav-item">
         <router-link :to="{name: 'latest'}" class="nav-link" exact>Latest</router-link>
     </li>
-    <!--<li class="nav-item">
+    <li class="nav-item">
         <router-link :to="{name: 'archive'}" class="nav-link">Archive</router-link>
-    </li>-->
+    </li>
 {% endblock %}
 
 {% block content %}
@@ -58,6 +58,9 @@
             template: '#v-archive',
             computed: _.extend(
                 Vuex.mapState(['visions']), {
+                pastVisions: function () {
+                    return _.rest(this.visions);
+                }
             })
         };
 
@@ -79,7 +82,7 @@
             ]
         });
 
-        var app = new Vue({
+        new Vue({
             el: '#vue',
             store: Store,
             router: Router,

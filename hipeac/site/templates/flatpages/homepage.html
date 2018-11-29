@@ -6,57 +6,61 @@
 
 {% block content %}
     <div class="container">
-        <div class="display-block mb-4">
+        <div class="display-block mb-5">
             <h2 class="display display-lg"><span>HiPEAC is a European network of almost 2,000 world-class computing systems researchers, industry representatives and students.</span></h2>
-            <h5 class="d-none d-md-block display display-md"><span>It provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.</span></h5>
         </div>
         <div class="row text-center text-sm">
-            <div class="col">
-                <a href="{% url 'network' %}#/researchers/" class="d-block inherit">
-                    <strong class="text-secondary">For researchers <i class="material-icons sm">arrow_forward</i></strong>
-                    <i is="huge-icon" name="memory" class="mt-2"></i>
-                </a>
-            </div>
-            <div class="col">
-                <a href="{% url 'network' %}#/industry/" class="d-block inherit">
-                    <strong class="text-secondary">For industry <i class="material-icons sm">arrow_forward</i></strong>
-                    <i is="huge-icon" name="business" class="mt-2"></i>
-                </a>
-            </div>
-            <div class="col">
-                <a href="{% url 'network' %}#/projects/" class="d-block inherit">
-                    <strong class="text-secondary">For projects <i class="material-icons sm">arrow_forward</i></strong>
-                    <i is="huge-icon" name="device_hub" class="mt-2"></i>
-                </a>
-            </div>
-            <div class="col">
-                <a href="{% url 'network' %}#/students/" class="d-block inherit">
-                    <strong class="text-secondary">For students <i class="material-icons sm">arrow_forward</i></strong>
-                    <i is="huge-icon" name="school" class="mt-2"></i>
-                </a>
-            </div>
-            <div class="col">
-                <a href="{% url 'network' %}#/innovation/" class="d-block inherit">
-                    <strong class="text-secondary">For innovators <i class="material-icons sm">arrow_forward</i></strong>
-                    <i is="huge-icon" name="wb_incandescent" class="mt-2"></i>
-                </a>
+            <div class="col-12">
+                <div class="hipeac-card">
+                    <h5 class="catchphrase mb-3">It provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.</h5>
+                    <div class="row">
+                        <div class="col">
+                            <a href="{% url 'network' %}#/researchers/" class="btn btn-light btn-block mt-1">
+                                <span>For researchers <i class="material-icons sm">arrow_forward</i></span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{% url 'network' %}#/industry/" class="btn btn-light btn-block mt-1">
+                                <span>For industry <i class="material-icons sm">arrow_forward</i></span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{% url 'network' %}#/projects/" class="btn btn-light btn-block mt-1">
+                                <span>For projects <i class="material-icons sm">arrow_forward</i></span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{% url 'network' %}#/students/" class="btn btn-light btn-block mt-1">
+                                <span>For students <i class="material-icons sm">arrow_forward</i></span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{% url 'network' %}#/innovation/" class="btn btn-light btn-block mt-1">
+                                <span>For innovators <i class="material-icons sm">arrow_forward</i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row mt-5">
+        <div class="row">
             <div class="col-12 col-md-12 col-lg-4 d-flex align-items-stretch">
                 <div class="hipeac-card">
                     <div is="event-list" :items="events" :min="10" :max="15"></div>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-5 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <h5 class="display-sm transparent mb-3">Latest news</h5>
-                    <div is="article-list" :items="articles" :max="10" :show-more="true"></div>
-                </div>
+                <div is="article-card" title="Latest news" :max="10" :show-more="true"></div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="hipeac-card p-3">
-                    <a class="twitter-timeline" data-height="600" data-dnt="true" href="https://twitter.com/hipeac"></a>
+                    <a class="twitter-timeline" data-height="800" data-dnt="true" href="https://twitter.com/hipeac"></a>
+                    <hr>
+                    <p class="text-center socialaccounts m-0">
+                        <a href="/twitter/" target="_blank" class="mx-2">{% include 'socialaccount/snippets/_logos.html' with provider='Twitter' %}</a>
+                        <a href="/linkedin/" target="_blank" class="mx-2">{% include 'socialaccount/snippets/_logos.html' with provider='LinkedIn' %}</a>
+                        <a href="/youtube/" target="_blank" class="mx-2">{% include 'socialaccount/snippets/_logos.html' with provider='YouTube' %}</a>
+                    </p>
                 </div>
             </div>
         </div>
@@ -66,21 +70,14 @@
 {% block scripts %}
 {% compress js inline %}
     <script>
-        var app = new Vue({
+        new Vue({
             el: '#vue',
             data: function () {
                 return {
-                    articles: null,
                     events: null
                 }
             },
             methods: {
-                fetchArticles: function () {
-                    var self = this;
-                    api().getArticles().done(function (res) {
-                        self.articles = mapper().articles(res);
-                    });
-                },
                 fetchEvents: function () {
                     var self = this;
                     api().getEvents().done(function (res) {
@@ -90,7 +87,6 @@
             },
             created: function () {
                 $.when(
-                    this.fetchArticles(),
                     this.fetchEvents()
                 );
             }

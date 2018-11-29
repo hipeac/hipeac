@@ -1,0 +1,17 @@
+.skeleton {
+    .mini-card {
+        width: 100%;
+        height: 200px;
+        line-height: normal;
+    }
+
+    .text {
+        display: inline-block;
+        background: $bg-display;
+        height: 16px;
+
+        &.sm {
+            height: 12px;
+        }
+    }
+}

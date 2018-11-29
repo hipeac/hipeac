@@ -10,16 +10,19 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'about'}" class="nav-link">About</router-link>
+        <a is="router-link" :to="{name: 'about'}" class="nav-link">About</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'jobs'}" class="nav-link" exact>Open positions</router-link>
+        <a is="router-link" :to="{name: 'jobs'}" class="nav-link" exact>Open positions</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'careerCenter'}" class="nav-link">Career center</router-link>
+        <a is="router-link" :to="{name: 'careerCenter'}" class="nav-link">Career center</a>
     </li>
+    <!--<li class="nav-item">
+        <a is="router-link" :to="{name: 'internships'}" class="nav-link">Internship programme</a>
+    </li>-->
     <li class="nav-item">
-        <router-link :to="{name: 'internships'}" class="nav-link">Internship programme</router-link>
+        <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="https://twitter.com/hipeacjobs" target="_blank"><span is="twitter-icon"></span></a>
@@ -28,19 +31,19 @@
         <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'jobs_feed' %}" target="_blank"><i class="material-icons">&#xE0E5;</i></a>
+        <a class="nav-link" href="{% url 'jobs_feed' %}" target="_blank"><i class="material-icons">rss_feed</i></a>
     </li>
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-job-list="{% url 'v1:job-list' %}" class="container">
-        <router-view></router-view>
+    <div id="urls" data-job-list="{% url 'v1:job-list' %}" data-magazine-list="{% url 'v1:magazine-list' %}" class="container">
+        <div is="router-view"></div>
     </div>
 {% endblock %}
 
 {% block vue_templates %}
     {% include './v-about.html' with id='v-about' display=flatpage.content blck=flatpage.page.tbs.about recruiters=flatpage.page.tbs.about_recruiters students=flatpage.page.tbs.about_students %}
-    {% include './v-career-center.html' with id='v-career-center' blck=flatpage.page.tbs.career_center %}
+    {% include './v-career-center.html' with id='v-career-center' blck=flatpage.page.tbs.career_center acaces=flatpage.page.tbs.career_center_acaces csw=flatpage.page.tbs.career_center_csw magazine=flatpage.page.tbs.career_center_magazine other=flatpage.page.tbs.career_center_other stem=flatpage.page.tbs.career_center_stem wall=flatpage.page.tbs.career_center_wall %}
     {% include './v-internships.html' with id='v-internships' %}
     {% include './v-jobs.html' with id='v-jobs' %}
 {% endblock %}
@@ -56,7 +59,9 @@
                     '<div ref="carousel" class="carousel-logos">' +
                         '<ul>' +
                             '<li v-for="institution in institutions" :key="institution.id">' +
-                                '<span :style="{\'background-image\': \'url( \'+ institution.images.md + \')\' }"></span>' +
+                                '<a :href="\'./#/?q=\' + institution.short_name">' +
+                                    '<span :style="{\'background-image\': \'url( \'+ institution.images.md + \')\' }"></span>' +
+                                '</a>' +
                             '</li>' +
                         '</ul>' +
                     '</div>' +
@@ -107,12 +112,18 @@
     <script>
         var Store = new Vuex.Store({
             state: {
-                jobs: []
+                jobs: [],
+                magazines: [],
             },
             mutations: {
                 fetchJobs: function (state) {
                     ajax().get($('#urls').data('job-list')).done(function (res) {
                         state.jobs = mapper().jobs(res);
+                    });
+                },
+                fetchMagazines: function (state) {
+                    ajax().get($('#urls').data('magazine-list')).done(function (res) {
+                        state.magazines = res;
                     });
                 }
             }
@@ -126,7 +137,16 @@
         };
 
         var CareerCenterView = {
-            template: '#v-career-center'
+            template: '#v-career-center',
+            computed: _.extend(
+                Vuex.mapState(['magazines']), {
+                latestMagazines: function () {
+                    return _.first(this.magazines, 8);
+                }
+            }),
+            created: function () {
+                this.$store.commit('fetchMagazines');
+            }
         };
 
         var InternshipsView = {
@@ -137,18 +157,53 @@
             template: '#v-jobs',
             data: function () {
                 return {
-                    q: ''
+                    q: '',
+                    sorting: storage().get(LS_JOBS_SORTING, 'deadline'),
+                    filters: {
+                        internshipsOnly: false,
+                        topics: []
+                    }
                 }
             },
             computed: _.extend(
                 Vuex.mapState(['jobs']), {
+                sortedJobs: function () {
+                    var sorting = this.sorting;
+                    if (sorting == 'created_at') return _.sortBy(this.jobs, sorting).reverse();
+                    else return this.jobs;
+                },
                 filteredIds: function () {
-                    return _.pluck(filterMultiple(this.jobs, this.q), 'id');
+                    var filters = this.filters;
+                    var filteredItems = (!filters.topics.length)
+                        ? this.sortedJobs
+                        : this.sortedJobs.filter(function (obj) {
+                            return _.intersection(filters.topics, obj.topicIds).length > 0;
+                        });
+
+                    if (filters.internshipsOnly) {
+                        filteredItems = filteredItems.filter(function (obj) {
+                            return obj.internship;
+                        });
+                    }
+
+                    return _.pluck(filterMultiple(filteredItems, this.q), 'id');
+                },
+                topics: function () {
+                    return extractTopics(this.jobs);
                 }
             }),
             methods: {
                 updateQuery: function (val) {
                     this.q = val;
+                },
+                resetFilters: function () {
+                    this.filters.internshipsOnly = false;
+                    this.filters.topics = [];
+                }
+            },
+            watch: {
+                'sorting': function (val, oldVal) {
+                    storage().set(LS_JOBS_SORTING, val, 90);
                 }
             },
             created: function () {
@@ -186,7 +241,7 @@
             ]
         });
 
-        var app = new Vue({
+        new Vue({
             el: '#vue',
             store: Store,
             router: Router,

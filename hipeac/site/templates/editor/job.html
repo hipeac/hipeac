@@ -2,12 +2,19 @@
 
 
 {% block subtitle %}
+<span id="extraData" data-email="{{ user.email }}"></span>
 {% verbatim %}
     <span v-cloak>
         <small v-if="isNew">Add new position</small>
-        <small v-else><span v-if="obj">Position #{{ obj.id }} / {{ obj.institution.short_name }}</span></small>
+        <small v-else>Position <span v-if="obj">#{{ obj.id }} / {{ obj.title }}</span></small>
     </span>
 {% endverbatim %}
+{% endblock %}
+
+{% block extra_tabs %}
+    <li v-cloak v-if="isNew" class="nav-item">
+        <a href="{% url 'jobs' %}" class="nav-link">Back to jobs portal</a>
+    </li>
 {% endblock %}
 
 {% block obj %}
@@ -18,6 +25,7 @@
             institution: null,
             project: null,
             positions: 1,
+            email: $('#extraData').data('email'),
             employment_type: {
                 id: 16,
                 value: 'Full-time'
@@ -56,7 +64,7 @@
                         <custom-input v-model.trim="obj.location" type="text" field="location"></custom-input>
                     </div>
                     <div class="col-12 col-md-6">
-                        <country-select v-model="obj.country" select-property="code" field="country"></country-select>
+                        <country-select v-model="obj.country" select-property="code" field="country" :force="true"></country-select>
                     </div>
                 </div>
                 <metadata-checkboxes v-model="obj.career_levels" type="job_position" field="career_levels"></metadata-checkboxes>
@@ -65,18 +73,18 @@
                         <date-input v-model.trim="obj.deadline" field="deadline"></date-input>
                     </div>
                     <div class="col-12 col-md-6">
-                        <custom-input v-model.trim="obj.email" type="email" field="email" placeholder="Recommended"></custom-input>
+                        <custom-input v-model.trim="obj.email" type="email" field="email"></custom-input>
                     </div>
                 </div>
                 <markdown-textarea v-model.trim="obj.description" field="description" help="Preferably, do not include a contact email directly in the description; use the `Contact email` field instead."></markdown-textarea>
                 <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
                 <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
+                <link-fieldset v-model="obj.links" field="links" help="One or more external sources related to this job application."></link-fieldset>
             </form>
             <hr class="my-4">
             <button v-if="isNew" @click="createObj" class="btn btn-success btn-block">
                 <icon name="save" class="sm mr-1"></icon>Add new position</button>
-            <button v-else class="btn btn-block btn-light" disabled>
-                <icon name="autorenew" class="sm mr-1"></icon>Automatic updates active</button>
+            <automatic-updates v-else></automatic-updates>
         </div>
     </script>
     <script type="text/x-template" id="v-preview">

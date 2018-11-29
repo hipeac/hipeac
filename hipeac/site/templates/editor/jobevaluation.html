@@ -24,6 +24,8 @@
                 <markdown-textarea v-model.trim="obj.comments" field="comments" custom-label="Comments and feedback" :rows="6"></markdown-textarea>
                 <markdown-textarea v-show="obj.value == 1" v-model.trim="obj.selected_candidate" field="selected_candidate" :rows="3" custom-label="Can you tell us more about the candidate you ended up selecting for this position?" :show-help="false"></markdown-textarea>
             </form>
+            <hr class="my-4">
+            <automatic-updates></automatic-updates>
         </div>
     </script>
     <script type="text/x-template" id="v-preview">

@@ -3,7 +3,7 @@
 
 {% block subtitle %}
 {% verbatim %}
-    <small>Session</small><span v-cloak v-if="obj"> #{{ obj.id }} / {{ obj.title }}</span>
+    <small v-cloak>Session <span v-if="obj">#{{ obj.id }} / {{ obj.title }}</span></small>
 {% endverbatim %}
 {% endblock %}
 
@@ -18,7 +18,10 @@
                 <markdown-textarea v-model.trim="obj.summary" field="summary"></markdown-textarea>
                 <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
                 <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
+                <link-fieldset v-model="obj.links" field="links"></link-fieldset>
             </form>
+            <hr class="my-4">
+            <automatic-updates></automatic-updates>
         </div>
     </script>
     <script type="text/x-template" id="v-preview">

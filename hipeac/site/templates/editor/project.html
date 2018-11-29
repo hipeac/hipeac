@@ -22,7 +22,10 @@
                 <display-sm class="my-4">Consortium</display-sm>
                 <autocomplete-popup v-model="obj.coordinating_institution" type="institution" field="coordinating_institution" :required="true"></autocomplete-popup>
                 <autocomplete-popup v-model="obj.partners" type="institution" field="partners" :required="true"></autocomplete-popup>
+                <link-fieldset v-model="obj.links" field="links" help="One or more external sources related to this project."></link-fieldset>
             </form>
+            <hr class="my-4">
+            <automatic-updates></automatic-updates>
         </div>
     </script>
     <script type="text/x-template" id="v-preview">
