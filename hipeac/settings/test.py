@@ -2,6 +2,7 @@ from .base import *  # noqa
 
 
 DEBUG = True
+TEST = True
 
 ALLOWED_HOSTS = ('localhost',)
 INTERNAL_IPS = ('127.0.0.1',)

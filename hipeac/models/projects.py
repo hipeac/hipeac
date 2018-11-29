@@ -1,4 +1,3 @@
-from celery.execute import send_task
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import validate_comma_separated_integer_list
@@ -8,7 +7,7 @@ from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 
-from hipeac.functions import get_images_path
+from hipeac.functions import get_images_path, send_task
 from hipeac.models import Permission
 from hipeac.validators import validate_no_badwords
 from .mixins import ImagesMixin, LinkMixin, UrlMixin

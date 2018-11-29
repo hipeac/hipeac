@@ -1,3 +1,4 @@
+from celery.execute import send_task as celery_send_task
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
@@ -80,3 +81,8 @@ def get_h2020_associated_countries():
         'TR',  # Turkey
         'UA',  # Ukraine
     )
+
+
+def send_task(*args, **kwargs):
+    if not settings.TEST:
+        celery_send_task(*args, **kwargs)

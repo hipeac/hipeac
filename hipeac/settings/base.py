@@ -13,6 +13,7 @@ SITE_ROOT = os.path.join(PACKAGE_ROOT, 'site')
 # General configuration
 
 DEBUG = True
+TEST = False
 
 ADMINS = (('eillarra', 'e@illarra.com'),)
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'DJANGO_SECRET_KEY')

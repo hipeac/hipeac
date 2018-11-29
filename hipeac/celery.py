@@ -2,6 +2,7 @@
 # http://docs.celeryproject.org/en/latest/userguide/
 
 import os
+
 from celery import Celery
 
 

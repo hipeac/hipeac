@@ -1,6 +1,6 @@
-from celery.execute import send_task
 from django.core.management.base import BaseCommand
 
+from hipeac.functions import send_task
 from hipeac.models import Institution, Project
 
 

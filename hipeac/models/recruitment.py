@@ -1,4 +1,3 @@
-from celery.execute import send_task
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
@@ -10,6 +9,7 @@ from django.utils import timezone
 from django_countries.fields import CountryField
 from typing import Tuple
 
+from hipeac.functions import send_task
 from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
 from .generic import HipeacCountries

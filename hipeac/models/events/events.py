@@ -1,6 +1,5 @@
 import datetime
 
-from celery.execute import send_task
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -12,7 +11,7 @@ from django.utils import timezone
 from django_countries.fields import CountryField
 from typing import List
 
-from hipeac.functions import get_images_path
+from hipeac.functions import get_images_path, send_task
 from hipeac.models import Link
 from ..mixins import ImagesMixin, LinkMixin
 

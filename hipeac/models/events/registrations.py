@@ -1,11 +1,12 @@
 import uuid
 
-from celery.execute import send_task
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
+
+from hipeac.functions import send_task
 
 
 class Coupon(models.Model):
