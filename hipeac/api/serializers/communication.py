@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
-from hipeac.models import Article, Clipping, Quote, Video
+from hipeac.models import Article, Clipping, Quote, Magazine, Video
+from .generic import ImageSerializer, MetadataListField
 from .institutions import InstitutionNestedSerializer
+from .users import UserPublicListSerializer
 
 
 class ArticleListSerializer(serializers.ModelSerializer):
@@ -10,7 +12,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        exclude = ('content',)
+        exclude = ('created_by', 'excerpt', 'content', 'projects', 'institutions')
 
 
 class ClippingListSerializer(serializers.ModelSerializer):
@@ -31,7 +33,19 @@ class QuoteListSerializer(QuoteNestedSerializer):
     pass
 
 
+class MagazineListSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True)
+
+    class Meta:
+        model = Magazine
+        fields = '__all__'
+
+
 class VideoListSerializer(serializers.ModelSerializer):
+    application_areas = MetadataListField()
+    topics = MetadataListField()
+    user = UserPublicListSerializer()
+
     class Meta:
         model = Video
         fields = '__all__'

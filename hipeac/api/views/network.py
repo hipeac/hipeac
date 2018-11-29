@@ -3,12 +3,13 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import Institution, Project
+from hipeac.models import Institution, Project, Video
 from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import (
     InstitutionAllSerializer, InstitutionListSerializer, InstitutionSerializer,
     ProjectAllSerializer, ProjectListSerializer, ProjectSerializer,
-    UserPublicListSerializer, UserPublicSerializer
+    MemberPublicSerializer,
+    VideoListSerializer
 )
 
 
@@ -24,7 +25,7 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
 
     @action(detail=False, pagination_class=None, serializer_class=InstitutionAllSerializer)
     def all(self, request, *args, **kwargs):
-        self.queryset = self.queryset.only('id', 'name', 'local_name', 'colloquial_name', 'type')
+        self.queryset = self.queryset.only('id', 'name', 'local_name', 'colloquial_name', 'type', 'country')
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
@@ -33,13 +34,25 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
 
 
 class MemberViewSet(ListModelMixin, GenericViewSet):
-    queryset = get_user_model().objects.filter(id__lte=100) \
-                               .prefetch_related('profile__institution', 'profile__second_institution')
+    queryset = get_user_model().objects.select_related('profile') \
+                                       .order_by('first_name', 'last_name') \
+                                       .defer('profile__bio', 'profile__is_bouncing', 'profile__is_subscribed',
+                                              'affiliates__bio')
+
     pagination_class = None
-    serializer_class = UserPublicSerializer
+    serializer_class = MemberPublicSerializer
 
     def list(self, request, *args, **kwargs):
-        self.serializer_class = UserPublicListSerializer
+        self.queryset = self.queryset.filter(
+            profile__membership_tags__contains='member', profile__membership_revocation_date__isnull=True
+        )
+        return super().list(request, *args, **kwargs)
+
+    @action(detail=False)
+    def affiliates(self, request, *args, **kwargs):
+        self.queryset = self.queryset.filter(
+            profile__membership_tags__contains='affiliated', profile__membership_revocation_date__isnull=True
+        )
         return super().list(request, *args, **kwargs)
 
 
@@ -56,5 +69,10 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
 
     @action(detail=False, serializer_class=ProjectAllSerializer)
     def all(self, request, *args, **kwargs):
-        self.queryset = self.queryset.only('id', 'programme', 'acronym', 'name')
+        self.queryset = self.queryset.only('id', 'programme', 'acronym', 'name', 'ec_project_id')
+        return super().list(request, *args, **kwargs)
+
+    @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
+    def videos(self, request, *args, **kwargs):
+        self.queryset = Video.objects.filter(project_id=kwargs.get('pk'))
         return super().list(request, *args, **kwargs)

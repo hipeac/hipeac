@@ -17,7 +17,7 @@ from ..serializers import (
 
 
 class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Event.objects.public().select_related('coordinating_institution')
+    queryset = Event.objects.public().select_related('coordinating_institution').prefetch_related('links')
     serializer_class = EventSerializer
 
     def list(self, request, *args, **kwargs):
@@ -26,7 +26,7 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related('sessions', 'sessions__projects')
+        self.queryset = self.queryset.prefetch_related('sponsors', 'sessions__links', 'sessions__projects')
         return super().retrieve(request, *args, **kwargs)
 
     @action(
@@ -80,7 +80,7 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
 
     def get_queryset(self):
         event_id = self.request.query_params.get('event_id', None)
-        queryset = Registration.objects.filter(user_id=self.request.user.id)
+        queryset = Registration.objects.filter(user_id=self.request.user.id).prefetch_related('sessions', 'posters')
         if event_id is not None:
             queryset = queryset.filter(event_id=event_id)
         return queryset
@@ -88,7 +88,7 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
     def perform_create(self, serializer):
         try:
             serializer.save(user=self.request.user)
-        except IntegrityError as e:
+        except IntegrityError:
             raise ValidationError({'event-user': ['Duplicate entry - this user already has a registration.']})
 
     @never_cache

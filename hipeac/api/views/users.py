@@ -5,19 +5,23 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from ..serializers import AuthUserSerializer, UserPublicListSerializer, UserPublicSerializer
+from hipeac.models import Profile, Video
+from ..serializers import AuthUserSerializer, UserPublicSerializer, PublicationListSerializer, VideoListSerializer
 
 
 class UserViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = get_user_model().objects.all()
+    serializer_class = UserPublicSerializer
 
-    def list(self, request, *args, **kwargs):
-        self.serializer_class = UserPublicListSerializer
+    @action(detail=True, pagination_class=None, serializer_class=PublicationListSerializer)
+    def publications(self, request, *args, **kwargs):
+        self.queryset = Profile.objects.get(user_id=kwargs.get('pk')).publications.all()
         return super().list(request, *args, **kwargs)
 
-    def retrieve(self, request, *args, **kwargs):
-        self.serializer_class = UserPublicSerializer
-        return super().retrieve(request, *args, **kwargs)
+    @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
+    def videos(self, request, *args, **kwargs):
+        self.queryset = Video.objects.filter(user_id=kwargs.get('pk'))
+        return super().list(request, *args, **kwargs)
 
 
 class AuthUserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):

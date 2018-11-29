@@ -7,7 +7,7 @@ from ..serializers import JobNestedSerializer, JobSerializer, JobEvaluationSeria
 
 
 class JobViewSet(ModelViewSet):
-    queryset = Job.objects.prefetch_related('employment_type', 'institution', 'project')
+    queryset = Job.objects.active().prefetch_related('employment_type', 'institution', 'project')
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = JobSerializer
 

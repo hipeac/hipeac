@@ -53,9 +53,10 @@ class AuthRegistrationSerializer(WritableNestedModelSerializer):
         read_only_fields = ('fee', 'saldo', 'invoice_sent', 'visa_sent')
 
 
-class SessionNestedSerializer(serializers.ModelSerializer):
+class SessionNestedSerializer(WritableNestedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='v1:session-detail', read_only=True)
     href = serializers.CharField(source='get_absolute_url', read_only=True)
+    links = LinkSerializer(required=False, many=True, allow_null=True)
 
     class Meta:
         model = Session
@@ -86,10 +87,8 @@ class EventNestedSerializer(serializers.ModelSerializer):
     url_registrations = serializers.HyperlinkedIdentityField(view_name='v1:event-registrations')
     href = serializers.CharField(source='get_absolute_url', read_only=True)
     name = serializers.CharField(read_only=True)
-    links = LinkSerializer(many=True)
+    links = LinkSerializer(required=False, many=True, allow_null=True)
     images = serializers.DictField(read_only=True)
-    sponsors = SponsorSerializer(many=True, read_only=True)
-    breaks = BreakSerializer(many=True, read_only=True)
     dates = serializers.ListField()
 
     class Meta:
@@ -102,7 +101,9 @@ class EventListSerializer(EventNestedSerializer):
 
 
 class EventSerializer(EventNestedSerializer):
+    breaks = BreakSerializer(many=True, read_only=True)
     sessions = SessionListSerializer(many=True)
+    sponsors = SponsorSerializer(many=True, read_only=True)
 
 
 class RoadshowNestedSerializer(serializers.ModelSerializer):

@@ -20,4 +20,4 @@ class PublicationListSerializer(serializers.ModelSerializer):
         exclude = ('authors',)
 
     def get_conference(self, obj) -> str:
-        return str(obj.conference)
+        return str(obj.conference) if obj.conference else None

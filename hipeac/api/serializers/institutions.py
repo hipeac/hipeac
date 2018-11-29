@@ -1,6 +1,5 @@
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
-from rest_framework.relations import RelatedField
 
 from hipeac.models import Institution
 from .generic import LinkSerializer, MetadataListField
@@ -8,10 +7,11 @@ from .generic import LinkSerializer, MetadataListField
 
 class InstitutionAllSerializer(serializers.ModelSerializer):
     short_name = serializers.CharField(read_only=True)
+    country = serializers.CharField(read_only=True)
 
     class Meta:
         model = Institution
-        fields = ('id', 'name', 'local_name', 'short_name', 'type')
+        fields = ('id', 'name', 'local_name', 'short_name', 'type', 'country')
 
 
 class InstitutionNestedSerializer(serializers.ModelSerializer):

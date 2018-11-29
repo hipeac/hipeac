@@ -3,7 +3,7 @@ import json
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
 
-from hipeac.models import Link, Metadata, get_cached_metadata, get_cached_metadata_queryset
+from hipeac.models import Image, Link, Metadata, get_cached_metadata, get_cached_metadata_queryset
 
 
 class CustomChoiceField(serializers.ChoiceField):
@@ -14,6 +14,12 @@ class CustomChoiceField(serializers.ChoiceField):
             'display': self.choices[value],
             'value': value,
         }
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ('image', 'position')
 
 
 class JsonField(serializers.CharField):
@@ -27,7 +33,7 @@ class JsonField(serializers.CharField):
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        fields = ('type', 'url')
+        fields = ('type', 'url', 'id')
 
 
 class MetadataListField(serializers.CharField):

@@ -57,6 +57,7 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
                 'deadline': str(now.add(months=1).date),
                 'employment_type': {'id': employment_type.id},
                 'country': 'BE',
+                'email': 'recruitment@hipeac.net',
                 'institution': 1,
                 'application_areas': [],
                 'career_levels': [],

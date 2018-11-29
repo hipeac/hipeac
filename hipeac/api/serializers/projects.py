@@ -1,9 +1,8 @@
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
-from rest_framework.relations import RelatedField
 
 from hipeac.models import Project
 from .generic import LinkSerializer, MetadataListField
-from .institutions import InstitutionNestedSerializer
 
 
 class ProjectAllSerializer(serializers.ModelSerializer):
@@ -13,14 +12,14 @@ class ProjectAllSerializer(serializers.ModelSerializer):
         fields = ('id', 'acronym', 'name', 'ec_project_id')
 
 
-class ProjectNestedSerializer(serializers.ModelSerializer):
+class ProjectNestedSerializer(WritableNestedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='v1:project-detail', read_only=True)
     href = serializers.CharField(source='get_absolute_url', read_only=True)
 
     class Meta:
         model = Project
         read_only_fields = ('image', 'images')
-        fields = ['id', 'acronym', 'name', 'programme', 'images', 'url', 'href']
+        fields = ['id', 'acronym', 'name', 'programme', 'start_date', 'end_date', 'images', 'url', 'href']
 
 
 class ProjectListSerializer(ProjectNestedSerializer):
@@ -35,9 +34,9 @@ class ProjectSerializer(ProjectNestedSerializer):
     application_areas = MetadataListField()
     topics = MetadataListField()
     slug = serializers.CharField(read_only=True)
-    links = LinkSerializer(read_only=True, many=True)
+    links = LinkSerializer(many=True)
 
-    open_positions = serializers.SerializerMethodField()
+    open_positions = serializers.SerializerMethodField(read_only=True)
 
     class Meta(ProjectNestedSerializer.Meta):
         fields = None
