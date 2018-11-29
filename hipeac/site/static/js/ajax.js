@@ -1,4 +1,4 @@
-var ajax = function () {
+function ajax() {
     return {
         head: function (url) {
             return $.ajax({
@@ -65,9 +65,9 @@ var ajax = function () {
             });
         }
     };
-};
+}
 
-var api = function () {
+function api() {
     return {
         getAllProjects: function () {
             return ajax().get('/api/v1/network/projects/all/');
@@ -77,6 +77,9 @@ var api = function () {
         },
         getArticles: function () {
             return ajax().get('/api/v1/communication/articles/');
+        },
+        getClippings: function () {
+            return ajax().get('/api/v1/communication/clippings/');
         },
         getQuotes: function () {
             return ajax().get('/api/v1/communication/quotes/');
@@ -91,4 +94,4 @@ var api = function () {
             return ajax().get('/api/v1/metadata/');
         }
     };
-};
+}

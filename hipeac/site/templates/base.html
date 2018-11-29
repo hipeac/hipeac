@@ -68,7 +68,6 @@
         <div id="particles"></div>
         {% block main %}{% block content %}{% endblock %}{% endblock %}
         {% block vue_templates %}{% endblock %}
-
         {% compress js file bootstrap %}
             <script src="{% static 'vendor/jquery@3.3.1/jquery.min.js' %}"></script>
             <script src="{% static 'vendor/popper.js@1.14.3/popper.min.js' %}"></script>
@@ -95,7 +94,6 @@
             <script src="{% static 'js/helpers.js' %}"></script>
             <script src="{% static 'js/mappers.js' %}"></script>
             <script src="{% static 'js/v-shared.js' %}"></script>
-            <script src="{% static 'js/components/v-lists.js' %}"></script>
         {% endcompress %}
         {% block extra_scripts %}{% endblock %}
         {% block scripts %}{% endblock %}

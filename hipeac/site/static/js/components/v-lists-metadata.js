@@ -5,7 +5,7 @@ var MetadataList = Vue.extend({
         Vuex.mapState(['metadata']),
         Vuex.mapGetters(['metadataDict']), {
         sortedItems: function () {
-            return this.items.sort(function (a, b) { return sortText(a.value, b.value); });
+            return this.items.sort(function (a, b) { return sort().text(a.value, b.value); });
         }
     }),
     created: function () {

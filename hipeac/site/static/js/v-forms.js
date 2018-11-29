@@ -6,6 +6,7 @@ var FormElement = Vue.extend({
     data: function () {
         return {
             invalid: false,
+            mutableHelpText: null,
         }
     },
     props: ['field', 'value', 'default', 'help', 'customLabel'],
@@ -58,8 +59,22 @@ var FormElement = Vue.extend({
     }
 });
 
+Vue.component('automatic-updates', {
+    template: '' +
+        '<button class="btn btn-block btn-light" disabled>' +
+            '<icon name="autorenew" class="sm mr-1"></icon>Automatic updates active' +
+        '</button>' +
+    ''
+});
+
+Vue.component('only-input', FormElement.extend({
+    props: ['type', 'placeholder'],
+    template: '' +
+        '<input ref="el" :value="value" @input="updateValue" :placeholder="placeholder" :type="type" class="form-control form-control-sm">' +
+    ''
+}));
+
 Vue.component('help-text', {
-    props: ['text'],
     template: '' +
         '<small class="form-text text-muted mb-2"><slot></slot></small>' +
     ''
@@ -106,27 +121,54 @@ Vue.component('markdown-textarea', FormElement.extend({
         }
     },
     template: '' +
-        '<div class="form-group">' +
-            '<custom-label :text="label" :required="required" :class="{\'mb-0\': showHelp}"></custom-label>' +
-            '<help-text v-if="showHelp">You can use Markdown to format your text; you can find more information about the <a href="http://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.<span v-if="helpText"> {{ helpText }}</span></help-text>' +
-            '<textarea ref="el" :value="value" class="form-control form-control-sm" :rows="rows" @input="updateValue"></textarea>' +
+        '<div>' +
+            '<div class="form-group">' +
+                '<custom-label :text="label" :required="required" :class="{\'mb-0\': showHelp}"></custom-label>' +
+                '<help-text v-if="showHelp">You can use Markdown to format your text; you can find more information about the <a href @click.prevent="showModal">Markdown syntax here</a>.<span v-if="helpText"> {{ helpText }}</span></help-text>' +
+                '<textarea ref="el" :value="value" class="form-control form-control-sm" :rows="rows" @input="updateValue"></textarea>' +
+            '</div>' +
+            '<div ref="markdownModal" class="modal" tabindex="-1" role="dialog">' +
+                '<div class="modal-dialog modal-lg" role="document">' +
+                    '<div class="modal-content p-4">' +
+                        '<strong>Via commonmark.org</strong><hr>' +
+                        '<iframe class="embed-responsive-item border-0" style="height: 600px" src="https://commonmark.org/help/"></iframe>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
         '</div>' +
-    ''
+    '',
+    methods: {
+        showModal: function () {
+            $(this.$refs.markdownModal).modal();
+        }
+    }
 }));
 
 var SelectElement = FormElement.extend({
-    props: ['selectProperty'],
+    props: {
+        forceChoices: {
+            type: Array,
+            default: function () {
+                return [];
+            }
+        },
+        selectProperty: {
+            type: String
+        }
+    },
     template: '' +
         '<div class="form-group" ref="el" :value="value">' +
-            '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
+            '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}" ></custom-label>' +
             '<help-text v-if="helpText">{{ helpText }}</help-text>' +
             '<select @change="updateValue" class="form-control form-control-sm" :class="{\'is-invalid\': invalid}">' +
                 '<option v-for="choice in choices" :key="choice.value" :value="choice.value" :selected="choice.value == compareValue">{{ choice.display_name }}</option>' +
             '</select>' +
+            '<help-text v-if="mutableHelpText"><span class="text-info">{{ mutableHelpText }}</span></help-text>' +
         '</div>' +
     '',
     computed: {
         choices: function () {
+            if (this.forceChoices.length > 0) return this.forceChoices;
             if (!this.f) return [];
             return this.f.choices;
         },
@@ -137,11 +179,25 @@ var SelectElement = FormElement.extend({
     }
 });
 
+Vue.component('only-select', SelectElement.extend({
+    template: '' +
+        '<select ref="el" :value="value" @change="updateValue" class="form-control form-control-sm" :class="{\'is-invalid\': invalid}">' +
+            '<option v-for="choice in choices" :key="choice.value" :value="choice.value" :selected="choice.value == compareValue">{{ choice.display_name }}</option>' +
+        '</select>' +
+    '',
+}));
+
 Vue.component('simple-select', SelectElement.extend({
 
 }));
 
 Vue.component('country-select', SelectElement.extend({
+    props: {
+        force: {
+            type: Boolean,
+            default: false
+        }
+    },
     methods: {
         transformValue: function (value) {
             var obj = _.findWhere(this.choices, {value: value});
@@ -149,22 +205,43 @@ Vue.component('country-select', SelectElement.extend({
                 code: obj.value,
                 name: obj.display_name,
             }
+        },
+        forceCountry: function (code) {
+            if (!this.force) return;
+            try {
+                value = this.transformValue(code);
+                this.mutableHelpText = null;
+                this.$refs.el.value = value;
+                this.$emit('input', value);
+            } catch (err) {
+                this.mutableHelpText = 'Please note that only jobs in Europe can be posted to the HiPEAC Jobs portal.';
+            }
         }
+    },
+    created: function () {
+        EventHub.$on('force-country', this.forceCountry);
     }
 }));
 
 var MetadataElement = FormElement.extend({
-    props: ['type', 'sorting'],
+    props: {
+        type: {
+            type: String
+        },
+        sorting: {
+            type: String,
+            default: 'position'
+        }
+    },
     computed: _.extend(
         Vuex.mapState(['metadata']),
         Vuex.mapGetters(['metadataDict', 'fields']), {
         options: function () {
             if (!this.metadata) return [];
             var type = this.type;
-            var sorting = this.sorting || 'position';
-            var sortingFunc = (sorting == 'position')
-                ? function (a, b) { return sortInt(a['sorting'], b['sorting']); }
-                : function (a, b) { return sortText(a['value'], b['value']); };
+            var sortingFunc = (this.sorting == 'position')
+                ? function (a, b) { return sort().int(a['position'], b['position']); }
+                : function (a, b) { return sort().text(a['value'], b['value']); };
 
             return this.metadata.filter(function (obj) {
                 return obj.type == type;
@@ -265,7 +342,7 @@ var AucompletePopupElement = FormElement.extend({
             var items = this.indexedItems;
             return _.map(this.values, function (id) {
                 return items[id];
-            });;
+            });
         },
         text: function () {
             if (!this.value) return '(None)';
@@ -284,12 +361,17 @@ var AucompletePopupElement = FormElement.extend({
         },
         showModal: function () {
             $(this.$refs.modal).modal();
-        }
-    },
-    watch: {
-        'values': function (val, oldVal) {
-            if (!oldVal) return;
-            this.$emit('input', (this.many) ? val : val[0]);
+        },
+        updateValue: function (event) {
+            if (this.many) {
+                this.$emit('input', this.values);
+            } else {
+                this.$emit('input', this.values[0]);
+                if (this.type == 'institution') {
+                    var countryCode = _.findWhere(this.filteredItems, {id: this.values[0]}).country;
+                    EventHub.$emit('force-country', countryCode);
+                }
+            }
         }
     },
     created: function () {
@@ -338,10 +420,10 @@ Vue.component('autocomplete-popup', AucompletePopupElement.extend({
                             '<!-- data-dismiss="modal" -->' +
                             '<strong v-if="q" class="d-block text-secondary mb-2">' +
                                 '<small>{{ filteredItems.length }} matches for "{{ q }}"</small>' +
-                                '<div v-if="filteredItems.length == 0" class="text-center">'+
-                                    '<hr><catchphrase class="mb-4"><a href="mailto:webmaster@hipeac.net">Contact us</a> if you cannot find your {{ type }} in our list. We will add it to the website as soon as possible.</catchphrase>' +
-                                '</div>'+
                             '</strong>' +
+                            '<div v-if="!q || filteredItems.length == 0" class="text-center">'+
+                                '<hr v-show="q"><catchphrase class="mb-4"><a href="mailto:webmaster@hipeac.net">Contact us</a> if you cannot find your {{ type }} in our list. We will add it to the website as soon as possible.</catchphrase>' +
+                            '</div>' +
                             '<table class="table table-sm pointer table-hover">' +
                                 '<tr v-for="item in filteredItems" :key="item.id" v-show="values.indexOf(item.id) == -1" @click="add(item.id)">' +
                                     '<td>{{ item.display }}</td>' +
@@ -354,4 +436,56 @@ Vue.component('autocomplete-popup', AucompletePopupElement.extend({
             '</div>' +
         '</div>' +
     ''
+}));
+
+Vue.component('link-fieldset', FormElement.extend({
+    data: function () {
+        return {
+            links: null
+        }
+    },
+    template: '' +
+        '<div class="form-group">' +
+            '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
+            '<help-text v-if="helpText">{{ helpText }}</help-text>' +
+            '<table class="w-100">' +
+                '<tbody>' +
+                    '<tr v-for="link in links">' +
+                        '<td class="pl-0">' +
+                            '<only-input v-model="link.url"></only-input>' +
+                        '</td>' +
+                        '<td class="w-25">' +
+                            '<only-select v-model="link.type" :force-choices="typeChoices"></only-select>' +
+                        '</td>' +
+                        '<td class="text-right px-0"><a href @click.prevent="removeLink(link)" class="text-danger"><icon name="remove_circle" class="sm"></icon></a></td>' +
+                    '</tr>' +
+                '</tbody>' +
+                '<tfoot class="d-block mt-1">' +
+                    '<small><a href @click.prevent="addLink"><icon name="add" class="sm mr-1"></icon>Add link</a></small>' +
+                '</tfoot>' +
+            '</table>' +
+        '</div>' +
+    '',
+    computed: {
+        typeChoices: function () {
+            if (!this.f) return [];
+            return this.f.child.children.type.choices;
+        }
+    },
+    methods: {
+        addLink: function () {
+            this.links.push({
+                'type': 'website',
+                'url': '',
+            });
+            this.$emit('input', this.links);
+        },
+        removeLink: function (link) {
+            this.links = _.without(this.links, link);
+            this.$emit('input', this.links);
+        }
+    },
+    created: function () {
+        this.links = _.clone(this.value);
+    }
 }));

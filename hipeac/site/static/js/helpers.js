@@ -1,13 +1,13 @@
-var isIE = function () {
+function isIE() {
     var ua = window.navigator.userAgent;
     return ua.indexOf('MSIE ') > -1 || ua.indexOf('Trident/') > -1;
-};
+}
 
-var isSmallDevice = function () {
+function isSmallDevice() {
     return $(window).width() < 768;
-};
+}
 
-var filterMultiple = function (data, q, separator) {
+function filterMultiple(data, q, separator) {
     if (q == '') return data;
     var queries = q.toLowerCase().split(separator || ' ');
 
@@ -18,16 +18,68 @@ var filterMultiple = function (data, q, separator) {
         });
         return matches == queries.length;
     });
-};
+}
 
-var sortInt = function (a, b) {
-    return a - b;
-};
+function sort() {
+    return {
+        int: function (a, b) {
+            return a - b;
+        },
+        text: function (a, b) {
+            var a = a.toLowerCase();
+            var b = b.toLowerCase();
+            if (a < b) return -1;
+            if (a > b) return 1;
+            return 0;
+        }
+    };
+}
 
-var sortText = function (a, b) {
-    var a = a.toLowerCase();
-    var b = b.toLowerCase();
-    if (a < b) return -1;
-    if (a > b) return 1;
-    return 0;
-};
+function extractTopics(data) {
+    if (!data) return [];
+    return _.uniq(_.flatten(_.map(data, function (obj) {
+        return obj.topics;
+    })), function (obj) {
+        return obj.id;
+    }).sort(function (a, b) {
+        return sort().text(a.value, b.value);
+    });
+}
+
+function storage() {
+    var ls = window.localStorage;
+
+    return {
+        get: function (key, defaultValue) {
+            try {
+                var value = ls.getItem(key);
+                return (value !== null) ? JSON.parse(value) : defaultValue;
+            } catch (e) {
+                return this.getCookie(key, defaultValue);
+            }
+        },
+        set: function (key, value, days) {
+            try {
+                ls.setItem(key, JSON.stringify(value));
+            } catch (e) {
+                this.setCookie(key, value, days)
+            }
+        },
+        getCookie: function (key, defaultValue) {
+            try {
+                var data = '; ' + document.cookie;
+                var parts = data.split('; ' + key + '=');
+                return JSON.parse(parts.pop().split(';').shift());
+            } catch (err) {
+                return defaultValue;
+            }
+        },
+        setCookie: function (key, value, days) {
+            document.cookie = [
+                key + '=' + JSON.stringify(value),
+                'expires=' + moment().add(days, 'days').toString(),
+                'path=/'
+            ].join(';');
+        }
+    };
+}

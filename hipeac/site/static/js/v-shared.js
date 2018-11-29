@@ -5,12 +5,20 @@ var FETCH_WAIT = 250;
 var ComponentStore = new Vuex.Store({
     state: {
         options: null,
+        articles: null,
         quotes: [],
         metadata: [],
         institutions: [],
         projects: []
     },
     mutations: {
+        fetchArticles: _.debounce(function (state) {
+            if (!state.articles) {
+                api().getArticles().then(function (res) {
+                    state.articles = mapper().articles(res);
+                });
+            }
+        }, FETCH_WAIT),
         fetchQuotes: _.debounce(function (state) {
             if (!state.quotes.length) {
                 api().getQuotes().then(function (res) {
@@ -62,6 +70,13 @@ var ComponentStore = new Vuex.Store({
         }
     },
     getters: {
+        groupedArticles: function (state) {
+            if (!state.articles) return null;
+            return {
+                type: _.groupBy(state.articles, 'type'),
+                event: _.groupBy(state.articles, 'event')
+            }
+        },
         requiredFields: function (state) {
             if (!state.options) return null;
             if (_.has(state.options.actions, 'POST')) return _.keys(state.options.actions.POST);
@@ -81,7 +96,7 @@ var ComponentStore = new Vuex.Store({
 });
 
 Vue.filter('moment', function (date, format) {
-    return moment(date).format(format || 'll');
+    return moment(date).format(format || 'll');
 });
 
 Vue.filter('markdown', function (text) {
@@ -168,7 +183,7 @@ Vue.component('editor-link', {
     props: ['url'],
     template: '' +
         '<li v-if="show" class="nav-item">' +
-            '<a class="nav-link" :href="url"><i class="material-icons mr-2">&#xE150;</i>Edit</a>' +
+            '<a class="nav-link" :href="url"><i class="material-icons mr-1">edit</i>Edit</a>' +
         '</li>' +
     '',
     created: function () {
@@ -215,14 +230,14 @@ Vue.component('huge-icon', {
     ''
 });
 
-Vue.component('join-metadata', {
-    props: ['values'],
+Vue.component('metadata-join', {
+    props: ['items'],
     template: '' +
         '<span>{{ string }}</span>' +
     '',
     computed: {
         string: function () {
-            return _.pluck(this.values, 'value').join(', ');
+            return _.pluck(this.items, 'value').join(', ');
         }
     }
 });
@@ -240,9 +255,8 @@ Vue.component('display-md', {
 });
 
 Vue.component('display-sm', {
-    props: ['transparent'],
     template: '' +
-        '<h6 class="display display-sm text-left m-0" :class="{\'transparent\': transparent}"><span><slot></slot></span></h6>' +
+        '<h6 class="display display-sm text-left m-0"><span><slot></slot></span></h6>' +
     ''
 });
 
@@ -252,11 +266,20 @@ Vue.component('catchphrase', {
     ''
 });
 
+Vue.component('issuu-embed', {
+    props: ['src'],
+    template: '' +
+        '<div class="embed-responsive embed-responsive-4by3 rounded">' +
+            '<iframe class="embed-responsive-item" :src="src" frameborder="0" allowfullscreen></iframe>' +
+        '</div>' +
+    ''
+});
+
 Vue.component('youtube-embed', {
     props: ['url', 'hideInfo'],
     template: '' +
-        '<div class="embed-responsive embed-responsive-16by9">' +
-            '<iframe class="embed-responsive-item" :src="src" allowfullscreen></iframe>' +
+        '<div class="embed-responsive embed-responsive-16by9 rounded">' +
+            '<iframe class="embed-responsive-item" :src="src" frameborder="0" allowfullscreen></iframe>' +
         '</div>' +
     '',
     computed: {
@@ -278,43 +301,112 @@ Vue.component('youtube-embed', {
 
 var SimpleList = Vue.extend({
     methods: {
-        updateLocation: function (url) {
-            document.location = url;
+        updateLocation: function (url, target) {
+            var w = window.open(url, target || '_self');
+            w.focus();
         }
     }
 });
 
-Vue.component('article-list', SimpleList.extend({
-    props: ['items', 'max', 'showMore'],
+var SimpleItemCard = SimpleList.extend({
+    props: {
+        title: {
+            type: String,
+            default: ''
+        },
+        max: {
+            type: Number,
+            default: 1000
+        },
+        showMore: {
+            type: Boolean,
+            default: false
+        },
+        externalLinks: {
+            type: Boolean,
+            default: false
+        }
+    },
     template: '' +
         '<div v-if="items">' +
-            '<table class="table pointer m-0">' +
-                '<tbody>' +
-                    '<tr v-for="item in visibleItems" :key="item.id" @click="updateLocation(item.href)">' +
-                        '<td class="pl-0">' +
-                            '<small><strong>{{ item.type_display }}</strong>, {{ item.publication_date | moment }}</small></br>' +
-                            '{{ item.title }}' +
-                        '</td>' +
-                        '<td class="text-right align-middle pr-0">' +
-                            '<a :href="item.href">' +
-                                '<i class="material-icons sm">arrow_forward</i>' +
-                            '</a>' +
-                        '</td>' +
-                    '</tr>' +
-                '</tbody>' +
-            '</table>' +
-            '<div v-if="showMore" class="text-center mt-4">' +
-                '<a href="/news/" class="btn btn-light text-secondary ml-3">'+
-                    '<small>All news <i class="material-icons sm">arrow_forward</i></small>' +
-                '</a>' +
+            '<div v-if="visibleItems.length" class="hipeac-card marked">' +
+                '<display-sm class="mb-3">{{ title }}</display-sm>' +
+                '<table class="table pointer m-0">' +
+                    '<tbody>' +
+                        '<tr v-for="item in visibleItems" :key="item.id" @click="updateLocation(item.href, (externalLinks) ? \'_blank\' : \'_self\')">' +
+                            '<td class="pl-0">' +
+                                '<small><strong>{{ item.subheader }}</strong>, {{ item.publication_date | moment }}</small></br>' +
+                                '{{ item.title }}' +
+                            '</td>' +
+                            '<td class="text-right align-middle pr-0">' +
+                                '<a v-if="externalLinks" :href="item.href" target="_blank">' +
+                                    '<i class="material-icons sm">open_in_new</i>' +
+                                '</a>' +
+                                '<a v-else :href="item.href">' +
+                                    '<i class="material-icons sm">arrow_forward</i>' +
+                                '</a>' +
+                            '</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
+                '<div v-if="showMore" class="text-center mt-4">' +
+                    '<a href="/news/" class="btn btn-sm btn-light text-secondary ml-3">'+
+                        '<span>All news <i class="material-icons sm">arrow_forward</i></span>' +
+                    '</a>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+        '<div v-else class="w-100">' +
+            '<div class="hipeac-card skeleton">' +
+                '<span class="text w-25"></span>' +
+                '<table class="table m-0 mt-3">' +
+                    '<tbody>' +
+                        '<tr v-for="item in skeletons" :key="item">' +
+                            '<td class="pl-0">' +
+                                '<span class="text sm w-25"></span><br>' +
+                                '<span class="text w-100"></span>' +
+                                '<span class="text w-75"></span>' +
+                            '</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
             '</div>' +
         '</div>' +
     '',
     computed: {
-        visibleItems: function () {
-            if (!this.items) return [];
-            return _.first(this.items, (this.max || 1000));
+        skeletons: function () {
+            return Array.apply(null, {length: 5}).map(Number.call, Number);
         }
+    }
+});
+
+Vue.component('article-card', SimpleItemCard.extend({
+    store: ComponentStore,
+    props: {
+        type: {
+            type: String,
+            default: null
+        },
+        eventId: {
+            type: Number,
+            default: null
+        }
+    },
+    computed: _.extend(
+        Vuex.mapState(['articles']),
+        Vuex.mapGetters(['groupedArticles']), {
+        items: function () {
+            return this.articles;
+        },
+        visibleItems: function () {
+            if (!this.articles) return false;
+            if (this.type) return _.first(this.groupedArticles['type'][this.type], this.max);
+            if (this.eventId) return _.first(this.groupedArticles['event'][this.eventId], this.max);
+            return _.first(this.articles, this.max);
+        }
+    }),
+    created: function () {
+        this.$store.commit('fetchArticles');
     }
 }));
 
@@ -324,7 +416,19 @@ Vue.component('event-list', SimpleList.extend({
             showMore: false
         }
     },
-    props: ['items', 'min', 'max'],
+    props: {
+        items: {
+            type: Array
+        },
+        min: {
+            type: Number,
+            default: 8
+        },
+        max: {
+            type: Number,
+            default: 1000
+        }
+    },
     template: '' +
         '<div>' +
             '<div v-if="items" v-for="(data, isPast) in visibleItems">' +
@@ -332,7 +436,7 @@ Vue.component('event-list', SimpleList.extend({
                 '<display-sm v-else :transparent="true" class="mb-3">Past events</display-sm>' +
                 '<table class="table pointer mt-0 mb-3">' +
                     '<tbody>' +
-                        '<tr v-for="item in data" :key="item.id" @click="updateLocation(item.href)">' +
+                        '<tr v-for="item in data" :key="item.id" @click="updateLocation(item.href, (item.redirect_url) ? \'_blank\' : \'_self\')">' +
                             '<td class="px-0" style="width:50px">' +
                                 '<img v-if="item.images" :src="item.images.th" class="rounded w-100">' +
                                 '<span v-else class="avatar rounded"></span>' +
@@ -342,37 +446,33 @@ Vue.component('event-list', SimpleList.extend({
                                 '<small><strong>{{ item.country.name }}</strong>, {{ item.datesStr }}</small>'+
                             '</td>' +
                             '<td class="text-right align-middle pr-0">' +
-                                '<a :href="item.href">' +
-                                    '<i v-if="item.redirect_url" class="material-icons sm">open_in_new</i>' +
-                                    '<i v-else class="material-icons sm">arrow_forward</i>' +
+                                '<a v-if="item.redirect_url" :href="item.href" target="_blank">' +
+                                    '<i class="material-icons sm">open_in_new</i>' +
+                                '</a>' +
+                                '<a v-else :href="item.href">' +
+                                    '<i class="material-icons sm">arrow_forward</i>' +
                                 '</a>' +
                             '</td>' +
                         '</tr>' +
                     '</tbody>' +
                 '</table>' +
             '</div>' +
-            '<div v-if="items && items.length > limits.min" class="text-center mt-4">' +
-                '<button @click="showMore = !showMore" type="button" class="btn btn-light text-secondary">'+
-                    '<small v-if="showMore"><i class="material-icons sm">remove</i> Show less</small>' +
-                    '<small v-else><i class="material-icons sm">add</i> Show more</small>' +
+            '<div v-if="items && items.length > min" class="text-center mt-4">' +
+                '<button @click="showMore = !showMore" type="button" class="btn btn-sm btn-light text-secondary">'+
+                    '<span v-if="showMore"><i class="material-icons sm">remove</i> Show less</span>' +
+                    '<span v-else><i class="material-icons sm">add</i> Show more</span>' +
                 '</button>' +
-                '<a v-if="limits.max < items.length" href="/events/" class="btn btn-light text-secondary ml-3">'+
-                    '<small>All events <i class="material-icons sm">arrow_forward</i></small>' +
+                '<a v-if="max < items.length" href="/events/" class="btn btn-sm btn-light text-secondary ml-3">'+
+                    '<span>All events <i class="material-icons sm">arrow_forward</i></span>' +
                 '</a>' +
             '</div>' +
         '</div>' +
     '',
     computed: {
-        limits: function () {
-            return {
-                'max': this.max || 1000,
-                'min': this.min || 8
-            }
-        },
         visibleItems: function () {
             if (!this.items) return [];
 
-            var size = (this.showMore) ? this.limits.max : this.limits.min;
+            var size = (this.showMore) ? this.max : this.min;
             var items = _.groupBy(_.first(this.items, size), 'past');
             if (_.has(items, false)) items[false].reverse();
             return items;
@@ -447,18 +547,40 @@ Vue.component('quotes-carousel-row', {
 Vue.component('search-card', {
     data: function () {
         return {
-            q: ''
+            q: '',
+            showFilters: false
         }
     },
-    props: ['placeholder'],
+    props: {
+        showFiltersButton: {
+            type: Boolean,
+            default: true
+        },
+        placeholder: {
+            type: String,
+            default: ''
+        }
+    },
     template: '' +
         '<div class="hipeac-card py-3">' +
-            '<div>' +
-                '<span class="float-left mt-2 mr-2 pointer">' +
-                    '<i v-if="q" @click="q = \'\'" class="material-icons text-secondary">&#xE5CD;</i>' +
-                    '<i v-else class="material-icons text-primary">&#xE8B6;</i>' +
-                '</span>' +
-                '<input v-model="q" type="text" class="form-control search-bar" :placeholder="placeholder">' +
+            '<div class="d-flex flex-row justify-content-between">' +
+                '<div class="input-group search-bar pr-3">' +
+                    '<div class="input-group-prepend">' +
+                        '<div class="input-group-text">' +
+                            '<i v-if="q" @click="q = \'\'" class="material-icons text-secondary pointer">&#xE5CD;</i>' +
+                            '<i v-else class="material-icons text-primary">&#xE8B6;</i>' +
+                        '</div>' +
+                    '</div>' +
+                    '<input v-model="q" type="text" class="form-control" :placeholder="placeholder">' +
+                '</div>' +
+                '<button v-if="showFiltersButton" class="btn btn-sm" @click="showFilters = !showFilters">' +
+                    '<span v-if="showFilters"><icon name="keyboard_arrow_up"></icon><span class="d-none d-md-inline ml-1">Hide filters</span></span>' +
+                    '<span v-else><icon name="filter_list"></icon><span class="d-none d-md-inline ml-1">Show filters</span></span>' +
+                '</button>' +
+            '</div>' +
+            '<div v-if="showFilters">' +
+                '<hr>' +
+                '<slot></slot>' +
             '</div>' +
         '</div>' +
     '',
@@ -470,7 +592,7 @@ Vue.component('search-card', {
 
                 EventHub.$emit('query-changed', val);
             }
-        }, 50)
+        }, 100)
     },
     created: function () {
         if (this.$route.query.q) {
@@ -480,12 +602,37 @@ Vue.component('search-card', {
     }
 });
 
-Vue.component('job-cards', {
+Vue.component('search-results', {
+    props: ['count'],
+    template: '' +
+        '<button class="btn btn-sm btn-block btn-outline-secondary mb-2" disabled>' +
+            'Showing top <strong>{{ count }}</strong> results.' +
+        '</button>' +
+    ''
+});
+
+Vue.component('filters-clear', {
     props: {
-        jobs: {
+        onClick: {
+            type: Function,
+            required: true
+        }
+    },
+    template: '' +
+        '<button @click.prevent="onClick" class="btn btn-link text-sm text-danger float-right">&times; Clear all</button>' +
+    ''
+});
+
+Vue.component('papers-table', {
+    props: {
+        items: {
             type: Array
         },
-        filter: {
+        showConference: {
+            type: Boolean,
+            default: false
+        },
+        filterIds: {
             type: Boolean,
             default: false
         },
@@ -497,45 +644,128 @@ Vue.component('job-cards', {
         }
     },
     template: '' +
-        '<div class="row jobs-gutters">' +
-            '<div v-for="job in jobs" :key="job.id" class="col-12 col-md-6 col-lg-3 d-flex align-items-stretch" '+
-                ':v-hide="!(!filter || ids.indexOf(job.id) !== -1)">' +
-                '<a :href="job.href" class="hipeac-card jobs-card mb-0 inherit d-flex flex-column">' +
+        '<table v-if="items" class="table table-sm">' +
+            '<tr v-for="item in items" :key="item.id" :v-hide="filterIds && ids.indexOf(item.id) < 0">' +
+                '<td><icon name="description" class="sm"></icon></td>' +
+                '<td><span v-if="showConference && item.conference" class="badge badge-primary mr-2">{{ item.conference }}</span>{{ item.title }} <small class="text-secondary">{{ item.authors_string }}</small></td>' +
+                '<td v-if="showConference" class="text-sm text-secondary align-middle">{{ item.year }}</td>' +
+                '<td class="text-right align-middle pr-0">' +
+                    '<a v-if="item.url" :href="item.url" target="_blank">' +
+                        '<i class="material-icons sm">open_in_new</i>' +
+                    '</a>' +
+                '</td>' +
+            '</tr>' +
+        '</table>' +
+        '<table v-else class="table m-0 mt-3 skeleton">' +
+            '<tbody>' +
+                '<tr v-for="item in skeletons" :key="item">' +
+                    '<td class="pl-0">' +
+                        '<span class="text w-75"></span><br>' +
+                        '<span class="text sm w-100"></span>' +
+                    '</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>' +
+    '',
+    computed: {
+        skeletons: function () {
+            return Array.apply(null, {length: 5}).map(Number.call, Number);
+        }
+    }
+});
+
+Vue.component('project-cards', SimpleList.extend({
+    props: {
+        items: {
+            type: Array
+        },
+        ids: {
+            type: Array,
+            default: function () {
+                return [];
+            }
+        }
+    },
+    template: '' +
+        '<div class="row mini-card-gutters">' +
+            '<div v-for="item in items" :key="item.id" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" :v-hide="ids.indexOf(item.id) < 0">' +
+                '<div class="hipeac-card mini-card mb-0 inherit d-flex flex-column pointer" @click="updateLocation(item.href)">' +
                     '<span class="header">' +
-                        '<img v-if="job.institution.images" :src="job.institution.images.sm">' +
+                        '<img v-if="item.images" :src="item.images.sm" class="logo">' +
                     '</span>' +
-                    '<h6 class="title mb-auto">{{ job.title }}<br>' +
-                        '<span class="text-light-weight">@ {{ job.institution.short_name }}</span>' +
-                    '</h6>' +
-                    '<ul class="list-unstyled text-secondary" :class="{soon: job.expiresSoon}">' +
-                        '<li v-if="job.internship" class="text-primary "><icon name="info" class="sm"></icon>' +
-                            '<strong>Internship</strong></li>' +
-                        '<li><icon name="today" class="sm"></icon>' +
-                            '<span class="deadline">{{ job.deadline | moment }}</span></li>' +
-                        '<li><icon name="location_on" class="sm"></icon><span v-if="job.location">{{ job.location }}, </span>{{ job.country.name }}</li>' +
-                        '<li><icon name="how_to_reg" class="sm"></icon><join-metadata :values="job.career_levels"></join-metadata></li>' +
-                        '<li><icon name="label" class="sm"></icon><join-metadata :values="job.topics"></join-metadata></li>' +
+                    '<h6 class="title mb-auto">{{ item.acronym }}: {{ item.name }}</h6>' +
+                    '<ul class="list-unstyled text-secondary">' +
+                        '<li v-if="item.start_date && item.end_date">' +
+                            '<strong v-if="item.isNew" class="new float-right">New</strong>' +
+                            '<icon name="today" class="sm"></icon>' +
+                            '<span class="deadline">{{ item.start_date | moment }} - {{ item.end_date | moment }}</span>' +
+                        '</li>' +
+                        '<li><icon name="adjust" class="sm"></icon>{{ item.programme }}</li>' +
+                        '<li><icon name="label" class="sm"></icon><metadata-join :items="item.topics"></metadata-join></li>' +
                     '</ul>' +
-                '</a>' +
+                '</div>' +
             '</div>' +
         '</div>' +
     ''
-});
+}));
+
+Vue.component('job-cards', SimpleList.extend({
+    props: {
+        items: {
+            type: Array
+        },
+        ids: {
+            type: Array,
+            default: function () {
+                return [];
+            }
+        }
+    },
+    template: '' +
+        '<div class="row mini-card-gutters">' +
+            '<div v-for="item in items" :key="item.id" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" :v-hide="ids.indexOf(item.id) < 0">' +
+                '<div class="hipeac-card mini-card mb-0 inherit d-flex flex-column pointer" @click="updateLocation(item.href)">' +
+                    '<span class="header">' +
+                        '<img v-if="item.institution.images" :src="item.institution.images.sm" class="logo">' +
+                    '</span>' +
+                    '<h6 class="title mb-auto">{{ item.title }}<br>' +
+                        '<span class="text-light-weight">@ {{ item.institution.short_name }}</span>' +
+                    '</h6>' +
+                    '<ul class="list-unstyled text-secondary" :class="{soon: item.expiresSoon}">' +
+                        '<li v-if="item.internship" class="text-primary "><icon name="info" class="sm"></icon>' +
+                            '<strong>Internship</strong></li>' +
+                        '<li>' +
+                            '<strong v-if="item.isNew" class="new float-right">New</strong>' +
+                            '<icon name="today" class="sm"></icon>' +
+                            '<span class="deadline">{{ item.deadline | moment }}</span>' +
+                        '</li>' +
+                        '<li><icon name="location_on" class="sm"></icon><span v-if="item.location">{{ item.location }}, </span>{{ item.country.name }}</li>' +
+                        '<li><icon name="how_to_reg" class="sm"></icon><metadata-join :items="item.career_levels"></metadata-join></li>' +
+                        '<li><icon name="label" class="sm"></icon><metadata-join :items="item.topics"></metadata-join></li>' +
+                    '</ul>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+    ''
+}));
 
 Vue.component('open-jobs-row', {
     data: function () {
         return {
-            jobs: []
+            jobs: null
         }
     },
     props: ['url'],
     template: '' +
-        '<div v-if="jobs.length" class="row">' +
+        '<div class="row">' +
             '<div class="col-12 col-lg-2">' +
-                '<h5 class="display-sm mt-4 mb-1">Jobs</h5><hr>' +
+                '<div v-if="jobs && jobs.length">' +
+                    '<h5 class="display-sm mt-4 mb-1">Jobs</h5><hr>' +
+                '</div>' +
             '</div>' +
             '<div class="col-12 col-lg-10">' +
-                '<job-cards :jobs="jobs"></job-cards>' +
+                '<job-cards v-if="jobs" :items="jobs" :ids="ids"></job-cards>' +
+                '<skeleton-cards v-else :number="4"></skeleton-cards>' +
             '</div>' +
         '</div>' +
     '',
@@ -547,7 +777,119 @@ Vue.component('open-jobs-row', {
             });
         }
     },
+    computed: {
+        ids: function () {
+            if (!this.jobs) return [];
+            return _.pluck(this.jobs, 'id');
+        }
+    },
     created: function () {
         this.fetchData();
+    }
+});
+
+Vue.component('video-cards', SimpleList.extend({
+    props: {
+        items: {
+            type: Array
+        },
+        ids: {
+            type: Array,
+            default: function () {
+                return [];
+            }
+        }
+    },
+    template: '' +
+        '<div class="row mini-card-gutters">' +
+            '<div v-for="item in items" :key="item.id" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" :v-hide="ids.indexOf(item.id) < 0">' +
+                '<div class="hipeac-card mini-card mb-0 inherit d-flex flex-column pointer" @click="updateLocation(item.href, \'_blank\')">' +
+                    '<img :src="item.snapshot" class="rounded w-100">' +
+                    '<h6 class="title mb-auto">{{ item.title }}</h6>' +
+                    '<ul class="list-unstyled text-secondary">' +
+                        '<li><a :href="item.user.href" @click.stop="updateLocation(item.user.href)" class="inherit"><i class="material-icons sm">face</i>{{ item.user.profile.name }}</a></li>' +
+                        '<li><i class="material-icons sm">business</i>{{ item.user.profile.institution.name }}</li>' +
+                        '<li><i class="material-icons sm">label</i><metadata-join :items="item.topics"></metadata-join></li>' +
+                    '</ul>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+    ''
+}));
+
+Vue.component('videos-row', {
+    data: function () {
+        return {
+            videos: null
+        }
+    },
+    props: ['url'],
+    template: '' +
+        '<div class="row">' +
+            '<div class="col-12 col-lg-2">' +
+                '<div v-if="videos && videos.length">' +
+                    '<h5 class="display-sm mt-4 mb-1">Videos</h5><hr>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-12 col-lg-10">' +
+                '<video-cards v-if="videos" :items="videos" :ids="ids"></video-cards>' +
+                '<skeleton-cards v-else :number="4"></skeleton-cards>' +
+            '</div>' +
+        '</div>' +
+    '',
+    methods: {
+        fetchData: function () {
+            var self = this;
+            ajax().get(this.url).done(function (res) {
+                self.videos = mapper().videos(res);
+            });
+        }
+    },
+    computed: {
+        ids: function () {
+            if (!this.videos) return [];
+            return _.pluck(this.videos, 'id');
+        }
+    },
+    created: function () {
+        this.fetchData();
+    }
+});
+
+Vue.component('skeleton-box', {
+    template: '' +
+        '<div class="hipeac-card mini-card mb-0 skeleton">' +
+            '<span class="text w-100"></span>' +
+            '<span class="text w-100"></span>' +
+            '<span class="text w-25"></span>' +
+        '</div>' +
+    ''
+});
+
+Vue.component('skeleton-cards', {
+    props: {
+        number: {
+            type: Number,
+            default: 8
+        }
+    },
+    template: '' +
+        '<div class="row mini-card-gutters skeleton">' +
+            '<div v-for="item in skeletons" :key="item" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">' +
+                '<div class="hipeac-card mini-card mb-0">' +
+                    '<span class="header"></span>' +
+                    '<span class="text w-100"></span>' +
+                    '<span class="text w-100"></span>' +
+                    '<span class="text w-25"></span>' +
+                    '<hr>' +
+                    '<span class="text sm w-75"></span>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+    '',
+    computed: {
+        skeletons: function () {
+            return Array.apply(null, {length: this.number}).map(Number.call, Number);
+        }
     }
 });
