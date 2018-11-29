@@ -118,7 +118,7 @@
                     return _.pluck(filterMultiple(filteredItems, this.q), 'id');
                 },
                 topics: function () {
-                    return extractTopics(this.videos);
+                    return extractMetadata(this.jobs, 'topics');
                 }
             }),
             methods: {

@@ -32,13 +32,13 @@
                     {% block subtitle %}HiPEAC Content editor{% endblock %}
                 </h3>
                 <ul class="nav nav-tabs">
+                    {% block extra_tabs %}{% endblock %}
                     <li class="nav-item">
                         <a href="#" class="nav-link active">Editor</a>
                     </li>
                     <li v-cloak v-if="obj && obj.href" class="nav-item">
                         <a :href="obj.href" class="nav-link">View on hipeac.net</a>
                     </li>
-                    {% block extra_tabs %}{% endblock %}
                 </ul>
             </div>
         </div>

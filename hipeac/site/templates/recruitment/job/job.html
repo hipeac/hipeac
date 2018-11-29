@@ -10,7 +10,7 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'jobs' %}"><i class="material-icons mr-1">arrow_back</i>Back to jobs</a>
+        <a class="nav-link" href="{% url 'jobs' %}"><i class="material-icons mr-1">arrow_back</i>Back to jobs portal</a>
     </li>
     {% if user.is_authenticated %}
         <li is="editor-link" url="{{ job.get_editor_url }}"></li>

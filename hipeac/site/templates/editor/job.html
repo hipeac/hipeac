@@ -13,7 +13,7 @@
 
 {% block extra_tabs %}
     <li v-cloak v-if="isNew" class="nav-item">
-        <a href="{% url 'jobs' %}" class="nav-link">Back to jobs portal</a>
+        <a class="nav-link" href="{% url 'jobs' %}"><i class="material-icons mr-1">arrow_back</i>Back to jobs portal</a>
     </li>
 {% endblock %}
 

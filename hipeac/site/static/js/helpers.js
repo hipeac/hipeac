@@ -35,10 +35,10 @@ function sort() {
     };
 }
 
-function extractTopics(data) {
-    if (!data) return [];
-    return _.uniq(_.flatten(_.map(data, function (obj) {
-        return obj.topics;
+function extractMetadata(items, field) {
+    if (!items) return [];
+    return _.uniq(_.flatten(_.map(items, function (obj) {
+        return obj[field];
     })), function (obj) {
         return obj.id;
     }).sort(function (a, b) {

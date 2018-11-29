@@ -31,6 +31,15 @@
                     </label>
                 </div>
             </div>
+            <div v-if="careerLevels">
+                <h6 class="d-inline display-sm mr-2">Career levels</h6>
+                <div v-for="level in careerLevels" :key="level.id" class="form-check form-check-inline mr-2">
+                    <label class="form-check-label pointer">
+                        <input v-model="filters.careerLevels" :value="level.id" type="checkbox" class="form-check-input">
+                        <span v-html="level.value"></span>
+                    </label>
+                </div>
+            </div>
             <div v-if="topics">
                 <h6 class="d-inline display-sm mr-2">Core skills</h6>
                 <div v-for="topic in topics" :key="topic.id" class="form-check form-check-inline mr-2">

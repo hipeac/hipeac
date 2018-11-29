@@ -161,6 +161,7 @@
                     sorting: storage().get(LS_JOBS_SORTING, 'deadline'),
                     filters: {
                         internshipsOnly: false,
+                        careerLevels: [],
                         topics: []
                     }
                 }
@@ -180,6 +181,12 @@
                             return _.intersection(filters.topics, obj.topicIds).length > 0;
                         });
 
+                    filteredItems = (!filters.careerLevels.length)
+                        ? filteredItems
+                        : filteredItems.filter(function (obj) {
+                            return _.intersection(filters.careerLevels, obj.careerLevelIds).length > 0;
+                        });
+
                     if (filters.internshipsOnly) {
                         filteredItems = filteredItems.filter(function (obj) {
                             return obj.internship;
@@ -188,8 +195,11 @@
 
                     return _.pluck(filterMultiple(filteredItems, this.q), 'id');
                 },
+                careerLevels: function () {
+                    return extractMetadata(this.jobs, 'career_levels');
+                },
                 topics: function () {
-                    return extractTopics(this.jobs);
+                    return extractMetadata(this.jobs, 'topics');
                 }
             }),
             methods: {
@@ -198,6 +208,7 @@
                 },
                 resetFilters: function () {
                     this.filters.internshipsOnly = false;
+                    this.filters.careerLevels = [];
                     this.filters.topics = [];
                 }
             },
