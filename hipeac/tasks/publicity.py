@@ -36,7 +36,7 @@ def process_sympa_msg(msg_subject: str, content: str):
             emails = [line for line in content.splitlines() if parseaddr(line) is not ('', '') and '@' in line]
             Profile.objects.filter(user__email__in=emails).update(is_bouncing=True)
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -102,7 +102,7 @@ def sync_emails():
                 keywords=json.dumps(NaturalLanguageAnalyzer().get_keywords(content, min_salience=0.01)),
             )
             mbox.store(num, '+FLAGS', '\\Deleted')
-        except Exception as e:
+        except Exception:
             continue
 
     mbox.expunge()

@@ -13,7 +13,7 @@ try:
     import debug_toolbar  # noqa
     INSTALLED_APPS += ('debug_toolbar',)  # noqa
     MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)  # noqa
-except Exception as e:
+except Exception:
     pass
 
 

@@ -46,5 +46,5 @@ class LinkedInManager:
             if res.status_code is not 201:
                 raise LinkedInTokenExpiredException()
 
-        except Exception as e:
+        except Exception:
             raise LinkedInTokenExpiredException()

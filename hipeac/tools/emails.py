@@ -19,11 +19,11 @@ class TemplateEmail:
             raise ValueError(f'"{template}" is not registered.')
 
         template_path = TEMPLATE_PATHS[template]
-        text_body = render_to_string(template_path, {**{'email_format': 'txt'}, **context_data})
-        html_body = render_to_string(template_path, {**{'email_format': 'html'}, **context_data})
+        text_content = render_to_string(template_path, {**{'email_format': 'txt'}, **context_data})
+        html_content = render_to_string(template_path, {**{'email_format': 'html'}, **context_data})
 
-        self.message = AnymailMessage(subject=subject, from_email=from_email, to=to, body=text_body)
-        self.message.attach_alternative(html_body, 'text/html')
+        self.message = AnymailMessage(subject=subject, from_email=from_email, to=to, body=text_content)
+        self.message.attach_alternative(html_content, 'text/html')
 
     def send(self):
         self.message.send()
