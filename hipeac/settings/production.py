@@ -18,6 +18,12 @@ CSRF_USE_SESSIONS = True
 CRISPY_FAIL_SILENTLY = True
 
 
+# sendfile
+
+SENDFILE_ROOT = f'{MEDIA_ROOT}private'
+SENDFILE_URL = '/-internal'
+
+
 # https://docs.djangoproject.com/en/1.11/topics/cache/
 
 CACHES = {
@@ -63,13 +69,6 @@ ANYMAIL = {
         }
     }
 }
-
-
-# https://github.com/johnsensible/django-sendfile
-
-SENDFILE_BACKEND = 'sendfile.backends.xsendfile'
-SENDFILE_ROOT = '/mnt/hipeac/sites/hipeac/private'
-SENDFILE_URL = '/media/private'
 
 
 # https://docs.djangoproject.com/en/2.1/topics/logging/#django-security

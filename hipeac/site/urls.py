@@ -40,6 +40,7 @@ urlpatterns = [
     re_path(r'^news/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ArticleDetail.as_view(), name='article'),
     path('press/', flatpage, {'url': '/press/'}, name='press'),
     path('vision/', flatpage, {'url': '/vision/'}, name='vision'),
+    path('vision/<int:year>/', views.VisionDownload.as_view(), name='vision_download'),
     # Research
     path('research/', flatpage, {'url': '/research/'}, name='research'),
     # Events
@@ -62,6 +63,8 @@ urlpatterns = [
     path('accounts/research/', views.JobDetail.as_view(), name='user_research'),
     # Mailing lists
     path('sympa/<slug:mailing_list>/', views.DataSourceView.as_view(), name='datasource'),
+    # Media
+    re_path(r'media/private(?P<path>((/\w+?)+/))(?P<filename>[\w.-]+)', views.FirewallView.as_view()),
     # Sitemap
     path('sitemap.xml', sitemap_views.index, {'sitemaps': sitemaps}),
     path('sitemap-<slug:section>.xml', sitemap_views.sitemap, {'sitemaps': sitemaps},
