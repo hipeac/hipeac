@@ -10,9 +10,13 @@ class CommaSeparatedIntegerChoiceField(MultipleChoiceField):
     metadata_type = None
 
     def __init__(self, *args, **kwargs):
+        """Choices are only set when a database exists."""
         super().__init__(**kwargs)
-        metadata = get_cached_metadata_queryset()
-        self.choices = [(m.id, m.value) for m in metadata if m.type == self.metadata_type]
+        try:
+            metadata = get_cached_metadata_queryset()
+            self.choices = [(m.id, m.value) for m in metadata if m.type == self.metadata_type]
+        except Exception:
+            self.choices = ()
 
     def prepare_value(self, value):
         return value.split(',') if isinstance(value, str) else value
