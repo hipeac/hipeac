@@ -162,7 +162,6 @@ function mapper() {
         },
         sessions: function (items) {
             return items.map(function (obj) {
-                obj.markedSummary = (obj.summary) ? marked(obj.summary) : '';
                 obj.startAt = obj.start_at.substring(0, 5);
                 obj.endAt = obj.end_at.substring(0, 5);
                 obj.q = [
@@ -187,8 +186,6 @@ function mapper() {
         },
         visions: function (items) {
             return items.map(function (obj) {
-                obj.markedIntroduction = marked(obj.introduction);
-                obj.markedSummary = marked(obj.summary);
                 obj.year = obj.publication_date.substring(0, 4);
                 obj.q = '';
                 return obj;

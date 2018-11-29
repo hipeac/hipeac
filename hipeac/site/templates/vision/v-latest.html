@@ -13,14 +13,14 @@
                         <hr class="my-4">
                     </div>
                     <h5 class="mb-3">{{ vision.title }}</h5>
-                    <div v-html="vision.markedIntroduction" class="marked catchphrase-first"></div>
+                    <marked class="catchphrase-first" :text="vision.introduction"></marked>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
                 <div class="hipeac-card">
                     <youtube-embed v-if="vision.youtube_url" :url="vision.youtube_url" :hideInfo="true" class="mb-4"></youtube-embed>
                     <display-sm class="mb-3">Summary</display-sm>
-                    <div v-html="vision.markedSummary" class="marked"></div>
+                    <marked :text="vision.summary"></marked>
                 </div>
             </div>
         {% endverbatim %}

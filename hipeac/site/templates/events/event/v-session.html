@@ -23,7 +23,7 @@
                             <display-md class="mt-0 mb-4 text-left">{{ session.title }}</display-md>
                         </div>
                         <div class="col-12 col-md-8 pr-md-4">
-                            <div class="marked mod" v-if="session.markedSummary" v-html="session.markedSummary"></div>
+                            <marked v-if="session.summary" :text="session.summary"></marked>
                         </div>
                         <div class="col-12 col-md-4 border-left pl-md-4">
                             <display-sm class="mb-3"><i class="material-icons sm mr-2">today</i>{{ session.date | moment }}</display-sm>

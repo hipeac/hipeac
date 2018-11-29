@@ -11,7 +11,7 @@
                     <div class="col-12 col-md-9 col-lg-10 text-sm">
                         <h5>{{ vision.year }}</h5>
                         <h5 class="display-sm mb-4">{{ vision.title }}</h5>
-                        <div v-html="vision.markedSummary" class="marked"></div>
+                        <marked :text="vision.summary"></marked>
                     </div>
                 </div>
             </div>
