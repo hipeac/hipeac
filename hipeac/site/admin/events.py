@@ -5,12 +5,25 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
-from hipeac.models import Event, Registration, Roadshow, Break, Session, Sponsor
+from hipeac.models import Event, Coupon, Registration, Roadshow, Break, Session, Sponsor
 from .generic import ImagesInline, LinksInline, PermissionsInline
 
 
 class BreaksInline(admin.TabularInline):
     model = Break
+    classes = ('collapse',)
+    extra = 0
+
+
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ('id', 'code', 'value', 'notes')
+    list_filter = ('event',)
+    search_fields = ('code', 'notes')
+
+
+class CouponsInline(admin.TabularInline):
+    model = Coupon
     classes = ('collapse',)
     extra = 0
 
@@ -31,7 +44,7 @@ class EventAdmin(admin.ModelAdmin):
     list_per_page = 20
 
     readonly_fields = ('registrations_count',)
-    inlines = (BreaksInline, SponsorsInline, LinksInline,)
+    inlines = (BreaksInline, SponsorsInline, CouponsInline, LinksInline,)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(Count('sessions', distinct=True)) \
@@ -62,13 +75,69 @@ class EventAdmin(admin.ModelAdmin):
     sessions_link.short_description = 'Sessions'
 
 
+class RegistrationIsPaidFilter(admin.SimpleListFilter):
+    title = 'payment status'
+    parameter_name = 'paid'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('y', 'Paid'),
+            ('c', 'Paid, using a coupon'),
+            ('n', 'Not paid, no invoice'),
+            ('i', 'Not paid, but requested invoice'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'y':
+            return queryset.filter(saldo__gte=0)
+        elif self.value() == 'c':
+            return queryset.filter(saldo__gte=0, coupon__isnull=False)
+        elif self.value() == 'n':
+            return queryset.filter(saldo__lt=0, invoice_requested=False)
+        elif self.value() == 'i':
+            return queryset.filter(saldo__lt=0, invoice_requested=True)
+
+
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    list_filter = ('event',)
+    list_display = ('id', 'created_at', 'user', 'fee', 'with_coupon', 'invoice_requested', 'invoice_sent',
+                    'visa_requested', 'visa_sent')
+    list_filter = (RegistrationIsPaidFilter, 'invoice_requested', 'invoice_sent', 'visa_requested', 'visa_sent',
+                   'event')
+
+    raw_id_fields = ('coupon',)
+    readonly_fields = ('event', 'user', 'base_fee', 'extra_fees', 'paid', 'saldo')
+    fieldsets = (
+        (None, {
+            'fields': ('event', ('user', 'visa_requested', 'visa_sent')),
+        }),
+        ('PAYMENT', {
+            'fields': ('fee_type', 'base_fee', 'extra_fees', ('paid_via_invoice', 'invoice_requested', 'invoice_sent'), 'coupon',
+                       'paid', 'saldo'),
+        }),
+        ('EXTRA INFORMATION', {
+            'fields': ('with_booth',),
+        }),
+    )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('user', 'event')
+        return super().get_queryset(request).select_related('user__profile', 'coupon').prefetch_related('event')
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        instance = Registration.objects.get(pk=object_id)
+        extra_context = extra_context or {}
+        extra_context['is_paid'] = instance.is_paid
+        extra_context['base_fee'] = instance.base_fee
+        extra_context['remaining_fee'] = instance.remaining_fee
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
+
+    def fee(self, obj):
+        return f'{obj.base_fee} + {obj.extra_fees}'
+
+    def with_coupon(self, obj):
+        return obj.coupon is not None
+    with_coupon.boolean = True
 
 
 @admin.register(Roadshow)

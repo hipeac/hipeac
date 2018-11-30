@@ -19,10 +19,6 @@ ADMINS = (('eillarra', 'e@illarra.com'),)
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'DJANGO_SECRET_KEY')
 SITE_ID = int(os.environ.get('SITE_ID', 1))
 
-OGONE_PSPID = os.environ.get('OGONE_PSPID')
-OGONE_SALT = os.environ.get('OGONE_SALT')
-OGONE_URL = os.environ.get('OGONE_URL')
-
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',

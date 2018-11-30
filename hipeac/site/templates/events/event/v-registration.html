@@ -16,12 +16,15 @@
                             <strong>Created:</strong> {{ registration.created_at | moment('LLL') }}<br>
                             <strong>Last updated:</strong> {{ registration.updated_at | moment('LLL') }}<br>
                             <hr>
+                            <strong>Base fee: EUR {{ registration.base_fee }} ({{ registration.fee_type }})</strong><br>
+                            <strong>Extras: EUR {{ registration.extra_fees }}</strong>
+                            <hr>
                         </div>
                         <display-sm class="mb-3">Practical information</display-sm>
                         <div class="big-checkbox">
                             <label>
-                                <input type="checkbox" v-model="registration.visa_requested">
-                                <span>I require a visa to attend this event.</span>
+                                <input type="checkbox" v-model="registration.visa_requested" :disable="registration.visa_requested && registration.visa_sent">
+                                <span>I require a visa to attend this event</span>
                             </label>
                         </div>
                     </div>
@@ -31,10 +34,46 @@
                         <loading text="Saving..." icon="save" class="float-right mt-2"></loading>
                         <button v-if="registrationIsNew" @click.prevent="save" class="btn btn-primary" :disabled="emptySessions">Create new registration</button>
                         <button v-else @click.prevent="save" class="btn btn-outline-success" :disabled="emptySessions">Update registration</button>
+                        <a :href="registration.payment_href" class="float-right btn btn-outline-primary">
+                            <span v-if="isPaid">View payment info</span>
+                            <span v-else>Proceed with payment</span>
+                            <icon name="arrow_forward" class="sm ml-2"></icon>
+                        </a>
                         <hr class="my-4">
+                        <div v-if="event.fees">
+                            <display-sm class="mb-3">All-in ticket for 3 days</display-sm>
+                            <div class="big-checkbox">
+                                <label>
+                                    <input type="radio" v-model="registration.fee_type" value="regular">
+                                    <span>Regular </span>
+                                    <em v-if="event.is_early">(early: EUR {{ event.fees.early }})</em>
+                                    <em v-else>(late: EUR {{ event.fees.late }})</em>
+                                </label>
+                                <label>
+                                    <input type="radio" v-model="registration.fee_type" value="student">
+                                    <span>Student </span>
+                                    <em v-if="event.is_early">(early: EUR {{ event.fees.early_student }})</em>
+                                    <em v-else>(late: EUR {{ event.fees.late_student }})</em>
+                                </label>
+                            </div>
+                            <display-sm class="mt-4 mb-3">Booth in exhibition area</display-sm>
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td class="big-checkbox">
+                                            <label>
+                                                <input type="checkbox" v-model="registration.with_booth">
+                                                <span>I want a company/EU project booth</span>
+                                            </label>
+                                            <p class="text-sm mt-1 mb-0">Renting a conference booth during one of the poster sessions / exhibits costs EUR {{ event.fees.booth }}. This cost needs to be paid on top of the registration fee of the representatives attending the conference (if you are a HiPEAC Conference sponsor ask for a coupon to cover this costs).</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <display-sm class="mb-3">Present a poster</display-sm>
                         <p v-if="!registration.posters.length" class="text-sm">
-                            <a href @click.prevent="addPoster">Click here</a> if you want to present a poster during this event.</p>
+                            <a href @click.prevent="addPoster"><icon name="add" class="sm mr-1"></icon>Click here</a> if you want to present a poster during this event.</p>
                         <table v-else class="table table-sm">
                             <thead>
                                 <tr class="text-sm">
@@ -64,7 +103,7 @@
                                 <small><a href @click.prevent="addPoster"><icon name="add" class="sm mr-1"></icon>Present another poster</a></small>
                             </tfoot>
                         </table>
-                        <display-sm class="mt-5 mb-3">Choose sessions</display-sm>
+                        <display-sm class="mt-4 mb-3">Choose sessions</display-sm>
                         <small v-if="emptySessions" class="d-block text-danger mb-2">Please choose at least one session to attend.</small>
                         <table class="table table-sm">
                             <tbody>

@@ -5,8 +5,10 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
+from django.urls import reverse
 
 from hipeac.functions import send_task
+from .fees import Fee
 
 
 class Coupon(models.Model):
@@ -27,7 +29,7 @@ class Coupon(models.Model):
         ordering = ['event', 'id']
 
     def __str__(self) -> str:
-        return f'{self.code} ({self.value})'
+        return f'{self.code} (EUR {self.value})'
 
 
 class RegistrationManager(models.Manager):
@@ -41,11 +43,16 @@ class Registration(models.Model):
     """
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     event = models.ForeignKey('hipeac.Event', on_delete=models.CASCADE, related_name='registrations')
-    user = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL, related_name='registrations')
-    # days = models.ManyToManyField('hipeac.Day', related_name='registrations')
+    user = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE, related_name='registrations')
     sessions = models.ManyToManyField('hipeac.Session', related_name='registrations')
+    with_booth = models.BooleanField(default=False)
 
-    fee = models.ForeignKey('hipeac.Fee', null=True, on_delete=models.SET_NULL, related_name='registrations')
+    fee_type = models.CharField(max_length=8, default=Fee.REGULAR,
+                                choices=((Fee.REGULAR, 'Regular'), (Fee.STUDENT, 'Student')))
+    base_fee = models.PositiveSmallIntegerField(default=0, editable=False)
+    extra_fees = models.PositiveSmallIntegerField(default=0, editable=False)
+    paid = models.PositiveSmallIntegerField('Paid online', default=0)
+    paid_via_invoice = models.PositiveSmallIntegerField('Amount paid via invoice', default=0)
     saldo = models.IntegerField(default=0)
     coupon = models.OneToOneField(Coupon, null=True, blank=True, on_delete=models.SET_NULL)
     invoice_requested = models.BooleanField(default=False)
@@ -66,6 +73,21 @@ class Registration(models.Model):
         ordering = ('-created_at',)
         unique_together = ('event', 'user')
 
+    def save(self, *args, **kwargs):
+        """
+        `base_fee` is only calculated when the registration is created.
+        `extra_fees` are recalculated every time.
+        """
+        if self.fee_type == Fee.STUDENT:
+            fee_type = Fee.EARLY_STUDENT if self.event.is_early() else Fee.LATE_STUDENT
+        else:
+            fee_type = Fee.EARLY if self.event.is_early() else Fee.LATE
+
+        self.base_fee = self.event.fees_dict[fee_type]
+        self.extra_fees = self.event.fees_dict[Fee.BOOTH] if self.with_booth else 0
+        self.saldo = -self.remaining_fee
+        super().save(*args, **kwargs)
+
     def __str__(self) -> str:
         return f'{self.uuid} ({self.user})'
 
@@ -75,9 +97,27 @@ class Registration(models.Model):
     def get_absolute_url(self) -> str:
         return ''.join([self.event.get_absolute_url(), '#/registration/'])
 
+    def get_payment_url(self) -> str:
+        return reverse('registration_payment', args=[self.id])
+
+    def get_payment_result_url(self) -> str:
+        return reverse('registration_payment_result', args=[self.id])
+
+    def get_receipt_url(self) -> str:
+        return reverse('registration_receipt', args=[self.id])
+
     @property
     def is_paid(self) -> bool:
         return self.saldo >= 0
+
+    @property
+    def remaining_fee(self):
+        coupon_discount = self.coupon.value if self.coupon else 0
+        return self.total_fee - self.paid - self.paid_via_invoice - coupon_discount
+
+    @property
+    def total_fee(self):
+        return self.base_fee + self.extra_fees
 
 
 @receiver(post_save, sender=Registration)

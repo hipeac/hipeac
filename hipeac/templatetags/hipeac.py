@@ -26,6 +26,12 @@ def active(request, patterns):
 
 
 @register.filter
+def euro(value):
+    # http://publications.europa.eu/code/en/en-370303.htm
+    return mark_safe('<span class="nowrap">EUR %s</span>' % str('{0:,}'.format(value).replace(',', ' ')))
+
+
+@register.filter
 def join_json(json_string, separator=','):
     return mark_safe(separator.join(json.loads(json_string)))
 

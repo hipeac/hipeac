@@ -112,6 +112,11 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     def google_photos_url(self) -> str:
         self.get_link(Link.GOOGLE_PHOTOS)
 
+    def is_early(self) -> bool:
+        if not self.registration_early_deadline:
+            return False
+        return timezone.now() <= self.registration_early_deadline
+
     def is_active(self) -> bool:
         return self.start_date <= timezone.now().date() <= self.end_date
 
@@ -133,6 +138,12 @@ class Event(ImagesMixin, LinkMixin, models.Model):
             return f'CSW {season} {self.start_date.year}, {self.city}'
 
         return f'{self.city}, {self.start_date.strftime("%B %Y")}'
+
+    @property
+    def fees_dict(self):
+        if not hasattr(self, '_fees'):
+            self._fees = dict(self.fees.values_list('type', 'value'))
+        return self._fees
 
 
 @receiver(post_save, sender=Event)

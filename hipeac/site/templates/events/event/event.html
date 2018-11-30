@@ -147,6 +147,10 @@
                 emptySessions: function () {
                     if (!this.registration) return true;
                     return this.registration.sessions.length == 0;
+                },
+                isPaid: function () {
+                    if (!this.registration) return true;
+                    return this.registration.saldo >= 0;
                 }
             }),
             methods: {
@@ -178,6 +182,7 @@
                     if (this.registrationIsNew) {
                         ajax().post(this.endpoint, this.registration).done(function (res) {
                             self.registration = res;
+                            self.registrationIsNew = false;
                             EventHub.$emit('loading', false);
                         });
                     } else {

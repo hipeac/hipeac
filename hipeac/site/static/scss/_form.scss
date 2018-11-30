@@ -69,6 +69,7 @@ p.socialaccounts {
 }
 
 .big-checkbox {
+    input[type="radio"],
     input[type="checkbox"] {
         transform: scale(1.2);
         float: left;

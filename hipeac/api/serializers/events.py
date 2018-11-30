@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from hipeac.functions import truncate_md
 from hipeac.models import Event, Registration, Poster, Roadshow, Session, Break, Sponsor, Project, get_cached_metadata
-from .generic import LinkSerializer, MetadataField, MetadataFieldWithPosition, MetadataListField
+from .generic import LinkSerializer, MetadataFieldWithPosition, MetadataListField
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .users import UserPublicMiniSerializer, UserPublicListSerializer
@@ -43,21 +43,21 @@ class RegistrationListSerializer(serializers.ModelSerializer):
 
 class AuthRegistrationSerializer(WritableNestedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='v1:auth-registration-detail', read_only=True)
+    payment_href = serializers.URLField(source='get_payment_url', read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     posters = PosterSerializer(many=True)
 
     class Meta:
         model = Registration
-        exclude = ('user',)
+        exclude = ('user', 'paid', 'paid_via_invoice')
         write_only_fields = ('event',)
-        read_only_fields = ('fee', 'saldo', 'invoice_sent', 'visa_sent')
+        read_only_fields = ('base_fee', 'extra_fees', 'saldo', 'invoice_sent', 'visa_sent')
 
 
 class SessionNestedSerializer(WritableNestedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='v1:session-detail', read_only=True)
     href = serializers.CharField(source='get_absolute_url', read_only=True)
-    links = LinkSerializer(required=False, many=True, allow_null=True)
     session_type = MetadataFieldWithPosition()
 
     class Meta:
@@ -82,13 +82,14 @@ class SessionListSerializer(SessionNestedSerializer):
 
     def get_main_speaker(self, obj):
         if self.is_keynote(obj) and obj.main_speaker_id:
-            return UserPublicListSerializer(obj.main_speaker, context=self.context).data
+            return obj.main_speaker.profile.name
         return None
 
 
 class SessionSerializer(SessionListSerializer):
     event = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
     date = serializers.DateField(read_only=True)
+    links = LinkSerializer(required=False, many=True, allow_null=True)
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
     href = serializers.URLField(source='get_absolute_url', read_only=True)
     editor_href = serializers.URLField(source='get_editor_url', read_only=True)
@@ -120,9 +121,11 @@ class EventListSerializer(EventNestedSerializer):
 
 
 class EventSerializer(EventNestedSerializer):
+    fees = serializers.DictField(source='fees_dict', read_only=True)
     breaks = BreakSerializer(many=True, read_only=True)
     sessions = SessionListSerializer(many=True)
     sponsors = SponsorSerializer(many=True, read_only=True)
+    is_early = serializers.BooleanField(read_only=True)
 
 
 class RoadshowNestedSerializer(serializers.ModelSerializer):

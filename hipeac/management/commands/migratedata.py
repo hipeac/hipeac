@@ -829,6 +829,10 @@ class Command(BaseCommand):
                 event_id=reg.event_id,
                 user_id=reg.user_id,
                 invoice_requested=False,
+                base_fee=0,
+                extra_fees=0,
+                paid=0,
+                paid_via_invoice=0,
                 visa_requested=reg.with_visa,
                 created_at=tz.localize(reg.created_at, is_dst=None).astimezone(pytz.utc),
                 updated_at=tz.localize(reg.created_at, is_dst=None).astimezone(pytz.utc),
@@ -840,6 +844,11 @@ class Command(BaseCommand):
             r.invoice_requested = reg.with_invoice
             r.invoice_sent = reg.invoice_sent
             r.saldo = reg.saldo
+            r.with_booth = reg.with_booth
+            r.base_fee = reg.base_fee
+            r.extra_fees = reg.extra_fees
+            r.paid = reg.paid
+            r.paid_via_invoice = reg.paid_via_invoice
 
             try:
                 r.fee_id = fees_dict[(r.event_id, reg.base_fee)].id

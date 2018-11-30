@@ -6,11 +6,13 @@ class Fee(models.Model):
     """
     Coupons are used to pay or reduce registration fees.
     """
+    REGULAR = 'regular'
+    STUDENT = 'student'
     EARLY = 'early'
     LATE = 'late'
     EARLY_STUDENT = 'early_student'
     LATE_STUDENT = 'late_student'
-    BOOTH = 'late_student'
+    BOOTH = 'booth'
     TYPE_CHOICES = (
         (EARLY, 'Early'),
         (LATE, 'Late'),

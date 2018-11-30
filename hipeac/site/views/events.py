@@ -1,7 +1,15 @@
-from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
+from django.db import IntegrityError
+from django.template.defaultfilters import date as date_filter
+from django.utils.decorators import method_decorator
+from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
 
-from hipeac.models import Event, Roadshow
+from hipeac.models import Event, Roadshow, Registration, Coupon
+from hipeac.tools.payments.legacy import Ogone, process_ogone_parameters, OGONE_URL, OGONE_PSPID
+from hipeac.tools.pdf import PdfResponse, Pdf, H2020
 from .mixins import SlugMixin
 
 
@@ -50,3 +58,135 @@ class RoadshowDetail(SlugMixin, generic.DetailView):
         if not hasattr(self, 'object'):
             self.object = self.get_queryset().get(id=self.kwargs.get('pk'))
         return self.object
+
+
+class RegistrationPaymentView(generic.TemplateView):
+    """
+    Perform payments using `payment.ugent.be` or coupons.
+    """
+    template_name = 'events/event/payment/registration_payment_form.html'
+    registration = ''
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.registration = get_object_or_404(Registration, pk=kwargs.get('pk'))
+        if not request.user.is_superuser and not self.registration.user.id == request.user.id:
+            messages.error(request, 'You don\'t have the necessary permissions to view this page.')
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ogone_parameters = {
+            'PSPID': OGONE_PSPID,
+            'AMOUNT': self.registration.remaining_fee,
+            'ORDERID': self.registration.id,
+            'RESULTURL': self.registration.get_payment_result_url(),
+        }
+        context = super().get_context_data(**kwargs)
+        context['registration'] = self.registration
+        context['ogone_url'] = OGONE_URL
+        context['ogone_parameters'] = process_ogone_parameters(ogone_parameters, self.request.user)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Check if the selected coupon is valid and update registration.
+        """
+        try:
+            coupon = Coupon.objects.get(code=request.POST.get('coupon'))
+            self.registration.coupon = coupon
+            self.registration.save()
+            messages.success(request, 'Your coupon has been correctly applied.')
+        except Coupon.DoesNotExist:
+            messages.error(request, 'Please check your coupon code. We can\'t find the one you\'ve introduced.')
+        except IntegrityError:
+            messages.error(request, 'Sorry but the coupon you have introduced has already been used.')
+        except Exception as e:
+            messages.error(request, 'Error %s (%s)' % (e.message, type(e).__name__))
+        return redirect(self.registration.get_payment_url())
+
+
+class RegistrationPaymentResultView(generic.TemplateView):
+    """
+    Perform actions depending on the result of the payment process.
+    """
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        registration = get_object_or_404(Registration, pk=kwargs.get('pk'))
+        status = request.GET.get('STATUS')
+        # Success
+        if status in Ogone.SUCCESS_STATUSES:
+            # TODO: check parameters with SHA:
+            # https://payment-services.ingenico.com/int/en/ogone/support/guides/integration%20guides/e-commerce/transaction-feedback
+            registration.paid = registration.paid + int(request.GET.get('AMOUNT'))
+            registration.save()
+            messages.success(request, 'Your payment was succesful.')
+        # Exception
+        elif status in Ogone.EXCEPTION_STATUSES:
+            messages.warning(request, 'We will revise your payment and let you know when it is authorized.')
+        # Decline
+        elif status in Ogone.DECLINE_STATUSES:
+            messages.error(request, 'Your payment was declined.')
+        # Cancel
+        elif status in Ogone.CANCEL_STATUSES:
+            messages.warning(request, 'Your payment has been canceled.')
+        # ...and redirect
+        return redirect(registration.get_payment_url())
+
+
+class RegistrationReceiptPdfView(generic.DetailView):
+    model = Registration
+    queryset = Registration.objects.select_related('event', 'user__profile')
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Checks if the user has necessary privileges.
+        """
+        if not self.get_object().is_paid:
+            messages.error(request, 'Receipt can only be viewed once the registration has been paid.')
+            raise PermissionDenied
+        if not request.user.is_staff and not self.get_object().user.id == request.user.id:
+            messages.error(request, 'You don\'t have the necessary permissions to view this file.')
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        registration = self.get_object()
+        maker = JobsPdfMaker(registration=registration, filename=f'hipeac--{registration.id}.pdf', as_attachment=False)
+        return maker.response
+
+
+class JobsPdfMaker:
+
+    def __init__(self, *, registration, filename: str, as_attachment: bool = False):
+        self._response = PdfResponse(filename=filename, as_attachment=as_attachment)
+        self.registration = registration
+        self.make_pdf()
+
+    def make_pdf(self):
+        with Pdf() as pdf:
+            reg = self.registration
+            attended = 'attended' if reg.event.is_finished() else 'will attend'
+            institution = f' —{reg.user.profile.institution}—' if reg.user.profile.institution else ''
+
+            pdf.add_text(str(reg.event), 'h4')
+            pdf.add_text(f'Receipt (#{reg.id})', 'h1')
+            pdf.add_text('To Whom It May Concern,', 'p')
+            pdf.add_text(f'''On behalf of the European Network on High Performance and Embedded Architecture and
+Compilation (HiPEAC), funded under the {H2020}, I would hereby like to confirm that <strong>{reg.user.profile.name}
+{institution}</strong> {attended} the <strong>{reg.event}</strong> event in {reg.event.country.name}, between
+{date_filter(reg.event.start_date)} and {date_filter(reg.event.end_date)}.''', 'p')
+            pdf.add_text(f'''{reg.user.profile.name} registered for this event on {date_filter(reg.created_at)} and
+paid the registration fee of <strong>EUR {reg.total_fee}</strong>.''', 'p')
+            pdf.add_text(f'''More information about {reg.event} can be found on
+<strong>hipeac.net{reg.event.get_absolute_url()}</strong>.''', 'p')
+            pdf.add_text('Please do not hesitate to contact me for additional information.', 'p')
+            pdf.add_text('The coordinator,<br/>Koen De Bosschere', 'p')
+            pdf.add_page_break()
+
+            self._response.write(pdf.get())
+
+    @property
+    def response(self) -> PdfResponse:
+        return self._response

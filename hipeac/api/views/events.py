@@ -28,7 +28,7 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related('sponsors', 'sessions__links', 'sessions__projects')
+        self.queryset = self.queryset.prefetch_related('sponsors', 'sessions__session_type')
         return super().retrieve(request, *args, **kwargs)
 
     @action(

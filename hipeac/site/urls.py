@@ -50,6 +50,11 @@ urlpatterns = [
     path('csw/<int:year>/<slug:slug>/', views.EventDetail.as_view(), name='csw'),
     path('events/ec/<int:pk>/', views.EventDetail.as_view(), name='ec_meeting'),
     re_path(r'^events/roadshow/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.RoadshowDetail.as_view(), name='roadshow'),
+    path('registration/payment/<int:pk>/result/', never_cache(views.RegistrationPaymentResultView.as_view()),
+         name='registration_payment_result'),
+    path('registration/payment/<int:pk>/', never_cache(views.RegistrationPaymentView.as_view()),
+         name='registration_payment'),
+    path('registration/receipt/<int:pk>/', views.RegistrationReceiptPdfView.as_view(), name='registration_receipt'),
     # Editor
     path('editor/new/<slug:model>/', never_cache(views.EditorCreateView.as_view()), name='editor_create'),
     path('editor/<int:ct>/<int:pk>/', never_cache(views.EditorView.as_view()), name='editor'),
