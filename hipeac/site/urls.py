@@ -25,6 +25,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='flatpages/homepage.html'), name='homepage'),
     path('jobs/', flatpage, {'url': '/jobs/'}, name='jobs'),
     path('jobs/feed/', views.JobsFeed(), name='jobs_feed'),
+    path('jobs/management/', flatpage, {'url': '/jobs/'}, name='jobs_management'),
     path('jobs/<int:pk>.pdf', views.JobsPdf.as_view(), name='job_pdf'),
     path('e/<int:job_id>/<int:value>/', views.JobEvaluationRedirect.as_view(), name='job_evaluation'),
     path('j<int:pk>', views.JobRedirect.as_view(), name='job_redirect'),

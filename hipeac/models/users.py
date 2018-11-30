@@ -128,6 +128,9 @@ class Profile(ImagesMixin, models.Model):
 
         return f'https://www.gravatar.com/avatar/{email_hash}?s={size}&d=retro&r=PG'
 
+    def is_steering_member(self) -> bool:
+        return self.user.groups.filter(name='Steering Committee').exists()
+
 
 @receiver(post_save, sender=Profile)
 def post_save_profile(sender, instance, created, **kwargs):
