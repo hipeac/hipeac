@@ -74,6 +74,17 @@ class MetadataField(RelatedField):
         }
 
 
+class MetadataFieldWithPosition(MetadataField):
+
+    def to_representation(self, obj):
+        metadata = get_cached_metadata()[getattr(obj, self.pk_field)]
+        return {
+            'id': metadata.id,
+            'value': metadata.value,
+            'position': metadata.position
+        }
+
+
 class MetadataNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Metadata

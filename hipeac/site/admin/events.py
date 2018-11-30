@@ -91,16 +91,18 @@ class SessionAdmin(admin.ModelAdmin):
     date_hierarchy = 'date'
     list_display = ('id', 'title', 'date', 'start_at', 'end_at', 'session_type')
     list_filter = ('session_type', 'event')
+    search_fields = ('title',)
 
     autocomplete_fields = ('projects',)
     radio_fields = {'session_type': admin.VERTICAL}
+    raw_id_fields = ('main_speaker',)
     inlines = [LinksInline, PermissionsInline]
     fieldsets = (
         (None, {
             'fields': (('date', 'start_at', 'end_at'), 'session_type', 'title', 'is_private'),
         }),
         ('INFO', {
-            'fields': ('summary', 'projects'),
+            'fields': ('main_speaker', 'summary', 'projects', 'organizers'),
         }),
         ('METADATA', {
             'classes': ('collapse',),

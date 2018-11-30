@@ -3,16 +3,6 @@
     -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
 
-    @media (max-width: $small-breakpoint) {
-        overflow-y: scroll;
-        margin: 0 -15px;
-        padding: 0 15px;
-
-        .nav-item:last-child {
-            padding-right: 15px;
-        }
-    }
-
     .nav-link {
         font-size: 0.85rem;
 
@@ -45,6 +35,16 @@
 
 .hipeac.subheader {
     .nav-tabs {
+        @media (max-width: $small-breakpoint) {
+            overflow-y: scroll;
+            margin: 0 -15px;
+            padding: 0 15px;
+
+            .nav-item:last-child {
+                padding-right: 15px;
+            }
+        }
+
         .nav-link {
             color: white;
             border: 0;

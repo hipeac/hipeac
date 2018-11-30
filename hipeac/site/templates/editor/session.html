@@ -12,12 +12,15 @@
     <script type="text/x-template" id="v-editor">
         <div v-if="obj" class="hipeac-card">
             <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
-            <display-sm>Please update the session's information.</display-sm>
+            <display-sm>Please update the session's information. <a href="mailto:webmaster@hipeac.net">Contact us</a> if you would like to give access to this form to other organizers.</display-sm>
             <form class="mt-4">
                 <custom-input v-model.trim="obj.title" type="text" field="title"></custom-input>
-                <markdown-textarea v-model.trim="obj.summary" field="summary"></markdown-textarea>
+                <markdown-textarea v-model.trim="obj.summary" field="summary" :rows="5"></markdown-textarea>
+                <markdown-textarea v-model.trim="obj.program" field="program"></markdown-textarea>
+                <markdown-textarea v-model.trim="obj.organizers" field="organizers" :rows="3"></markdown-textarea>
                 <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
                 <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
+                <autocomplete-popup v-model="obj.projects" type="project" field="projects" customLabel="EU projects involved" :hideRequired="true"></autocomplete-popup>
                 <link-fieldset v-model="obj.links" field="links"></link-fieldset>
             </form>
             <hr class="my-4">
@@ -37,6 +40,16 @@
                     </div>
                 </div>
                 <marked :text="obj.summary"></marked>
+                <div v-if="obj.program">
+                    <hr>
+                    <h5 class="display-sm mb-3">Program</h5>
+                    <marked :text="obj.program"></marked>
+                </div>
+                <div v-if="obj.organizers">
+                    <hr>
+                    <h5 class="display-sm mb-3">Organizers</h5>
+                    <marked :text="obj.organizers"></marked>
+                </div>
             </div>
         </div>
     </script>

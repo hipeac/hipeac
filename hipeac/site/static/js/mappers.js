@@ -164,9 +164,13 @@ function mapper() {
             return items.map(function (obj) {
                 obj.startAt = obj.start_at.substring(0, 5);
                 obj.endAt = obj.end_at.substring(0, 5);
+                obj.applicationAreaIds = _.pluck(obj.application_areas, 'id');
+                obj.topicIds = _.pluck(obj.topics, 'id');
                 obj.q = [
                     getMetadataString(obj),
-                    obj.title
+                    obj.title,
+                    obj.session_type.value,
+                    (obj.main_speaker) ? obj.main_speaker.profile.name : '',
                 ].join(' ').toLowerCase();
                 return obj;
             });

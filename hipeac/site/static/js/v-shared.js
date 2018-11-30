@@ -199,9 +199,11 @@ Vue.component('editor-link', {
     '',
     created: function () {
         var self = this;
-        ajax().head(this.url).then(function (res, statusText, request) {
-            if (request.status == 200) self.show = true;
-        });
+        if (USER_IS_AUTHENTICATED) {
+            ajax().head(this.url).then(function (res, statusText, request) {
+                if (request.status == 200) self.show = true;
+            });
+        }
     }
 });
 

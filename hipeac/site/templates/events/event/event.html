@@ -14,15 +14,20 @@
         <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
     </li>
     <li class="nav-item">
-        <a is="router-link" :to="{name: 'schedule'}" class="nav-link">Programme</a>
+        <a is="router-link" :to="{name: 'schedule'}" class="nav-link">Schedule</a>
     </li>
     <li class="nav-item">
         <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
     </li>
+    {% if not event.is_finished %}
+        <li class="nav-item" v-if="jobs.length">
+            <a is="router-link" :to="{name: 'jobs'}" class="nav-link">Recruitment</a>
+        </li>
+    {% endif %}
     {% if user.is_authenticated %}
-        <!--<li v-if="user.isRegistered" class="nav-item" v-cloak>
+        <li v-if="user.isRegistered" class="nav-item" v-cloak>
             <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
-        </li>-->
+        </li>
         <li class="nav-item">
             <a is="router-link" :to="{name: 'registration'}" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>
         </li>
@@ -30,14 +35,14 @@
     {% if event.hashtag %}
         <li class="nav-item">
             <a href="https://twitter.com/search?q=%23{{ event.hashtag }}" class="nav-link" target="_blank">
-                <span is="twitter-icon"></span>
+                <span is="twitter-icon" v-tooltip="'#{{ event.hashtag }}'"></span>
             </a>
         </li>
     {% endif %}
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" class="container">
+    <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" class="container">
         <!--<div v-cloak v-if="$route.name == 'venue'" class="row">
             <div class="col-12" v-if="event && event.google_mid">
                 <div class="hipeac-card">
@@ -48,13 +53,13 @@
             </div>
         </div>-->
         <div is="router-view"></div>
-        <div is="router-view" name="modal"></div>
     </div>
 {% endblock %}
 
 {% block vue_templates %}
     {% include './v-about.html' with id='v-about' %}
     {% include './v-attendees.html' with id='v-attendees' %}
+    {% include './v-jobs.html' with id='v-jobs' hashtag=event.hashtag %}
     {% include './v-registration.html' with id='v-registration' %}
     {% include './v-schedule.html' with id='v-schedule' %}
     {% include './v-session.html' with id='v-session' %}
@@ -72,6 +77,7 @@
                     isRegistered: false
                 },
                 event: null,
+                jobs: [],
                 registrations: []
             },
             mutations: {
@@ -82,6 +88,11 @@
                             ? (obj.links.google_maps.match(/id=([^&]+)/)[1] || null)
                             : null;
                         state.event = obj;
+                    });
+                },
+                fetchJobs: function (state) {
+                    ajax().get($('#urls').data('jobs-url')).done(function (res) {
+                        state.jobs = mapper().jobs(res);
                     });
                 },
                 fetchRegistrations: function (state) {
@@ -105,6 +116,16 @@
             template: '#v-attendees',
             computed: _.extend(
                 Vuex.mapState(['event', 'registrations']), {
+            })
+        };
+
+        var JobsView = {
+            template: '#v-jobs',
+            computed: _.extend(
+                Vuex.mapState(['jobs']), {
+                ids: function () {
+                    return _.pluck(this.jobs, 'id');
+                }
             })
         };
 
@@ -185,6 +206,78 @@
             })
         };
 
+        var ScheduleMainView = {
+            template: '#v-schedule-main',
+            data: function () {
+                return {
+                    q: '',
+                    filters: {
+                        applicationAreas: [],
+                        topics: [],
+                        sessionTypes: []
+                    }
+                }
+            },
+            computed: _.extend(
+                Vuex.mapState(['event']), {
+                filteredSessionIds: function () {
+                    if (!this.event) return [];
+                    var filters = this.filters;
+                    var filteredItems = filterIntersection(filters.topics, this.event.sessions, 'topicIds');
+                    filteredItems = filterIntersection(filters.applicationAreas, filteredItems, 'applicationAreaIds');
+                    if (filters.sessionTypes.length > 0) {
+                        console.log(filters.sessionTypes);
+                        filteredItems = _.filter(filteredItems, function (obj) {
+                            return _.contains(filters.sessionTypes, obj.session_type.id);
+                        });
+                    }
+                    return _.pluck(filterMultiple(filteredItems, this.q), 'id');
+                },
+                applicationAreas: function () {
+                    if (!this.event) return [];
+                    return extractMetadata(this.event.sessions, 'application_areas');
+                },
+                sessionTypes: function () {
+                    if (!this.event) return [];
+                    return _.toArray(
+                        _.indexBy(_.pluck(this.event.sessions, 'session_type'), 'id')
+                    ).sort(function (a, b) {
+                        return sort().int(a.position, b.position);
+                    });
+                },
+                topics: function () {
+                    if (!this.event) return [];
+                    return extractMetadata(this.event.sessions, 'topics');
+                }
+            }),
+            methods: {
+                updateQuery: function (val) {
+                    this.q = val;
+                },
+                resetFilters: function () {
+                    this.filters.applicationAreas = [];
+                    this.filters.topics = [];
+                    this.filters.sessionTypes = [];
+                }
+            },
+            created: function () {
+                EventHub.$on('query-changed', this.updateQuery);
+            }
+        };
+
+        var ScheduleKeynotesView = {
+            template: '#v-schedule-keynotes',
+            computed: _.extend(
+                Vuex.mapState(['event']), {
+                keynotes: function () {
+                    if (!this.event) return [];
+                    return _.filter(this.event.sessions, function (obj) {
+                        return obj.session_type.value == 'Keynote';
+                    });
+                }
+            })
+        };
+
         var SessionModalView = {
             template: '#v-session',
             data: function () {
@@ -216,7 +309,7 @@
                     }).modal('show');
                 });
             },
-            beforeRouteLeave (to, from, next) {
+            beforeRouteLeave: function (to, from, next) {
                 next();
                 var modal = $(this.$refs['modal']);
                 setTimeout(function () {
@@ -251,28 +344,47 @@
                     component: AttendeesView
                 },
                 {
+                    name: 'jobs',
+                    path: '/recruitment/',
+                    pathToRegexpOptions: {strict: true},
+                    component: JobsView
+                },
+                {
                     name: 'registration',
                     path: '/registration/',
                     pathToRegexpOptions: {strict: true},
                     component: RegistrationView
                 },
                 {
-                    name: 'schedule',
-                    path: '/programme/',
+                    path: '/schedule/',
                     pathToRegexpOptions: {strict: true},
-                    component: ScheduleView
-                },
-                {
-                    name: 'session',
-                    path: '/programme/:sessionId/',
-                    pathToRegexpOptions: {strict: true},
-                    components: {
-                        default: ScheduleView,
-                        modal: SessionModalView
-                    },
-                    props: {
-                        modal: true
-                    }
+                    component: ScheduleView,
+                    children: [
+                        {
+                            name: 'schedule',
+                            path: '',
+                            pathToRegexpOptions: {strict: true},
+                            component: ScheduleMainView
+                        },
+                        {
+                            name: 'keynotes',
+                            path: 'keynotes/',
+                            pathToRegexpOptions: {strict: true},
+                            component: ScheduleKeynotesView
+                        },
+                        {
+                            name: 'session',
+                            path: 'sessions/:sessionId/',
+                            pathToRegexpOptions: {strict: true},
+                            components: {
+                                default: ScheduleMainView,
+                                modal: SessionModalView
+                            },
+                            props: {
+                                modal: true
+                            }
+                        }
+                    ]
                 },
                 {
                     name: 'venue',
@@ -288,12 +400,13 @@
             store: Store,
             router: Router,
             computed: _.extend(
-                Vuex.mapState(['user', 'event']), {
+                Vuex.mapState(['user', 'event', 'jobs']), {
             }),
             created: function () {
                 $.when(
                     this.$store.commit('fetchEvent'),
-                    this.$store.commit('fetchRegistrations')
+                    this.$store.commit('fetchRegistrations'),
+                    this.$store.commit('fetchJobs')
                 );
             }
         });

@@ -1,15 +1,17 @@
 from django.db import IntegrityError
+from django.db.models import Q
 from django.views.decorators.cache import never_cache
 from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import Event, Roadshow, Session, Registration
+from hipeac.models import Job, Event, Roadshow, Session, Registration
 from ..permissions import HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
 from ..serializers import (
     ArticleListSerializer,
     EventListSerializer, EventSerializer,
+    JobNestedSerializer,
     RegistrationListSerializer, AuthRegistrationSerializer,
     RoadshowListSerializer, RoadshowSerializer,
     SessionListSerializer, SessionSerializer
@@ -41,6 +43,23 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     @action(
         detail=True,
         pagination_class=None,
+        serializer_class=JobNestedSerializer,
+    )
+    def jobs(self, request, *args, **kwargs):
+        sponsors = self.get_object().sponsors.values_list('institution_id', 'project_id')
+        if sponsors:
+            a, b = map(list, zip(*sponsors))
+            institution_ids, project_ids = list(filter(None, a)), list(filter(None, b))
+            self.queryset = Job.objects.active().filter(
+                (Q(institution__in=institution_ids) | Q(project__in=project_ids)),
+            )
+        else:
+            self.queryset = Job.objects.none()
+        return super().list(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        pagination_class=None,
         permission_classes=(HasRegistrationForEvent,),
         serializer_class=RegistrationListSerializer,
     )
@@ -64,7 +83,7 @@ class RoadshowViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
 
 class SessionViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Session.objects.prefetch_related('projects')
+    queryset = Session.objects.prefetch_related('session_type', 'projects')
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = SessionSerializer
 

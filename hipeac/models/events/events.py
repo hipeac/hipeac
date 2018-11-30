@@ -115,6 +115,9 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     def is_active(self) -> bool:
         return self.start_date <= timezone.now().date() <= self.end_date
 
+    def is_finished(self) -> bool:
+        return self.end_date < timezone.now().date()
+
     def is_open_for_registration(self) -> bool:
         now = timezone.now()
         return self.registration_start_date <= now.date() and now <= self.registration_deadline

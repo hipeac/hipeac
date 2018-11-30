@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import validate_comma_separated_integer_list
@@ -21,7 +22,11 @@ class Session(LinkMixin, models.Model):
     start_at = models.TimeField(null=True, blank=True)
     end_at = models.TimeField(null=True, blank=True)
     title = models.CharField(max_length=250)
+    organizers = models.TextField(null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
+    program = models.TextField(null=True, blank=True)
+    main_speaker = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL,
+                                     related_name='talks')
 
     max_attendees = models.PositiveSmallIntegerField(default=0, help_text='Leave on `0` for non limiting.')
     extra_attendees_fee = models.PositiveSmallIntegerField(default=0)
@@ -38,7 +43,6 @@ class Session(LinkMixin, models.Model):
     class Meta:
         indexes = [
             models.Index(fields=['event', 'date']),
-            # models.Index(fields=['conference', 'track']),
         ]
         ordering = ['date', 'start_at', 'end_at']
 
@@ -49,10 +53,13 @@ class Session(LinkMixin, models.Model):
         return self.title
 
     def can_be_managed_by(self, user) -> bool:
-        return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+        return (
+            self.main_speaker_id == user.id or
+            self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+        )
 
     def get_absolute_url(self) -> str:
-        return ''.join([self.event.get_absolute_url(), '#/programme/', str(self.id), '/'])
+        return ''.join([self.event.get_absolute_url(), f'#/schedule/sessions/{self.id}/'])
 
     def get_editor_url(self) -> str:
         content_type = ContentType.objects.get_for_model(self)

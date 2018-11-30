@@ -18,7 +18,7 @@ from hipeac.models import (
     Image, Link, Metadata, Permission,
     Institution, Project, Profile,
     Job, JobEvaluation,
-    Event, Session, Coupon, Fee, Registration, Poster,
+    Event, Session, Coupon, Fee, Registration, Poster, Sponsor,
     Roadshow,
     Article, Clipping, Quote, Magazine, Vision
 )
@@ -651,6 +651,12 @@ class Command(BaseCommand):
         Event.objects.bulk_create(bulk_events, batch_size=1000)
         self.out('success', f'✔ Events migrated! ({len(bulk_events)} records)')
 
+        # Presenters
+
+        presenters = {}
+        for p in session.query(Base.classes.events_activity_presenters).all():
+            presenters[p.activity_id] = p.user_id
+
         # Sessions
 
         event_urls = {e.id: e.get_absolute_url() for e in Event.objects.all()}
@@ -684,8 +690,10 @@ class Command(BaseCommand):
                 date=s.date if s.date else '2016-04-27',
                 start_at=s.start_at,
                 end_at=s.end_at,
-                title=s.title.strip(),
+                title=f'{s.acronym}: {s.title}'.strip() if s.acronym else s.title.strip(),
                 summary=s.description,
+                program=s.program,
+                main_speaker_id=presenters[s.id] if s.id in presenters else None,
                 max_attendees=s.max_attendants,
                 extra_attendees_fee=s.extra_price,
                 is_private=s.is_private,
@@ -712,7 +720,7 @@ class Command(BaseCommand):
             bulk_redirects.append(Redirect(
                 site_id=1,
                 old_path=f'/events/activities/{s.id}/{s.slug}/',
-                new_path=f'{event_urls[s.event_id]}#/programme/{s.id}/',
+                new_path=f'{event_urls[s.event_id]}#/schedule/sessions/{s.id}/',
             ))
 
         for org in session.query(Base.classes.events_activity_organizers).all():
@@ -725,6 +733,31 @@ class Command(BaseCommand):
 
         Session.objects.bulk_create(bulk_sessions, batch_size=1000)
         self.out('success', f'✔ Sessions migrated! ({len(bulk_sessions)} records)')
+
+        # Sponsors
+
+        self.out('std', 'Migrating sponsors...')
+        bulk_sponsors = []
+
+        sponsorship_types = {
+            'A': Sponsor.GOLD,
+            'B': Sponsor.SILVER,
+            'C': Sponsor.BRONZE,
+            'Z': Sponsor.ACADEMIC,
+        }
+
+        for spon in session.query(Base.classes.events_sponsor).all():
+            bulk_sponsors.append(Sponsor(
+                id=spon.id,
+                event_id=spon.event_id,
+                institution_id=spon.institution_id,
+                project_id=spon.project_id,
+                amount=spon.amount,
+                sponsorship_type=sponsorship_types[spon.sponsorship_type],
+            ))
+
+        Sponsor.objects.bulk_create(bulk_sponsors, batch_size=1000)
+        self.out('success', f'✔ Sponsors migrated! ({len(bulk_sponsors)} records)')
 
         # Coupons
 

@@ -65,13 +65,14 @@
                             </tfoot>
                         </table>
                         <display-sm class="mt-5 mb-3">Choose sessions</display-sm>
-                        <small v-if="emptySessions" class="d-block text-danger mb-2">Please choose at list one session to attend.</small>
+                        <small v-if="emptySessions" class="d-block text-danger mb-2">Please choose at least one session to attend.</small>
                         <table class="table table-sm">
                             <tbody>
                                 <tr v-for="session in event.sessions" :key="session.id">
                                     <td class="big-checkbox">
                                         <label>
                                             <input type="checkbox" v-model="registration.sessions" :value="session.id">
+                                            <span class="badge badge-light mr-2">{{ session.session_type.value }}</span>
                                             <span>{{ session.title }}</span>
                                         </label>
                                     </td>

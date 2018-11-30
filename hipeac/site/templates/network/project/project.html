@@ -40,8 +40,7 @@
                             <h2 class="display-sm mb-3">Coordinator</h2>
                             <div class="media mb-3">
                                 <div class="media-body">
-                                    <strong>{{ project.coordinator.profile }}</strong><br>
-                                    <span>Lorem ipsum.</span>
+                                    <strong>{{ project.coordinator.profile.name }}</strong><br>
                                     {% if project.coordinating_institution.images %}
                                         <a href="{{ project.coordinating_institution.get_absolute_url }}" class="inherit">
                                             <img src="{{ project.coordinating_institution.images.sm }}" class="d-block logo-sm">

@@ -9,7 +9,7 @@ var FormElement = Vue.extend({
             mutableHelpText: null,
         }
     },
-    props: ['field', 'value', 'default', 'help', 'customLabel'],
+    props: ['field', 'value', 'default', 'help', 'customLabel', 'hideRequired'],
     computed: _.extend(
         Vuex.mapGetters(['fields']), {
         f: function () {
@@ -19,7 +19,7 @@ var FormElement = Vue.extend({
             else return this.fields[parts[0]];
         },
         label: function () {
-            if (!this.f) return this.customLabel;
+            if (!this.f) return this.customLabel || '';
             return this.customLabel || this.f.label;
         },
         helpText: function () {
@@ -27,7 +27,7 @@ var FormElement = Vue.extend({
             return (_.has(this.f, 'help_text')) ? [this.f.help_text, this.help].join('. ') : this.help;
         },
         required: function () {
-            if (!this.f) return false;
+            if (!this.f || this.hideRequired) return false;
             return this.f.required;
         }
     }),

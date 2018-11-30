@@ -4,7 +4,7 @@ from django.urls import reverse
 from model_mommy import mommy
 from rest_framework import status
 
-from hipeac.models import Permission
+from hipeac.models import Metadata, Permission
 from .generic import UserMixin
 
 
@@ -55,8 +55,10 @@ class TestForAdministrator(TestForAuthenticated):
     @pytest.fixture(autouse=True)
     def setup_test_data(self, db, now):
         if not self.test_data:
+            session_type = mommy.make_recipe('hipeac.session_type')
             self.test_data = {
                 'title': 'Session title',
+                'session_type': {'id': session_type.id},
                 'application_areas': [],
                 'topics': [],
                 'projects': [],

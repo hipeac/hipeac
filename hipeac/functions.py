@@ -1,4 +1,5 @@
 from celery.execute import send_task as celery_send_task
+from commonmark import Parser
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
@@ -9,7 +10,7 @@ def get_absolute_uri() -> str:
     return protocol + Site.objects.get_current().domain
 
 
-def get_images_path(instance, filename):
+def get_images_path(instance, filename: str) -> str:
     content_type = ContentType.objects.get_for_model(instance)
     extension = filename.rsplit('.', 1)[1]
     return ''.join(['public/images/', str(content_type.id), '/', str(instance.id), '.', extension])
@@ -86,3 +87,16 @@ def get_h2020_associated_countries():
 def send_task(*args, **kwargs):
     if not settings.TEST:
         celery_send_task(*args, **kwargs)
+
+
+def truncate_md(markdown_string: str, *, limit: int = 200) -> str:
+    walker = Parser().parse(markdown_string).walker()
+    event = walker.nxt()
+    buf = ''
+
+    while event is not None:
+        if event['node'].t == 'text':
+            buf += event['node'].literal
+        event = walker.nxt()
+
+    return f'{buf[:limit]}...'
