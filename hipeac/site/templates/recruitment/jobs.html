@@ -175,17 +175,8 @@
                 },
                 filteredIds: function () {
                     var filters = this.filters;
-                    var filteredItems = (!filters.topics.length)
-                        ? this.sortedJobs
-                        : this.sortedJobs.filter(function (obj) {
-                            return _.intersection(filters.topics, obj.topicIds).length > 0;
-                        });
-
-                    filteredItems = (!filters.careerLevels.length)
-                        ? filteredItems
-                        : filteredItems.filter(function (obj) {
-                            return _.intersection(filters.careerLevels, obj.careerLevelIds).length > 0;
-                        });
+                    var filteredItems = filterIntersection(filters.topics, this.sortedJobs, 'topicIds');
+                    filteredItems = filterIntersection(filters.careerLevels, filteredItems, 'careerLevelIds');
 
                     if (filters.internshipsOnly) {
                         filteredItems = filteredItems.filter(function (obj) {

@@ -108,13 +108,7 @@
             computed: _.extend(
                 Vuex.mapState(['videos']), {
                 filteredIds: function () {
-                    var filters = this.filters;
-                    var filteredItems = (!filters.topics.length)
-                        ? this.videos
-                        : this.videos.filter(function (obj) {
-                            return _.intersection(filters.topics, obj.topicIds).length > 0;
-                        });
-
+                    var filteredItems = filterIntersection(this.filters.topics, this.videos, 'topicIds');
                     return _.pluck(filterMultiple(filteredItems, this.q), 'id');
                 },
                 topics: function () {

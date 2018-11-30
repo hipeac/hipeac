@@ -7,6 +7,14 @@ function isSmallDevice() {
     return $(window).width() < 768;
 }
 
+function filterIntersection(filterIds, items, attr) {
+    return (!filterIds.length)
+        ? items
+        : items.filter(function (obj) {
+            return _.intersection(filterIds, obj[attr]).length > 0;
+        });
+}
+
 function filterMultiple(data, q, separator) {
     if (q == '') return data;
     var queries = q.toLowerCase().split(separator || ' ');
