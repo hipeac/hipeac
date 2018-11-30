@@ -4,9 +4,16 @@ from django.urls import path
 from django.utils import timezone
 
 from hipeac.forms import ApplicationAreasChoiceField, JobPositionChoiceField, TopicsChoiceField
-from hipeac.models import Metadata, Job
+from hipeac.models import Job
 from hipeac.site.views import JobsPdfMaker
-from .generic import HideDeleteActionMixin, LinksInline, PermissionsInline
+from hipeac.tools.csv import ModelCsvWriter
+from .generic import HideDeleteActionMixin, LinksInline
+
+
+class JobCsvWriter(ModelCsvWriter):
+    model = Job
+    exclude = ('description', 'links', 'jobevaluation')
+    metadata_fields = ('application_areas', 'career_levels', 'topics')
 
 
 class JobAdminForm(ModelForm):
@@ -67,6 +74,5 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     select_export_pdf.short_description = ('[PDF] Generate printable document for selected jobs')
 
     def select_export_csv(self, request, queryset):
-        pass
-        # return csv_jobs(queryset)
+        return JobCsvWriter(filename='hipeac-jobs.csv', queryset=queryset).response
     select_export_csv.short_description = '[CSV] Export detailed data for selected jobs'

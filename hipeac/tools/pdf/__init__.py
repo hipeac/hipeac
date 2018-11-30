@@ -114,6 +114,7 @@ class Pdf:
 
 
 class PdfResponse(HttpResponse):
+
     def __init__(self, *args, as_attachment: bool = False, filename: str = '', **kwargs):
         self.as_attachment = as_attachment
         self.filename = filename
