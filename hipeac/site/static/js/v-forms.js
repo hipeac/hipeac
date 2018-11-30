@@ -422,7 +422,7 @@ Vue.component('autocomplete-popup', AucompletePopupElement.extend({
                                 '<small>{{ filteredItems.length }} matches for "{{ q }}"</small>' +
                             '</strong>' +
                             '<div v-if="!q || filteredItems.length == 0" class="text-center">'+
-                                '<hr v-show="q"><catchphrase class="mb-4"><a href="mailto:webmaster@hipeac.net">Contact us</a> if you cannot find your {{ type }} in our list. We will add it to the website as soon as possible.</catchphrase>' +
+                                '<hr v-show="q"><catchphrase class="mb-4"><a href="mailto:missing@hipeac.net">Contact us</a> if you cannot find your {{ type }} in our list. We will add it to the website as soon as possible.</catchphrase>' +
                             '</div>' +
                             '<table class="table table-sm pointer table-hover">' +
                                 '<tr v-for="item in filteredItems" :key="item.id" v-show="values.indexOf(item.id) == -1" @click="add(item.id)">' +
