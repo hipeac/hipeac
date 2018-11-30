@@ -120,6 +120,17 @@ Vue.component('marked', {
     }
 });
 
+Vue.directive('tooltip', function (el, binding) {
+    var val = binding.value;
+
+    $(el).tooltip({
+        title: (val) ? val : '',
+        placement: 'bottom',
+        trigger: 'hover',
+        delay: {show: 400, hide: 0}
+    });
+});
+
 Vue.component('loading', {
     data: function () {
         return {
