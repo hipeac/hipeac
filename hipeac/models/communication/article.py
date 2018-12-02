@@ -41,7 +41,7 @@ class Article(UrlMixin, models.Model):
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='articles')
     institutions = models.ManyToManyField('hipeac.Institution', blank=True, related_name='articles')
 
-    created_at = models.DateTimeField()  # TODO: auto_now_add=True
+    created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL,
                                    related_name='authored_articles')
 
