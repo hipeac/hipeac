@@ -29,10 +29,32 @@ class ClippingAdmin(admin.ModelAdmin):
         return mark_safe(f'<a target="_blank" href="{obj.url}">{obj.media}</a>')
 
 
+class MagazineAdminForm(ModelForm):
+    application_areas = ApplicationAreasChoiceField()
+    topics = TopicsChoiceField()
+
+
 @admin.register(Magazine)
 class MagazineAdmin(admin.ModelAdmin):
+    form = MagazineAdminForm
+
     date_hierarchy = 'publication_date'
     list_display = ('id', 'title', 'publication_date')
+
+    raw_id_fields = ('users', 'projects')
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'publication_date', 'issuu_url', 'file', 'file_tablet',),
+        }),
+        ('RELATIONS', {
+            'classes': ('collapse',),
+            'fields': ('users', 'projects'),
+        }),
+        ('METADATA', {
+            'classes': ('collapse',),
+            'fields': ('application_areas', 'topics'),
+        }),
+    )
 
 
 @admin.register(Quote)
@@ -68,6 +90,7 @@ class VideoAdmin(admin.ModelAdmin):
             'fields': ('title', 'publication_date', 'youtube_id', 'is_expert'),
         }),
         ('RELATIONS', {
+            'classes': ('collapse',),
             'fields': ('user', 'project'),
         }),
         ('METADATA', {
