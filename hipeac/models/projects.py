@@ -50,7 +50,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     links = GenericRelation('hipeac.Link')
 
     keywords = models.TextField(null=True, blank=True, editable=False)
-    updated_at = models.DateTimeField()  # auto_now=True
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['acronym']

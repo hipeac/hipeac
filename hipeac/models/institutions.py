@@ -52,7 +52,7 @@ class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     acl = GenericRelation('hipeac.Permission')
     links = GenericRelation('hipeac.Link')
 
-    updated_at = models.DateTimeField()  # auto_now=True
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['name']

@@ -18,7 +18,7 @@ class Coupon(models.Model):
     value = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1)])
     notes = models.CharField(max_length=190, null=True, blank=True)
 
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         indexes = [
