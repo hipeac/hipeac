@@ -26,9 +26,11 @@
                 <div class="hipeac-card">
                     <div class="row">
                         <div class="col-12 col-md-8 pr-md-5">
-                            <div class="marked">
-                                {{ institution.description | markdown }}
-                            </div>
+                            {% if institution.description %}
+                                <div class="marked">
+                                    {{ institution.description | markdown }}
+                                </div>
+                            {% endif %}
                             {% if institution.parent %}
                                 <h5>Parent institution</h5>
                                 <a href="{{ institution.parent.get_absolute_url }}">{{ institution.parent }}</a>

@@ -1,16 +1,17 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views import generic
+
+from hipeac.models import Profile
 
 
 class UserProfile(generic.DetailView):
     """
     Displays a User profile.
     """
-    model = get_user_model()
-    context_object_name = 'the_user'
-    slug_field = 'username'
+    model = Profile
+    context_object_name = 'profile'
+    slug_field = 'user__username'
     template_name = 'users/profile.html'
 
     def get_queryset(self):

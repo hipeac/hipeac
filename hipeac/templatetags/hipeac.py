@@ -1,11 +1,11 @@
 import json
-import lxml.html
 
 from commonmark import commonmark as marked
 from django import template
 from django.template.base import Node
 from django.utils.safestring import mark_safe
 
+from hipeac.functions import truncate_md
 from hipeac.models import get_cached_metadata
 
 
@@ -90,15 +90,7 @@ def truncate(text, limit=300, smart=True):
     if not text:
         return ''
 
-    html = marked(text)
-    text = ''.join(lxml.html.fromstring(html).xpath('//p')[0].text_content())
-    text = ' '.join(text.split())
-
-    if len(text) <= limit:
-        return text
-
-    limit = limit - 3
-    text = text[:limit]
+    text = truncate_md(text, limit=limit)
 
     if smart:
         words = text.split(' ')[:-1]

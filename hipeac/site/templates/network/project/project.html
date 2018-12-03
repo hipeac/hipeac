@@ -30,9 +30,11 @@
                     <div class="row">
                         <div class="col-12 col-md-8 pr-md-5">
                             <h2 class="display-lg text-light-weight mb-4"><strong>{{ project.acronym }}</strong>: {{ project.name }}</h2>
-                            <div class="marked">
-                                {{ project.description | markdown }}
-                            </div>
+                            {% if project.description %}
+                                <div class="marked">
+                                    {{ project.description | markdown }}
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="col-12 col-md-4">
                             {{ project.topics | metadata_badges:'Topics' }}

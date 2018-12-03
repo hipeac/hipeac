@@ -44,6 +44,7 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
 
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.filter(
+            is_active=True,
             profile__membership_tags__contains='member', profile__membership_revocation_date__isnull=True
         )
         return super().list(request, *args, **kwargs)
@@ -51,6 +52,7 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
     @action(detail=False)
     def affiliates(self, request, *args, **kwargs):
         self.queryset = self.queryset.filter(
+            is_active=True,
             profile__membership_tags__contains='affiliated', profile__membership_revocation_date__isnull=True
         )
         return super().list(request, *args, **kwargs)
