@@ -34,10 +34,10 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
 
 
 class MemberViewSet(ListModelMixin, GenericViewSet):
-    queryset = get_user_model().objects.select_related('profile') \
+    queryset = get_user_model().objects.filter(is_active=True) \
+                                       .select_related('profile__institution') \
                                        .order_by('first_name', 'last_name') \
-                                       .defer('profile__bio', 'profile__is_bouncing', 'profile__is_subscribed',
-                                              'affiliates__bio')
+                                       .defer('profile__bio', 'affiliates__bio')
 
     pagination_class = None
     serializer_class = MemberPublicSerializer

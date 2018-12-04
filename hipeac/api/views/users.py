@@ -6,12 +6,22 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import Profile, Video
-from ..serializers import AuthUserSerializer, UserPublicSerializer, PublicationListSerializer, VideoListSerializer
+from ..serializers import (
+    AuthUserSerializer, UserPublicSerializer, UserPublicListSerializer,
+    PublicationListSerializer, VideoListSerializer
+)
 
 
 class UserViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = get_user_model().objects.all()
+    queryset = get_user_model().objects.filter(is_active=True) \
+                                       .select_related('profile__institution') \
+                                       .prefetch_related('profile__second_institution')
     serializer_class = UserPublicSerializer
+
+    def list(self, request, *args, **kwargs):
+        self.queryset = self.queryset.defer('profile__bio')
+        self.serializer_class = UserPublicListSerializer
+        return super().list(request, *args, **kwargs)
 
     @action(detail=True, pagination_class=None, serializer_class=PublicationListSerializer)
     def publications(self, request, *args, **kwargs):

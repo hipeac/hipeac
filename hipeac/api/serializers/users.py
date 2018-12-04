@@ -15,16 +15,16 @@ class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
     links = LinkSerializer(required=False, many=True, allow_null=True)
     country = CountryField(country_dict=True)
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
-
-    class Meta:
-        model = Profile
-        exclude = ('user',)
-
-
-class ProfileNestedSerializer(ProfileSerializer):
     institution = InstitutionNestedSerializer()
     second_institution = InstitutionNestedSerializer()
     name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Profile
+        exclude = ('user', 'is_bouncing', 'is_public', 'is_subscribed', 'meal_preference')
+
+
+class ProfileNestedSerializer(ProfileSerializer):
 
     class Meta:
         model = Profile
@@ -45,7 +45,7 @@ class UserPublicListSerializer(serializers.ModelSerializer):
 
 
 class UserPublicSerializer(UserPublicListSerializer):
-    pass
+    profile = ProfileSerializer()
 
 
 class AuthUserSerializer(NestedUpdateMixin, serializers.ModelSerializer):
