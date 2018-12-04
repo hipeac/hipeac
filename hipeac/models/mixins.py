@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from typing import Dict, Optional
 
-from hipeac.functions import get_absolute_uri
+from hipeac.functions import get_absolute_uri, get_image_variant_paths
 from hipeac.models import Link, get_cached_metadata
 
 
@@ -12,22 +12,19 @@ class ImagesMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.__image_path = self.image.path if self.image else None
+        self.__image_path = self.image.path if self.image else None
 
     def image_has_changed(self):
-        # return self.image and self.image.path != self.__image_path
-        pass
+        return self.image and self.image.path != self.__image_path
 
     @property
     def images(self) -> Optional[Dict[str, str]]:
         if not self.image:  # noqa
             return None
 
-        parts = os.path.splitext(self.image.url)  # noqa
-        extension = parts[1].lower()
-        extension = '.jpg' if extension == '.jpeg' else extension
-        sizes = ['sm', 'md', 'lg', 'th']
-        return {size: ''.join([get_absolute_uri(), parts[0], '_', size, extension]) for size in sizes}
+        name, extension = os.path.splitext(os.path.basename(self.image.url))
+        extension = '.jpg' if extension.lower() == '.jpeg' else extension.lower()
+        return get_image_variant_paths(self.image.url, extension=extension, pre=get_absolute_uri())
 
 
 class LinkMixin:

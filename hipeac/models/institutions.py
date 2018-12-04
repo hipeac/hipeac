@@ -1,5 +1,5 @@
 from django.contrib.contenttypes.fields import GenericRelation
-from django.core.validators import validate_comma_separated_integer_list
+from django.core.validators import FileExtensionValidator, validate_comma_separated_integer_list
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -45,7 +45,8 @@ class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     description = models.TextField(null=True, blank=True, validators=[validate_no_badwords])
     recruitment_contact = models.CharField(max_length=190, null=True, blank=True)
     recruitment_email = models.EmailField(null=True, blank=True)
-    image = models.FileField('Logo', upload_to=get_images_path, null=True, blank=True)
+    image = models.FileField('Logo', upload_to=get_images_path, null=True, blank=True,
+                             validators=[FileExtensionValidator(allowed_extensions=['png'])])
 
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])

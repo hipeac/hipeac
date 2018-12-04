@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
-from django.core.validators import validate_comma_separated_integer_list
+from django.core.validators import FileExtensionValidator, validate_comma_separated_integer_list
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -41,7 +41,8 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     ec_project_id = models.PositiveIntegerField('Project ID', unique=True, null=True, blank=True)
     project_officer = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL,
                                         related_name='officed_projects')
-    image = models.FileField('Logo', upload_to=get_images_path, null=True, blank=True)
+    image = models.FileField('Logo', upload_to=get_images_path, null=True, blank=True,
+                             validators=[FileExtensionValidator(allowed_extensions=['png'])])
     poster_file = models.FileField('Poster', upload_to=ASSETS_FOLDER, null=True, blank=True)
 
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])

@@ -130,7 +130,7 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
 def job_post_save(sender, instance, created, *args, **kwargs):
     if created:
         try:
-            image_url = instance.institution.images['lg']
+            image_url = instance.institution.images['th']
         except Exception:
             image_url = None
 

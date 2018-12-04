@@ -1,8 +1,11 @@
+import os
+
 from celery.execute import send_task as celery_send_task
 from commonmark import Parser
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
+from typing import Dict
 
 
 def get_absolute_uri() -> str:
@@ -14,6 +17,13 @@ def get_images_path(instance, filename: str) -> str:
     content_type = ContentType.objects.get_for_model(instance)
     extension = filename.rsplit('.', 1)[1]
     return ''.join(['public/images/', str(content_type.id), '/', str(instance.id), '.', extension])
+
+
+def get_image_variant_paths(image_url: str, *, extension: str = '.png', pre: str = '') -> Dict[str, str]:
+    path, filename = os.path.split(image_url)
+    name, ext = os.path.splitext(os.path.basename(image_url))
+    sizes = ['sm', 'md', 'lg', 'th']
+    return {size: ''.join([pre, path, f'/{size}/', name, extension]) for size in sizes}
 
 
 def get_european_countries():
