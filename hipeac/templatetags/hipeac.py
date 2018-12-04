@@ -4,6 +4,7 @@ from commonmark import commonmark as marked
 from django import template
 from django.template.base import Node
 from django.utils.safestring import mark_safe
+from urllib.parse import quote_plus
 
 from hipeac.functions import truncate_md
 from hipeac.models import get_cached_metadata
@@ -53,36 +54,55 @@ class MarkdownNode(Node):
         return mark_safe(marked(text))
 
 
+def metadata_output(ids, title, *, output_format: str = '<li><small>{0}</small></li>', maps=[str]):
+    keys = [int(key) for key in ids.split(',')]
+    metadata_items = get_cached_metadata()
+
+    output = []
+    output.append(f'<div class="mb-4"><h5 class="display-sm">{title}</h5><p>')
+    for metadata in [metadata_items[key] for key in keys if key in metadata_items]:
+        output.append(output_format.format(*[m(metadata.value) for m in maps]))
+    output.append('</p></div>')
+
+    return mark_safe(''.join(output))
+
+
 @register.filter
 def metadata_list(ids, title):
     if not ids:
         return ''
+    return metadata_output(ids, title)
 
-    keys = [int(key) for key in ids.split(',')]
-    metadata = get_cached_metadata()
 
-    output = []
-    output.append(f'<div class="mb-4"><h5 class="display-sm">{title}</h5><ul class="list-unstyled">')
-    for m in [metadata[key] for key in keys if key in metadata]:
-        output.append(f'<li><small>{m.value}</small></li>')
-    output.append('</ul></div>')
-    return mark_safe(''.join(output))
+@register.filter
+def metadata_list_jobs(ids, title):
+    if not ids:
+        return ''
+    return metadata_output(
+        ids,
+        title,
+        output_format='<small><a href="/jobs/#/?q={0}" class="inherit">{1}</a></small><br>',
+        maps=[quote_plus, str]
+    )
 
 
 @register.filter
 def metadata_badges(ids, title):
     if not ids:
         return ''
+    return metadata_output(ids, title, output_format='<span class="badge badge-primary mr-1">{0}</span>')
 
-    keys = [int(key) for key in ids.split(',')]
-    metadata = get_cached_metadata()
 
-    output = []
-    output.append(f'<div class="mb-4"><h5 class="display-sm">{title}</h5>')
-    for m in [metadata[key] for key in keys if key in metadata]:
-        output.append(f'<span class="badge badge-primary mr-1">{m.value}</span>')
-    output.append('</div>')
-    return mark_safe(''.join(output))
+@register.filter
+def metadata_badges_jobs(ids, title):
+    if not ids:
+        return ''
+    return metadata_output(
+        ids,
+        title,
+        output_format='<a href="/jobs/#/?q={0}" class="inherit"><span class="badge badge-primary mr-1">{1}</span></a>',
+        maps=[quote_plus, str]
+    )
 
 
 @register.filter

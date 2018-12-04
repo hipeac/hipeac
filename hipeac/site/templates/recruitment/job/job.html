@@ -31,6 +31,10 @@
                         <i class="material-icons sm mr-2">done_outline</i>Apply now</a>
                 {% endif %}
                 {% if user.is_authenticated and job.email %}
+                    {% if not job.website %}
+                        <a href="mailto:{{ job.email }}" class="btn btn-outline-primary btn-block my-3">
+                        <i class="material-icons sm mr-2">done_outline</i>Apply now</a>
+                    {% endif %}
                     <a href="mailto:{{ job.email }}" class="btn btn-outline-primary btn-block my-3">
                         <i class="material-icons sm mr-2">email</i>Contact</a>
                 {% endif %}
@@ -65,13 +69,15 @@
                                     {% endif %}
                                     {% if job.country %}
                                         {% if job.location %}<span>, </span>{% endif %}
-                                        <small>{{ job.country.name }}</small>
+                                        <a href="{% url 'jobs' %}#/?q={{ job.country.name | urlencode }}" class="inherit">
+                                            <small>{{ job.country.name }}</small>
+                                        </a>
                                     {% endif %}
                                 </div>
                             {% endif %}
-                            {{ job.topics | metadata_badges:'Topics' }}
-                            {{ job.application_areas | metadata_list:'Application areas' }}
-                            {{ job.career_levels | metadata_list:'Career levels' }}
+                            {{ job.topics | metadata_badges_jobs:'Topics' }}
+                            {{ job.application_areas | metadata_list_jobs:'Application areas' }}
+                            {{ job.career_levels | metadata_list_jobs:'Career levels' }}
                             {% include 'components/links.html' with title='More information' items=job.links %}
                             {% if job.project %}
                                 <div class="mb-4">
