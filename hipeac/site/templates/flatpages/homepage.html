@@ -4,6 +4,20 @@
 {% load static %}
 
 
+{% block subtitle %}Welcome to HiPEAC!{% endblock %}
+
+{% block submenu %}
+    <li class="nav-item">
+        <a href="{% url 'events' %}" class="nav-link" exact>Join an event <i class="material-icons sm">arrow_forward</i></a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'network' %}" class="nav-link">Become a member <i class="material-icons sm">arrow_forward</i></a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'jobs' %}" class="nav-link">Find your next job <i class="material-icons sm">arrow_forward</i></a>
+    </li>
+{% endblock %}
+
 {% block content %}
     <div class="container">
         <div class="display-block mb-5">
