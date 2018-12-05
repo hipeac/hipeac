@@ -1,20 +1,22 @@
 import io
+import os
 
 from commonmark import Parser
+from django.conf import settings
 from django.http import HttpResponse
 from django.template.defaultfilters import escape
 from django.utils import timezone
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Image, Spacer
+from svglib.svglib import svg2rlg
 
 from .styles import PDF_STYLES
 
 
-DEFAULT_FOOTER = f'<strong>© {timezone.now().year} HiPEAC</strong>, ' \
-                  'European Network on High Performance and Embedded Architecture and Compilation.<br />' \
-                  'The HiPEAC project has received funding from the European Union’s Horizon 2020 ' \
-                  'research and innovation programme under grant agreement number 779656.'
+H2020 = 'European Union’s Horizon 2020 research and innovation programme under grant agreement number 779656'
+DEFAULT_FOOTER = f'''<strong>© {timezone.now().year} HiPEAC</strong>, European Network on High Performance
+and Embedded Architecture and Compilation.<br />The HiPEAC project has received funding from the {H2020}.'''
 
 
 class MardownParser:
@@ -36,15 +38,13 @@ class Pdf:
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         self.buffer.close()
 
-    @staticmethod
-    def _header_footer(canvas, doc):
+    def _header_footer(self, canvas, doc):
         # Save the state of our canvas so we can draw on it
         canvas.saveState()
 
         # Header
-        header = Paragraph('', PDF_STYLES['footer'])
-        w, h = header.wrap(doc.width, doc.topMargin)
-        header.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
+        drawing = svg2rlg(os.path.join(settings.SITE_ROOT, 'static', 'images', 'hipeac.svg'))
+        drawing.drawOn(canvas, doc.leftMargin + (0.2 * cm), doc.height + doc.topMargin + (0.5 * cm))
 
         # Footer
         footer = Paragraph(DEFAULT_FOOTER, PDF_STYLES['footer'])
