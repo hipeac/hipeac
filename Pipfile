@@ -33,6 +33,7 @@ pyphen = "*"
 requests = "*"
 reportlab = "*"
 sentry-sdk = "*"
+svglib = "==0.9.0b0"
 twitter = "*"
 whitenoise = "*"
 
