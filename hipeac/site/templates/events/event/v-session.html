@@ -6,11 +6,10 @@
                 <div class="modal-header bg-light pb-0">
                     <ul class="nav nav-tabs d-flex w-100">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">
-                                <i class="material-icons mr-2">category</i>{{ session.session_type.value }}</a>
+                            <router-link class="nav-link" :to="{name: 'session', params: {sessionId: session.id}}" exact><i class="material-icons mr-2">category</i>{{ session.session_type.value }}</a></router-link>
                         </li>
                         <li v-if="session.program" class="nav-item">
-                            <a class="nav-link" href="#">Program</a>
+                            <router-link class="nav-link" :to="{name: 'sessionProgram', params: {sessionId: session.id}}" exact>Program</router-link>
                         </li>
                         <!--<li class="nav-item">
                             <a class="nav-link" href="#"><i class="material-icons mr-2">people</i>Attendees</a>
@@ -22,26 +21,38 @@
                     </ul>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <display-md class="mt-0 mb-4 text-left">{{ session.title }}</display-md>
-                        </div>
-                        <div class="col-12 col-md-8 pr-md-4">
-                            <marked v-if="session.summary" :text="session.summary"></marked>
-                        </div>
-                        <div class="col-12 col-md-4 border-left pl-md-4">
-                            <display-sm class="mb-3"><i class="material-icons sm mr-2">today</i>{{ session.date | moment }}</display-sm>
-                            <metadata-badges v-if="session.topics.length" title="Topics" :items="session.topics"></metadata-badges>
-                            <metadata-badges v-if="session.application_areas.length" title="Application areas" :items="session.application_areas" color="secondary"></metadata-badges>
-                            <div v-if="session.organizers">
-                                <display-sm class="mt-3 mb-1">Organizers</display-sm>
-                                <marked :text="session.organizers" class="text-sm"></marked>
-                            </div>
-                        </div>
-                    </div>
+                    <display-md class="mt-0 mb-4 text-left">{{ session.title }}</display-md>
+                    <router-view></router-view>
                 </div>
             </div>
         </div>
+    </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-main">
+{% verbatim %}
+    <div class="row">
+        <div class="col-12 col-md-8 pr-md-4">
+            <marked v-if="session.summary" :text="session.summary"></marked>
+        </div>
+        <div class="col-12 col-md-4 border-left pl-md-4">
+            <display-sm class="mb-3"><i class="material-icons sm mr-2">today</i>{{ session.date | moment }}</display-sm>
+            <metadata-badges v-if="session.topics.length" title="Topics" :items="session.topics"></metadata-badges>
+            <metadata-badges v-if="session.application_areas.length" title="Application areas" :items="session.application_areas" color="secondary"></metadata-badges>
+            <div v-if="session.organizers">
+                <display-sm class="mt-3 mb-1">Organizers</display-sm>
+                <marked :text="session.organizers" class="text-sm"></marked>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-program">
+{% verbatim %}
+    <div>
+        <marked v-if="session.program" :text="session.program"></marked>
     </div>
 {% endverbatim %}
 </script>

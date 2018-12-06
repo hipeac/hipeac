@@ -78,7 +78,8 @@
                 },
                 event: null,
                 jobs: [],
-                registrations: []
+                registrations: [],
+                session: null
             },
             mutations: {
                 fetchEvent: function (state) {
@@ -101,6 +102,9 @@
                         state.user.isRegistered = true;
                         state.registrations = res;
                     });
+                },
+                updateSession: function (state, data) {
+                    state.session = data;
                 }
             }
         });
@@ -283,19 +287,18 @@
             data: function () {
                 return {
                     active: true,
-                    session: null
                 };
             },
             props: ['sessionId'],
             computed: _.extend(
-                Vuex.mapState(['event']), {
+                Vuex.mapState(['event', 'session']), {
             }),
             methods: {
                 fetchSession: function () {
                     var self = this;
                     if (this.event) this.session = _.findWhere(this.event.sessions, {id: this.sessionId});
                     api().getSession(this.sessionId).done(function (res) {
-                        self.session = mapper().sessions([res])[0];
+                        self.$store.commit('updateSession', mapper().sessions([res])[0]);
                     });
                 },
                 closeModal: function () {
@@ -311,14 +314,30 @@
             },
             beforeRouteLeave: function (to, from, next) {
                 next();
+                var store = this.$store;
                 var modal = $(this.$refs['modal']);
                 setTimeout(function () {
                     if (modal.hasClass('show')) modal.modal('hide');
+                    store.commit('updateSession', null);
                 }, 50);
             },
             mounted: function () {
                 this.fetchSession();
             }
+        };
+
+        var SessionMainView = {
+            template: '#v-session-main',
+            computed: _.extend(
+                Vuex.mapState(['event', 'session']), {
+            }),
+        };
+
+        var SessionProgramView = {
+            template: '#v-session-program',
+            computed: _.extend(
+                Vuex.mapState(['event', 'session']), {
+            }),
         };
 
         var VenueView = {
@@ -373,7 +392,6 @@
                             component: ScheduleKeynotesView
                         },
                         {
-                            name: 'session',
                             path: 'sessions/:sessionId/',
                             pathToRegexpOptions: {strict: true},
                             components: {
@@ -382,7 +400,21 @@
                             },
                             props: {
                                 modal: true
-                            }
+                            },
+                            children: [
+                                {
+                                    name: 'session',
+                                    path: '',
+                                    pathToRegexpOptions: {strict: true},
+                                    component: SessionMainView
+                                },
+                                {
+                                    name: 'sessionProgram',
+                                    path: 'program/',
+                                    pathToRegexpOptions: {strict: true},
+                                    component: SessionProgramView
+                                }
+                            ]
                         }
                     ]
                 },
