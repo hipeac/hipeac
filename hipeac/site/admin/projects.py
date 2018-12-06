@@ -7,22 +7,22 @@ from .generic import HideDeleteActionMixin, LinksInline, PermissionsInline
 
 
 class ProjectAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField()
-    topics = TopicsChoiceField()
+    application_areas = ApplicationAreasChoiceField(required=False)
+    topics = TopicsChoiceField(required=False)
 
 
 @admin.register(Project)
 class ProjectAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     form = ProjectAdminForm
-    exclude = ['updated_at']
+    exclude = ('updated_at',)
 
     list_display = ('id', 'ec_project_id', 'acronym', 'coordinator', 'programme', 'is_active')
     list_filter = ('programme',)
-    search_fields = ['acronym', 'name']
+    search_fields = ('acronym', 'name')
 
     filter_horizontal = ['partners']
     raw_id_fields = ('coordinating_institution', 'coordinator', 'communication_officer', 'project_officer')
-    inlines = [LinksInline, PermissionsInline]
+    inlines = (LinksInline, PermissionsInline)
     fieldsets = (
         (None, {
             'fields': ('acronym', 'name'),

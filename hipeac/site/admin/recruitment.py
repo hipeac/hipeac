@@ -17,9 +17,9 @@ class JobCsvWriter(ModelCsvWriter):
 
 
 class JobAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField()
-    career_levels = JobPositionChoiceField()
-    topics = TopicsChoiceField()
+    application_areas = ApplicationAreasChoiceField(required=False)
+    career_levels = JobPositionChoiceField(required=False)
+    topics = TopicsChoiceField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,7 +29,7 @@ class JobAdminForm(ModelForm):
 @admin.register(Job)
 class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     form = JobAdminForm
-    exclude = ['updated_at']
+    exclude = ('updated_at',)
 
     actions = ('select_export_pdf', 'select_export_csv')
     date_hierarchy = 'created_at'

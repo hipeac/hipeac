@@ -85,10 +85,10 @@ class Profile(models.Model):
             self.membership_date = None
             self.advisor is None
         else:
-            if self.membership_date is None:
-                raise ValidationError('A membership date is required for members.')
             if 'member' in self.membership_tags:
                 self.advisor = None
+                if self.membership_date is None:
+                    raise ValidationError('A membership date is required for members.')
             if 'affiliated' in self.membership_tags and self.advisor is None:
                 raise ValidationError('Please select an advisor for this membership type.')
 

@@ -28,6 +28,7 @@ class Session(LinkMixin, models.Model):
     main_speaker = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL,
                                      related_name='talks')
 
+    room = models.ForeignKey('hipeac.Room', null=True, blank=True, on_delete=models.SET_NULL, related_name='sessions')
     max_attendees = models.PositiveSmallIntegerField(default=0, help_text='Leave on `0` for non limiting.')
     extra_attendees_fee = models.PositiveSmallIntegerField(default=0)
 

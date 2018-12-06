@@ -14,7 +14,9 @@ class ArticleAdmin(admin.ModelAdmin):
     list_filter = ('type', 'publication_date')
     search_fields = ('title',)
 
-    raw_id_fields = ('institutions', 'projects')
+    autocomplete_fields = ('event', 'institutions', 'projects')
+    radio_fields = {'type': admin.VERTICAL}
+    readonly_fields = ('created_by',)
     inlines = (ImagesInline,)
 
 
@@ -30,8 +32,8 @@ class ClippingAdmin(admin.ModelAdmin):
 
 
 class MagazineAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField()
-    topics = TopicsChoiceField()
+    application_areas = ApplicationAreasChoiceField(required=False)
+    topics = TopicsChoiceField(required=False)
 
 
 @admin.register(Magazine)
@@ -41,7 +43,7 @@ class MagazineAdmin(admin.ModelAdmin):
     date_hierarchy = 'publication_date'
     list_display = ('id', 'title', 'publication_date')
 
-    raw_id_fields = ('users', 'projects')
+    autocomplete_fields = ('users', 'projects')
     fieldsets = (
         (None, {
             'fields': ('title', 'publication_date', 'issuu_url', 'file', 'file_tablet',),
@@ -62,12 +64,12 @@ class QuoteAdmin(admin.ModelAdmin):
     list_display = ('id', 'text', 'author', 'type', 'is_featured')
     list_filter = ('type', 'is_featured')
 
-    raw_id_fields = ('institution', 'user')
+    autocomplete_fields = ('institution', 'user')
 
 
 class VideoAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField()
-    topics = TopicsChoiceField()
+    application_areas = ApplicationAreasChoiceField(required=False)
+    topics = TopicsChoiceField(required=False)
 
     class Meta:
         help_texts = {

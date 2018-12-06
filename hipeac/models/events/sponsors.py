@@ -13,11 +13,11 @@ class Sponsor(models.Model):
         (ACADEMIC, 'Academic'),
     )
 
-    event = models.ForeignKey('hipeac.Event', related_name='sponsors', on_delete='CASCADE')
+    event = models.ForeignKey('hipeac.Event', related_name='sponsors', on_delete=models.CASCADE)
     institution = models.ForeignKey('hipeac.Institution', related_name='sponsored_events', null=True, blank=True,
-                                    on_delete='CASCADE')
+                                    on_delete=models.CASCADE)
     project = models.ForeignKey('hipeac.Project', related_name='sponsored_events', null=True, blank=True,
-                                on_delete='CASCADE')
+                                on_delete=models.CASCADE)
     sponsorship_type = models.PositiveSmallIntegerField(choices=TYPE_CHOICES, default=BRONZE)
     amount = models.PositiveSmallIntegerField(default=0)
 

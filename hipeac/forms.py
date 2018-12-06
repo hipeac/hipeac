@@ -6,7 +6,7 @@ from django.core.validators import validate_comma_separated_integer_list
 from django.forms.fields import MultipleChoiceField
 from django.forms.widgets import CheckboxSelectMultiple
 
-from hipeac.models import get_cached_metadata_queryset
+from hipeac.models import get_cached_metadata_queryset, validate_membership_tags
 
 
 class HiSignupForm(SignupForm):
@@ -21,14 +21,11 @@ class HiSignupForm(SignupForm):
 
 class CommaSeparatedChoiceField(MultipleChoiceField):
     widget = CheckboxSelectMultiple
-    metadata_type = None
 
     def __init__(self, *args, **kwargs):
-        """Choices are only set when a database exists."""
         super().__init__(**kwargs)
         try:
-            metadata = get_cached_metadata_queryset()
-            self.choices = [(m.id, m.value) for m in metadata if m.type == self.metadata_type]
+            self.choices = self._get_custom_choices()
         except Exception:
             self.choices = ()
 
@@ -38,19 +35,54 @@ class CommaSeparatedChoiceField(MultipleChoiceField):
     def to_python(self, value):
         return ','.join(value)
 
+
+class MembershipTagsChoiceField(CommaSeparatedChoiceField):
+
+    def _get_custom_choices(self):
+        return (
+            ('---', (
+                ('member', 'Member'),
+                ('affiliated', 'Affiliated Member'),
+            )),
+            ('--- Geographic attributes', (
+                ('non-eu', 'Outside Europe (associated)'),
+                ('nms', 'New member state (NMS)'),
+            )),
+            ('--- Other attributes', (
+                ('innovation', 'Innovation member'),
+                ('industry', 'Industry member'),
+                ('phd', 'PhD student'),
+                ('staff', 'Staff member'),
+            )),
+        )
+
+    def validate(self, value):
+        if value == '':
+            return
+        validate_membership_tags(value)
+
+
+class MetadataChoiceField(CommaSeparatedChoiceField):
+    metadata_type = None
+
+    def _get_custom_choices(self):
+        """Choices are only set when a database exists."""
+        metadata = get_cached_metadata_queryset()
+        return [(m.id, m.value) for m in metadata if m.type == self.metadata_type]
+
     def validate(self, value):
         if value == '':
             return
         validate_comma_separated_integer_list(value)
 
 
-class ApplicationAreasChoiceField(CommaSeparatedIntegerChoiceField):
+class ApplicationAreasChoiceField(MetadataChoiceField):
     metadata_type = 'application_area'
 
 
-class JobPositionChoiceField(CommaSeparatedIntegerChoiceField):
+class JobPositionChoiceField(MetadataChoiceField):
     metadata_type = 'job_position'
 
 
-class TopicsChoiceField(CommaSeparatedIntegerChoiceField):
+class TopicsChoiceField(MetadataChoiceField):
     metadata_type = 'topic'

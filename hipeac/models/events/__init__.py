@@ -8,5 +8,4 @@ from .registrations import *
 from .roadshows import *
 from .sessions import *
 from .sponsors import *
-from .tracks import *
 from .venues import *

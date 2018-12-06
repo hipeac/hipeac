@@ -7,21 +7,21 @@ from .generic import HideDeleteActionMixin, LinksInline, PermissionsInline
 
 
 class InstitutionAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField()
-    topics = TopicsChoiceField()
+    application_areas = ApplicationAreasChoiceField(required=False)
+    topics = TopicsChoiceField(required=False)
 
 
 @admin.register(Institution)
 class InstitutionAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     form = InstitutionAdminForm
-    exclude = ['updated_at']
+    exclude = ('updated_at',)
 
     list_display = ('id', 'name', 'type', 'country')
     list_filter = ('type',)
-    search_fields = ['name', 'local_name', 'colloquial_name']
+    search_fields = ('name', 'local_name', 'colloquial_name')
 
-    raw_id_fields = ['parent']
-    inlines = [LinksInline, PermissionsInline]
+    autocomplete_fields = ('parent',)
+    inlines = (LinksInline, PermissionsInline)
     fieldsets = (
         (None, {
             'fields': ('type', 'name', 'local_name', 'colloquial_name'),
