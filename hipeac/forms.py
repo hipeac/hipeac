@@ -1,3 +1,7 @@
+from allauth.account.forms import SignupForm
+from captcha.fields import ReCaptchaField
+from django import forms
+from django.conf import settings
 from django.core.validators import validate_comma_separated_integer_list
 from django.forms.fields import MultipleChoiceField
 from django.forms.widgets import CheckboxSelectMultiple
@@ -5,7 +9,17 @@ from django.forms.widgets import CheckboxSelectMultiple
 from hipeac.models import get_cached_metadata_queryset
 
 
-class CommaSeparatedIntegerChoiceField(MultipleChoiceField):
+class HiSignupForm(SignupForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not settings.DEBUG:
+            self.fields['captcha'] = ReCaptchaField(attrs={'theme': 'clean'})
+
+
+class CommaSeparatedChoiceField(MultipleChoiceField):
     widget = CheckboxSelectMultiple
     metadata_type = None
 

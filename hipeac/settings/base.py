@@ -157,6 +157,9 @@ AUTHENTICATION_BACKENDS = [
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_FORMS = {
+    'signup': 'hipeac.forms.HiSignupForm',
+}
 
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
