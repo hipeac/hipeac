@@ -36,6 +36,10 @@
             },
             application_areas: [],
             topics: [],
+            links: [{
+                type: 'website',
+                url: ''
+            }],
             deadline: moment().add(60, 'days').format('YYYY-MM-DD')
         };
     </script>
@@ -79,7 +83,7 @@
                 <markdown-textarea v-model.trim="obj.description" field="description" help="Preferably, do not include a contact email directly in the description; use the `Contact email` field instead."></markdown-textarea>
                 <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
                 <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
-                <link-fieldset v-model="obj.links" field="links" help="One or more external sources related to this job application."></link-fieldset>
+                <link-fieldset v-model="obj.links" field="links" help="Please include the link to the website for the candidates to apply. One or more external sources related to this job application can be added (e.g. LinkedIn). If no link is provided applications will be forwarded directly to the contact e-mail."></link-fieldset>
             </form>
             <hr class="my-4">
             <button v-if="isNew" @click="createObj" class="btn btn-success btn-block">
