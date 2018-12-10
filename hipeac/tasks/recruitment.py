@@ -13,11 +13,7 @@ from hipeac.models import Job
 from hipeac.tools.language import NaturalLanguageAnalyzer
 from hipeac.tools.linkedin import LinkedInManager
 from hipeac.tools.twitter import Tweeter
-from .emails import send_from_template
-
-
-JOBS_DIGEST_EMAIL = 'HiPEAC Jobs <jobs@hipeac.net>'
-RECRUITMENT_EMAIL = 'HiPEAC Recruitment <recruitment@hipeac.net>'
+from .emails import JOBS_DIGEST_EMAIL, RECRUITMENT_EMAIL, send_from_template
 
 
 def save_keywords(nl: NaturalLanguageAnalyzer, job: Job):
@@ -61,7 +57,7 @@ def send_expiration_reminders():
             'recruitment.jobs.expiration_reminder',
             f'[HiPEAC Jobs] Expiring vacancies @ {context_data["institution_name"]}',
             RECRUITMENT_EMAIL,
-            ['eneko@illarra.com'],  # TODO: update
+            [context_data['user_email']],
             context_data,
         )
         for job in context_data['jobs']:
@@ -108,13 +104,13 @@ def send_weekly_digest():
     )
 
 
-@task()
+@task(rate_limit='6/h')
 def share_in_linkedin(title: str, status: Tuple[str, str], thumbnail_url: Optional[str]):
     """Shares a post in LinkedIn."""
     LinkedInManager().share_page(title, *status, thumbnail_url)
 
 
-@task(rate_limit='10/h')
+@task(rate_limit='6/h')
 def tweet(status: Tuple[str, str]):
     """Sends a tweet."""
     Tweeter(account='hipeacjobs').update_status(*status)

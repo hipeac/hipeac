@@ -3,6 +3,8 @@ from django.template.loader import render_to_string
 from typing import List
 
 
+JOBS_DIGEST_EMAIL = 'HiPEAC Jobs <jobs@hipeac.net>'
+RECRUITMENT_EMAIL = 'HiPEAC Recruitment <recruitment@hipeac.net>'
 TEMPLATE_PATHS = {
     'events.registrations.created': '_emails/events/registrations_created.md.html',
     'recruitment.jobs.created': '_emails/recruitment/jobs_created.md.html',
@@ -21,6 +23,9 @@ class TemplateEmail:
         template_path = TEMPLATE_PATHS[template]
         text_content = render_to_string(template_path, {**{'email_format': 'txt'}, **context_data})
         html_content = render_to_string(template_path, {**{'email_format': 'html'}, **context_data})
+
+        if template.startswith('recruitment.'):
+            to.append(RECRUITMENT_EMAIL)
 
         self.message = AnymailMessage(subject=subject, from_email=from_email, to=to, body=text_content)
         self.message.attach_alternative(html_content, 'text/html')

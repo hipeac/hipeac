@@ -33,14 +33,14 @@ class JobManager(models.Manager):
                     'institution_name': job.institution.short_name if job.institution else 'your institution',
                     'jobs': []
                 }
-            job_evaluation_url = reverse('job_evaluation', args=[job.id])
+            job_evaluation_url = reverse('job_evaluation', args=[job.id, 0])
             grouped_jobs[key]['jobs'].append({
                 'id': job.id,
                 'title': job.title,
                 'editor_url': job.get_editor_url(),
-                'no_url': f'{job_evaluation_url}{JobEvaluation.NO}/',
-                'yes_url': f'{job_evaluation_url}{JobEvaluation.YES}/',
-                'yes_hipeac_url': f'{job_evaluation_url}{JobEvaluation.YES_HIPEAC}/',
+                'no_url': job_evaluation_url.replace('/0/', f'/{JobEvaluation.NO}/'),
+                'yes_url': job_evaluation_url.replace('/0/', f'/{JobEvaluation.YES}/'),
+                'yes_hipeac_url': job_evaluation_url.replace('/0/', f'/{JobEvaluation.YES_HIPEAC}/'),
             })
 
         return grouped_jobs
