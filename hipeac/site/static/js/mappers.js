@@ -50,7 +50,6 @@ function mapper() {
             var sessionsMapper = this.sessions;
 
             return items.map(function (obj) {
-                obj.markedTravelInfo = (obj.travel_info) ? marked(obj.travel_info) : '';
                 obj.registrations_round = (obj.registrations_count)
                     ? Math.floor(obj.registrations_count / 10) * 10
                     : 0;
@@ -61,6 +60,25 @@ function mapper() {
                     moment(obj.start_date).format('MMMM D'),
                     moment(obj.end_date).format('D, YYYY'),
                 ].join('-');
+
+                // shortcuts
+
+                obj.google_mid = null;
+                if (obj.links && obj.links.google_maps) {
+                    obj.google_mid = (obj.links.google_maps.match(/id=([^&]+)/)[1] || null);
+                }
+
+                obj.rooms = {};
+                if (obj.venues) {
+                    _.each(obj.venues, function (venue) {
+                        _.each(venue.rooms, function (room) {
+                            obj.rooms[room.id] = {
+                                name: room.name,
+                                venue: venue.name
+                            };
+                        });
+                    });
+                }
 
                 // generate schedule
 
@@ -173,6 +191,21 @@ function mapper() {
                     (obj.main_speaker)
                         ? ((_.has(obj.main_speaker, 'profile')) ? obj.main_speaker.profile.name : obj.main_speaker)
                         : '',
+                ].join(' ').toLowerCase();
+                return obj;
+            });
+        },
+        users: function (items) {
+            return items.map(function (obj) {
+                institution = obj.profile.institution
+                obj.q = [
+                    obj.profile.name,
+                    (institution)
+                        ? [institution.name, institution.local_name, institution.short_name].join(' ')
+                        : '',
+                    (institution && institution.country)
+                        ? institution.country.name
+                        : ''
                 ].join(' ').toLowerCase();
                 return obj;
             });

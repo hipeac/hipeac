@@ -234,6 +234,25 @@ Vue.component('icon', {
     ''
 });
 
+Vue.component('institution-icon', {
+    props: ['type'],
+    template: '' +
+        '<i class="material-icons">{{ name }}</i>' +
+    '',
+    computed: {
+        name: function () {
+            return {
+                university: 'account_balance',
+                lab: 'layers',
+                innovation: 'device_hub',
+                industry: 'business',
+                sme: 'business',
+                other: 'scatter_plot',
+            }[this.type];
+        }
+    }
+});
+
 Vue.component('huge-icon', {
     props: ['name'],
     template: '' +
@@ -502,6 +521,45 @@ Vue.component('metadata-list', SimpleList.extend({
     ''
 }));
 
+Vue.component('user-viewer', {
+    props: {
+        users: {
+            type: Array
+        },
+        ids: {
+            type: [Array, null],
+            default: null
+        }
+    },
+    template: '' +
+        '<div v-if="users" class="row">' +
+            '<div class="col-12 col-md">' +
+            '</div>' +
+            '<div class="col-12 col-md">' +
+                '<table class="table table-sm">' +
+                    '<tr v-for="user in sortedUsers" :key="user.id" :user="user" v-show="!ids || ids.indexOf(user.id) >= 0">' +
+                        '<td>' +
+                            '{{ user.profile.name }}' +
+                            '<span v-if="user.profile.institution">' +
+                                ', <institution-icon :type="user.profile.institution.type" class="sm"></institution-icon> ' +
+                                '<small>{{ user.profile.institution.short_name }}</small>' +
+                            '</span>' +
+                        '</td>' +
+                    '</tr>' +
+                '</table>' +
+            '</div>' +
+        '</div>' +
+    '',
+    computed: {
+        sortedUsers: function () {
+            if (!this.users) return [];
+            return this.users.sort(function (a, b) {
+                return sort().text(a.profile.name, b.profile.name);
+            });
+        }
+    }
+});
+
 Vue.component('filter-label', {
     props: ['text', 'selected'],
     template: '' +
@@ -567,7 +625,7 @@ Vue.component('search-card', {
     props: {
         showFiltersButton: {
             type: Boolean,
-            default: true
+            default: false
         },
         placeholder: {
             type: String,
@@ -752,7 +810,11 @@ Vue.component('job-cards', SimpleList.extend({
                             '<icon name="today" class="sm"></icon>' +
                             '<span class="deadline">{{ item.deadline | moment }}</span>' +
                         '</li>' +
-                        '<li><icon name="location_on" class="sm"></icon><span v-if="item.location">{{ item.location }}, </span>{{ item.country.name }}</li>' +
+                        '<li>' +
+                            '<icon name="location_on" class="sm"></icon>' +
+                            '<span v-if="item.location">{{ item.location }}<span v-if="item.country">, </span></span>' +
+                            '<span v-if="item.country">{{ item.country.name }}</span>' +
+                        '</li>' +
                         '<li><icon name="how_to_reg" class="sm"></icon><metadata-join :items="item.career_levels"></metadata-join></li>' +
                         '<li><icon name="label" class="sm"></icon><metadata-join :items="item.topics"></metadata-join></li>' +
                     '</ul>' +
@@ -786,7 +848,7 @@ Vue.component('open-jobs-row', {
         fetchData: function () {
             var self = this;
             ajax().get(this.url).done(function (res) {
-                self.jobs = mapper().jobs(res.open_positions);
+                self.jobs = mapper().jobs(res);
             });
         }
     },

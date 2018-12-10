@@ -23,6 +23,9 @@
         <li class="nav-item" v-if="jobs.length">
             <a is="router-link" :to="{name: 'jobs'}" class="nav-link">Recruitment</a>
         </li>
+        <li class="nav-item">
+            <a is="router-link" :to="{name: 'sponsorship'}" class="nav-link">Sponsorship</a>
+        </li>
     {% endif %}
     {% if user.is_authenticated %}
         <li v-if="user.isRegistered" class="nav-item" v-cloak>
@@ -42,16 +45,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" class="container">
-        <!--<div v-cloak v-if="$route.name == 'venue'" class="row">
-            <div class="col-12" v-if="event && event.google_mid">
-                <div class="hipeac-card">
-                    <div class="iframe-container rounded">
-                        <iframe :src="'https://www.google.com/maps/d/embed?mid=' + event.google_mid + '&z=13'" class="google-embedded-map"></iframe>
-                    </div>
-                </div>
-            </div>
-        </div>-->
+    <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" class="container">
         <div is="router-view"></div>
     </div>
 {% endblock %}
@@ -63,6 +57,7 @@
     {% include './v-registration.html' with id='v-registration' %}
     {% include './v-schedule.html' with id='v-schedule' %}
     {% include './v-session.html' with id='v-session' %}
+    {% include './v-sponsorship.html' with id='v-sponsorship' %}
     {% include './v-venue.html' with id='v-venue' %}
 {% endblock %}
 
@@ -78,17 +73,15 @@
                 },
                 event: null,
                 jobs: [],
-                registrations: [],
-                session: null
+                attendees: [],
+                session: null,
+                keynotes: [],
+                papers: []
             },
             mutations: {
                 fetchEvent: function (state) {
                     ajax().get($('#urls').data('event-url')).done(function (res) {
-                        obj = mapper().events([res])[0];
-                        obj.google_mid = (obj.links.google_maps)
-                            ? (obj.links.google_maps.match(/id=([^&]+)/)[1] || null)
-                            : null;
-                        state.event = obj;
+                        state.event = mapper().events([res])[0];
                     });
                 },
                 fetchJobs: function (state) {
@@ -100,7 +93,19 @@
                     if (!USER_IS_AUTHENTICATED) return;
                     ajax().get($('#urls').data('registrations-url')).done(function (res) {
                         state.user.isRegistered = true;
-                        state.registrations = res;
+                        state.attendees = mapper().users(res.map(function (obj) {
+                            return obj.user;
+                        }));
+                    });
+                },
+                fetchKeynotes: function (state) {
+                    ajax().get($('#urls').data('sessions-url'), {session_type: 69}).done(function (res) {
+                        state.keynotes = mapper().sessions(res);
+                    });
+                },
+                fetchPapers: function (state) {
+                    ajax().get($('#urls').data('sessions-url'), {session_type: 71}).done(function (res) {
+                        state.papers = mapper().sessions(res);
                     });
                 },
                 updateSession: function (state, data) {
@@ -118,9 +123,26 @@
 
         var AttendeesView = {
             template: '#v-attendees',
+            data: function () {
+                return {
+                    q: ''
+                }
+            },
             computed: _.extend(
-                Vuex.mapState(['event', 'registrations']), {
-            })
+                Vuex.mapState(['user', 'event', 'attendees']), {
+                filteredIds: function () {
+                    if (!this.attendees) return null;
+                    return _.pluck(filterMultiple(this.attendees, this.q), 'id');
+                }
+            }),
+            methods: {
+                updateQuery: function (val) {
+                    this.q = val;
+                }
+            },
+            created: function () {
+                EventHub.$on('query-changed', this.updateQuery);
+            }
         };
 
         var JobsView = {
@@ -277,14 +299,21 @@
         var ScheduleKeynotesView = {
             template: '#v-schedule-keynotes',
             computed: _.extend(
-                Vuex.mapState(['event']), {
-                keynotes: function () {
-                    if (!this.event) return [];
-                    return _.filter(this.event.sessions, function (obj) {
-                        return obj.session_type.value == 'Keynote';
-                    });
-                }
-            })
+                Vuex.mapState(['event', 'keynotes']), {
+            }),
+            created: function () {
+                this.$store.commit('fetchKeynotes');
+            }
+        };
+
+        var SchedulePapersView = {
+            template: '#v-schedule-papers',
+            computed: _.extend(
+                Vuex.mapState(['event', 'papers']), {
+            }),
+            created: function () {
+                this.$store.commit('fetchPapers');
+            }
         };
 
         var SessionModalView = {
@@ -296,12 +325,14 @@
             },
             props: ['sessionId'],
             computed: _.extend(
-                Vuex.mapState(['event', 'session']), {
+                Vuex.mapState(['user', 'event', 'session']), {
             }),
             methods: {
                 fetchSession: function () {
                     var self = this;
-                    if (this.event) this.session = _.findWhere(this.event.sessions, {id: this.sessionId});
+                    if (this.event) {
+                        self.$store.commit('updateSession', _.findWhere(this.event.sessions, {id: this.sessionId}));
+                    }
                     api().getSession(this.sessionId).done(function (res) {
                         self.$store.commit('updateSession', mapper().sessions([res])[0]);
                     });
@@ -343,6 +374,39 @@
             computed: _.extend(
                 Vuex.mapState(['event', 'session']), {
             }),
+        };
+
+        var SessionAttendeesView = {
+            template: '#v-session-attendees',
+            data: function () {
+                return {
+                    attendees: []
+                }
+            },
+            props: ['sessionId'],
+            computed: _.extend(
+                Vuex.mapState(['user', 'event', 'session']), {
+            }),
+            methods: {
+                fetchAttendees: function () {
+                    var self = this;
+                    api().getSessionAttendees(this.sessionId).done(function (res) {
+                        self.attendees = mapper().users(res.map(function (obj) {
+                            return obj.user;
+                        }));
+                    });
+                }
+            },
+            created: function () {
+                this.fetchAttendees();
+            }
+        };
+
+        var SponsorshipView = {
+            template: '#v-sponsorship',
+            computed: _.extend(
+                Vuex.mapState(['event']), {
+            })
         };
 
         var VenueView = {
@@ -397,6 +461,12 @@
                             component: ScheduleKeynotesView
                         },
                         {
+                            name: 'papers',
+                            path: 'paper-track/',
+                            pathToRegexpOptions: {strict: true},
+                            component: SchedulePapersView
+                        },
+                        {
                             path: 'sessions/:sessionId/',
                             pathToRegexpOptions: {strict: true},
                             components: {
@@ -404,6 +474,7 @@
                                 modal: SessionModalView
                             },
                             props: {
+                                default: true,
                                 modal: true
                             },
                             children: [
@@ -411,17 +482,31 @@
                                     name: 'session',
                                     path: '',
                                     pathToRegexpOptions: {strict: true},
-                                    component: SessionMainView
+                                    component: SessionMainView,
+                                    props: true
                                 },
                                 {
                                     name: 'sessionProgram',
                                     path: 'program/',
                                     pathToRegexpOptions: {strict: true},
                                     component: SessionProgramView
+                                },
+                                {
+                                    name: 'sessionAttendees',
+                                    path: 'attendees/',
+                                    pathToRegexpOptions: {strict: true},
+                                    component: SessionAttendeesView,
+                                    props: true
                                 }
                             ]
                         }
                     ]
+                },
+                {
+                    name: 'sponsorship',
+                    path: '/sponsorship/',
+                    pathToRegexpOptions: {strict: true},
+                    component: SponsorshipView
                 },
                 {
                     name: 'venue',

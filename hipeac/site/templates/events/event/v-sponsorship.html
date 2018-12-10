@@ -1,0 +1,81 @@
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div v-if="event" class="hipeac-card">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <catchphrase>The HiPEAC Conference has been the <strong>largest event in computing systems research organized in Europe</strong> in the last years, with 530+ participants and 65+ companies represented. The conference program and large panel of associated events is a unique opportunity to connect with researchers and engineers from both academia and industry.</catchphrase>
+            </div>
+            <div class="col-12 col-md-6">
+                <p>Graduate students form up to 25% of the conference attendees, making the HiPEAC conference a well-recognized recruitment opportunity. The network is committed to strengthening industry-academia interactions, leveraging all its activities and communication instruments. Up to 20% of the attendees are industry participants. The conference also becomes an increasingly global event, with about 20% attendees have affiliations outside Europe.</p>
+                <p>Your company's participation and support makes a tremendous difference, through your donation, and through the involvement of technical and non-technical personnel in the conference's activities.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <hr class="my-4">
+                <display-sm class="mb-3">Tiered sponsorship plan</display-sm>
+                <p>HiPEAC implements a tiered sponsorship plan as a way to recognize our main sponsors.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="panel">
+                    <display-md>Gold sponsors</display-md>
+                    <strong class="big secondary radius label">Starting at {{ 4000|euro }}</strong>
+                    <ul>
+                        <li>Listed in the first group on the website, printed material, banner, on-site screens, etc.</li>
+                        <li>A/V equipment included in the booth setup (on request)</li>
+                        <li>Invitation to speak at the industry session (Tuesday, 15-20mn talk)</li>
+                        <li>Three free registrations for technical and non-technical (e.g., recruiters) personnel</li>
+                        <li>Eligible as a co-sponsor of student activities: travel grants, prizes, student poster session (Monday), best student presentation</li>
+                        <li><strong>Custom options available only to gold sponsors:</strong>
+                            <ul>
+                                <li>Complementary donation to support the involvement of women in engineering and minorities</li>
+                                <li>Sponsor student activities: travel grants, gifts for best student presentation, poster award, etc.</li>
+                                <li>Video/slide-show during lunch and coffee breaks (subject to availability and cost)</li>
+                                <li>Sponsor the reception at the student poster session (Monday), starting at €7000</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 col-md-8">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="panel">
+                            <display-md>Silver sponsors</display-md>
+                            <strong class="big secondary radius label">Starting at {{ 2000|euro }}</strong>
+                            <ul>
+                                <li>Listed in the second group on the website, printed material, banner, on-site screens, etc.</li>
+                                <li>A/V equipment included in the booth setup (on request)</li>
+                                <li>Invitation to speak at the industry session (Tuesday, 15-20mn talk)</li>
+                                <li>Two free registrations for technical and non-technical (e.g., recruiters) personnel</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="panel">
+                            <display-md>Bronze sponsors</display-md>
+                            <strong class="big secondary radius label">Starting at {{ 1000|euro }}</strong>
+                            <ul>
+                                <li>Name and logo on the website, printed material, banner, on-site screens, etc.</li>
+                                <li>Ability to speak at the industry session, if time allows, first come first served (10mn talk)</li>
+                                <li>One free registration</li>
+                            </ul>
+                        </div>
+                    </div>
+                <div>
+                <display-md>Common package offered to all sponsors</display-md>
+                <ul>
+                    <li>Acknowledgment during the opening and closing presentations, and during the social event.</li>
+                    <li>Free mini-booth at the industry exhibition. A mini-booth is composed of a table, 2-3 chairs and poster panels. The HiPEAC industry exhibit takes place in the cocktail lunch and coffee break area. An ideal configuration to network with prospective interns, employees, partners, and clients. The majority of the HiPEAC member companies are present at the exhibition: http://www.hipeac.net/industry.</li>
+                </ul>
+                <p>At your preference, you may choose to target your donation on subsidizing student attendance, or on the participation of women in engineering and minorities. We will be happy to talk about ways to increase the visibility of your company or to discuss recruitment possibilities at the conference.</p>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

@@ -102,6 +102,9 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     def deadline_is_near(self) -> bool:
         return (self.deadline - timezone.now().date()).days < 7
 
+    def get_absolute_url(self) -> str:
+        return reverse('job', args=[self.id, self.slug])
+
     def get_pdf_url(self) -> str:
         return reverse('job_pdf', args=[self.id])
 
@@ -140,6 +143,7 @@ def job_post_save(sender, instance, created, *args, **kwargs):
             'HiPEAC Recruitment <recruitment@hipeac.net>',
             [instance.created_by.email],
             {
+                'job_url': instance.get_absolute_url(),
                 'job_title': instance.title,
                 'job_pdf_url': instance.get_pdf_url(),
                 'user_name': instance.created_by.profile.name,

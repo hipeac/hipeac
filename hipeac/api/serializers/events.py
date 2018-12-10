@@ -3,11 +3,26 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.functions import truncate_md
-from hipeac.models import Event, Registration, Poster, Roadshow, Session, Break, Sponsor, Project, get_cached_metadata
+from hipeac.models import Event, Registration, Poster, Roadshow, Session, Break, Sponsor, Project, Venue, Room
 from .generic import LinkSerializer, MetadataFieldWithPosition, MetadataListField
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .users import UserPublicMiniSerializer, UserPublicListSerializer
+
+
+class RoomSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Room
+        exclude = ('venue',)
+
+
+class VenueSerializer(serializers.ModelSerializer):
+    rooms = RoomSerializer(many=True)
+
+    class Meta:
+        model = Venue
+        exclude = ('id', 'country')
 
 
 class BreakSerializer(serializers.ModelSerializer):
@@ -63,25 +78,16 @@ class SessionNestedSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Session
         exclude = ('projects', 'summary', 'program', 'organizers', 'max_attendees', 'extra_attendees_fee',
-                   'created_at', 'updated_at')
+                   'created_at', 'updated_at', 'event')
 
 
 class SessionListSerializer(SessionNestedSerializer):
     application_areas = MetadataListField()
     topics = MetadataListField()
-    excerpt = serializers.SerializerMethodField(read_only=True)
     main_speaker = serializers.SerializerMethodField(read_only=True)
 
-    def is_keynote(self, obj):
-        if not hasattr(self, '_metadata'):
-            self._metadata = get_cached_metadata()
-        return self._metadata[obj.session_type_id].value == 'Keynote'
-
-    def get_excerpt(self, obj):
-        return truncate_md(obj.summary, limit=350) if self.is_keynote(obj) else ''
-
     def get_main_speaker(self, obj):
-        if self.is_keynote(obj) and obj.main_speaker_id:
+        if obj.main_speaker_id:
             return obj.main_speaker.profile.name
         return None
 
@@ -94,26 +100,28 @@ class SessionSerializer(SessionListSerializer):
     href = serializers.URLField(source='get_absolute_url', read_only=True)
     editor_href = serializers.URLField(source='get_editor_url', read_only=True)
     main_speaker = UserPublicListSerializer(read_only=True)
+    excerpt = serializers.SerializerMethodField(read_only=True)
 
     class Meta(SessionNestedSerializer.Meta):
-        exclude = ('created_at', 'updated_at')
+        exclude = ('created_at', 'updated_at',)
+
+    def get_excerpt(self, obj):
+        return truncate_md(obj.summary, limit=350)
 
 
 class EventNestedSerializer(serializers.ModelSerializer):
-    coordinating_institution = InstitutionNestedSerializer()
     country = CountryField(country_dict=True)
     url = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
     url_articles = serializers.HyperlinkedIdentityField(view_name='v1:event-articles')
     url_registrations = serializers.HyperlinkedIdentityField(view_name='v1:event-registrations')
     href = serializers.CharField(source='get_absolute_url', read_only=True)
     name = serializers.CharField(read_only=True)
-    links = LinkSerializer(required=False, many=True, allow_null=True)
     images = serializers.DictField(read_only=True)
     dates = serializers.ListField()
 
     class Meta:
         model = Event
-        exclude = ()
+        exclude = ('coordinating_institution', 'venues', 'travel_info', 'image')
 
 
 class EventListSerializer(EventNestedSerializer):
@@ -121,11 +129,18 @@ class EventListSerializer(EventNestedSerializer):
 
 
 class EventSerializer(EventNestedSerializer):
+    coordinating_institution = InstitutionNestedSerializer()
     fees = serializers.DictField(source='fees_dict', read_only=True)
+    links = LinkSerializer(required=False, many=True, allow_null=True)
     breaks = BreakSerializer(many=True, read_only=True)
     sessions = SessionListSerializer(many=True)
     sponsors = SponsorSerializer(many=True, read_only=True)
+    venues = VenueSerializer(many=True, read_only=True)
     is_early = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Event
+        exclude = ()
 
 
 class RoadshowNestedSerializer(serializers.ModelSerializer):

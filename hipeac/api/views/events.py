@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.db.models import Q
 from django.views.decorators.cache import never_cache
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
@@ -19,16 +19,22 @@ from ..serializers import (
 
 
 class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Event.objects.public().select_related('coordinating_institution').prefetch_related('links')
+    queryset = Event.objects.public()
     serializer_class = EventSerializer
 
     def list(self, request, *args, **kwargs):
+        self.queryset = self.queryset.defer('travel_info')
         self.pagination_class = None
         self.serializer_class = EventListSerializer
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related('sponsors', 'sessions__session_type')
+        self.queryset = self.queryset.select_related('coordinating_institution') \
+                                     .prefetch_related('breaks', 'fees', 'links',
+                                                       'venues__rooms',
+                                                       'sponsors__institution', 'sponsors__project',
+                                                       'sessions__session_type',
+                                                       'sessions__main_speaker__profile__institution')
         return super().retrieve(request, *args, **kwargs)
 
     @action(
@@ -71,6 +77,20 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
         return super().list(request, *args, **kwargs)
 
+    @action(
+        detail=True,
+        pagination_class=None,
+        serializer_class=SessionSerializer,
+    )
+    def sessions(self, request, *args, **kwargs):
+        session_type = request.query_params.get('session_type', False)
+        if not session_type:
+            raise PermissionDenied('Please include a `session_type` query parameter in your request.')
+
+        self.queryset = self.get_object().sessions.filter(session_type=session_type) \
+                                                  .prefetch_related('session_type', 'main_speaker__profile', 'projects',                  'links')
+        return super().list(request, *args, **kwargs)
+
 
 class RoadshowViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Roadshow.objects.prefetch_related('institutions')
@@ -82,14 +102,33 @@ class RoadshowViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return super().list(request, *args, **kwargs)
 
 
-class SessionViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Session.objects.prefetch_related('session_type', 'projects')
+class SessionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Session.objects.prefetch_related('session_type')
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = SessionSerializer
 
     def list(self, request, *args, **kwargs):
+        self.queryset = self.queryset.prefetch_related('main_speaker__profile')
         self.pagination_class = None
         self.serializer_class = SessionListSerializer
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.queryset = self.queryset.prefetch_related('main_speaker__profile__institution', 'projects', 'links')
+        return super().retrieve(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        # permission_classes=(HasRegistrationForEvent,),
+        serializer_class=RegistrationListSerializer,
+    )
+    def attendees(self, request, *args, **kwargs):
+        self.queryset = self.get_object().registrations \
+                            .select_related('user__profile') \
+                            .prefetch_related('user__profile__institution', 'user__profile__second_institution') \
+                            .prefetch_related('user__profile__projects')
+
         return super().list(request, *args, **kwargs)
 
 

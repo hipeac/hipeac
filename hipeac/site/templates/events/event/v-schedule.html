@@ -1,7 +1,7 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
     <div>
-        <ul class="nav nav-tabs justify-content-center">
+        <ul v-if="event && event.type == 'conference'" class="nav nav-tabs justify-content-center">
             <li class="nav-item">
                 <a is="router-link" class="nav-link" :to="{name: 'schedule'}" exact>
                     <icon name="category" class="mr-1"></icon>All sessions</a>
@@ -9,6 +9,10 @@
             <li class="nav-item">
                 <a is="router-link" class="nav-link" :to="{name: 'keynotes'}" exact>
                     <icon name="stars" class="mr-1"></icon>Keynotes</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" class="nav-link" :to="{name: 'papers'}" exact>
+                    <icon name="bookmark" class="mr-1"></icon>Paper Track</a>
             </li>
         </ul>
         <router-view></router-view>
@@ -73,6 +77,7 @@
                             <catchphrase class="mb-0">{{ session.startAt }}</catchphrase>
                         </div>
                         <div class="col-9 col-lg-11">
+                            <span v-if="event.rooms[session.room]">{{ event.rooms[session.room].name }}</span>
                             <span class="badge badge-light mr-2">{{ session.session_type.value }}</span>
                             <small class="text-secondary text-nowrap">
                                 <icon name="arrow_forward" class="sm mr-1"></icon>{{ session.endAt }}</small><br>
@@ -93,19 +98,28 @@
 
 <script type="text/x-template" id="{{ id }}-keynotes">
 {% verbatim %}
-    <div class="hipeac-card">
+    <div v-if="event" class="hipeac-card">
         <div class="row">
-            <div v-for="keynote in keynotes" class="col-12 col-md-6 col-lg d-flex align-items-stretch pr-md-5 mb-5 mb-lg-0">
-                <div class="d-flex flex-column">
-                    <p><strong>{{ keynote.date | moment('dddd, MMM Do') }}</strong> / {{ keynote.startAt }} - {{ keynote.endAt }}</p>
-                    <h6 class="text-light-weight">{{ keynote.main_speaker }}</h6>
-                    <h5 class="text-light-weight mb-auto">{{ keynote.title }}</h5>
-                    <marked :text="keynote.excerpt" class="mt-3"></marked>
-                    <router-link :to="{name: 'session', params: {sessionId: keynote.id}}">
-                        <span class="text-sm"><icon name="add" class="sm mr-1"></icon>More info</span>
-                    </router-link>
-                </div>
+            <div v-for="keynote in keynotes" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
+                <p><strong>{{ keynote.date | moment('dddd, MMM Do') }}</strong> / {{ keynote.startAt }} - {{ keynote.endAt }}</p>
+                <h6 class="text-light-weight">{{ keynote.main_speaker.profile.name }}</h6>
+                <h5 class="text-light-weight mb-auto">{{ keynote.title }}</h5>
+                <marked :text="keynote.excerpt" class="mt-3"></marked>
+                <router-link :to="{name: 'session', params: {sessionId: keynote.id}}">
+                    <span class="text-sm"><icon name="add" class="sm mr-1"></icon>More info</span>
+                </router-link>
             </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-papers">
+{% verbatim %}
+    <div v-if="event" class="hipeac-card">
+        <div v-for="papers in papers">
+            <display-sm>{{ papers.date | moment }}: {{ papers.title }}</display-sm>
+            <marked :text="papers.summary"></marked>
         </div>
     </div>
 {% endverbatim %}

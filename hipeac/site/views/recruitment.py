@@ -93,7 +93,7 @@ class JobsPdfMaker:
             for job in self.jobs:
                 location = f'{job.location}, {job.country.name}' if job.location else job.country.name
 
-                pdf.add_note(f'Find more at hipeac.net/jobs/{job.id}')
+                pdf.add_note(f'Find more on our web: hipeac.net/jobs/{job.id}')
                 if job.institution:
                     pdf.add_text(f'<strong>{job.institution.name}</strong>', 'h4')
                 pdf.add_text(location, 'h4')

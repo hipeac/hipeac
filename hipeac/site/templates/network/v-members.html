@@ -1,13 +1,53 @@
+{% load hipeac %}
+{% load static %}
+
+
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
     <div>
-        <table v-if="fullMembers.length" class="table table-sm">
-            <tr v-for="member in fullMembers" :key="member.id">
-                <td>{{ member.profile.name }}</td>
-                <td><span v-if="member.institution">{{ member.institution.short_name }}</span></td>
-                <td>{{ member.profile.membership_tags }}</td>
-            </tr>
-        </table>
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <a is="router-link" class="nav-link" :to="{name: 'members'}" exact>
+                    <icon name="line_weight" class="mr-1"></icon>Members list</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" class="nav-link" :to="{name: 'membership'}" exact>
+                    <icon name="accessibility_new" class="mr-1"></icon>Membership</a>
+            </li>
+        </ul>
+        <router-view></router-view>
     </div>
 {% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-main">
+{% verbatim %}
+    <div>
+        <search-card placeholder="Search members by name, affiliation, country..." class="mb-2"></search-card>
+        <div class="hipeac-card">
+            <user-viewer v-if="members.length" :users="members" :ids="filteredIds"></user-viewer>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-membership">
+    <div class="row">
+        <div class="col-12 col-md-4 d-flex align-items-stretch">
+            <div class="hipeac-card">
+                <a href="mailto:membership@hipeac.net" class="btn btn-sm btn-block btn-primary">{{ membership.header }}</a>
+                <hr class="my-4">
+                <div class="marked catchphrase-first">{{ membership.content | markdown }}</div>
+                <img src="{% static 'images/membership-small.jpg' %}" class="my-4 w-100">
+            </div>
+        </div>
+        <div class="col-12 col-md-8 d-flex align-items-stretch">
+            <div class="hipeac-card">
+                <display-sm class="mb-3">{{ charter.header }}</display-sm>
+                <div class="marked">{{ charter.content | markdown }}</div>
+                <display-sm class="mt-4 mb-3">{{ how_to.header }}</display-sm>
+                <div class="marked">{{ how_to.content | markdown }}</div>
+            </div>
+        </div>
+    </div>
 </script>

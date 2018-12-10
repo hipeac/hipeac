@@ -8,6 +8,7 @@ from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import (
     InstitutionMiniSerializer, InstitutionListSerializer, InstitutionSerializer,
     ProjectMiniSerializer, ProjectListSerializer, ProjectSerializer,
+    JobNestedSerializer,
     UserPublicMiniSerializer,
     VideoListSerializer
 )
@@ -31,6 +32,15 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
     def retrieve(self, request, *args, **kwargs):
         self.queryset = self.queryset.select_related('parent').prefetch_related('children', 'links')
         return super().retrieve(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        serializer_class=JobNestedSerializer,
+    )
+    def jobs(self, request, *args, **kwargs):
+        self.queryset = self.get_object().jobs.active()
+        return super().list(request, *args, **kwargs)
 
 
 class MemberViewSet(ListModelMixin, GenericViewSet):
@@ -72,6 +82,15 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
     @action(detail=False, serializer_class=ProjectMiniSerializer)
     def all(self, request, *args, **kwargs):
         self.queryset = self.queryset.only('id', 'programme', 'acronym', 'name', 'ec_project_id', 'image')
+        return super().list(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        serializer_class=JobNestedSerializer,
+    )
+    def jobs(self, request, *args, **kwargs):
+        self.queryset = self.get_object().jobs.active()
         return super().list(request, *args, **kwargs)
 
     @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)

@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-12 col-md-2 d-none d-md-block">
                 {% if institution.images %}
-                    <img src="{{ institution.images.md }}" class="max-90">
+                    <img src="{{ institution.images.md }}" class="max-90 mt-md-4 mb-5">
                 {% endif %}
             </div>
             <div class="col-12 col-md-10">
@@ -85,7 +85,7 @@
                 </div>
             </div>
         </div>
-        <div is="open-jobs-row" url="{% url 'v1:institution-detail' institution.id %}"></div>
+        <div is="open-jobs-row" url="{% url 'v1:institution-jobs' institution.id %}"></div>
     </div>
 {% endblock %}
 

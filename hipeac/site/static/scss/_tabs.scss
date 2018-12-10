@@ -3,6 +3,10 @@
     -ms-flex-wrap: nowrap;
     flex-wrap: nowrap;
 
+    .nav-item {
+        z-index: 999;
+    }
+
     .nav-link {
         font-size: 0.85rem;
 

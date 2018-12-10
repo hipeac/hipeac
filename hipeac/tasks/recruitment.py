@@ -70,7 +70,7 @@ def send_expiration_reminders():
 @periodic_task(run_every=crontab(day_of_week='mon-fri', hour=11, minute=0))
 def send_evaluations():
     two_weeks_ago = (timezone.now() - timedelta(days=14)).date()
-    jobs = Job.objects.filter(deadline__lte=two_weeks_ago, evaluation_sent_for__isnull=True) \
+    jobs = Job.objects.filter(deadline__isnull=False, deadline__lte=two_weeks_ago, evaluation_sent_for__isnull=True) \
                       .select_related('institution', 'created_by__profile')
 
     # send emails
@@ -79,7 +79,7 @@ def send_evaluations():
             'recruitment.jobs.evaluation',
             f'[HiPEAC Jobs] Satisfaction survey @ {context_data["institution_name"]}',
             RECRUITMENT_EMAIL,
-            ['eneko@illarra.com'],  # TODO: update
+            [context_data['user_email']],
             context_data,
         )
         for job in context_data['jobs']:

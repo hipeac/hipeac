@@ -11,9 +11,13 @@
                         <li v-if="session.program" class="nav-item">
                             <router-link class="nav-link" :to="{name: 'sessionProgram', params: {sessionId: session.id}}" exact>Program</router-link>
                         </li>
-                        <!--<li class="nav-item">
-                            <a class="nav-link" href="#"><i class="material-icons mr-2">people</i>Attendees</a>
-                        </li>-->
+                        {% endverbatim %}
+                        {% if user.is_authenticated %}
+                            <li v-if="user.isRegistered" class="nav-item">
+                                <router-link class="nav-link" :to="{name: 'sessionAttendees', params: {sessionId: session.id}}" exact>Attendees</router-link>
+                            </li>
+                        {% endif %}
+                        {% verbatim %}
                         <li class="nav-item pointer ml-auto">
                             <a class="nav-link" @click.prevent="closeModal"><i class="material-icons">close</i></a>
                         </li>
@@ -32,12 +36,15 @@
 
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
-    <div class="row">
-        <div class="col-12 col-md-8 pr-md-4">
-            <marked v-if="session.summary" :text="session.summary"></marked>
-        </div>
-        <div class="col-12 col-md-4 border-left pl-md-4">
-            <display-sm class="mb-3"><i class="material-icons sm mr-2">today</i>{{ session.date | moment }}</display-sm>
+    <div v-if="event && session" class="row">
+        <div class="col-12 col-md-4 order-md-last border-left pl-md-4">
+            <display-sm class="mb-1">Practical info</display-sm>
+            <ul class="list-unstyled text-sm mb-4">
+                <li><i class="material-icons sm">today</i> {{ session.date | moment }}</li>
+                <li><i class="material-icons sm">schedule</i> {{ session.startAt }} - {{ session.endAt }}</li>
+                <li v-if="event.rooms[session.room]">
+                    <i class="material-icons sm">room</i> {{ event.rooms[session.room].name }}</li>
+            </ul>
             <metadata-badges v-if="session.topics.length" title="Topics" :items="session.topics"></metadata-badges>
             <metadata-badges v-if="session.application_areas.length" title="Application areas" :items="session.application_areas" color="secondary"></metadata-badges>
             <div v-if="session.organizers">
@@ -45,14 +52,25 @@
                 <marked :text="session.organizers" class="text-sm"></marked>
             </div>
         </div>
+        <div class="col-12 col-md-8 pr-md-4 order-md-first">
+            <marked v-if="session.summary" :text="session.summary"></marked>
+        </div>
     </div>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="{{ id }}-program">
 {% verbatim %}
-    <div>
+    <div v-if="session">
         <marked v-if="session.program" :text="session.program"></marked>
+    </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-attendees">
+{% verbatim %}
+    <div v-if="user.isRegistered">
+        <user-viewer v-if="attendees.length" :users="attendees"></user-viewer>
     </div>
 {% endverbatim %}
 </script>

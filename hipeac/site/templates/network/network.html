@@ -42,7 +42,7 @@
     {% include './v-about.html' with id='v-about' display=flatpage.content tbs=flatpage.page.tbs %}
     {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
     {% include './v-innovation.html' with id='v-innovation' header=flatpage.page.tbs.about_innovation.content benefits=flatpage.page.tbs.innovation_benefits get_involved=flatpage.page.tbs.innovation_get_involved %}
-    {% include './v-members.html' with id='v-members' %}
+    {% include './v-members.html' with id='v-members' membership=flatpage.page.tbs.membership charter=flatpage.page.tbs.membership_charter how_to=flatpage.page.tbs.membership_how_to %}
     {% include './v-projects.html' with id='v-projects' %}
     {% include './v-researchers.html' with id='v-researchers' header=flatpage.page.tbs.about_researchers.content benefits=flatpage.page.tbs.researchers_benefits get_involved=flatpage.page.tbs.researchers_get_involved %}
     {% include './v-students.html' with id='v-students' header=flatpage.page.tbs.about_students.content benefits=flatpage.page.tbs.students_benefits get_involved=flatpage.page.tbs.students_get_involved %}
@@ -59,14 +59,9 @@
                 projects: []
             },
             mutations: {
-                fetchInstitutions: function (state) {
-                    api().getAllInstitutions().done(function (res) {
-                        state.institutions = res;
-                    });
-                },
                 fetchMembers: function (state) {
                     ajax().get($('#urls').data('member-list')).done(function (res) {
-                        state.members = res;
+                        state.members = mapper().users(res);
                     });
                 },
                 fetchAffiliates: function (state) {
@@ -101,29 +96,42 @@
         };
 
         var MembersView = {
-            template: '#v-members',
+            template: '#v-members'
+        };
+
+        var MembersMainView = {
+            template: '#v-members-main',
             data: function () {
                 return {
-                    filters: {
-                        topics: []
-                    }
+                    q: ''
                 }
             },
             computed: _.extend(
-                Vuex.mapGetters(['fullMembers']), {
+                Vuex.mapState(['members']), {
+                filteredIds: function () {
+                    if (!this.members) return null;
+                    return _.pluck(filterMultiple(this.members, this.q), 'id');
+                }
             }),
             methods: {
                 resetFilters: function () {
                     this.filters.topics = [];
+                },
+                updateQuery: function (val) {
+                    this.q = val;
                 }
             },
             created: function () {
+                EventHub.$on('query-changed', this.updateQuery);
                 $.when(
-                    this.$store.commit('fetchInstitutions'),
                     this.$store.commit('fetchMembers'),
                     this.$store.commit('fetchAffiliates')
                 );
             }
+        };
+
+        var MembershipView = {
+            template: '#v-members-membership'
         };
 
         var ProjectsView = {
@@ -192,10 +200,23 @@
                     component: InnovationView
                 },
                 {
-                    name: 'members',
                     path: '/members/',
                     pathToRegexpOptions: {strict: true},
-                    component: MembersView
+                    component: MembersView,
+                    children: [
+                        {
+                            name: 'members',
+                            path: '',
+                            pathToRegexpOptions: {strict: true},
+                            component: MembersMainView
+                        },
+                        {
+                            name: 'membership',
+                            path: 'membership/',
+                            pathToRegexpOptions: {strict: true},
+                            component: MembershipView
+                        }
+                    ]
                 },
                 {
                     name: 'projects',
