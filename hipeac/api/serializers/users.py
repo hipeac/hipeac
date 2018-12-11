@@ -6,6 +6,7 @@ from rest_framework import serializers
 
 from hipeac.models import Profile, Project
 from .generic import LinkSerializer, MetadataListField
+from .institutions import InstitutionMiniSerializer
 
 
 class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
@@ -15,21 +16,41 @@ class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
     country = CountryField(country_dict=True)
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
     name = serializers.CharField(read_only=True)
+    membership_tags = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Profile
         exclude = ('user', 'is_bouncing', 'is_public', 'is_subscribed', 'meal_preference')
 
+    def get_membership_tags(self, obj):
+        return obj.membership_tags.split(',') if obj.membership_tags else []
 
-class ProfileNestedSerializer(ProfileSerializer):
+
+class ProfileMiniSerializer(ProfileSerializer):
+    name = serializers.CharField(read_only=True)
+    institution = InstitutionMiniSerializer(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ('name', 'country', 'institution', 'second_institution', 'application_areas', 'topics')
+        fields = ('name', 'country', 'institution')
 
 
-class UserPublicListSerializer(serializers.ModelSerializer):
-    profile = ProfileNestedSerializer()
+class ProfileNestedSerializer(ProfileSerializer):
+    institution = InstitutionMiniSerializer(read_only=True)
+    second_institution = InstitutionMiniSerializer(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ('name', 'country', 'institution', 'second_institution', 'membership_date', 'membership_tags',
+                  'application_areas', 'topics')
+
+
+# Users
+# -----
+
+
+class UserPublicSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
     url = serializers.HyperlinkedIdentityField(view_name='v1:user-detail')
     href = serializers.SerializerMethodField()
 
@@ -41,8 +62,12 @@ class UserPublicListSerializer(serializers.ModelSerializer):
         return reverse('user', args=[obj.username])
 
 
-class UserPublicSerializer(UserPublicListSerializer):
-    profile = ProfileSerializer()
+class UserPublicMiniSerializer(UserPublicSerializer):
+    profile = ProfileMiniSerializer()
+
+
+class UserPublicListSerializer(UserPublicSerializer):
+    profile = ProfileNestedSerializer()
 
 
 class AuthUserSerializer(NestedUpdateMixin, serializers.ModelSerializer):
@@ -54,25 +79,3 @@ class AuthUserSerializer(NestedUpdateMixin, serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         exclude = ('password', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
-
-
-# Members
-# -------
-
-class MemberProfileSerializer(ProfileSerializer):
-    institution = serializers.PrimaryKeyRelatedField(read_only=True)
-    second_institution = serializers.PrimaryKeyRelatedField(read_only=True)
-    name = serializers.CharField(read_only=True)
-    membership_tags = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = Profile
-        fields = ('name', 'country', 'institution', 'second_institution', 'application_areas', 'topics',
-                  'membership_date', 'membership_tags', 'advisor_id')
-
-    def get_membership_tags(self, obj):
-        return obj.membership_tags.split(',')
-
-
-class MemberPublicSerializer(UserPublicSerializer):
-    profile = MemberProfileSerializer()

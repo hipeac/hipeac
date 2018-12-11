@@ -6,9 +6,9 @@ from rest_framework.viewsets import GenericViewSet
 from hipeac.models import Institution, Project, Video
 from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import (
-    InstitutionAllSerializer, InstitutionListSerializer, InstitutionSerializer,
-    ProjectAllSerializer, ProjectListSerializer, ProjectSerializer,
-    MemberPublicSerializer,
+    InstitutionMiniSerializer, InstitutionListSerializer, InstitutionSerializer,
+    ProjectMiniSerializer, ProjectListSerializer, ProjectSerializer,
+    UserPublicMiniSerializer,
     VideoListSerializer
 )
 
@@ -23,9 +23,9 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
         self.serializer_class = InstitutionListSerializer
         return super().list(request, *args, **kwargs)
 
-    @action(detail=False, pagination_class=None, serializer_class=InstitutionAllSerializer)
+    @action(detail=False, pagination_class=None, serializer_class=InstitutionMiniSerializer)
     def all(self, request, *args, **kwargs):
-        self.queryset = self.queryset.only('id', 'name', 'local_name', 'colloquial_name', 'type', 'country')
+        self.queryset = self.queryset.only('id', 'name', 'local_name', 'colloquial_name', 'type', 'country', 'image')
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
@@ -40,7 +40,7 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
                                        .defer('profile__bio', 'affiliates__bio')
 
     pagination_class = None
-    serializer_class = MemberPublicSerializer
+    serializer_class = UserPublicMiniSerializer
 
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.filter(
@@ -69,9 +69,9 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
         self.serializer_class = ProjectListSerializer
         return super().list(request, *args, **kwargs)
 
-    @action(detail=False, serializer_class=ProjectAllSerializer)
+    @action(detail=False, serializer_class=ProjectMiniSerializer)
     def all(self, request, *args, **kwargs):
-        self.queryset = self.queryset.only('id', 'programme', 'acronym', 'name', 'ec_project_id')
+        self.queryset = self.queryset.only('id', 'programme', 'acronym', 'name', 'ec_project_id', 'image')
         return super().list(request, *args, **kwargs)
 
     @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)

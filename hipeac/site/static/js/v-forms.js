@@ -368,7 +368,7 @@ var AucompletePopupElement = FormElement.extend({
             } else {
                 this.$emit('input', this.values[0]);
                 if (this.type == 'institution') {
-                    var countryCode = _.findWhere(this.filteredItems, {id: this.values[0]}).country;
+                    var countryCode = _.findWhere(this.filteredItems, {id: this.values[0]}).country.code;
                     EventHub.$emit('force-country', countryCode);
                 }
             }

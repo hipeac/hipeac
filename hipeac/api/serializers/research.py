@@ -12,12 +12,19 @@ class PublicationConferenceListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PublicationListSerializer(serializers.ModelSerializer):
+class PublicationSerializer(serializers.ModelSerializer):
     conference = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Publication
-        exclude = ('authors',)
+        exclude = ()
 
     def get_conference(self, obj) -> str:
         return str(obj.conference) if obj.conference else None
+
+
+class PublicationListSerializer(PublicationSerializer):
+
+    class Meta:
+        model = Publication
+        exclude = ('authors',)

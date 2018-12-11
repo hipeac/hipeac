@@ -1,52 +1,40 @@
 from django_countries.serializer_fields import CountryField
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.models import Institution
 from .generic import LinkSerializer, MetadataListField
 
 
-class InstitutionAllSerializer(serializers.ModelSerializer):
-    short_name = serializers.CharField(read_only=True)
-    country = serializers.CharField(read_only=True)
-
-    class Meta:
-        model = Institution
-        fields = ('id', 'name', 'local_name', 'short_name', 'type', 'country')
-
-
-class InstitutionNestedSerializer(serializers.ModelSerializer):
+class InstitutionSerializer(WritableNestedModelSerializer):
+    application_areas = MetadataListField()
+    topics = MetadataListField()
+    links = LinkSerializer(many=True)
+    children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     country = CountryField(country_dict=True)
+    short_name = serializers.CharField(read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name='v1:institution-detail', read_only=True)
     href = serializers.CharField(source='get_absolute_url', read_only=True)
-    short_name = serializers.CharField(read_only=True)
 
     class Meta:
         model = Institution
         read_only_fields = ('image', 'images')
-        fields = ['id', 'name', 'local_name', 'short_name', 'images', 'url', 'href', 'location', 'country', 'type']
+        exclude = ('colloquial_name',)
+
+
+class InstitutionMiniSerializer(InstitutionSerializer):
+
+    class Meta:
+        model = Institution
+        fields = ('id', 'type', 'name', 'local_name', 'short_name', 'country')
+
+
+class InstitutionNestedSerializer(InstitutionSerializer):
+
+    class Meta():
+        model = Institution
+        fields = ('id', 'type', 'name', 'local_name', 'short_name', 'location', 'country', 'url', 'href', 'images')
 
 
 class InstitutionListSerializer(InstitutionNestedSerializer):
-    application_areas = MetadataListField()
-
-    class Meta(InstitutionNestedSerializer.Meta):
-        fields = InstitutionNestedSerializer.Meta.fields + ['application_areas']
-
-
-class InstitutionSerializer(InstitutionNestedSerializer):
-    application_areas = MetadataListField()
-    topics = MetadataListField()
-    slug = serializers.CharField(read_only=True)
-    links = LinkSerializer(read_only=True, many=True)
-    children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
-    open_positions = serializers.SerializerMethodField(read_only=True)
-
-    class Meta(InstitutionNestedSerializer.Meta):
-        fields = InstitutionNestedSerializer.Meta.fields + [
-            'application_areas', 'topics', 'parent', 'children', 'slug', 'open_positions', 'description', 'links'
-        ]
-
-    def get_open_positions(self, obj):
-        from .recruitment import JobNestedSerializer  # noqa
-        jobs = obj.jobs.active().defer('description')
-        return JobNestedSerializer(jobs, many=True, context=self.context).data
+    pass

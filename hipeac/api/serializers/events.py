@@ -7,7 +7,7 @@ from hipeac.models import Event, Registration, Poster, Roadshow, Session, Break,
 from .generic import LinkSerializer, MetadataField, MetadataFieldWithPosition, MetadataListField
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
-from .users import UserPublicListSerializer
+from .users import UserPublicMiniSerializer, UserPublicListSerializer
 
 
 class BreakSerializer(serializers.ModelSerializer):
@@ -34,7 +34,7 @@ class PosterSerializer(serializers.ModelSerializer):
 
 
 class RegistrationListSerializer(serializers.ModelSerializer):
-    user = UserPublicListSerializer()
+    user = UserPublicMiniSerializer()
 
     class Meta:
         model = Registration

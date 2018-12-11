@@ -35,6 +35,7 @@
                 <markdown-textarea v-model.trim="obj.description" field="description"></markdown-textarea>
                 <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
                 <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
+                <link-fieldset v-model="obj.links" field="links" help="One or more external websites."></link-fieldset>
             </form>
             <hr class="my-4">
             <automatic-updates></automatic-updates>
