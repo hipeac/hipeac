@@ -37,12 +37,13 @@ class PublicationManager(models.Manager):
     def awarded(self, *, year: int):
         date = datetime.date(year, 12, 31)
         return super().get_queryset() \
+            .exclude(authors__membership_tags__contains='non-eu') \
             .filter(
                 Q(
+                    authors__membership_tags__contains='member',
                     conference__isnull=False,
                     conference__year=year,
                     itemtype='ScholarlyArticle',
-                    authors__membership_tags__contains='member-eu'
                 ),
                 (Q(authors__membership_date__lte=date) | Q(authors__membership_date__isnull=True)),
                 (Q(authors__membership_date__lte=date) | Q(authors__membership_date__isnull=True)),
