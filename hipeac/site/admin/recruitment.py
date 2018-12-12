@@ -4,7 +4,7 @@ from django.urls import path
 from django.utils import timezone
 
 from hipeac.forms import ApplicationAreasChoiceField, JobPositionChoiceField, TopicsChoiceField
-from hipeac.models import Job, JobEvaluation
+from hipeac.models import Job, JobEvaluation, Event
 from hipeac.site.views import JobsPdfMaker
 from hipeac.tools.csv import ModelCsvWriter
 from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
@@ -69,20 +69,26 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
 
     def get_urls(self):
         my_urls = [
-            path('pdf/', self.pdf_current_jobs, name='recruitment_pdf_current_jobs')
+            path('pdf/', self.pdf_current_jobs, name='recruitment_pdf_current_jobs'),
+            path('pdf/upcoming/', self.pdf_upcoming_event_jobs, name='recruitment_pdf_upcoming_event_jobs'),
         ]
         return my_urls + super().get_urls()
 
-    def pdf_response(self, jobs, as_attachment=True):
-        maker = JobsPdfMaker(jobs=jobs, filename='hipeac-jobs.pdf', as_attachment=as_attachment)
+    def pdf_response(self, jobs, filename: str = 'hipeac--jobs.pdf', as_attachment: bool = False):
+        maker = JobsPdfMaker(jobs=jobs, filename=filename, as_attachment=as_attachment)
         return maker.response
 
     def pdf_current_jobs(self, request):
-        jobs = Job.objects.filter(deadline__gte=timezone.now().date()).order_by('institution__name', 'deadline')
-        return self.pdf_response(jobs, False)
+        jobs = Job.objects.active().order_by('institution__name', 'deadline')
+        return self.pdf_response(jobs)
+
+    def pdf_upcoming_event_jobs(self, request):
+        upcoming_event = Event.objects.upcoming()
+        jobs = upcoming_event.jobs.order_by('institution__name', 'deadline')
+        return self.pdf_response(jobs, f'{upcoming_event.slug}-{upcoming_event.year}--jobs.pdf')
 
     def select_export_pdf(self, request, queryset):
-        return self.pdf_response(queryset, False)
+        return self.pdf_response(queryset)
     select_export_pdf.short_description = ('[PDF] Generate printable document for selected jobs')
 
     def select_export_csv(self, request, queryset):

@@ -3,11 +3,13 @@ import datetime
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django_countries.fields import CountryField
 from typing import List
 
@@ -42,6 +44,9 @@ def validate_event_dates(event):
 class EventManager(models.Manager):
     def public(self):
         return super().get_queryset().exclude(type=EC_MEETING)
+
+    def upcoming(self):
+        return self.public().filter(end_date__gte=timezone.now().date()).first()
 
 
 class Event(ImagesMixin, LinkMixin, models.Model):
@@ -107,11 +112,11 @@ class Event(ImagesMixin, LinkMixin, models.Model):
 
     @property
     def google_maps_url(self) -> str:
-        self.get_link(Link.GOOGLE_MAPS)
+        return self.get_link(Link.GOOGLE_MAPS)
 
     @property
     def google_photos_url(self) -> str:
-        self.get_link(Link.GOOGLE_PHOTOS)
+        return self.get_link(Link.GOOGLE_PHOTOS)
 
     def is_early(self) -> bool:
         if not self.registration_early_deadline:
@@ -145,6 +150,24 @@ class Event(ImagesMixin, LinkMixin, models.Model):
         if not hasattr(self, '_fees'):
             self._fees = dict(self.fees.values_list('type', 'value'))
         return self._fees
+
+    @cached_property
+    def jobs(self):
+        from hipeac.models import Job
+        sponsors = self.sponsors.values_list('institution_id', 'project_id')
+        if sponsors:
+            a, b = map(list, zip(*sponsors))
+            institution_ids, project_ids = list(filter(None, a)), list(filter(None, b))
+            queryset = Job.objects.active().filter(
+                (Q(institution__in=institution_ids) | Q(project__in=project_ids)),
+            )
+        else:
+            queryset = Job.objects.none()
+        return queryset
+
+    @property
+    def year(self) -> int:
+        return self.start_date.year
 
 
 @receiver(post_save, sender=Event)

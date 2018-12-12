@@ -2,6 +2,7 @@
 
 
 {% block object-tools-items %}
-    <li><a href="{% url 'admin:recruitment_pdf_current_jobs' %}" target="_blank">Active jobs PDF</a></li>
+    <li><a href="{% url 'admin:recruitment_pdf_upcoming_event_jobs' %}" target="_blank">Upcoming event jobs</a></li>
+    <li><a href="{% url 'admin:recruitment_pdf_current_jobs' %}" target="_blank">Active jobs</a></li>
     {{ block.super }}
 {% endblock %}
