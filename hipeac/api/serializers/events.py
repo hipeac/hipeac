@@ -101,12 +101,20 @@ class SessionSerializer(SessionListSerializer):
     editor_href = serializers.URLField(source='get_editor_url', read_only=True)
     main_speaker = UserPublicListSerializer(read_only=True)
     excerpt = serializers.SerializerMethodField(read_only=True)
+    projects_info = serializers.SerializerMethodField(read_only=True)
 
     class Meta(SessionNestedSerializer.Meta):
         exclude = ('created_at', 'updated_at',)
 
     def get_excerpt(self, obj):
         return truncate_md(obj.summary, limit=350)
+
+    def get_projects_info(self, obj):
+        return [{
+            'name': project.short_name,
+            'href': project.get_absolute_url(),
+            'image': project.images['sm'] if project.images and 'sm' in project.images else None,
+        } for project in obj.projects.all()]
 
 
 class EventNestedSerializer(serializers.ModelSerializer):
