@@ -17,6 +17,7 @@ class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
     name = serializers.CharField(read_only=True)
     membership_tags = serializers.SerializerMethodField(read_only=True)
+    avatar_url = serializers.CharField(read_only=True)
 
     class Meta:
         model = Profile
@@ -32,7 +33,7 @@ class ProfileMiniSerializer(ProfileSerializer):
 
     class Meta:
         model = Profile
-        fields = ('name', 'country', 'institution')
+        fields = ('name', 'country', 'institution', 'avatar_url')
 
 
 class ProfileNestedSerializer(ProfileSerializer):
@@ -42,7 +43,7 @@ class ProfileNestedSerializer(ProfileSerializer):
     class Meta:
         model = Profile
         fields = ('name', 'country', 'institution', 'second_institution', 'membership_date', 'membership_tags',
-                  'application_areas', 'topics')
+                  'application_areas', 'topics', 'avatar_url')
 
 
 # Users

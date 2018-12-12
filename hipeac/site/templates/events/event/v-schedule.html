@@ -57,9 +57,7 @@
         <div v-if="event" class="hipeac-card">
             <div v-for="(data, date) in event.schedule" class="row">
                 <div class="col-12 col-md-2">
-                    <display-md class="mt-0">{{ date | moment }}</display-md>
-                </div>
-                <div class="col-12 col-md-10">
+                    <display-md class="mt-0 mb-3 text-left">{{ date | moment }}</display-md>
                     <div v-if="data.breaks">
                         <ul class="list-unstyled text-secondary">
                             <li v-for="bre in data.breaks" :key="bre.id" class="text-sm">
@@ -71,6 +69,8 @@
                             </li>
                         </ul>
                     </div>
+                </div>
+                <div class="col-12 col-md-10">
                     <div v-if="data.sessions" v-for="session in data.sessions" :key="session.id" class="row" :v-hide="filteredSessionIds.indexOf(session.id) < 0">
                         <div class="col-12"><hr></div>
                         <div class="col-3 col-lg-1">
@@ -103,6 +103,7 @@
             <div v-for="keynote in keynotes" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
                 <p><strong>{{ keynote.date | moment('dddd, MMM Do') }}</strong> / {{ keynote.startAt }} - {{ keynote.endAt }}</p>
                 <h6 class="text-light-weight">{{ keynote.main_speaker.profile.name }}</h6>
+                <img class="mr-3" :src="keynote.main_speaker.profile.avatar_url" class="rounded-circle float-right ml-3 mb-3">
                 <h5 class="text-light-weight mb-auto">{{ keynote.title }}</h5>
                 <marked :text="keynote.excerpt" class="mt-3"></marked>
                 <router-link :to="{name: 'session', params: {sessionId: keynote.id}}">

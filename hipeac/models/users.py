@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_comma_separated_integer_list
+from django.core.validators import FileExtensionValidator, validate_comma_separated_integer_list
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -10,7 +10,9 @@ from django.utils.functional import cached_property
 from django_countries.fields import CountryField
 from hashlib import md5
 
+from hipeac.functions import get_images_path, send_task
 from hipeac.models import Metadata
+from .mixins import ImagesMixin
 
 
 def validate_membership_tags(value: str):
@@ -30,7 +32,7 @@ class ProfileManager(models.Manager):
         return super().get_queryset().select_related('user', 'gender', 'title', 'meal_preference')
 
 
-class Profile(models.Model):
+class Profile(ImagesMixin, models.Model):
     """
     Extends Django User model with extra profile fields.
     """
@@ -53,6 +55,8 @@ class Profile(models.Model):
                                     related_name='profiles')
     second_institution = models.ForeignKey('hipeac.Institution', null=True, blank=True, on_delete=models.SET_NULL,
                                            related_name='second_profiles')
+    image = models.FileField('Avatar', upload_to=get_images_path, null=True, blank=True,
+                             validators=[FileExtensionValidator(allowed_extensions=['jpg'])])
 
     membership_tags = models.CharField(max_length=150, null=True, blank=True, validators=[validate_membership_tags])
     membership_date = models.DateField(null=True, blank=True)
@@ -113,13 +117,22 @@ class Profile(models.Model):
         return f'{self.user.first_name} {self.user.last_name}'
 
     @cached_property
-    def avatar_url(self, size: int = 96):
+    def avatar_url(self, size: int = 80) -> str:
         try:
+            if self.images:
+                return self.images['sm']
+
             email_hash = md5(self.user.email.lower().encode('utf-8')).hexdigest()
         except Exception:
             email_hash = md5('hipeac@hipeac.net'.encode('utf-8')).hexdigest()
 
         return f'https://www.gravatar.com/avatar/{email_hash}?s={size}&d=retro&r=PG'
+
+
+@receiver(post_save, sender=Profile)
+def post_save_profile(sender, instance, created, **kwargs):
+    if instance.image_has_changed():
+        send_task('hipeac.tasks.imaging.generate_avatar_variants', (instance.image.path,))
 
 
 @receiver(post_save, sender=get_user_model())

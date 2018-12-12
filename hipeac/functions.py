@@ -16,7 +16,11 @@ def get_absolute_uri() -> str:
 def get_images_path(instance, filename: str) -> str:
     content_type = ContentType.objects.get_for_model(instance)
     extension = filename.rsplit('.', 1)[1]
-    return ''.join(['public/images/', str(content_type.id), '/', str(instance.id), '.', extension])
+    try:
+        key = getattr(instance, 'id')
+    except Exception:
+        key = getattr(instance, 'user_id')  # TODO: clean hack
+    return f'public/images/{content_type.id}/{key}.{extension}'
 
 
 def get_image_variant_paths(image_url: str, *, extension: str = '.png', pre: str = '') -> Dict[str, str]:

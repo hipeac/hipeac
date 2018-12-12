@@ -39,8 +39,22 @@
 
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
-    <div v-if="event && session" class="row">
-        <div class="col-12 col-md-4 order-md-last">
+    <div v-if="event" class="row">
+        <div class="col-12 col-md-8 pr-md-5">
+            <div v-if="session.main_speaker && session.main_speaker.profile">
+                <div class="media mb-4">
+                    <img :src="session.main_speaker.profile.avatar_url" class="rounded-circle mr-3">
+                    <div class="media-body">
+                        <h6 class="mt-0">{{ session.main_speaker.profile.name }}</h6>
+                        <p v-if="session.main_speaker.profile.institution" class="text-sm">{{ session.main_speaker.profile.institution.name }}<br>{{ session.main_speaker.profile.institution.country.name }}</p>
+                    </div>
+                </div>
+            </div>
+            <marked v-if="session.summary" :text="session.summary"></marked>
+            <skeleton-content v-else></skeleton-content>
+        </div>
+        <div class="col-12 col-md-4">
+            <hr class="my-4 d-block d-md-none">
             <div class="row">
                 <div class="col-6 col-md-12">
                     <display-sm class="mb-1">Practical info</display-sm>
@@ -57,7 +71,7 @@
                         <marked :text="session.organizers" class="text-sm"></marked>
                     </div>
                 </div>
-                <div class="col-6 col-md-12">
+                <div v-if="session.projects" class="col-6 col-md-12">
                     <div v-if="session.projects.length" class="mb-4">
                         <display-sm>Projects involved</display-sm>
                         <a v-for="proj in session.projects_info" :key="proj.image" :href="proj.href" target="_blank" v-if="proj.image">
@@ -66,9 +80,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-md-8 pr-md-5 order-md-first">
-            <marked v-if="session.summary" :text="session.summary"></marked>
         </div>
     </div>
 {% endverbatim %}

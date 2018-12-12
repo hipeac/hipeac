@@ -6,6 +6,21 @@ from hipeac.tools.imaging import contain, generate_square_thumbnail, resize, tri
 
 
 @task()
+def generate_avatar_variants(path: str):
+    img = Image.open(path)
+    variant_paths = get_image_variant_paths(path, extension='.jpg')
+    images = {
+        'sm': generate_square_thumbnail(img.copy(), side=80, padding=0),
+        'md': generate_square_thumbnail(img.copy(), side=200, padding=0),
+    }
+
+    for size, image in images.items():
+        image.save(variant_paths[size], 'JPEG')
+
+    return True
+
+
+@task()
 def generate_banner_variants(path: str):
     img = Image.open(path)
     variant_paths = get_image_variant_paths(path, extension='.jpg')
