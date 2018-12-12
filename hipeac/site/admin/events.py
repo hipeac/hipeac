@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models import Count
 from django.forms import ModelForm
 from django.urls import reverse
@@ -6,8 +6,9 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
-from hipeac.models import Event, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room
+from hipeac.models import Profile, Event, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room
 from .generic import ImagesInline, LinksInline, PermissionsInline
+from .users import ProfileCsvWriter
 
 
 class BreaksInline(admin.TabularInline):
@@ -38,6 +39,7 @@ class SponsorsInline(admin.TabularInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    actions = ('select_export_users_csv',)
     date_hierarchy = 'start_date'
     list_display = ('id', 'start_date', 'end_date', 'name', 'type', 'sessions_link', 'registrations_link',
                     'is_active', 'is_open')
@@ -75,6 +77,14 @@ class EventAdmin(admin.ModelAdmin):
         url = reverse('admin:hipeac_session_changelist')
         return mark_safe(f'<a href="{url}?event__id__exact={obj.id}">{obj.sessions__count}</a>')
     sessions_link.short_description = 'Sessions'
+
+    def select_export_users_csv(self, request, queryset):
+        if queryset.count() > 1:
+            messages.error(request, 'Please select only one event.')
+            return
+        ids = queryset.first().registrations.values_list('user_id', flat=True)
+        return ProfileCsvWriter(filename='hipeac-jobs.csv', queryset=Profile.objects.filter(user_id__in=ids)).response
+    select_export_users_csv.short_description = '[CSV] Export attendees data for an event'
 
 
 class RegistrationIsPaidFilter(admin.SimpleListFilter):
@@ -168,6 +178,7 @@ class SessionAdminForm(ModelForm):
 class SessionAdmin(admin.ModelAdmin):
     form = SessionAdminForm
 
+    actions = ('select_export_users_csv',)
     date_hierarchy = 'date'
     list_display = ('id', 'title', 'date', 'start_at', 'end_at', 'session_type', 'registrations_count')
     list_filter = ('session_type', 'event')
@@ -197,6 +208,14 @@ class SessionAdmin(admin.ModelAdmin):
     def registrations_count(self, obj):
         return obj.registrations__count if obj.registrations__count > 0 else '-'
     registrations_count.short_description = 'Registrations'
+
+    def select_export_users_csv(self, request, queryset):
+        if queryset.count() > 1:
+            messages.error(request, 'Please select only one session.')
+            return
+        ids = queryset.first().registrations.values_list('user_id', flat=True)
+        return ProfileCsvWriter(filename='hipeac-jobs.csv', queryset=Profile.objects.filter(user_id__in=ids)).response
+    select_export_users_csv.short_description = '[CSV] Export attendees data for a session'
 
 
 class RoomsInline(admin.TabularInline):

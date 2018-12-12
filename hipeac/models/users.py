@@ -101,6 +101,10 @@ class Profile(models.Model):
         return self.user.username
 
     @property
+    def email(self) -> str:
+        return self.user.email
+
+    @property
     def username(self) -> str:
         return self.user.username
 

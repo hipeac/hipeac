@@ -3,7 +3,18 @@ from django.forms import ModelForm
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField, MembershipTagsChoiceField
 from hipeac.models import Profile
+from hipeac.tools.csv import ModelCsvWriter
 from .generic import HideDeleteActionMixin
+
+
+class ProfileCsvWriter(ModelCsvWriter):
+    model = Profile
+    custom_fields = ('username', 'name', 'email')
+    exclude = ('user', 'bio', 'title', 'department', 'links', 'projects', 'publications', 'is_bouncing', 'updated_at')
+
+    def optimize_queryset(self, queryset):
+        return queryset.prefetch_related('gender', 'meal_preference', 'position', 'advisor',
+                                         'institution', 'second_institution')
 
 
 class ProfileAdminForm(ModelForm):
