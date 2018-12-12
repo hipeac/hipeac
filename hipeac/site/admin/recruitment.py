@@ -4,16 +4,22 @@ from django.urls import path
 from django.utils import timezone
 
 from hipeac.forms import ApplicationAreasChoiceField, JobPositionChoiceField, TopicsChoiceField
-from hipeac.models import Job
+from hipeac.models import Job, JobEvaluation
 from hipeac.site.views import JobsPdfMaker
 from hipeac.tools.csv import ModelCsvWriter
-from .generic import HideDeleteActionMixin, LinksInline
+from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
 
 
 class JobCsvWriter(ModelCsvWriter):
     model = Job
     exclude = ('description', 'links', 'jobevaluation')
     metadata_fields = ('application_areas', 'career_levels', 'topics')
+
+
+class JobEvaluationInline(admin.StackedInline):
+    model = JobEvaluation
+    verbose_name_plural = 'Job evaluation'
+    extra = 0
 
 
 class JobAdminForm(ModelForm):
@@ -34,13 +40,14 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     actions = ('select_export_pdf', 'select_export_csv')
     date_hierarchy = 'created_at'
     list_display = ('id', 'title', 'institution', 'employment_type', 'deadline', 'created_at')
-    list_filter = ('employment_type', 'deadline', 'created_at', 'country',)
+    list_filter = (('jobevaluation__value', custom_titled_filter('evaluation')),
+                   'employment_type', 'deadline', 'created_at', 'country')
     search_fields = ('title', 'institution__name')
 
     autocomplete_fields = ('institution', 'project')
     radio_fields = {'employment_type': admin.VERTICAL}
     raw_id_fields = ('created_by',)
-    inlines = [LinksInline]
+    inlines = [LinksInline, JobEvaluationInline]
     fieldsets = (
         (None, {
             'fields': ('created_by', 'title', 'institution', 'project'),

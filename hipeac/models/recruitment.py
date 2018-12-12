@@ -63,7 +63,7 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     positions = models.PositiveSmallIntegerField(default=1, null=True)
 
     institution = models.ForeignKey('hipeac.Institution', null=True, blank=False, on_delete=models.SET_NULL,
-                                    limit_choices_to={'country__in': HipeacCountries.only}, related_name='jobs')
+                                    related_name='jobs')
     project = models.ForeignKey('hipeac.Project', null=True, blank=True, on_delete=models.SET_NULL, related_name='jobs')
     location = models.CharField(max_length=250, null=True, blank=True)
     country = CountryField(db_index=True, null=True, blank=True, countries=HipeacCountries)
