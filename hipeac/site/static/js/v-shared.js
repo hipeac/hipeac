@@ -931,6 +931,18 @@ Vue.component('videos-row', {
     }
 });
 
+Vue.component('skeleton-content', {
+    template: '' +
+        '<p class="skeleton m-0">' +
+            '<span class="text w-100"></span>' +
+            '<span class="text w-100"></span>' +
+            '<span class="text w-100"></span>' +
+            '<span class="text w-100"></span>' +
+            '<span class="text w-25"></span>' +
+        '</p>' +
+    ''
+});
+
 Vue.component('skeleton-box', {
     template: '' +
         '<div class="hipeac-card mini-card mb-0 skeleton">' +

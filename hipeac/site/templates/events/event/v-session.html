@@ -1,9 +1,9 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
     <div ref="modal" v-if="active" class="modal" tabindex="-1" role="dialog">
-        <div v-if="session" class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-light pb-0">
+                <div v-if="session" class="modal-header bg-light pb-0">
                     <ul class="nav nav-tabs d-flex w-100">
                         <li class="nav-item">
                             <router-link class="nav-link" :to="{name: 'session', params: {sessionId: session.id}}" exact><i class="material-icons mr-2">category</i>{{ session.session_type.value }}</a></router-link>
@@ -24,9 +24,12 @@
                         <editor-link :url="session.editor_href"></editor-link>
                     </ul>
                 </div>
-                <div class="modal-body">
+                <div v-if="session" class="modal-body">
                     <display-md class="mt-0 mb-4 text-left">{{ session.title }}</display-md>
                     <router-view></router-view>
+                </div>
+                <div v-else class="modal-body">
+                    <skeleton-content></skeleton-content>
                 </div>
             </div>
         </div>
@@ -61,7 +64,7 @@
 
 <script type="text/x-template" id="{{ id }}-program">
 {% verbatim %}
-    <div v-if="session">
+    <div>
         <marked v-if="session.program" :text="session.program"></marked>
     </div>
 {% endverbatim %}

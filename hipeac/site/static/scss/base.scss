@@ -224,7 +224,7 @@ h6 {
     font-size: 1.2rem;
 
     span {
-        background: linear-gradient(to bottom, transparent 75%, whitesmoke 1%, whitesmoke);
+        background: linear-gradient(to bottom, transparent 80%, $hipeac-yellow 1%, $hipeac-yellow);
     }
 
     @media (max-width: $small-breakpoint) {
