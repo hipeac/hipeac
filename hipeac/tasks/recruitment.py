@@ -10,10 +10,11 @@ from django.utils import timezone
 from typing import Optional, Tuple
 
 from hipeac.models import Job
+from hipeac.tools.emails import JOBS_DIGEST_EMAIL, RECRUITMENT_EMAIL
 from hipeac.tools.language import NaturalLanguageAnalyzer
 from hipeac.tools.linkedin import LinkedInManager
 from hipeac.tools.twitter import Tweeter
-from .emails import JOBS_DIGEST_EMAIL, RECRUITMENT_EMAIL, send_from_template
+from .emails import send_from_template
 
 
 def save_keywords(nl: NaturalLanguageAnalyzer, job: Job):
