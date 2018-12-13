@@ -113,7 +113,7 @@ class RegistrationIsPaidFilter(admin.SimpleListFilter):
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    list_display = ('id', 'created_at', 'name', 'fee', 'with_coupon', 'invoice_requested', 'invoice_sent',
+    list_display = ('id', 'created_at', 'name', 'fee', 'is_paid', 'with_coupon', 'invoice_requested', 'invoice_sent',
                     'visa_requested', 'visa_sent')
     list_filter = (RegistrationIsPaidFilter, 'invoice_requested', 'invoice_sent', 'visa_requested', 'visa_sent',
                    'event')
@@ -156,9 +156,15 @@ class RegistrationAdmin(admin.ModelAdmin):
     def fee(self, obj):
         return format_html(f'{obj.base_fee}&nbsp;+&nbsp;{obj.extra_fees}')
 
+    def is_paid(self, obj) -> bool:
+        return obj.is_paid
+    is_paid.boolean = True
+    is_paid.short_description = 'Paid'
+
     def with_coupon(self, obj):
         return obj.coupon is not None
     with_coupon.boolean = True
+    with_coupon.short_description = 'Coupon'
 
 
 @admin.register(Roadshow)
