@@ -81,6 +81,7 @@ PDF_STYLES['h1'] = ParagraphStyle(
     fontName='Roboto-Light',
     fontSize=23,
     leading=28,
+    rightIndent=4 * cm,
     textColor=HIPEAC_BLUE,
     spaceAfter=0.75 * cm,
 )
@@ -90,6 +91,7 @@ PDF_STYLES['h2'] = ParagraphStyle(
     PDF_STYLES['default'],
     fontSize=16,
     leading=20,
+    rightIndent=4 * cm,
     textColor=HIPEAC_BLUE,
 )
 

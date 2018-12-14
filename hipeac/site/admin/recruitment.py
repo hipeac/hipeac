@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from hipeac.forms import ApplicationAreasChoiceField, JobPositionChoiceField, TopicsChoiceField
 from hipeac.models import Job, JobEvaluation, Event
-from hipeac.site.views import JobsPdfMaker
+from hipeac.site.pdfs.recruitment import JobsPdfMaker
 from hipeac.tools.csv import ModelCsvWriter
 from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
 
