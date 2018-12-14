@@ -73,6 +73,9 @@ class RegistrationPaymentView(generic.TemplateView):
         if not request.user.is_superuser and not self.registration.user.id == request.user.id:
             messages.error(request, 'You don\'t have the necessary permissions to view this page.')
             raise PermissionDenied
+        if not self.registration.is_paid and self.registration.invoice_requested:
+            messages.error(request, 'You requested an invoice before. Contact us first if you want to pay by card.')
+            raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
