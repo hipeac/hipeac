@@ -4,6 +4,8 @@
         <custom-input v-model.trim="user.username" type="text" field="username" :help="'Your public profile will be at: hipeac.net/~' + user.username"></custom-input>
         <custom-input v-model.trim="user.first_name" type="text" field="first_name" :required="true"></custom-input>
         <custom-input v-model.trim="user.last_name" type="text" field="last_name" :required="true"></custom-input>
+        <metadata-select v-model="user.profile.meal_preference" type="meal_preference" field="profile.meal_preference"  help="It will only be used to provide you the right food choices at HiPEAC events."></metadata-select>
+        <hr class="my-4">
         <autocomplete-popup v-model="user.profile.institution" type="institution" field="profile.institution"></autocomplete-popup>
         <autocomplete-popup v-model="user.profile.second_institution" type="institution" field="profile.second_institution" :required="true"></autocomplete-popup>
         <markdown-textarea v-model.trim="user.profile.bio" field="profile.bio"></markdown-textarea>

@@ -1,0 +1,21 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block header %}Please update your HiPEAC profile.{% endblock %}
+
+{% block body %}
+Dear {{ user_name }},
+
+Please update your HiPEAC profile [on our website](https://www.hipeac.net/accounts/profile/).
+You can update your bio, link social accounts like **LinkedIn** to your account, and tell us
+more about your research activities (topics you are interested, EU projects your are involved in,...).
+
+Your research information will help us provide you with better information in the future.
+
+Check also your **meal preferences** and your primary affiliation. We use this information
+in the events we organize to print our badges and provide you with the right food choices.
+
+Thank you for your help.
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}

@@ -545,6 +545,9 @@ Vue.component('user-viewer', {
                                 '<small>{{ user.profile.institution.short_name }}</small>' +
                             '</span>' +
                         '</td>' +
+                        '<td>' +
+                            '<a v-if="user.href" :href="user.href" target="_blank"><icon name="open_in_new" class="sm"></icon></a>' +
+                        '</td>' +
                     '</tr>' +
                 '</table>' +
             '</div>' +

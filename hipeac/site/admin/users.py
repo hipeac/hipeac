@@ -2,9 +2,26 @@ from django.contrib import admin
 from django.forms import ModelForm
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField, MembershipTagsChoiceField
+from hipeac.functions import send_task
 from hipeac.models import Profile
 from hipeac.tools.csv import ModelCsvWriter
 from .generic import HideDeleteActionMixin
+
+
+def send_profile_update_reminders(queryset):
+    for instance in queryset:
+        email = (
+            'users.profile.update_reminder',
+            'Update your HiPEAC profile',
+            'HiPEAC <management@hipeac.net>',
+            [instance.user.email],
+            {
+                'username': instance.user.username,
+                'user_name': instance.name,
+            }
+        )
+        send_task('hipeac.tasks.emails.send_from_template', email)
+    return
 
 
 class ProfileCsvWriter(ModelCsvWriter):
@@ -52,9 +69,15 @@ class ProfileAdmin(HideDeleteActionMixin, admin.ModelAdmin):
             'fields': ('is_subscribed', 'is_public'),
         }),
     )
+    actions = ('send_profile_update_reminder',)
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('user')
 
     def email(self, obj) -> str:
         return obj.user.email
+
+    def send_profile_update_reminder(self, request, queryset):
+        send_profile_update_reminders(queryset)
+        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
+    send_profile_update_reminder.short_description = ('[Mailer] Send profile update reminder')

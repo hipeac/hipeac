@@ -7,10 +7,12 @@ JOBS_DIGEST_EMAIL = 'HiPEAC Jobs <jobs@hipeac.net>'
 RECRUITMENT_EMAIL = 'HiPEAC Recruitment <recruitment@hipeac.net>'
 TEMPLATE_PATHS = {
     'events.registrations.created': '_emails/events/registrations_created.md.html',
+    'events.registrations.payment_reminder': '_emails/events/registrations_payment_reminder.md.html',
     'recruitment.jobs.created': '_emails/recruitment/jobs_created.md.html',
     'recruitment.jobs.evaluation': '_emails/recruitment/jobs_evaluation.md.html',
     'recruitment.jobs.expiration_reminder': '_emails/recruitment/jobs_expiration_reminder.md.html',
     'users.members.welcome': '_emails/users/members_welcome.md.html',
+    'users.profile.update_reminder': '_emails/users/profile_update_reminder.md.html',
 }
 
 

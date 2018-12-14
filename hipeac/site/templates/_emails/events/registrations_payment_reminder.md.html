@@ -1,0 +1,29 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block body %}
+**Registration number: {{ registration_id }}**
+
+Dear {{ user_name }},
+
+This is a reminder to complete your payment for {{ event_name }}.
+
+---------------
+
+{% if not invoice_requested %}You will find instructions for the payment [on this page](https://www.hipeac.net{{ payment_url }}). If you have a received a coupon from the Organization, you can also validate it there.
+
+If you would prefer to pay via invoice, please contact <vicky@hipeac.net> with the following invoice details:{% else %}We've noticed that you would like to pay your registration fee by invoice. Can you please send us the following invoice details to <vicky@hipeac.net>:{% endif %}
+
+- In case we need to send the invoice to your institution:
+  - Official name and address or your institution
+  - VAT number
+  - Name of the person taking care of the payment
+
+- In case we need to send the invoice to you personally:
+  - Name and title
+  - Home address
+
+Please contact us if you have problems with the payment. If you can't pay in advance you will have to pay at the event to be admitted and get your badge.
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}

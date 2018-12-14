@@ -5,7 +5,7 @@ from drf_writable_nested import UniqueFieldsMixin, NestedUpdateMixin, WritableNe
 from rest_framework import serializers
 
 from hipeac.models import Profile, Project
-from .generic import LinkSerializer, MetadataListField
+from .generic import LinkSerializer, MetadataField, MetadataListField
 from .institutions import InstitutionMiniSerializer
 
 
@@ -18,10 +18,11 @@ class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
     name = serializers.CharField(read_only=True)
     membership_tags = serializers.SerializerMethodField(read_only=True)
     avatar_url = serializers.CharField(read_only=True)
+    meal_preference = MetadataField()
 
     class Meta:
         model = Profile
-        exclude = ('user', 'is_bouncing', 'is_public', 'is_subscribed', 'meal_preference')
+        exclude = ('user', 'is_bouncing', 'is_public', 'is_subscribed')
 
     def get_membership_tags(self, obj):
         return obj.membership_tags.split(',') if obj.membership_tags else []
@@ -51,7 +52,7 @@ class ProfileNestedSerializer(ProfileSerializer):
 
 
 class UserPublicSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer()
+    profile = ProfileNestedSerializer()
     url = serializers.HyperlinkedIdentityField(view_name='v1:user-detail')
     href = serializers.SerializerMethodField()
 
@@ -60,7 +61,7 @@ class UserPublicSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'url', 'href', 'profile')
 
     def get_href(self, obj) -> str:
-        return reverse('user', args=[obj.username])
+        return reverse('user', args=[obj.username]) if obj.profile.is_public else None
 
 
 class UserPublicMiniSerializer(UserPublicSerializer):
