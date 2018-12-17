@@ -13,10 +13,14 @@ SHORT_URL_LENGTH = 24
 class Tweeter:
 
     def __init__(self, *, account: str = 'hipeac') -> None:
-        consumer_key, consumer_secret, access_token, access_token_secret = {
+        consumer_key = os.environ.get('TWITTER_CONSUMER_KEY')
+        consumer_secret = os.environ.get('TWITTER_CONSUMER_SECRET')
+        access_token, access_token_secret = {
+            'hipeac': (
+                os.environ.get('TWITTER_ACCESS_TOKEN'),
+                os.environ.get('TWITTER_ACCESS_TOKEN_SECRET'),
+            ),
             'hipeacjobs': (
-                os.environ.get('TWITTER_JOBS_CONSUMER_KEY'),
-                os.environ.get('TWITTER_JOBS_CONSUMER_SECRET'),
                 os.environ.get('TWITTER_JOBS_ACCESS_TOKEN'),
                 os.environ.get('TWITTER_JOBS_ACCESS_TOKEN_SECRET'),
             ),
