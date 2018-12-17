@@ -18,7 +18,7 @@ class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
     name = serializers.CharField(read_only=True)
     membership_tags = serializers.SerializerMethodField(read_only=True)
     avatar_url = serializers.CharField(read_only=True)
-    meal_preference = MetadataField()
+    meal_preference = MetadataField(allow_null=True)
 
     class Meta:
         model = Profile

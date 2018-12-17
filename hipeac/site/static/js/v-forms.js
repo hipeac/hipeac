@@ -287,7 +287,7 @@ Vue.component('metadata-select', MetadataElement.extend({
             '<custom-label :text="label" :required="required" :class="{\'mb-0\': helpText}"></custom-label>' +
             '<help-text v-if="helpText">{{ helpText }}</help-text>' +
             '<select @change="updateValue" class="form-control form-control-sm">' +
-                '<option v-for="o in options" :key="o.id" :value="o.id" :selected="o.id == value.id">{{ o.value }}</option>' +
+                '<option v-for="o in options" :key="o.id" :value="o.id" :selected="value && o.id == value.id">{{ o.value }}</option>' +
             '</select>' +
         '</div>' +
     ''
