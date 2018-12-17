@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -100,6 +101,13 @@ class Event(ImagesMixin, LinkMixin, models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def can_be_viewed_by(self, user) -> bool:
+        return user.id in self.committee_member_ids
+
+    @cached_property
+    def committee_member_ids(self):
+        return get_user_model().objects.filter(committees__event_id=self.id).only('id').values_list('id', flat=True)
 
     def dates(self) -> List[datetime.date]:
         dates_range = range(0, self.end_date.toordinal() - self.start_date.toordinal() + 1)

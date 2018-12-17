@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% load hipeac %}
+{% load static %}
+
+
+{% block title %}Stats - {{ block.super }}{% endblock %}
+
+{% block subtitle %}{{ event }}{% endblock %}
+
+{% block submenu %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ event.get_absolute_url }}"><i class="material-icons mr-1">arrow_back</i>Back to event</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="hipeac-card">
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="display-sm">Registrations</h5>
+                    {{ plots.registrations | safe }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <h5 class="display-sm">by membership</h5>
+                    {{ plots.membership | safe }}
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <h5 class="display-sm">by institution type</h5>
+                    {{ plots.institution_types | safe }}
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <h5 class="display-sm">by gender</h5>
+                    {{ plots.gender | safe }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <br>
+                    <h5 class="display-sm">Countries (of institutions)</h5>
+                    {{ plots.countries | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

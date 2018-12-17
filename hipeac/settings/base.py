@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
 
-    # theme
+    # helpers
     'captcha',
     'compressor',
     'crispy_forms',

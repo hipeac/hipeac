@@ -1,6 +1,7 @@
 # flake8: noqa
 
 from .breaks import *
+from .committees import *
 from .events import *
 from .fees import *
 from .posters import *

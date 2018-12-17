@@ -45,6 +45,7 @@ urlpatterns = [
     path('research/', flatpage, {'url': '/research/'}, name='research'),
     # Events
     path('events/', flatpage, {'url': '/events/'}, name='events'),
+    path('<int:year>/<slug:slug>/stats/', views.EventStats.as_view(), name='conference_stats'),
     path('<int:year>/<slug:slug>/', views.EventDetail.as_view(), name='conference'),
     path('acaces/<int:year>/<slug:slug>/', views.EventDetail.as_view(), name='acaces'),
     path('csw/<int:year>/<slug:slug>/', views.EventDetail.as_view(), name='csw'),
