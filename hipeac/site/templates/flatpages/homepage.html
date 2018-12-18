@@ -57,6 +57,14 @@
                 </div>
             </div>
         </div>
+        {% verbatim %}
+        <div v-if="upcomingEvent" v-cloak>
+            <a :href="upcomingEvent.href"><img v-if="upcomingEvent.images" :src="upcomingEvent.images.lg" class="border border-bottom-0 rounded-top w-100"></a>
+            <div class="hipeac-card rounded-0 rounded-bottom">
+                <a :href="upcomingEvent.href" class="btn btn-lg btn-outline-primary btn-block">Join us in {{ upcomingEvent.city }} for #{{ upcomingEvent.hashtag }}!  <i class="material-icons">arrow_forward</i></a>
+            </div>
+        </div>
+        {% endverbatim %}
         <div class="row">
             <div class="col-12 col-md-12 col-lg-4 d-flex align-items-stretch">
                 <div class="hipeac-card">
@@ -88,7 +96,8 @@
             el: '#vue',
             data: function () {
                 return {
-                    events: null
+                    events: null,
+                    upcomingEvent: null
                 }
             },
             methods: {
@@ -96,6 +105,12 @@
                     var self = this;
                     api().getEvents().done(function (res) {
                         self.events = mapper().events(res);
+                        upcomingEvents = self.events.filter(function (obj) {
+                            return obj.past == false;
+                        });
+                        if (upcomingEvents.length > 0) {
+                            self.upcomingEvent = upcomingEvents.reverse()[0];
+                        }
                     });
                 }
             },
