@@ -145,6 +145,7 @@ class EventSerializer(EventNestedSerializer):
     sponsors = SponsorSerializer(many=True, read_only=True)
     venues = VenueSerializer(many=True, read_only=True)
     is_early = serializers.BooleanField(read_only=True)
+    is_open_for_registration = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Event

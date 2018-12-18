@@ -5,7 +5,7 @@
     </div>
 {% verbatim %}
     <div v-else>
-        <div v-if="registration">
+        <div v-if="registration && event && event.is_open_for_registration">
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
                     <div class="hipeac-card text-sm">
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
-                    <div v-if="event" class="hipeac-card">
+                    <div class="hipeac-card">
                         <loading text="Saving..." icon="save" class="float-right mt-2"></loading>
                         <button v-if="registrationIsNew" @click.prevent="save" class="btn btn-primary" :disabled="emptySessions">Create new registration</button>
                         <button v-else @click.prevent="save" class="btn btn-outline-success" :disabled="emptySessions">Update registration</button>
