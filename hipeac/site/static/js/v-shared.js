@@ -361,7 +361,7 @@ var SimpleItemCard = SimpleList.extend({
     },
     template: '' +
         '<div v-if="items">' +
-            '<div v-if="visibleItems.length" class="hipeac-card marked">' +
+            '<div v-if="visibleItems.length" class="hipeac-card">' +
                 '<display-sm class="mb-3">{{ title }}</display-sm>' +
                 '<table class="table pointer m-0">' +
                     '<tbody>' +
