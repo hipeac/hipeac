@@ -69,6 +69,7 @@ class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
         return {
             self.UNIVERSITY: 'EducationalOrganization',
             self.LAB: 'GovernmentOrganization',
+            self.INNOVATION: 'GovernmentOrganization',
             self.INDUSTRY: 'Corporation',
             self.SME: 'Corporation',
             self.OTHER: 'Organization',
