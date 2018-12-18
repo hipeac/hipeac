@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.exceptions import ValidationError
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 from django.db.models.signals import post_save
@@ -14,6 +15,17 @@ from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
 from .generic import HipeacCountries
 from .mixins import LinkMixin, MetadataMixin, EditorMixin, UrlMixin
+
+
+def validate_institution(institution, user) -> None:
+    if user.is_staff or user.groups.filter(name='External recruiters').exists():
+        return
+
+    ids = [institution.id] + list(institution.children.values_list('id', flat=True))
+    if institution.parent_id:
+        ids.append(institution.parent_id)
+    if user.profile.institution_id not in ids:
+        raise ValidationError('You cannot create a job position for this institution.')
 
 
 class JobManager(models.Manager):
@@ -86,6 +98,9 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     evaluation_sent_for = models.DateField(null=True, blank=True, editable=False)
 
     objects = JobManager()
+
+    def clean(self) -> None:
+        validate_institution(self.institution, self.created_by)
 
     class Meta:
         ordering = ('-created_at',)

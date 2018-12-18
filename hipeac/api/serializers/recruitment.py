@@ -3,6 +3,7 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.models import Job, JobEvaluation
+from hipeac.models.recruitment import validate_institution
 from hipeac.models.generic import HipeacCountries
 from .generic import JsonField, LinkSerializer, MetadataField, MetadataListField
 from .institutions import InstitutionNestedSerializer
@@ -35,6 +36,10 @@ class JobSerializer(JobBaseSerializer):
 
     class Meta(JobBaseSerializer.Meta):
         exclude = ('share', 'reminder_sent_for', 'evaluation_sent_for', 'created_by')
+
+    def validate_institution(self, data):
+        validate_institution(data, self.context['request'].user)
+        return data
 
 
 class JobEvaluationSerializer(serializers.ModelSerializer):
