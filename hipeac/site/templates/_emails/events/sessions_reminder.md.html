@@ -1,0 +1,29 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block body %}
+Dear organizers,
+
+Please update the information for the "{{ session_title }}" ({{ session_type }}),
+to be held in {{ event_city }} on {{ session_date }}.
+
+You can update the information here:
+https://www.hipeac.net{{ session_editor_url }}
+
+---------------
+
+{{ event_name }}, will start soon and it would be nice if you could check the information available
+on the HiPEAC website for the session you are organizing. Adding topics and extra information like
+projects involved will improve the search results on the website.
+
+**We would like to remind you that speakers invited to the session need to register
+on the [HiPEAC website too](https://www.hipeac.net{{ event_url }}).**
+
+Don't forget to invite your contacts to come to the event and attend your session.
+
+Thank you for your collaboration!</p>
+
+PS: If you need help updating the information please contact our webmaster at <webmaster@hipeac.net>.
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}

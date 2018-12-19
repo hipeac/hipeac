@@ -8,6 +8,7 @@ from django.utils.safestring import mark_safe
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
 from hipeac.functions import send_task
 from hipeac.models import Profile, Event, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room
+from hipeac.site.emails.events import SessionReminderEmail
 from .generic import ImagesInline, LinksInline, PermissionsInline
 from .users import ProfileCsvWriter, send_profile_update_reminders
 
@@ -213,7 +214,7 @@ class SessionAdminForm(ModelForm):
 class SessionAdmin(admin.ModelAdmin):
     form = SessionAdminForm
 
-    actions = ('select_export_users_csv',)
+    actions = ('select_export_users_csv', 'send_reminder')
     date_hierarchy = 'date'
     list_display = ('id', 'title', 'date', 'start_at', 'end_at', 'session_type', 'registrations_count')
     list_filter = ('session_type', 'event')
@@ -251,6 +252,15 @@ class SessionAdmin(admin.ModelAdmin):
         ids = queryset.first().registrations.values_list('user_id', flat=True)
         return ProfileCsvWriter(filename='hipeac-jobs.csv', queryset=Profile.objects.filter(user_id__in=ids)).response
     select_export_users_csv.short_description = '[CSV] Export attendees data for a session'
+
+    def send_reminder(self, request, queryset):
+        for instance in queryset:
+            if instance.acl.count() == 0:
+                continue
+            email = SessionReminderEmail(instance=instance)
+            send_task('hipeac.tasks.emails.send_from_template', email.data)
+        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
+    send_reminder.short_description = ('[Mailer] Send reminder to organizers')
 
 
 class RoomsInline(admin.TabularInline):
