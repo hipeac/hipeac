@@ -60,7 +60,7 @@ class MarkdownNode(Node):
         return mark_safe(marked(text))
 
 
-def metadata_output(ids, title, *, output_format: str = '<li><small>{0}</small></li>', maps=[str]):
+def metadata_output(ids, title, *, output_format: str = '<small>{0}</small><br>', maps=[str]):
     keys = [int(key) for key in ids.split(',')]
     metadata_items = get_cached_metadata()
 

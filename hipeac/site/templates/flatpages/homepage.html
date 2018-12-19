@@ -61,7 +61,7 @@
         <div v-if="upcomingEvent" v-cloak>
             <a :href="upcomingEvent.href"><img v-if="upcomingEvent.images" :src="upcomingEvent.images.lg" class="border border-bottom-0 rounded-top w-100"></a>
             <div class="hipeac-card rounded-0 rounded-bottom">
-                <a :href="upcomingEvent.href" class="btn btn-lg btn-outline-primary btn-block">Join us in {{ upcomingEvent.city }} for #{{ upcomingEvent.hashtag }}!  <i class="material-icons">arrow_forward</i></a>
+                <a :href="upcomingEvent.href" class="btn btn-lg btn-outline-primary btn-block">Join us <span class="d-none d-md-inline-block">in {{ upcomingEvent.city }}</span> for #{{ upcomingEvent.hashtag }}!  <i class="material-icons">arrow_forward</i></a>
             </div>
         </div>
         {% endverbatim %}

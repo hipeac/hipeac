@@ -55,14 +55,14 @@
                                 <label>
                                     <input type="radio" v-model="registration.fee_type" value="regular">
                                     <span>Regular </span>
-                                    <em v-if="event.is_early">(early: EUR {{ event.fees.early }})</em>
-                                    <em v-else>(late: EUR {{ event.fees.late }})</em>
+                                    <small v-if="event.is_early">(early: <strong>EUR {{ event.fees.early }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</small>
+                                    <small v-else>(late: EUR {{ event.fees.late }})</small>
                                 </label>
                                 <label>
                                     <input type="radio" v-model="registration.fee_type" value="student">
                                     <span>Student </span>
-                                    <em v-if="event.is_early">(early: EUR {{ event.fees.early_student }})</em>
-                                    <em v-else>(late: EUR {{ event.fees.late_student }})</em>
+                                    <small v-if="event.is_early">(early: <strong>EUR {{ event.fees.early_student }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</small>
+                                    <small v-else>(late: EUR {{ event.fees.late_student }})</small>
                                 </label>
                             </div>
                             <display-sm class="mt-4 mb-3">Booth in exhibition area</display-sm>
