@@ -32,8 +32,7 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                                      .prefetch_related('breaks', 'fees', 'links',
                                                        'venues__rooms',
                                                        'sponsors__institution', 'sponsors__project',
-                                                       'sessions__session_type',
-                                                       'sessions__main_speaker__profile__institution')
+                                                       'sessions__session_type')
         return super().retrieve(request, *args, **kwargs)
 
     @action(
@@ -79,7 +78,7 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
             raise PermissionDenied('Please include a `session_type` query parameter in your request.')
 
         self.queryset = self.get_object().sessions.filter(session_type=session_type) \
-                                                  .prefetch_related('session_type', 'main_speaker__profile', 'projects',                  'links')
+                                                  .prefetch_related('session_type', 'main_speaker__profile', 'projects',                  'institutions', 'links')
         return super().list(request, *args, **kwargs)
 
 

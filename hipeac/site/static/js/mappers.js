@@ -188,9 +188,7 @@ function mapper() {
                     getMetadataString(obj),
                     obj.title,
                     obj.session_type.value,
-                    (obj.main_speaker)
-                        ? ((_.has(obj.main_speaker, 'profile')) ? obj.main_speaker.profile.name : obj.main_speaker)
-                        : '',
+                    obj.keywords.join(' ')
                 ].join(' ').toLowerCase();
                 return obj;
             });

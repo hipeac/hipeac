@@ -6,7 +6,7 @@ from hipeac.functions import truncate_md
 from hipeac.models import (
     Event, Registration, Poster, Roadshow, Session, Break, Sponsor, Venue, Room, Project, Institution
 )
-from .generic import LinkSerializer, MetadataFieldWithPosition, MetadataListField
+from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .users import UserPublicMiniSerializer, UserPublicListSerializer
@@ -76,22 +76,17 @@ class SessionNestedSerializer(WritableNestedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='v1:session-detail', read_only=True)
     href = serializers.CharField(source='get_absolute_url', read_only=True)
     session_type = MetadataFieldWithPosition()
+    keywords = JsonField(read_only=True)
 
     class Meta:
         model = Session
-        exclude = ('projects', 'summary', 'program', 'organizers', 'max_attendees', 'extra_attendees_fee',
-                   'created_at', 'updated_at', 'event')
+        exclude = ('summary', 'program', 'organizers', 'max_attendees', 'extra_attendees_fee',
+                   'institutions', 'projects', 'main_speaker', 'created_at', 'updated_at', 'event')
 
 
 class SessionListSerializer(SessionNestedSerializer):
     application_areas = MetadataListField()
     topics = MetadataListField()
-    main_speaker = serializers.SerializerMethodField(read_only=True)
-
-    def get_main_speaker(self, obj):
-        if obj.main_speaker_id:
-            return obj.main_speaker.profile.name
-        return None
 
 
 class SessionSerializer(SessionListSerializer):

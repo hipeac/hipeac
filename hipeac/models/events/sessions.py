@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -39,8 +41,17 @@ class Session(LinkMixin, models.Model):
     institutions = models.ManyToManyField('hipeac.Institution', blank=True, related_name='sessions')
     links = GenericRelation('hipeac.Link')
 
+    keywords = models.TextField(default='[]', editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.keywords = json.dumps(
+            [institution.short_name for institution in self.institutions.all()] +
+            [project.acronym for project in self.projects.all()] +
+            ([self.main_speaker.first_name, self.main_speaker.last_name] if self.main_speaker else [])
+        )
+        super().save(*args, **kwargs)
 
     class Meta:
         indexes = [

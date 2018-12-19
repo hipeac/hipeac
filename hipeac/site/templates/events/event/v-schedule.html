@@ -24,7 +24,7 @@
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
     <div>
-        <search-card placeholder="Search by type, title, main speaker, topics..." :showFiltersButton="topics.length > 0" class="mb-2">
+        <search-card placeholder="Search by type, title, main speaker, project, topics..." :showFiltersButton="topics.length > 0" class="mb-2">
             <filters-clear :onClick="resetFilters"></filters-clear>
             <div v-if="sessionTypes">
                 <h6 class="d-inline display-sm mr-2">Session types</h6>
