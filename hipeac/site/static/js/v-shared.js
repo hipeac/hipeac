@@ -1,3 +1,6 @@
+var CommonMarkReader = new commonmark.Parser({safe: true, smart: true});
+var CommonMarkWriter = new commonmark.HtmlRenderer();
+
 var EventHub = new Vue();
 
 
@@ -100,7 +103,7 @@ Vue.filter('moment', function (date, format) {
 });
 
 Vue.filter('markdown', function (text) {
-    return marked(text, {sanitize: true});
+    return CommonMarkWriter.render(CommonMarkReader.parse(text));
 });
 
 Vue.component('marked', {
@@ -115,7 +118,7 @@ Vue.component('marked', {
     '',
     computed: {
         compiledMarkdown: function () {
-            return marked(this.text, {sanitize: true});
+            return CommonMarkWriter.render(CommonMarkReader.parse(this.text));
         }
     }
 });
