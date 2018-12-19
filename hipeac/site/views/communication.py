@@ -2,12 +2,22 @@ import datetime
 
 from commonmark import commonmark as marked
 from django.contrib.syndication.views import Feed
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from typing import List
 
 from hipeac.models import Article
 from .mixins import SlugMixin
+
+
+class ArticleRedirect(generic.View):
+    """
+    Redirects old URLs to article page.
+    """
+    def get(self, request, *args, **kwargs):
+        article = get_object_or_404(Article, pk=kwargs.get('pk'))
+        return redirect(article.get_absolute_url())
 
 
 class ArticleDetail(SlugMixin, generic.DetailView):

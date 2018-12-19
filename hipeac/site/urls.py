@@ -68,6 +68,8 @@ urlpatterns = [
     path('sympa/<slug:mailing_list>/', views.DataSourceView.as_view(), name='datasource'),
     # Media
     re_path(r'media/private(?P<path>((/\w+?)+/))(?P<filename>[\w.-]+)', views.FirewallView.as_view()),
+    # Old redirects
+    re_path(r'^press/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ArticleRedirect.as_view()),
     # Sitemap
     path('sitemap.xml', sitemap_views.index, {'sitemaps': sitemaps}),
     path('sitemap-<slug:section>.xml', sitemap_views.sitemap, {'sitemaps': sitemaps},
