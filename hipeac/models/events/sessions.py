@@ -36,6 +36,7 @@ class Session(LinkMixin, models.Model):
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     acl = GenericRelation('hipeac.Permission')
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='sessions')
+    institutions = models.ManyToManyField('hipeac.Institution', blank=True, related_name='sessions')
     links = GenericRelation('hipeac.Link')
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -65,6 +66,10 @@ class Session(LinkMixin, models.Model):
     def get_editor_url(self) -> str:
         content_type = ContentType.objects.get_for_model(self)
         return reverse('editor', args=[content_type.id, self.id])
+
+    @property
+    def is_industrial_session(self) -> bool:
+        return self.session_type.value == 'Industrial Session'
 
     @property
     def slug(self) -> str:

@@ -3,7 +3,9 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.functions import truncate_md
-from hipeac.models import Event, Registration, Poster, Roadshow, Session, Break, Sponsor, Project, Venue, Room
+from hipeac.models import (
+    Event, Registration, Poster, Roadshow, Session, Break, Sponsor, Venue, Room, Project, Institution
+)
 from .generic import LinkSerializer, MetadataFieldWithPosition, MetadataListField
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
@@ -96,12 +98,15 @@ class SessionSerializer(SessionListSerializer):
     event = serializers.HyperlinkedIdentityField(view_name='v1:event-detail', read_only=True)
     date = serializers.DateField(read_only=True)
     links = LinkSerializer(required=False, many=True, allow_null=True)
-    projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
     href = serializers.URLField(source='get_absolute_url', read_only=True)
     editor_href = serializers.URLField(source='get_editor_url', read_only=True)
     main_speaker = UserPublicListSerializer(read_only=True)
     excerpt = serializers.SerializerMethodField(read_only=True)
+    projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
     projects_info = serializers.SerializerMethodField(read_only=True)
+    institutions = serializers.PrimaryKeyRelatedField(queryset=Institution.objects.all(), many=True, allow_null=True)
+    institutions_info = serializers.SerializerMethodField(read_only=True)
+    is_industrial_session = serializers.BooleanField(read_only=True)
 
     class Meta(SessionNestedSerializer.Meta):
         exclude = ('created_at', 'updated_at',)
@@ -115,6 +120,13 @@ class SessionSerializer(SessionListSerializer):
             'href': project.get_absolute_url(),
             'image': project.images['sm'] if project.images and 'sm' in project.images else None,
         } for project in obj.projects.all()]
+
+    def get_institutions_info(self, obj):
+        return [{
+            'name': institution.short_name,
+            'href': institution.get_absolute_url(),
+            'image': institution.images['sm'] if institution.images and 'sm' in institution.images else None,
+        } for institution in obj.institutions.all()]
 
 
 class EventNestedSerializer(serializers.ModelSerializer):
