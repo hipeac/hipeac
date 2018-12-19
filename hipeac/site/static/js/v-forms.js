@@ -358,9 +358,11 @@ var AucompletePopupElement = FormElement.extend({
         remove: function (id) {
             if (this.many) this.values = _.without(this.values, id);
             else this.values = [];
+            this.updateValue();
         },
         showModal: function () {
             $(this.$refs.modal).modal();
+            $(this.$refs.search).focus();
         },
         updateValue: function (event) {
             if (this.many) {
@@ -404,7 +406,7 @@ Vue.component('autocomplete-popup', AucompletePopupElement.extend({
                         '</div>' +
                         '<div class="modal-body">' +
                             '<div class="input-group input-group-sm mb-3">' +
-                                '<input v-model="q" type="text" class="form-control" placeholder="Search...">' +
+                                '<input ref="search" v-model="q" type="text" class="form-control" placeholder="Search...">' +
                                 '<div v-if="q" class="input-group-append pointer" @click="q = \'\'">' +
                                     '<span class="input-group-text"><i class="material-icons sm">delete</i></span>' +
                                 '</div>' +
