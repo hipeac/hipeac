@@ -23,7 +23,7 @@
         &.active {
             border-bottom-color: $primary-color;
             color: $primary-color;
-            font-weight: bold;
+            font-weight: $font-weight-bold;
         }
     }
 }
@@ -33,7 +33,7 @@
 
     .title {
         font-size: 1.5rem;
-        font-weight: 300;
+        font-weight: $font-weight-light;
         line-height: 1;
         display: inline-block;
         color: white;

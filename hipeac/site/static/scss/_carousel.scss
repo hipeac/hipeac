@@ -28,13 +28,13 @@
 
         span {
             font-size: 1.1rem;
-            font-weight: 300;
+            font-weight: $font-weight-light;
             background: linear-gradient(to bottom, transparent 75%, $light-yellow-color 1%, $light-yellow-color);
             background-position: 0.25rem;
         }
 
         footer {
-            font-weight: bold;
+            font-weight: $font-weight-bold;
             font-size: small;
         }
     }

@@ -22,7 +22,7 @@
         &.active {
             color: $hipeac-blue;
             border-left-color: $hipeac-blue;
-            font-weight: bold;
+            font-weight: $font-weight-bold;
         }
     }
 
