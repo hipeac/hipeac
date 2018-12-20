@@ -28,8 +28,15 @@ def validate_membership_tags(value: str):
 
 
 class ProfileManager(models.Manager):
+
     def get_queryset(self):
         return super().get_queryset().select_related('user', 'gender', 'title', 'meal_preference')
+
+    def public(self):
+        return self.filter(user__is_active=True, is_public=True)
+
+    def active(self):
+        return self.filter(user__is_active=True)
 
 
 class Profile(ImagesMixin, models.Model):

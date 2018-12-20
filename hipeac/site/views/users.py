@@ -9,13 +9,10 @@ class UserProfile(generic.DetailView):
     """
     Displays a User profile.
     """
-    model = Profile
+    queryset = Profile.objects.public()
     context_object_name = 'profile'
     slug_field = 'user__username'
     template_name = 'users/profile.html'
-
-    def get_queryset(self):
-        return super().get_queryset()
 
 
 class UserSettings(generic.TemplateView):

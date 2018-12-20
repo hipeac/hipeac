@@ -11,8 +11,10 @@
             <span>{% user_display user %}</span>
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-            <a href="{% url 'user' user.username %}" class="dropdown-item">Your profile</a>
-            <div class="dropdown-divider"></div>
+            {% if user.profile.is_public %}
+                <a href="{% url 'user' user.username %}" class="dropdown-item">Your public profile</a>
+                <div class="dropdown-divider"></div>
+            {% endif %}
             <a href="{% url 'user_profile' %}" class="dropdown-item">Settings</a>
             <div class="dropdown-divider"></div>
             <h6 class="dropdown-header">Management</h6>
