@@ -40,4 +40,4 @@ class PermissionsInline(GenericTabularInline):
     model = Permission
     classes = ('collapse',)
     extra = 0
-    raw_id_fields = ('user',)
+    autocomplete_fields = ('user',)

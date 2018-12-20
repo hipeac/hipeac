@@ -117,12 +117,13 @@ class RegistrationAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
     list_display = ('id', 'created_at', 'name', 'fee', 'is_paid', 'with_coupon', 'invoice_requested', 'invoice_sent',
                     'visa_requested', 'visa_sent')
-    list_filter = (RegistrationIsPaidFilter, 'invoice_requested', 'invoice_sent', 'visa_requested', 'visa_sent',
-                   'event')
+    list_filter = (RegistrationIsPaidFilter, 'invoice_requested', 'invoice_sent', 'with_booth',
+                   'visa_requested', 'visa_sent', 'event')
     search_fields = ('id', 'user__email', 'user__username', 'user__first_name', 'user__last_name')
 
-    raw_id_fields = ('coupon',)
-    readonly_fields = ('event', 'user', 'base_fee', 'extra_fees', 'paid', 'saldo')
+    autocomplete_fields = ('event',)
+    raw_id_fields = ('user', 'coupon')
+    readonly_fields = ('base_fee', 'extra_fees', 'paid', 'saldo')
     fieldsets = (
         (None, {
             'fields': ('event', ('user', 'visa_requested', 'visa_sent')),
@@ -220,13 +221,12 @@ class SessionAdmin(admin.ModelAdmin):
     list_filter = ('session_type', 'event')
     search_fields = ('title',)
 
-    autocomplete_fields = ('event', 'projects')
+    autocomplete_fields = ('event', 'projects', 'main_speaker')
     radio_fields = {'session_type': admin.VERTICAL}
-    raw_id_fields = ('main_speaker',)
     inlines = [LinksInline, PermissionsInline]
     fieldsets = (
         (None, {
-            'fields': ('event', ('date', 'start_at', 'end_at'), 'session_type', 'title', 'is_private'),
+            'fields': ('event', ('date', 'start_at', 'end_at'), 'room', 'session_type', 'title', 'is_private'),
         }),
         ('INFO', {
             'fields': ('main_speaker', 'summary', 'projects', 'organizers'),
