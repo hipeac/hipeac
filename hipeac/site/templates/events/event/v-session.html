@@ -102,7 +102,7 @@
 <script type="text/x-template" id="{{ id }}-attendees">
 {% verbatim %}
     <div v-if="user.isRegistered">
-        <user-viewer :users="attendees"></user-viewer>
+        <user-viewer :users="attendees" :embedSearch="true" eventName="session-attendees-query-changed"></user-viewer>
     </div>
 {% endverbatim %}
 </script>

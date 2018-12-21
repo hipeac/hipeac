@@ -101,11 +101,6 @@
 
         var MembersMainView = {
             template: '#v-members-main',
-            data: function () {
-                return {
-                    q: ''
-                }
-            },
             computed: _.extend(
                 Vuex.mapState(['members']), {
                 filteredIds: function () {
@@ -116,13 +111,9 @@
             methods: {
                 resetFilters: function () {
                     this.filters.topics = [];
-                },
-                updateQuery: function (val) {
-                    this.q = val;
                 }
             },
             created: function () {
-                EventHub.$on('query-changed', this.updateQuery);
                 $.when(
                     this.$store.commit('fetchMembers'),
                     this.$store.commit('fetchAffiliates')

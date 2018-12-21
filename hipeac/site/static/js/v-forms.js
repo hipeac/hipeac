@@ -411,13 +411,11 @@ Vue.component('autocomplete-popup', AucompletePopupElement.extend({
                                     '<span class="input-group-text"><i class="material-icons sm">delete</i></span>' +
                                 '</div>' +
                             '</div>' +
-                            '<table class="table table-sm pointer mb-4">' +
-                                '<tbody class="no-top-line">' +
+                            '<table class="table table-sm pointer mb-4 no-top-border">' +
                                 '<tr v-for="item in selectedItems" :key="\'s\' + item.id" @click="remove(item.id)">' +
                                     '<td><strong>{{ item.display }}</strong></td>' +
                                     '<td class="text-right"><i class="material-icons sm text-danger">close</i></td>' +
                                 '</tr>' +
-                                '</tbody>' +
                             '</table>' +
                             '<!-- data-dismiss="modal" -->' +
                             '<strong v-if="q" class="d-block text-secondary mb-2">' +

@@ -125,26 +125,9 @@
 
         var AttendeesView = {
             template: '#v-attendees',
-            data: function () {
-                return {
-                    q: ''
-                }
-            },
             computed: _.extend(
                 Vuex.mapState(['user', 'event', 'attendees']), {
-                filteredIds: function () {
-                    if (!this.attendees) return null;
-                    return _.pluck(filterMultiple(this.attendees, this.q), 'id');
-                }
-            }),
-            methods: {
-                updateQuery: function (val) {
-                    this.q = val;
-                }
-            },
-            created: function () {
-                EventHub.$on('query-changed', this.updateQuery);
-            }
+            })
         };
 
         var JobsView = {

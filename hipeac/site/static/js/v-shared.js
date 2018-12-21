@@ -525,27 +525,39 @@ Vue.component('metadata-list', SimpleList.extend({
 }));
 
 Vue.component('user-viewer', {
+    data: function () {
+        return {
+            q: ''
+        }
+    },
     props: {
+        eventName: {
+            type: String,
+            default: 'query-changed'
+        },
+        embedSearch: {
+            type: Boolean,
+            default: false
+        },
         listType: {
             type: String,
             default: 'attendees'
         },
         users: {
             type: Array
-        },
-        ids: {
-            type: [Array, null],
-            default: null
         }
     },
     template: '' +
         '<div v-if="users.length" class="row">' +
             '<div class="col-12 col-md">' +
-                '<catchphrase v-html="overviewText"></catchphrase>' +
+                '<div v-if="embedSearch && users.length > 10" class="border-top border-bottom py-2 mb-4">' +
+                    '<search-box :eventName="eventName" placeholder="Search by name, affiliation, country..."></search-box>' +
+                '</div>' +
+                '<catchphrase v-html="overviewText" class="mb-4"></catchphrase>' +
             '</div>' +
             '<div class="col-12 col-md">' +
                 '<table class="table table-sm">' +
-                    '<tr v-for="user in sortedUsers" :key="user.id" :user="user" v-show="!ids || ids.indexOf(user.id) >= 0">' +
+                    '<tr v-for="user in sortedUsers" :key="user.id" :user="user" v-show="!filteredIds || filteredIds.indexOf(user.id) >= 0">' +
                         '<td>' +
                             '{{ user.profile.name }}' +
                             '<span v-if="user.profile.institution">' +
@@ -576,8 +588,12 @@ Vue.component('user-viewer', {
                 return sort().text(a.profile.name, b.profile.name);
             });
         },
+        filteredIds: function () {
+            if (!this.users) return null;
+            return _.pluck(filterMultiple(this.sortedUsers, this.q), 'id');
+        },
         filteredUsers: function () {
-            var ids = this.ids;
+            var ids = this.filteredIds;
             if (!ids) return this.sortedUsers;
             return this.sortedUsers.filter(function (obj) {
                 return ids.indexOf(obj.id) >= 0;
@@ -622,6 +638,14 @@ Vue.component('user-viewer', {
                 '</span>.'
             ].join('');
         }
+    },
+    methods: {
+        updateQuery: function (val) {
+            this.q = val;
+        }
+    },
+    created: function () {
+        EventHub.$on(this.eventName, this.updateQuery);
     }
 });
 
@@ -680,10 +704,55 @@ Vue.component('quotes-carousel-row', {
     }
 });
 
-Vue.component('search-card', {
+Vue.component('search-box', {
     data: function () {
         return {
             q: '',
+            showFilters: false
+        }
+    },
+    props: {
+        eventName: {
+            type: String,
+            default: 'query-changed'
+        },
+        placeholder: {
+            type: String,
+            default: ''
+        }
+    },
+    template: '' +
+        '<div class="input-group search-bar pr-3">' +
+            '<div class="input-group-prepend">' +
+                '<div class="input-group-text">' +
+                    '<i v-if="q" @click="q = \'\'" class="material-icons text-secondary pointer">&#xE5CD;</i>' +
+                    '<i v-else class="material-icons text-primary">&#xE8B6;</i>' +
+                '</div>' +
+            '</div>' +
+            '<input v-model="q" type="text" class="form-control" :placeholder="placeholder">' +
+        '</div>' +
+    '',
+    watch: {
+        'q': _.debounce(function (val, oldVal) {
+            if (val != oldVal) {
+                if (val != '') this.$router.replace({query: {q: val}});
+                else this.$router.replace({name: this.$route.name});
+
+                EventHub.$emit(this.eventName, val);
+            }
+        }, 100)
+    },
+    created: function () {
+        if (this.$route.query.q) {
+            this.q = this.$route.query.q;
+            EventHub.$emit(this.eventName, this.q);
+        }
+    }
+});
+
+Vue.component('search-card', {
+    data: function () {
+        return {
             showFilters: false
         }
     },
@@ -700,15 +769,7 @@ Vue.component('search-card', {
     template: '' +
         '<div class="hipeac-card py-3">' +
             '<div class="d-flex flex-row justify-content-between">' +
-                '<div class="input-group search-bar pr-3">' +
-                    '<div class="input-group-prepend">' +
-                        '<div class="input-group-text">' +
-                            '<i v-if="q" @click="q = \'\'" class="material-icons text-secondary pointer">&#xE5CD;</i>' +
-                            '<i v-else class="material-icons text-primary">&#xE8B6;</i>' +
-                        '</div>' +
-                    '</div>' +
-                    '<input v-model="q" type="text" class="form-control" :placeholder="placeholder">' +
-                '</div>' +
+                '<search-box :placeholder="placeholder"></search-box>' +
                 '<button v-if="showFiltersButton" class="btn btn-sm" @click="showFilters = !showFilters">' +
                     '<span v-if="showFilters"><icon name="keyboard_arrow_up"></icon><span class="d-none d-md-inline ml-1">Hide filters</span></span>' +
                     '<span v-else><icon name="filter_list"></icon><span class="d-none d-md-inline ml-1">Show filters</span></span>' +
@@ -719,23 +780,7 @@ Vue.component('search-card', {
                 '<slot></slot>' +
             '</div>' +
         '</div>' +
-    '',
-    watch: {
-        'q': _.debounce(function (val, oldVal) {
-            if (val != oldVal) {
-                if (val != '') this.$router.replace({query: {q: val}});
-                else this.$router.replace({name: this.$route.name});
-
-                EventHub.$emit('query-changed', val);
-            }
-        }, 100)
-    },
-    created: function () {
-        if (this.$route.query.q) {
-            this.q = this.$route.query.q;
-            EventHub.$emit('query-changed', this.q);
-        }
-    }
+    ''
 });
 
 Vue.component('search-results', {
