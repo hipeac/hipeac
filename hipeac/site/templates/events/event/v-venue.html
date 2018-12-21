@@ -11,7 +11,7 @@
             </div>
         </div>
         <div v-if="event.travel_info" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
-            <div class="hipeac-card d-flex flex-column align-items-end">
+            <div class="hipeac-card">
                 <display-sm class="mb-3">Travel information</display-sm>
                 <marked v-if="event.travel_info" :text="event.travel_info"></marked>
                 <div v-if="event.google_mid" class="mt-auto w-100">

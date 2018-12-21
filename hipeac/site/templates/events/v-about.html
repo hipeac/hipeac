@@ -3,11 +3,11 @@
 
 <script type="text/x-template" id="{{ id }}">
     <div>
-        <display-lg>{{ display }}</display-lg>
+        <display-lg>{{ blck.header }}</display-lg>
         <div class="row">
             <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
                 <div class="hipeac-card">
-                    {{ blck.content }}
+                    <div class="marked">{{ blck.content | markdown }}</div>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">

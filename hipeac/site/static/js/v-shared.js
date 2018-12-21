@@ -526,6 +526,10 @@ Vue.component('metadata-list', SimpleList.extend({
 
 Vue.component('user-viewer', {
     props: {
+        listType: {
+            type: String,
+            default: 'attendees'
+        },
         users: {
             type: Array
         },
@@ -535,8 +539,9 @@ Vue.component('user-viewer', {
         }
     },
     template: '' +
-        '<div v-if="users" class="row">' +
+        '<div v-if="users.length" class="row">' +
             '<div class="col-12 col-md">' +
+                '<catchphrase v-html="overviewText"></catchphrase>' +
             '</div>' +
             '<div class="col-12 col-md">' +
                 '<table class="table table-sm">' +
@@ -555,6 +560,14 @@ Vue.component('user-viewer', {
                 '</table>' +
             '</div>' +
         '</div>' +
+        '<div v-else class="row">' +
+            '<div class="col-12 col-md">' +
+                '<skeleton-content></skeleton-content>' +
+            '</div>' +
+            '<div class="col-12 col-md">' +
+                '<skeleton-table class="m-0" :rows="10"></skeleton-table>' +
+            '</div>' +
+        '</div>' +
     '',
     computed: {
         sortedUsers: function () {
@@ -562,6 +575,52 @@ Vue.component('user-viewer', {
             return this.users.sort(function (a, b) {
                 return sort().text(a.profile.name, b.profile.name);
             });
+        },
+        filteredUsers: function () {
+            var ids = this.ids;
+            if (!ids) return this.sortedUsers;
+            return this.sortedUsers.filter(function (obj) {
+                return ids.indexOf(obj.id) >= 0;
+            });
+        },
+        counters: function () {
+            var countries = _.without(_.keys(_.groupBy(this.filteredUsers, function (obj) {
+                return (obj.profile.institution && obj.profile.institution.country) ? obj.profile.institution.country.name : '--none--';
+            })), '--none--');
+            var institutions = _.without(_.keys(_.groupBy(this.filteredUsers, function (obj) {
+                return (obj.profile.institution) ? obj.profile.institution.name : '--none--';
+            })), '--none--');
+
+            return {
+                users: this.filteredUsers.length,
+                institutions: institutions.length,
+                institution: (institutions.length == 1) ? institutions[0] : null,
+                countries: countries.length,
+                country: (countries.length == 1) ? countries[0] : null
+            }
+        },
+        overviewText: function () {
+            if (!this.users || (this.ids && this.ids.length == 0)) {
+                return (this.listType == 'attendees') ? 'No attendees found.' : 'No members found.';
+            }
+
+            var userText = (this.listType == 'attendees') ? 'attendees' : 'members';
+
+            return [
+                '<strong class="text-nowrap">',
+                (this.counters.users == 1)
+                    ? 'One attendee'
+                    : this.counters.users + ' ' + userText,
+                '</strong> from <span class="text-nowrap">',
+                (this.counters.institution)
+                    ? this.counters.institution
+                    : this.counters.institutions + ' institutions',
+                '</span> in <span class="text-nowrap">',
+                (this.counters.country)
+                    ? this.counters.country
+                    : this.counters.countries + ' countries',
+                '</span>.'
+            ].join('');
         }
     }
 });
@@ -733,16 +792,7 @@ Vue.component('papers-table', {
                 '</td>' +
             '</tr>' +
         '</table>' +
-        '<table v-else class="table m-0 mt-3 skeleton">' +
-            '<tbody>' +
-                '<tr v-for="item in skeletons" :key="item">' +
-                    '<td class="pl-0">' +
-                        '<span class="text w-75"></span><br>' +
-                        '<span class="text sm w-100"></span>' +
-                    '</td>' +
-                '</tr>' +
-            '</tbody>' +
-        '</table>' +
+        '<skeleton-table v-else :withHeader="true" class="m-0 mt-3"></skeleton-table>' +
     '',
     computed: {
         skeletons: function () {
@@ -983,6 +1033,36 @@ Vue.component('skeleton-cards', {
     computed: {
         skeletons: function () {
             return Array.apply(null, {length: this.number}).map(Number.call, Number);
+        }
+    }
+});
+
+Vue.component('skeleton-table', {
+    props: {
+        rows: {
+            type: Number,
+            default: 5
+        },
+        withHeader: {
+            type: Boolean,
+            default: false
+        }
+    },
+    template: '' +
+        '<table class="table skeleton">' +
+            '<tbody>' +
+                '<tr v-for="item in skeletons" :key="item">' +
+                    '<td class="p-1">' +
+                        '<span v-if="withHeader" class="text w-75"></span><br v-if="withHeader">' +
+                        '<span class="text sm w-100"></span>' +
+                    '</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>' +
+    '',
+    computed: {
+        skeletons: function () {
+            return Array.apply(null, {length: this.rows}).map(Number.call, Number);
         }
     }
 });

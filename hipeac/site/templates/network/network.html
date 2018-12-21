@@ -39,7 +39,7 @@
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' display=flatpage.content tbs=flatpage.page.tbs %}
+    {% include './v-about.html' with id='v-about' tbs=flatpage.page.tbs %}
     {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
     {% include './v-innovation.html' with id='v-innovation' header=flatpage.page.tbs.about_innovation.content benefits=flatpage.page.tbs.innovation_benefits get_involved=flatpage.page.tbs.innovation_get_involved %}
     {% include './v-members.html' with id='v-members' membership=flatpage.page.tbs.membership charter=flatpage.page.tbs.membership_charter how_to=flatpage.page.tbs.membership_how_to %}

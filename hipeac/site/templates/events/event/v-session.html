@@ -102,7 +102,7 @@
 <script type="text/x-template" id="{{ id }}-attendees">
 {% verbatim %}
     <div v-if="user.isRegistered">
-        <user-viewer v-if="attendees.length" :users="attendees"></user-viewer>
+        <user-viewer :users="attendees"></user-viewer>
     </div>
 {% endverbatim %}
 </script>

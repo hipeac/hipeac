@@ -31,12 +31,8 @@
                                     {{ institution.description | markdown }}
                                 </div>
                             {% endif %}
-                            {% if institution.parent %}
-                                <h5>Parent institution</h5>
-                                <a href="{{ institution.parent.get_absolute_url }}">{{ institution.parent }}</a>
-                            {% endif %}
-
                             {% if institution.children.count %}
+                                <hr class="my-4">
                                 <h5>Children</h5>
                                 <ul class="list-inline">
                                 {% for i in institution.children.all %}
@@ -48,6 +44,14 @@
                             {% endif %}
                         </div>
                         <div class="col-12 col-md-4">
+                            {% if institution.parent %}
+                                <div class="mb-4">
+                                    <h5 class="display-sm">Parent institution</h5>
+                                    <a href="{{ institution.parent.get_absolute_url }}" class="inherit">
+                                        <img src="{{ institution.parent.images.sm }}" class="logo-sm mt-3 mr-3">
+                                    </a>
+                                </div>
+                            {% endif %}
                             {% if institution.location or institution.country %}
                                 <div class="mb-4">
                                     <h5 class="display-sm">Location</h5>
