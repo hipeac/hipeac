@@ -5,14 +5,14 @@
 
 {% block head_title %}{{ flatpage.title }} - {{ block.super }}{% endblock %}
 
+{% block subtitle %}{{ flatpage.title }}{% endblock %}
+
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col-lg-2">
-                <h4 class="w-75">{{ flatpage.title }}</h4>
-            </div>
+        <div class="row justify-content-md-center">
             <div class="col-lg-8">
-                <div class="md2">
+                <div class="hipeac-card">
+                    <h2 class="display-lg mb-4">{{ flatpage.title }}</h2>
                     {{ flatpage.content | markdown }}
                 </div>
             </div>

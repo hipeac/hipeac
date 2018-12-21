@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.contrib.flatpages.admin import FlatPageAdmin
 from django.contrib.flatpages.models import FlatPage
 
-from hipeac.models import Block
+from hipeac.models import Page, Block
 from .generic import HideDeleteActionMixin, ImagesInline
 
 
@@ -19,3 +20,8 @@ class BlockAdmin(HideDeleteActionMixin, admin.ModelAdmin):
         if not request.user.is_superuser:
             return ('key', 'notes')
         return ()
+
+
+@admin.register(Page)
+class PageAdmin(FlatPageAdmin):
+    pass
