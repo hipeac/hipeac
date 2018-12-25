@@ -78,10 +78,11 @@ class Registration(models.Model):
         `base_fee` is only calculated when the registration is created.
         `extra_fees` are recalculated every time.
         """
+        is_early = self.is_early() if self.pk else self.event.is_early()
         if self.fee_type == Fee.STUDENT:
-            fee_type = Fee.EARLY_STUDENT if self.event.is_early() else Fee.LATE_STUDENT
+            fee_type = Fee.EARLY_STUDENT if is_early else Fee.LATE_STUDENT
         else:
-            fee_type = Fee.EARLY if self.event.is_early() else Fee.LATE
+            fee_type = Fee.EARLY if is_early else Fee.LATE
 
         self.base_fee = self.event.fees_dict[fee_type]
         self.extra_fees = self.event.fees_dict[Fee.BOOTH] if self.with_booth else 0
@@ -105,6 +106,11 @@ class Registration(models.Model):
 
     def get_receipt_url(self) -> str:
         return reverse('registration_receipt', args=[self.id])
+
+    def is_early(self) -> bool:
+        if not self.event.registration_early_deadline:
+            return False
+        return self.created_at <= self.event.registration_early_deadline
 
     @property
     def is_paid(self) -> bool:
