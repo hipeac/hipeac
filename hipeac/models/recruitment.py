@@ -24,7 +24,7 @@ def validate_institution(institution, user) -> None:
     ids = [institution.id] + list(institution.children.values_list('id', flat=True))
     if institution.parent_id:
         ids.append(institution.parent_id)
-    if user.profile.institution_id not in ids:
+    if user.profile.institution_id not in ids and user.profile.second_institution_id not in ids:
         raise ValidationError('You cannot create a job position for this institution.')
 
 
