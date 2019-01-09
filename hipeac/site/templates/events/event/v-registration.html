@@ -50,20 +50,22 @@
                         </span>
                         <hr class="my-4">
                         <div v-if="event.fees">
-                            <display-sm class="mb-3">All-in ticket for 3 days</display-sm>
-                            <div class="big-checkbox">
-                                <label>
-                                    <input type="radio" v-model="registration.fee_type" value="regular">
-                                    <span>Regular </span>
-                                    <small v-if="event.is_early">(early: <strong>EUR {{ event.fees.early }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</small>
-                                    <small v-else>(late: EUR {{ event.fees.late }})</small>
-                                </label>
-                                <label>
-                                    <input type="radio" v-model="registration.fee_type" value="student">
-                                    <span>Student </span>
-                                    <small v-if="event.is_early">(early: <strong>EUR {{ event.fees.early_student }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</small>
-                                    <small v-else>(late: EUR {{ event.fees.late_student }})</small>
-                                </label>
+                            <div v-show="registrationIsNew">
+                                <display-sm class="mb-3">All-in ticket for 3 days</display-sm>
+                                <div class="big-checkbox">
+                                    <label>
+                                        <input type="radio" v-model="registration.fee_type" value="regular">
+                                        <span>Regular </span>
+                                        <small v-if="event.is_early">(early: <strong>EUR {{ event.fees.early }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</small>
+                                        <small v-else>(late: EUR {{ event.fees.late }})</small>
+                                    </label>
+                                    <label>
+                                        <input type="radio" v-model="registration.fee_type" value="student">
+                                        <span>Student </span>
+                                        <small v-if="event.is_early">(early: <strong>EUR {{ event.fees.early_student }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</small>
+                                        <small v-else>(late: EUR {{ event.fees.late_student }})</small>
+                                    </label>
+                                </div>
                             </div>
                             <display-sm class="mt-4 mb-3">Booth in exhibition area</display-sm>
                             <table class="table table-sm">
