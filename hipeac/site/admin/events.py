@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
 from hipeac.functions import send_task
 from hipeac.models import Profile, Event, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room
-from hipeac.site.emails.events import SessionReminderEmail
+from hipeac.site.emails.events import RegistrationReminderEmail, SessionReminderEmail
 from .generic import ImagesInline, LinksInline, PermissionsInline
 from .users import ProfileCsvWriter, send_profile_update_reminders
 
@@ -136,7 +136,7 @@ class RegistrationAdmin(admin.ModelAdmin):
             'fields': ('with_booth',),
         }),
     )
-    actions = ('send_payment_reminder', 'send_profile_update_reminder')
+    actions = ('send_reminder', 'send_payment_reminder', 'send_profile_update_reminder')
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('user__profile__institution', 'coupon') \
@@ -189,6 +189,13 @@ class RegistrationAdmin(admin.ModelAdmin):
             send_task('hipeac.tasks.emails.send_from_template', email)
         admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
     send_payment_reminder.short_description = ('[Mailer] Send payment reminder')
+
+    def send_reminder(self, request, queryset):
+        for instance in queryset:
+            email = RegistrationReminderEmail(instance=instance)
+            send_task('hipeac.tasks.emails.send_from_template', email.data)
+        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
+    send_reminder.short_description = ('[Mailer] Send reminder to users')
 
     def send_profile_update_reminder(self, request, queryset):
         user_ids = queryset.values_list('user_id', flat=True)
