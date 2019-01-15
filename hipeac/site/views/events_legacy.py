@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 from django_countries import countries
 
-from hipeac.models import Event, Registration
+from hipeac.models import Event, Registration, Institution
 
 
 class EventStats(generic.TemplateView):
@@ -274,12 +274,14 @@ class EventStats(generic.TemplateView):
         # -----------------
         def get_institution_types_data(event):
             y_dict = OrderedDict([
-                ('SME', 0),
-                ('COM', 0),
-                ('UNI', 0),
-                ('LAB', 0),
-                ('OTH', 0)
+                (Institution.SME, 0),
+                (Institution.INDUSTRY, 0),
+                (Institution.UNIVERSITY, 0),
+                (Institution.LAB, 0),
+                (Institution.INNOVATION, 0),
+                (Institution.OTHER, 0)
             ])
+
             for r in Registration.objects \
                                  .select_related('user__profile__institution') \
                                  .filter(event_id=event.id) \
@@ -290,7 +292,7 @@ class EventStats(generic.TemplateView):
 
             return y_dict
 
-        keys = ['SMEs', 'Industry', 'Universities', 'Labs', 'Other']
+        keys = ['SMEs', 'Industry', 'Universities', 'Labs', 'Innovation', 'Other']
         previous_trace = pgo.Bar(
             x=keys,
             y=list(get_institution_types_data(previous_conf).values()),
