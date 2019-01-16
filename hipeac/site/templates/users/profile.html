@@ -17,7 +17,7 @@
     </li>
     {% if user.is_authenticated and user.id == profile.user_id %}
         <li class="nav-item">
-            <a url="{% url 'user_profile' %}" class="nav-link"><i class="material-icons mr-1">edit</i>Edit</a>
+            <a href="{% url 'user_profile' %}" class="nav-link"><i class="material-icons mr-1">edit</i>Edit</a>
         </li>
     {% endif %}
 {% endblock %}
