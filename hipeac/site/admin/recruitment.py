@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.forms import ModelForm
 from django.urls import path
-from django.utils import timezone
 
 from hipeac.forms import ApplicationAreasChoiceField, JobPositionChoiceField, TopicsChoiceField
 from hipeac.models import Job, JobEvaluation, Event

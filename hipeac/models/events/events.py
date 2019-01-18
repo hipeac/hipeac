@@ -47,7 +47,7 @@ class EventManager(models.Manager):
         return super().get_queryset().exclude(type=EC_MEETING)
 
     def upcoming(self):
-        return self.public().filter(end_date__gte=timezone.now().date()).first()
+        return self.public().filter(end_date__gte=timezone.now().date()).order_by('end_date').first()
 
 
 class Event(ImagesMixin, LinkMixin, models.Model):

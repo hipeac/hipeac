@@ -21,7 +21,8 @@ class JobsPdfMaker:
 
                 pdf.add_note(f'Find more on our web: hipeac.net/jobs/{job.id}')
                 if job.institution:
-                    pdf.add_image(job.institution.images['th'], 'th')
+                    if job.institution.image:
+                        pdf.add_image(job.institution.images['th'], 'th')
                     pdf.add_text(f'<strong>{job.institution.name}</strong>', 'h4')
                 pdf.add_text(', '.join(location), 'h4')
                 pdf.add_spacer()
