@@ -24,5 +24,8 @@ class Vision(LinkMixin, models.Model):
     class Meta:
         ordering = ['-publication_date']
 
+    def __str__(self) -> str:
+        return self.title
+
     def get_download_url(self) -> str:
         return reverse('vision_download', args=[self.publication_date.year])
