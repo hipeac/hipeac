@@ -2,8 +2,16 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+from django.utils import timezone
 
 from .mixins import LinkMixin
+
+
+class VisionManager(models.Manager):
+    def published(self):
+        return self.filter(
+            publication_date__lte=timezone.now().date()
+        )
 
 
 class Vision(LinkMixin, models.Model):
@@ -20,6 +28,8 @@ class Vision(LinkMixin, models.Model):
 
     images = GenericRelation('hipeac.Image')
     links = GenericRelation('hipeac.Link')
+
+    objects = VisionManager()
 
     class Meta:
         ordering = ['-publication_date']
