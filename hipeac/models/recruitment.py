@@ -21,6 +21,9 @@ def validate_institution(institution, user) -> None:
     if user.is_staff or user.groups.filter(name='External recruiters').exists():
         return
 
+    if not institution:
+        raise ValidationError('Please select a valid institution.')
+
     ids = [institution.id] + list(institution.children.values_list('id', flat=True))
     if institution.parent_id:
         ids.append(institution.parent_id)
