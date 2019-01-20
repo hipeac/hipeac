@@ -46,11 +46,12 @@ class Session(LinkMixin, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        self.keywords = json.dumps(
-            [institution.short_name for institution in self.institutions.all()] +
-            [project.acronym for project in self.projects.all()] +
-            ([self.main_speaker.first_name, self.main_speaker.last_name] if self.main_speaker else [])
-        )
+        if self.id:
+            self.keywords = json.dumps(
+                [institution.short_name for institution in self.institutions.all()] +
+                [project.acronym for project in self.projects.all()] +
+                ([self.main_speaker.first_name, self.main_speaker.last_name] if self.main_speaker else [])
+            )
         super().save(*args, **kwargs)
 
     class Meta:
