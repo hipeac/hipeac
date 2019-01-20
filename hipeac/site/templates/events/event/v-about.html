@@ -47,7 +47,11 @@
             </div>
         </div>
         <div v-if="event.sponsors.length" class="hipeac-card">
-            <display-sm class="mb-3">Sponsors</display-sm>
+            <div v-if="event.type == 'conference'">
+                <catchphrase>The HiPEAC conference is the premier European forum for experts in computer architecture, programming models, compilers and operating systems for embedded and general-purpose systems.</catchphrase>
+                <p>The HiPEAC {{ event.start_date | moment('YYYY') }} conference will take place in {{ event.city }}, {{ event.country.name }}. Associated workshops, tutorials, special sessions, several large poster session and an industrial exhibition will run in parallel with the conference.</p>
+                <hr class="mt-4">
+            </div>
             <ul class="logos">
                 <li v-for="sponsor in event.sponsors" :key="sponsor.id">
                     <a v-if="sponsor.institution" :href="sponsor.institution.href">
