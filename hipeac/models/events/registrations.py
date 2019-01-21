@@ -51,6 +51,7 @@ class Registration(models.Model):
                                 choices=((Fee.REGULAR, 'Regular'), (Fee.STUDENT, 'Student')))
     base_fee = models.PositiveSmallIntegerField(default=0, editable=False)
     extra_fees = models.PositiveSmallIntegerField(default=0, editable=False)
+    manual_extra_fees = models.PositiveSmallIntegerField(default=0)
     paid = models.PositiveSmallIntegerField('Paid online', default=0)
     paid_via_invoice = models.PositiveSmallIntegerField('Amount paid via invoice', default=0)
     saldo = models.IntegerField(default=0)
@@ -123,7 +124,7 @@ class Registration(models.Model):
 
     @property
     def total_fee(self):
-        return self.base_fee + self.extra_fees
+        return self.base_fee + self.extra_fees + self.manual_extra_fees
 
 
 @receiver(post_save, sender=Registration)

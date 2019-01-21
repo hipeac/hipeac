@@ -129,7 +129,8 @@ class RegistrationAdmin(admin.ModelAdmin):
             'fields': ('event', ('user', 'visa_requested', 'visa_sent')),
         }),
         ('PAYMENT', {
-            'fields': ('fee_type', 'base_fee', 'extra_fees', ('paid_via_invoice', 'invoice_requested', 'invoice_sent'),
+            'fields': ('fee_type', ('base_fee', 'extra_fees'), 'manual_extra_fees',
+                       ('paid_via_invoice', 'invoice_requested', 'invoice_sent'),
                        'coupon', 'paid', 'saldo'),
         }),
         ('EXTRA INFORMATION', {
