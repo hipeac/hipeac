@@ -229,7 +229,7 @@ class SessionAdmin(admin.ModelAdmin):
     list_filter = ('session_type', 'event')
     search_fields = ('title',)
 
-    autocomplete_fields = ('event', 'projects', 'main_speaker')
+    autocomplete_fields = ('event', 'projects', 'main_speaker', 'room')
     radio_fields = {'session_type': admin.VERTICAL}
     inlines = [LinksInline, PermissionsInline]
     fieldsets = (
@@ -274,6 +274,11 @@ class SessionAdmin(admin.ModelAdmin):
 class RoomsInline(admin.TabularInline):
     model = Room
     extra = 0
+
+
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
 
 
 @admin.register(Venue)
