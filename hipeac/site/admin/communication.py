@@ -86,14 +86,15 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ('is_expert',)
     search_fields = ('title',)
 
-    raw_id_fields = ('user', 'project')
+    autocomplete_fields = ('projects',)
+    raw_id_fields = ('user',)
     fieldsets = (
         (None, {
             'fields': ('title', 'publication_date', 'youtube_id', 'is_expert'),
         }),
         ('RELATIONS', {
             'classes': ('collapse',),
-            'fields': ('user', 'project'),
+            'fields': ('user', 'projects'),
         }),
         ('METADATA', {
             'classes': ('collapse',),

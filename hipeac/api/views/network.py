@@ -95,5 +95,5 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
 
     @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
     def videos(self, request, *args, **kwargs):
-        self.queryset = Video.objects.filter(project_id=kwargs.get('pk'))
+        self.queryset = Project.objects.get(id=kwargs.get('pk')).videos.all()
         return super().list(request, *args, **kwargs)

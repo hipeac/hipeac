@@ -216,7 +216,7 @@ function mapper() {
                 obj.q = [
                     getMetadataString(obj),
                     obj.title,
-                    obj.user.profile.name,
+                    (obj.user) ? obj.user.profile.name : '',
                 ].join(' ').toLowerCase();
                 return obj;
             });
