@@ -23,6 +23,9 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     PROGRAMME_CHOICES = (
         ('FP7', 'FP7'),
         ('H2020', 'H2020'),
+        ('ECSEL', 'ECSEL'),
+        ('EUREKA', 'EUREKA'),
+        ('OTHER', 'Other'),
     )
 
     programme = models.CharField(max_length=5, null=True, blank=True, choices=PROGRAMME_CHOICES)
