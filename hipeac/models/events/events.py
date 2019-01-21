@@ -168,7 +168,7 @@ class Event(ImagesMixin, LinkMixin, models.Model):
             institution_ids, project_ids = list(filter(None, a)), list(filter(None, b))
             queryset = Job.objects.active().filter(
                 (Q(institution__in=institution_ids) | Q(project__in=project_ids)),
-            )
+            ).order_by('institution__name', 'deadline')
         else:
             queryset = Job.objects.none()
         return queryset
