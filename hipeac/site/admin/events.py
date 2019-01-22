@@ -153,7 +153,7 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     def name(self, obj):
         institution = obj.user.profile.institution.short_name if obj.user.profile.institution else '-'
-        url = reverse('admin:hipeac_profile_changelist')
+        url = reverse('admin:auth_user_changelist')
         return format_html(
             f'<a href="{url}{obj.user_id}/" target="admin_user">{obj.user.profile.name}</a>, {institution}'
         )

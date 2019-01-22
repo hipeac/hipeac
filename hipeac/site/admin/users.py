@@ -1,11 +1,16 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
+from django.db.models import Q
 from django.forms import ModelForm
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField, MembershipTagsChoiceField
 from hipeac.functions import send_task
-from hipeac.models import Profile
+from hipeac.models import Profile, Institution
 from hipeac.tools.csv import ModelCsvWriter
-from .generic import HideDeleteActionMixin
+
+
+admin.site.unregister(get_user_model())
 
 
 def send_profile_update_reminders(queryset):
@@ -40,19 +45,16 @@ class ProfileAdminForm(ModelForm):
     membership_tags = MembershipTagsChoiceField(required=False)
 
 
-@admin.register(Profile)
-class ProfileAdmin(HideDeleteActionMixin, admin.ModelAdmin):
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    fk_name = 'user'
     form = ProfileAdminForm
     exclude = ('is_bouncing',)
 
-    list_display = ('user_id', 'username', 'name', 'email', 'membership_tags')
-
     autocomplete_fields = ('institution', 'second_institution', 'projects')
-    readonly_fields = ('user',)
-    search_fields = ('user__username', 'user__email', 'user__first_name', 'user__last_name')
     fieldsets = (
         (None, {
-            'fields': ('user', 'country', 'bio', 'meal_preference', 'image'),
+            'fields': ('country', 'bio', 'meal_preference', 'image'),
         }),
         ('AFFILIATION', {
             'fields': ('position', 'institution', 'department', 'second_institution'),
@@ -69,15 +71,70 @@ class ProfileAdmin(HideDeleteActionMixin, admin.ModelAdmin):
             'fields': ('is_subscribed', 'is_public'),
         }),
     )
-    actions = ('send_profile_update_reminder',)
+
+
+class MembershipTypeFilter(admin.SimpleListFilter):
+    title = 'membership'
+    parameter_name = 'membership'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('any', 'All members'),
+            ('member', 'Member'),
+            ('affiliated', 'Affiliated member'),
+            ('industry', 'Industry member or affiliate'),
+            ('innovation', 'Innovation member'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        queryset = queryset.filter(is_active=True, profile__membership_revocation_date__isnull=True)
+
+        if value in ['any', 'industry']:
+            queryset = queryset.filter(
+                Q(profile__membership_tags__contains='member') |
+                Q(profile__membership_tags__contains='affiliated')
+            )
+
+        if value:
+            if value == 'any':
+                return queryset
+            elif value == 'industry':
+                return queryset.filter(
+                    Q(profile__institution__type__in=[Institution.INDUSTRY, Institution.SME]) |
+                    Q(profile__second_institution__type__in=[Institution.INDUSTRY, Institution.SME])
+                )
+            elif value != '':
+                return queryset.filter(profile__membership_tags__contains=value)
+
+
+@admin.register(get_user_model())
+class UserAdmin(AuthUserAdmin):
+    actions = ('send_profile_update_reminder', 'select_export_users_csv')
+    list_display = ('id', 'username', 'name', 'institution', 'email', 'membership_tags')
+    list_filter = (MembershipTypeFilter,) + AuthUserAdmin.list_filter
+    search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__institution__name')
+
+    inlines = (ProfileInline,)
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('user')
+        return super().get_queryset(request).select_related('profile').prefetch_related('profile__institution')
 
-    def email(self, obj) -> str:
-        return obj.user.email
+    def membership_tags(self, obj) -> str:
+        return obj.profile.membership_tags
+
+    def name(self, obj) -> str:
+        return obj.profile.name
+
+    def institution(self, obj) -> str:
+        return obj.profile.institution
 
     def send_profile_update_reminder(self, request, queryset):
         send_profile_update_reminders(queryset)
         admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
     send_profile_update_reminder.short_description = ('[Mailer] Send profile update reminder')
+
+    def select_export_users_csv(self, request, queryset):
+        ids = queryset.values_list('id', flat=True)
+        return ProfileCsvWriter(filename='hipeac-users.csv', queryset=Profile.objects.filter(user_id__in=ids)).response
+    select_export_users_csv.short_description = '[CSV] Export users\' data'
