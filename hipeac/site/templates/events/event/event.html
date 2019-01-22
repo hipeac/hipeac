@@ -47,7 +47,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" class="container">
+    <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" class="container">
         <div is="router-view"></div>
     </div>
 {% endblock %}
@@ -74,6 +74,7 @@
                     isRegistered: false
                 },
                 event: null,
+                committees: [],
                 jobs: [],
                 attendees: [],
                 session: null,
@@ -81,6 +82,11 @@
                 papers: []
             },
             mutations: {
+                fetchCommittees: function (state) {
+                    ajax().get($('#urls').data('committees-url')).done(function (res) {
+                        state.committees = res;
+                    });
+                },
                 fetchEvent: function (state) {
                     ajax().get($('#urls').data('event-url')).done(function (res) {
                         state.event = mapper().events([res])[0];
@@ -119,7 +125,7 @@
         var AboutView = {
             template: '#v-about',
             computed: _.extend(
-                Vuex.mapState(['user', 'event', 'articles']), {
+                Vuex.mapState(['user', 'event', 'articles', 'committees']), {
             })
         };
 
@@ -512,6 +518,7 @@
             created: function () {
                 $.when(
                     this.$store.commit('fetchEvent'),
+                    this.$store.commit('fetchCommittees'),
                     this.$store.commit('fetchRegistrations'),
                     this.$store.commit('fetchJobs')
                 );

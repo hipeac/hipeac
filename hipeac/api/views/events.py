@@ -9,6 +9,7 @@ from hipeac.models import Event, Roadshow, Session, Registration
 from ..permissions import HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
 from ..serializers import (
     ArticleListSerializer,
+    CommitteeListSerializer,
     EventListSerializer, EventSerializer,
     JobNestedSerializer,
     RegistrationListSerializer, AuthRegistrationSerializer,
@@ -42,6 +43,15 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     )
     def articles(self, request, *args, **kwargs):
         self.queryset = self.get_object().articles.prefetch_related('institutions', 'projects')
+        return super().list(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        serializer_class=CommitteeListSerializer,
+    )
+    def committees(self, request, *args, **kwargs):
+        self.queryset = self.get_object().committees.prefetch_related('members__profile__institution')
         return super().list(request, *args, **kwargs)
 
     @action(

@@ -64,15 +64,30 @@
             </ul>
         </div>
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-8">
+            <div class="col-12 col-md-12 col-lg-6">
                 <article-card v-if="event" title="Event news" :eventId="event.id" :max="10" :show-more="false"></article-card>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
                 <div class="hipeac-card" v-if="user.isRegistered && event.links.google_photos">
                     {% endverbatim %}
                         <img src="{% static 'images/google-photos.svg' %}" class="float-right logo-photos ml-3">
                     {% verbatim %}
                     <catchphrase class="mb-0">Share your pictures from this event <a :href="event.links.google_photos">here</a>!</catchphrase>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="hipeac-card text-sm" v-if="committees.length">
+                    <display-sm class="mb-3">Committees</display-sm>
+                    <hr>
+                    <div class="row">
+                        <div v-for="committee in committees" class="col-12 col-md-6">
+                            <strong>{{ committee.name }}</strong>
+                            <ul class="list-unstyled">
+                                <li v-for="user in committee.members">
+                                    <span>{{ user.profile.name }}, </span>
+                                    <em>{{ user.profile.institution.short_name }}</em>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

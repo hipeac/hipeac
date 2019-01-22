@@ -7,7 +7,10 @@ from django.utils.safestring import mark_safe
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
 from hipeac.functions import send_task
-from hipeac.models import Profile, Event, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room
+from hipeac.models import (
+    Profile,
+    Event, Committee, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room
+)
 from hipeac.site.emails.events import RegistrationReminderEmail, SessionReminderEmail
 from .generic import ImagesInline, LinksInline, PermissionsInline
 from .users import ProfileCsvWriter, send_profile_update_reminders
@@ -16,6 +19,13 @@ from .users import ProfileCsvWriter, send_profile_update_reminders
 class BreaksInline(admin.TabularInline):
     model = Break
     classes = ('collapse',)
+    extra = 0
+
+
+class CommitteesInline(admin.TabularInline):
+    autocomplete_fields = ('members',)
+    classes = ('collapse',)
+    model = Committee
     extra = 0
 
 
@@ -49,8 +59,28 @@ class EventAdmin(admin.ModelAdmin):
     list_per_page = 20
     search_fields = ('city', 'country', 'start_date__year')
 
+    autocomplete_fields = ('coordinating_institution', 'venues')
     readonly_fields = ('registrations_count',)
-    inlines = (BreaksInline, SponsorsInline, CouponsInline, LinksInline,)
+    fieldsets = (
+        (None, {
+            'fields': ('city', 'country', 'coordinating_institution', 'hashtag', 'registrations_count'),
+        }),
+        ('DATES', {
+            'fields': (
+                'start_date',
+                'end_date',
+                'registration_start_date',
+                ('registration_early_deadline', 'registration_deadline'),
+            ),
+        }),
+        ('VENUE AND TRAVEL', {
+            'fields': ('venues', 'travel_info'),
+        }),
+        ('IMAGES', {
+            'fields': ('image',),
+        }),
+    )
+    inlines = (BreaksInline, SponsorsInline, CommitteesInline, CouponsInline, LinksInline,)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(Count('sessions', distinct=True)) \

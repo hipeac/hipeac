@@ -4,12 +4,20 @@ from rest_framework import serializers
 
 from hipeac.functions import truncate_md
 from hipeac.models import (
-    Event, Registration, Poster, Roadshow, Session, Break, Sponsor, Venue, Room, Project, Institution
+    Event, Committee, Registration, Poster, Roadshow, Session, Break, Sponsor, Venue, Room, Project, Institution
 )
 from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .users import UserPublicMiniSerializer, UserPublicListSerializer
+
+
+class CommitteeListSerializer(serializers.ModelSerializer):
+    members = UserPublicMiniSerializer(many=True)
+
+    class Meta:
+        model = Committee
+        exclude = ('event', 'position')
 
 
 class RoomSerializer(serializers.ModelSerializer):
