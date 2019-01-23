@@ -31,7 +31,7 @@ class JobsPdfMaker:
                 pdf.add_text(f'<strong>Career levels</strong>: {job.get_metadata_display("career_levels")}', 'ul_li')
                 pdf.add_text(f'<strong>Keywords</strong>: {job.get_metadata_display("topics")}', 'ul_li')
                 pdf.add_spacer()
-                pdf.add_text(job.description, 'markdown')
+                pdf.add_text(job.description, 'p_justify', 'markdown')
                 pdf.add_page_break()
 
             self._response.write(pdf.get())

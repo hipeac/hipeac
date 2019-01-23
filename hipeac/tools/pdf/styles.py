@@ -46,10 +46,15 @@ PDF_STYLES = {
 PDF_STYLES['p'] = ParagraphStyle(
     'p',
     PDF_STYLES['default'],
-    alignment=TA_JUSTIFY,
-    hyphenationLang='en_GB',
     spaceBefore=0.3 * cm,
     spaceAfter=0.3 * cm,
+)
+
+PDF_STYLES['p_justify'] = ParagraphStyle(
+    'p_justify',
+    PDF_STYLES['p'],
+    alignment=TA_JUSTIFY,
+    hyphenationLang='en_GB',
 )
 
 PDF_STYLES['footer'] = ParagraphStyle(

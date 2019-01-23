@@ -91,7 +91,7 @@ class Pdf:
         self._draw_logo(canvas, doc)
         self._draw_footer(canvas, doc)
 
-    def process_markdown(self, markdown_string: str):
+    def process_markdown(self, markdown_string: str, paragraph_style: str = 'p'):
         walker = Parser().parse(markdown_string).walker()
         event = walker.nxt()
         buf = ''
@@ -112,7 +112,7 @@ class Pdf:
             if node_type == 'strong':
                 buf += '<strong>' if entering else '</strong>'
             if node_type == 'paragraph' and not entering:
-                style = 'p'
+                style = paragraph_style
                 if node.parent.t == 'item':
                     style = 'ul_li' if node.parent.parent.list_data['type'] == 'bullet' else 'ol_li'
                 self.parts.append(Paragraph(buf, PDF_STYLES[style]))
@@ -131,13 +131,13 @@ class Pdf:
     def add_spacer(self, size_in_cm: float = 0.5) -> None:
         self.parts.append(Spacer(self.doc.width, size_in_cm * cm))
 
-    def add_text(self, text: str, style: str = 'p') -> None:
-        if style == 'markdown':
+    def add_text(self, text: str, style: str = 'p', text_format: str = 'regular') -> None:
+        if text_format == 'markdown':
             try:
-                self.process_markdown(text)
+                self.process_markdown(text, style)
             except Exception:
                 # past-proof: old jobs can even have Word markdown!
-                self.parts.append(Paragraph(escape(text), PDF_STYLES['p']))
+                self.parts.append(Paragraph(escape(text), PDF_STYLES[style]))
         else:
             self.parts.append(Paragraph(text, PDF_STYLES[style]))
 
