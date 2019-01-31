@@ -12,6 +12,7 @@ class Video(models.Model):
 
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+    event = models.ForeignKey('hipeac.Event', null=True, blank=True, on_delete=models.SET_NULL, related_name='videos')
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='videos')
 
     class Meta:

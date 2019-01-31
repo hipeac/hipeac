@@ -14,7 +14,8 @@ from ..serializers import (
     JobNestedSerializer,
     RegistrationListSerializer, AuthRegistrationSerializer,
     RoadshowListSerializer, RoadshowSerializer,
-    SessionListSerializer, SessionSerializer
+    SessionListSerializer, SessionSerializer,
+    VideoListSerializer
 )
 
 
@@ -89,6 +90,11 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
         self.queryset = self.get_object().sessions.filter(session_type=session_type) \
                                                   .prefetch_related('session_type', 'main_speaker__profile', 'projects',                  'institutions', 'links')
+        return super().list(request, *args, **kwargs)
+
+    @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
+    def videos(self, request, *args, **kwargs):
+        self.queryset = self.get_object().videos.all()
         return super().list(request, *args, **kwargs)
 
 

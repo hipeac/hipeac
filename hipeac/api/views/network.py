@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import Institution, Project, Video
+from hipeac.models import Institution, Project
 from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import (
     InstitutionMiniSerializer, InstitutionListSerializer, InstitutionSerializer,
@@ -95,5 +95,5 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
 
     @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
     def videos(self, request, *args, **kwargs):
-        self.queryset = Project.objects.get(id=kwargs.get('pk')).videos.all()
+        self.queryset = self.get_object().videos.all()
         return super().list(request, *args, **kwargs)

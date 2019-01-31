@@ -53,7 +53,7 @@
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' %}
+    {% include './v-about.html' with id='v-about' event_id=event.id%}
     {% include './v-attendees.html' with id='v-attendees' %}
     {% include './v-jobs.html' with id='v-jobs' hashtag=event.hashtag %}
     {% include './v-registration.html' with id='v-registration' %}
