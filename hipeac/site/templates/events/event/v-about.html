@@ -82,8 +82,8 @@
                             <strong>{{ committee.name }}</strong>
                             <ul class="list-unstyled">
                                 <li v-for="user in committee.members">
-                                    <span>{{ user.profile.name }}, </span>
-                                    <em>{{ user.profile.institution.short_name }}</em>
+                                    <span>{{ user.profile.name }}</span>
+                                    <em v-if="user.profile.institution">, {{ user.profile.institution.short_name }}</em>
                                 </li>
                             </ul>
                         </div>
