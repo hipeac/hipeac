@@ -5,6 +5,9 @@
     <div class="hipeac-card">
         <div class="row">
             <div class="col-12 col-md-8 pr-md-5">
+                {% if profile.membership %}
+                    <h5 class="catchphrase mb-3">HiPEAC <strong>{{ profile.membership }}</strong>{% if profile.membership_date %} since {{ profile.membership_date | date:'F Y' }}{% endif %}.</h5>
+                {% endif %}
                 {% if profile.bio %}
                     <div class="marked">
                         {{ profile.bio | markdown }}

@@ -135,6 +135,16 @@ class Profile(ImagesMixin, models.Model):
 
         return f'https://www.gravatar.com/avatar/{email_hash}?s={size}&d=retro&r=PG'
 
+    @property
+    def membership(self) -> bool:
+        if not self.membership_tags:
+            return None
+        if 'affiliated' in self.membership_tags:
+            return 'affiliated member'
+        if 'member' in self.membership_tags and not self.membership_revocation_date:
+            return 'member'
+        return None
+
     def is_steering_member(self) -> bool:
         return self.user.groups.filter(name='Steering Committee').exists()
 
