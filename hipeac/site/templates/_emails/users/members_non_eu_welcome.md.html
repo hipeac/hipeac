@@ -1,0 +1,31 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block header %}Welcome to the HiPEAC community!{% endblock %}
+
+{% block body %}
+Dear {{ user_name }},
+
+It is a pleasure to announce to you that the HiPEAC Steering Committee accepted you as a HiPEAC Associate Member. Congratulations and welcome to the HiPEAC community.
+
+**{% if is_registered %}Please update your HiPEAC profile [here](https://www.hipeac.net/accounts/profile/).{% else %}If you are not registered on our website yet, we invite you to register now at [hipeac.net/join](https://www.hipeac.net/join/).{% endif %}**
+
+The goal of the HiPEAC network is to strengthen the European research community in computing systems, by bringing together the leading European academic and industrial groups, collaborating on joint research projects, and shaping the future of computing systems in Europe.
+
+We are looking forward to collaborating with you. As a HiPEAC Associate Member, you can keep up to date with the community by:
+
+- attending one of our forthcoming events: [hipeac.net/events](https://www.hipeac.net/events/)
+- following our monthly newsmail
+- reading and/or contributing to the [HiPEAC Magazine](https://www.hipeac.net/magazine/): please get in touch with <communication@hipeac.net> if you have announcements of research results, product launches or anything else which might interest the HiPEAC community
+
+Members are expected to be active in the community.
+You can read our full member charter on our [membership page](https://www.hipeac.net/membership/).
+
+We warmly welcome you to our community.
+
+Yours sincerely,  
+Rainer Leupers, Membership Coordinator  
+Koen De Bosschere, HiPEAC Coordinator
+{% endblock %}
+
+{% block footer %}HiPEAC, European Network on High Performance and Embedded Architecture and Compilation{% endblock %}
