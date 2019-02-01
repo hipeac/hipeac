@@ -186,23 +186,38 @@ class EventStats(generic.TemplateView):
         # ----------
 
         def get_membership_data(event):
-            y_dict = OrderedDict([
-                ('MEMB', 0),
-                ('ASSO', 0),
-                ('AFFI', 0),
-                ('APHD', 0),
-                ('STAF', 0),
-                (None, 0)
-            ])
+            y_dict = {
+                'MEMB': 0,
+                'ASSO': 0,
+                'AFFI': 0,
+                'APHD': 0,
+                'STAF': 0,
+                'None': 0,
+            }
             for r in Registration.objects \
-                                 .select_related('user') \
-                                 .filter(event_id=event.id) \
-                                 .values('user__profile__membership_tags') \
-                                 .order_by('user__profile__membership_tags') \
-                                 .annotate(count=Count('id')):
-                y_dict[r['user__profile__membership_tags']] = r['count']
+                                 .select_related('user__profile') \
+                                 .filter(event_id=event.id, user__profile__membership_revocation_date__isnull=True) \
+                                 .values('user__profile__membership_tags'):
+                if not r['user__profile__membership_tags']:
+                    y_dict['None'] += 1
+                    continue
+                if 'member' in r['user__profile__membership_tags']:
+                    if 'non-eu' in r['user__profile__membership_tags']:
+                        y_dict['ASSO'] += 1
+                        continue
+                    y_dict['MEMB'] += 1
+                    continue
+                if 'affiliated' in r['user__profile__membership_tags']:
+                    if 'phd' in r['user__profile__membership_tags']:
+                        y_dict['APHD'] += 1
+                        continue
+                    if 'staff' in r['user__profile__membership_tags']:
+                        y_dict['STAF'] += 1
+                        continue
+                    y_dict['AFFI'] += 1
+                    continue
 
-            return list(y_dict)
+            return list(y_dict.values())
 
         membership_types = ['Member', 'Assoc. member', 'Affil. member', 'Affil. PhD', 'Staff', '(none)']
 
