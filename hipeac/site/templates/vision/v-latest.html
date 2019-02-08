@@ -9,7 +9,8 @@
             <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
                 <div class="hipeac-card">
                     <div v-if="vision.download_url">
-                        <a :href="vision.download_url" class="btn btn-sm btn-primary btn-block"><i class="material-icons mr-1">get_app</i>Download Vision document</a>
+                        <a :href="vision.download_url" class="btn btn-sm btn-primary btn-block"><i class="material-icons mr-1">get_app</i>Download the full vision</a>
+                        <a v-if="vision.flyer" :href="vision.flyer" target="_blank" class="btn btn-sm btn-outline-secondary btn-block"><i class="material-icons mr-1">vertical_split</i>See the flyer</a>
                         <hr class="my-4">
                     </div>
                     <h5 class="mb-3">{{ vision.title }}</h5>

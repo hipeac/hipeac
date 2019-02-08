@@ -24,6 +24,7 @@ class Vision(LinkMixin, models.Model):
 
     file_draft = models.FileField(upload_to=ASSETS_FOLDER, null=True, blank=True)
     file = models.FileField(upload_to=ASSETS_FOLDER, null=True, blank=True)
+    flyer = models.FileField(upload_to=ASSETS_FOLDER, null=True, blank=True)
     downloads = models.PositiveSmallIntegerField(default=0)
 
     images = GenericRelation('hipeac.Image')
