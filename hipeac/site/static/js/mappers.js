@@ -163,7 +163,8 @@ function mapper() {
                 obj.q = [
                     getMetadataString(obj),
                     obj.acronym,
-                    obj.name
+                    obj.name,
+                    (obj.programme) ? obj.programme.value : ''
                 ].join(' ').toLowerCase();
                 return obj;
             });

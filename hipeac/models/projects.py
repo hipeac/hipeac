@@ -8,7 +8,7 @@ from django.template.defaultfilters import slugify
 from django.utils import timezone
 
 from hipeac.functions import get_images_path, send_task
-from hipeac.models import Permission
+from hipeac.models import Metadata, Permission
 from hipeac.validators import validate_no_badwords
 from .mixins import ImagesMixin, LinkMixin, UrlMixin
 
@@ -20,15 +20,9 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     route_name = 'project'
     ASSETS_FOLDER = 'raw/projects'
 
-    PROGRAMME_CHOICES = (
-        ('FP7', 'FP7'),
-        ('H2020', 'H2020'),
-        ('ECSEL', 'ECSEL'),
-        ('EUREKA', 'EUREKA'),
-        ('OTHER', 'Other'),
-    )
-
-    programme = models.CharField(max_length=5, null=True, blank=True, choices=PROGRAMME_CHOICES)
+    programme = models.ForeignKey(Metadata, null=True, blank=True, on_delete=models.SET_NULL,
+                                  limit_choices_to={'type': Metadata.PROJECT_PROGRAMME},
+                                  related_name='project_' + Metadata.PROJECT_PROGRAMME)
     acronym = models.CharField(max_length=50)
     name = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True, validators=[validate_no_badwords])
@@ -77,7 +71,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
 
     @property
     def short_name(self) -> str:
-        return f'{self.acronym} ({self.get_programme_display()} project)'  # pragma: no cover
+        return f'{self.acronym} ({self.programme} project)'  # pragma: no cover
 
     @property
     def slug(self) -> str:

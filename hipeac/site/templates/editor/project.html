@@ -25,6 +25,9 @@
                 <link-fieldset v-model="obj.links" field="links" help="One or more external sources related to this project."></link-fieldset>
             </form>
             <hr class="my-4">
+            <p class="float-right socialaccounts ml-4 mb-2">{% endverbatim %}{% include 'socialaccount/snippets/_logos.html' with provider='YouTube' %}</p>
+            <p class="text-sm"><a href="communication@hipeac.net?subject=HiPEAC expert videos"" target="_blank"><i class="material-icons sm mr-1">email</i> <strong>Contact us</strong></a> if you have YouTube videos related to this project that you would like to share with the HiPEAC community. All videos appear on the project profile and we sometimes add them to the <a href="{% url 'press' %}{% verbatim %}#/videos/" target="_blank">HiPEAC experts page</a> too!</p>
+            <hr class="my-4">
             <automatic-updates></automatic-updates>
         </div>
     </script>

@@ -2,10 +2,11 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.models import Project
-from .generic import LinkSerializer, MetadataListField
+from .generic import LinkSerializer, MetadataField, MetadataListField
 
 
 class ProjectSerializer(WritableNestedModelSerializer):
+    programme = MetadataField(allow_null=True)
     application_areas = MetadataListField()
     topics = MetadataListField()
     links = LinkSerializer(many=True)

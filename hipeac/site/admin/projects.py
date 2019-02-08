@@ -43,4 +43,4 @@ class ProjectAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('coordinator')
+        return super().get_queryset(request).prefetch_related('coordinator', 'programme')

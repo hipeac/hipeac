@@ -85,6 +85,7 @@ class Metadata(models.Model):
     EMPLOYMENT = 'employment_type'
     APPLICATION_AREA = 'application_area'
     SESSION_TYPE = 'session_type'
+    PROJECT_PROGRAMME = 'project_programme'
     TOPIC = 'topic'
     TYPE_CHOICES = (
         (GENDER, 'Gender'),
@@ -95,6 +96,7 @@ class Metadata(models.Model):
         (APPLICATION_AREA, 'Application area'),
         (SESSION_TYPE, 'Session type'),
         (TOPIC, 'Topic'),
+        (PROJECT_PROGRAMME, 'EU project programme'),
     )
 
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)

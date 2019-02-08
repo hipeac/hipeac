@@ -872,7 +872,9 @@ Vue.component('project-cards', SimpleList.extend({
                             '<icon name="today" class="sm"></icon>' +
                             '<span class="deadline">{{ item.start_date | moment }} - {{ item.end_date | moment }}</span>' +
                         '</li>' +
-                        '<li><icon name="adjust" class="sm"></icon>{{ item.programme }}</li>' +
+                        '<li v-if="item.programme">' +
+                            '<icon name="adjust" class="sm"></icon>{{ item.programme.value }}' +
+                        '</li>' +
                         '<li><icon name="label" class="sm"></icon><metadata-join :items="item.topics"></metadata-join></li>' +
                     '</ul>' +
                 '</div>' +
