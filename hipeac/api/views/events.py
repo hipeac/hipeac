@@ -120,7 +120,8 @@ class SessionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related('main_speaker__profile__institution', 'projects', 'links')
+        self.queryset = self.queryset.prefetch_related('main_speaker__profile__institution', 'projects',
+                                                       'private_files', 'links')
         return super().retrieve(request, *args, **kwargs)
 
     @action(

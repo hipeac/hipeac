@@ -28,7 +28,6 @@ class SendfileView(View):
         response['X-Accel-Redirect'] = url.encode('utf-8')
         response['Content-Type'] = guessed_mimetype if guessed_mimetype else 'application/octet-stream'
         response['Content-length'] = os.path.getsize(f'{settings.SENDFILE_ROOT}{path}{filename}')
-        response['Content-Disposition'] = 'attachment; filename={}'.format(urlquote(filename))
         if guessed_encoding:
             response['Content-Encoding'] = guessed_encoding
 
@@ -37,11 +36,12 @@ class SendfileView(View):
 
 class FirewallView(SendfileView):
     """
-    Serves `private` assets, checking staff permissions beforehand.
+    Serves `private` assets, checking basic permissions beforehand.
     """
-    def dispatch(self, *args, **kwargs):
-        if not self.request.user.is_staff:
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_authenticated:
             raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 
 class VisionDownload(SendfileView):

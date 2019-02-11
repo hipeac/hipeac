@@ -1,7 +1,7 @@
 from django.contrib.admin import FieldListFilter
 from django.contrib.contenttypes.admin import GenericTabularInline
 
-from hipeac.models import Image, Link, Permission
+from hipeac.models import Image, Link, Permission, PrivateFile
 
 
 def custom_titled_filter(title):
@@ -41,3 +41,9 @@ class PermissionsInline(GenericTabularInline):
     classes = ('collapse',)
     extra = 0
     autocomplete_fields = ('user',)
+
+
+class PrivateFilesInline(GenericTabularInline):
+    model = PrivateFile
+    classes = ('collapse',)
+    extra = 0

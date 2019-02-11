@@ -3,7 +3,7 @@ import json
 from rest_framework import serializers
 from rest_framework.relations import RelatedField
 
-from hipeac.models import Image, Link, Metadata, get_cached_metadata, get_cached_metadata_queryset
+from hipeac.models import Image, Link, PrivateFile, Metadata, get_cached_metadata, get_cached_metadata_queryset
 
 
 class CustomChoiceField(serializers.ChoiceField):
@@ -93,3 +93,9 @@ class MetadataNestedSerializer(serializers.ModelSerializer):
 
 class MetadataListSerializer(MetadataNestedSerializer):
     pass
+
+
+class PrivateFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrivateFile
+        fields = ('id', 'file', 'position', 'description')

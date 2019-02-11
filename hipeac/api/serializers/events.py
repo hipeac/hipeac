@@ -6,7 +6,7 @@ from hipeac.functions import truncate_md
 from hipeac.models import (
     Event, Committee, Registration, Poster, Roadshow, Session, Break, Sponsor, Venue, Room, Project, Institution
 )
-from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField
+from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .users import UserPublicMiniSerializer, UserPublicListSerializer
@@ -110,6 +110,7 @@ class SessionSerializer(SessionListSerializer):
     institutions = serializers.PrimaryKeyRelatedField(queryset=Institution.objects.all(), many=True, allow_null=True)
     institutions_info = serializers.SerializerMethodField(read_only=True)
     is_industrial_session = serializers.BooleanField(read_only=True)
+    private_files = PrivateFileSerializer(many=True, read_only=True)
 
     class Meta(SessionNestedSerializer.Meta):
         exclude = ('created_at', 'updated_at',)

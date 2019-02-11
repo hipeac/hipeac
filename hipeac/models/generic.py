@@ -156,3 +156,28 @@ class Permission(models.Model):
 
     def __str__(self) -> str:
         return f'{self.user} ({self.get_level_display()})'
+
+
+class PrivateFile(models.Model):
+    """
+    Session files / attachments.
+    """
+    FOLDER = 'private/files'
+
+    def get_upload_path(instance, filename):
+        return f'{instance.FOLDER}/{instance.content_type_id}/{instance.object_id}/{filename}'
+
+    file = models.FileField(upload_to=get_upload_path)
+    position = models.PositiveSmallIntegerField(default=0)
+    description = models.TextField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='private_files')
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ['content_type', 'object_id', 'position']
+
+    def delete(self, *args, **kwargs):
+        if os.path.isfile(self.file.path):
+            os.remove(self.file.path)
+        super().delete(*args, **kwargs)

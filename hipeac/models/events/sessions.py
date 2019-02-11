@@ -40,6 +40,7 @@ class Session(LinkMixin, models.Model):
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='sessions')
     institutions = models.ManyToManyField('hipeac.Institution', blank=True, related_name='sessions')
     links = GenericRelation('hipeac.Link')
+    private_files = GenericRelation('hipeac.PrivateFile')
 
     keywords = models.TextField(default='[]', editable=False)
     created_at = models.DateTimeField(auto_now_add=True)

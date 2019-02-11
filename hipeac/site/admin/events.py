@@ -12,7 +12,7 @@ from hipeac.models import (
     Event, Committee, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room
 )
 from hipeac.site.emails.events import RegistrationReminderEmail, SessionReminderEmail
-from .generic import ImagesInline, LinksInline, PermissionsInline
+from .generic import ImagesInline, LinksInline, PermissionsInline, PrivateFilesInline
 from .users import ProfileCsvWriter, send_profile_update_reminders
 
 
@@ -261,7 +261,7 @@ class SessionAdmin(admin.ModelAdmin):
 
     autocomplete_fields = ('event', 'projects', 'main_speaker', 'room')
     radio_fields = {'session_type': admin.VERTICAL}
-    inlines = [LinksInline, PermissionsInline]
+    inlines = [LinksInline, PrivateFilesInline, PermissionsInline]
     fieldsets = (
         (None, {
             'fields': ('event', ('date', 'start_at', 'end_at'), 'room', 'session_type', 'title', 'is_private'),

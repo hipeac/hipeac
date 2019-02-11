@@ -393,6 +393,13 @@
             }
         };
 
+        var SessionDownloadsView = {
+            template: '#v-session-downloads',
+            computed: _.extend(
+                Vuex.mapState(['event', 'session']), {
+            }),
+        };
+
         var SponsorshipView = {
             template: '#v-sponsorship',
             computed: _.extend(
@@ -487,6 +494,13 @@
                                     path: 'attendees/',
                                     pathToRegexpOptions: {strict: true},
                                     component: SessionAttendeesView,
+                                    props: true
+                                },
+                                {
+                                    name: 'sessionDownloads',
+                                    path: 'downloads/',
+                                    pathToRegexpOptions: {strict: true},
+                                    component: SessionDownloadsView,
                                     props: true
                                 }
                             ]
