@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -24,6 +25,9 @@ class MembershipRequest(models.Model):
                                        choices=MEMBERSHIP_TYPE_CHOICES)
     accepted = models.BooleanField(default=None, null=True)
     decision_date = models.DateField(null=True, blank=True)
+
+    private_files = GenericRelation('hipeac.PrivateFile')
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta(object):
