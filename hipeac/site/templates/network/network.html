@@ -61,24 +61,27 @@
             mutations: {
                 fetchMembers: function (state) {
                     ajax().get($('#urls').data('member-list')).done(function (res) {
-                        state.members = mapper().users(res);
-                    });
-                },
-                fetchAffiliates: function (state) {
-                    ajax().get($('#urls').data('member-affiliates')).done(function (res) {
-                        state.affiliates = res;
+                        var institutions = _.indexBy(res.institutions, 'id');
+                        var affiliates = _.groupBy(_.map(res.affiliates, function (obj) {
+                            obj.profile.institution = institutions[obj.profile.institution];
+                            obj.advisor_id = obj.profile.advisor;
+                            return obj;
+                        }), 'advisor_id');
+                        var users = _.map(res.members, function (obj) {
+                            obj.profile.institution = institutions[obj.profile.institution];
+                            if (_.has(affiliates, obj.id)) {
+                                obj.affiliates = affiliates[obj.id];
+                            }
+                            return obj;
+                        });
+                        state.institutions = institutions;
+                        state.members = mapper().users(users);
                     });
                 },
                 fetchProjects: function (state) {
                     ajax().get($('#urls').data('project-list')).done(function (res) {
                         state.projects = mapper().projects(res);
                     });
-                }
-            },
-            getters: {
-                fullMembers: function (state) {
-                    if (!state.members || !state.institutions) return [];
-                    return mapper().members(state.members, state.institutions);
                 }
             }
         });
@@ -115,8 +118,7 @@
             },
             created: function () {
                 $.when(
-                    this.$store.commit('fetchMembers'),
-                    this.$store.commit('fetchAffiliates')
+                    this.$store.commit('fetchMembers')
                 );
             }
         };

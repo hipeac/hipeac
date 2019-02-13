@@ -230,6 +230,21 @@ Vue.component('twitter-icon', {
     ''
 });
 
+Vue.component('marked-text', {
+    props: ['text', 'q'],
+    template: '' +
+        '<span :class="css">{{ text }}</span>' +
+    '',
+    computed: {
+        css: function () {
+            return (this.q != '' && this.text.toLowerCase().indexOf(this.q) !== -1)
+                ? 'bg-light-blue'
+                : ''
+            ;
+        }
+    }
+});
+
 Vue.component('icon', {
     props: ['name'],
     template: '' +
@@ -559,13 +574,20 @@ Vue.component('user-viewer', {
                 '<table class="table table-sm">' +
                     '<tr v-for="user in sortedUsers" :key="user.id" :user="user" v-show="!filteredIds || filteredIds.indexOf(user.id) >= 0">' +
                         '<td>' +
-                            '{{ user.profile.name }}' +
+                            '<marked-text :text="user.profile.name" :q="q"></marked-text>' +
                             '<span v-if="user.profile.institution">' +
                                 ', <institution-icon :type="user.profile.institution.type" class="sm"></institution-icon> ' +
                                 '<small>{{ user.profile.institution.short_name }}</small>' +
                             '</span>' +
+                            '<div v-show="listType == \'members\' && q != \'\'">' +
+                                '<ul v-if="user.affiliates" class="mt-2">' +
+                                    '<li v-for="aff in user.affiliates" class="text-sm">' +
+                                        '<marked-text :text="aff.profile.name" :q="q"></marked-text>' +
+                                    '</li>' +
+                                '</ul>' +
+                            '</div>' +
                         '</td>' +
-                        '<td>' +
+                        '<td class="sm">' +
                             '<a v-if="user.href" :href="user.href" target="_blank"><icon name="open_in_new" class="sm"></icon></a>' +
                         '</td>' +
                     '</tr>' +
@@ -609,6 +631,9 @@ Vue.component('user-viewer', {
 
             return {
                 users: this.filteredUsers.length,
+                affiliates: _.reduce(this.filteredUsers, function (memo, obj) {
+                    return memo + ((obj.affiliates) ? obj.affiliates.length : 0);
+                }, 0),
                 institutions: institutions.length,
                 institution: (institutions.length == 1) ? institutions[0] : null,
                 countries: countries.length,
@@ -625,8 +650,12 @@ Vue.component('user-viewer', {
             return [
                 '<strong class="text-nowrap">',
                 (this.counters.users == 1)
-                    ? 'One attendee'
-                    : this.counters.users + ' ' + userText,
+                    ? 'One ' + userText.substring(0, userText.length - 1)
+                    : this.counters.users + ' ' + userText + (
+                        (this.listType == 'members' && this.counters.affiliates)
+                            ? ' (' + this.counters.affiliates + ' affiliates)'
+                            : ''
+                        ),
                 '</strong> from <span class="text-nowrap">',
                 (this.counters.institution)
                     ? this.counters.institution
@@ -740,7 +769,7 @@ Vue.component('search-box', {
 
                 EventHub.$emit(this.eventName, val);
             }
-        }, 100)
+        }, 250)
     },
     created: function () {
         if (this.$route.query.q) {

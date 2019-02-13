@@ -133,28 +133,6 @@ function mapper() {
                 return obj;
             });
         },
-        members: function (items, institutions) {
-            var ins = _.indexBy(_.map(institutions, _.clone), 'id');
-            var mapInstitution = function (id) {
-                return (id) ? ins[id] : null;
-            };
-
-            return items.map(function (obj) {
-                obj.institution = mapInstitution(obj.profile.institution);
-                obj.secondary_institution = mapInstitution(obj.profile.secondary_institution);
-                obj.topicIds = _.pluck(obj.profile.topics, 'id');
-                obj.q = [
-                    getMetadataString(obj.profile),
-                    obj.profile.name,
-                    (obj.institution) ? obj.institution.country : '',
-                    (obj.institution) ? obj.institution.name + ' ' + obj.institution.short_name : '',
-                    (obj.secondary_institution)
-                        ? obj.secondary_institution.name + ' ' + obj.secondary_institution.short_name
-                        : ''
-                ].join(' ').toLowerCase();
-                return obj;
-            });
-        },
         projects: function (items) {
             return items.map(function (obj) {
                 obj.isNew = moment().diff(moment(obj.start_date), 'days') < 60;
@@ -213,6 +191,16 @@ function mapper() {
                         ? institution.country.name
                         : ''
                 ].join(' ').toLowerCase();
+
+                if (_.has(obj, 'affiliates')) {
+                    _.each(obj.affiliates, function (aff) {
+                        obj.q = [
+                            obj.q,
+                            aff.profile.name.toLowerCase()
+                        ].join(' ');
+                    });
+                }
+
                 return obj;
             });
         },

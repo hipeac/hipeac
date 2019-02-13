@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import Institution, Project
@@ -9,7 +10,7 @@ from ..serializers import (
     InstitutionMiniSerializer, InstitutionListSerializer, InstitutionSerializer,
     ProjectMiniSerializer, ProjectListSerializer, ProjectSerializer,
     JobNestedSerializer,
-    UserPublicMiniSerializer,
+    UserPublicMembershipSerializer,
     VideoListSerializer
 )
 
@@ -44,19 +45,26 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
 
 
 class MemberViewSet(ListModelMixin, GenericViewSet):
-    queryset = get_user_model().objects.filter(is_active=True) \
-                                       .select_related('profile__institution') \
-                                       .order_by('first_name', 'last_name') \
-                                       .defer('profile__bio', 'affiliates__bio')
-
+    queryset = get_user_model().objects.filter(is_active=True).select_related('profile').defer('profile__bio') \
+                                       .order_by('first_name', 'last_name')
     pagination_class = None
-    serializer_class = UserPublicMiniSerializer
+    serializer_class = UserPublicMembershipSerializer
 
     def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.filter(
-            is_active=True,
+        members = self.queryset.filter(
             profile__membership_tags__contains='member', profile__membership_revocation_date__isnull=True
         )
+        affiliates = self.queryset.filter(
+            profile__membership_tags__contains='affiliated', profile__membership_revocation_date__isnull=True
+        )
+        institution_ids = members.values_list('profile__institution_id', flat=True)
+        institutions = Institution.objects.filter(id__in=institution_ids)
+        ctx = {'request': request}
+        return Response({
+            'institutions': InstitutionMiniSerializer(institutions, many=True, context=ctx).data,
+            'members': UserPublicMembershipSerializer(members, many=True, context=ctx).data,
+            'affiliates': UserPublicMembershipSerializer(affiliates, many=True, context=ctx).data
+        })
         return super().list(request, *args, **kwargs)
 
     @action(detail=False)

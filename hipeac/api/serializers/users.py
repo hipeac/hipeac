@@ -37,6 +37,14 @@ class ProfileMiniSerializer(ProfileSerializer):
         fields = ('name', 'country', 'institution', 'avatar_url')
 
 
+class ProfileMembershipSerializer(ProfileSerializer):
+    name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ('name', 'institution', 'advisor')
+
+
 class ProfileNestedSerializer(ProfileSerializer):
     institution = InstitutionMiniSerializer(read_only=True)
     second_institution = InstitutionMiniSerializer(read_only=True)
@@ -66,6 +74,10 @@ class UserPublicSerializer(serializers.ModelSerializer):
 
 class UserPublicMiniSerializer(UserPublicSerializer):
     profile = ProfileMiniSerializer()
+
+
+class UserPublicMembershipSerializer(UserPublicSerializer):
+    profile = ProfileMembershipSerializer()
 
 
 class UserPublicListSerializer(UserPublicSerializer):
