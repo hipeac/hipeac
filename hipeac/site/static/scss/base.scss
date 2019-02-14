@@ -302,7 +302,7 @@ input[type="hidden"] + fieldset {
     font-weight: $font-weight-light;
 }
 
-b, strong, .font-weight-bold {
+b, strong, th, .font-weight-bold {
     font-weight: $font-weight-bold;
 }
 
@@ -374,6 +374,7 @@ span.avatar {
 .table-sm {
     line-height: 1.4;
 
+    th.sm,
     td.sm {
         width: 16px;
     }

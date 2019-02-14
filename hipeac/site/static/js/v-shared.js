@@ -933,12 +933,21 @@ Vue.component('open-jobs-row', {
             jobs: null
         }
     },
-    props: ['url'],
+    props: {
+        url: {
+            type: String,
+            required: true
+        },
+        title: {
+            type: String,
+            default: 'Jobs'
+        }
+    },
     template: '' +
         '<div class="row">' +
             '<div class="col-12 col-lg-2">' +
                 '<div v-if="jobs && jobs.length">' +
-                    '<h5 class="display-sm mt-4 mb-1">Jobs</h5><hr>' +
+                    '<h5 class="display-sm mt-4 mb-1">{{ title }}</h5><hr>' +
                 '</div>' +
             '</div>' +
             '<div class="col-12 col-lg-10">' +

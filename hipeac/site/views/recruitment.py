@@ -1,7 +1,9 @@
 from commonmark import commonmark as marked
+from django.contrib.auth.decorators import login_required
 from django.contrib.syndication.views import Feed
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import generic
 from typing import List
 
@@ -18,6 +20,21 @@ class JobRedirect(generic.View):
     def get(self, request, *args, **kwargs):
         job = get_object_or_404(Job, pk=kwargs.get('pk'))
         return redirect(job.get_absolute_url())
+
+
+class JobManagementView(generic.ListView):
+    """
+    Displays a list of jobs posted by a user.
+    """
+    context_object_name = 'jobs'
+    template_name = 'recruitment/management.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Job.objects.filter(created_by=self.request.user.id).prefetch_related('institution').order_by('-deadline')
 
 
 class JobDetail(SlugMixin, generic.DetailView):

@@ -8,6 +8,9 @@
 {% endblock %}
 
 {% block extra_tabs %}
+    <li class="nav-item">
+        <a href="{% url 'jobs_management' %}" class="nav-link"><i class="material-icons mr-1">list</i>My job posts</a>
+    </li>
     <li v-cloak v-if="obj && obj.job.href" class="nav-item">
         <a :href="obj.job.href" class="nav-link">View job on hipeac.net</a>
     </li>
@@ -22,7 +25,7 @@
             <form class="mt-4">
                 <simple-select v-model="obj.value" field="value" custom-label="Has the position been filled?"></simple-select>
                 <markdown-textarea v-model.trim="obj.comments" field="comments" custom-label="Comments and feedback" :rows="6"></markdown-textarea>
-                <markdown-textarea v-show="obj.value == 1" v-model.trim="obj.selected_candidate" field="selected_candidate" :rows="3" custom-label="Can you tell us more about the candidate you ended up selecting for this position?" :show-help="false"></markdown-textarea>
+                <custom-input v-show="obj.value == 1" v-model.trim="obj.selected_candidate" field="selected_candidate" custom-label="Can you tell us more about the candidate you ended up selecting for this position?" :show-help="false"></custom-input>
             </form>
             <hr class="my-4">
             <automatic-updates></automatic-updates>

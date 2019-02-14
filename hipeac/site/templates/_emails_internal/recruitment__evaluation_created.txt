@@ -1,0 +1,6 @@
+A new job evaluation has been added for
+"{{ evaluation.job }}"
+https://www.hipeac.net/admin/hipeac/job/{{ evaluation.job_id }}/change/
+
+---
+HiPEAC Bot

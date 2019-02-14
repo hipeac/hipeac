@@ -11,7 +11,7 @@ from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
 
 class JobCsvWriter(ModelCsvWriter):
     model = Job
-    exclude = ('description', 'links', 'jobevaluation')
+    exclude = ('description', 'links', 'evaluation')
     metadata_fields = ('application_areas', 'career_levels', 'topics')
 
 
@@ -19,6 +19,8 @@ class JobEvaluationInline(admin.StackedInline):
     model = JobEvaluation
     verbose_name_plural = 'Job evaluation'
     extra = 0
+
+    raw_id_fields = ('selected_user',)
 
 
 class JobAdminForm(ModelForm):
@@ -38,8 +40,8 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
 
     actions = ('select_export_pdf', 'select_export_csv')
     date_hierarchy = 'created_at'
-    list_display = ('id', 'title', 'institution', 'employment_type', 'deadline', 'created_at')
-    list_filter = (('jobevaluation__value', custom_titled_filter('evaluation')),
+    list_display = ('id', 'title', 'institution', 'employment_type', 'deadline', 'created_at', 'evaluated')
+    list_filter = (('evaluation__value', custom_titled_filter('evaluation')),
                    'employment_type', 'deadline', 'created_at', 'country')
     search_fields = ('title', 'institution__name')
 
@@ -64,7 +66,8 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('institution', 'employment_type')
+        return super().get_queryset(request).prefetch_related('institution', 'employment_type') \
+                                            .select_related('evaluation')
 
     def get_urls(self):
         my_urls = [
@@ -72,6 +75,11 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
             path('pdf/upcoming/', self.pdf_upcoming_event_jobs, name='recruitment_pdf_upcoming_event_jobs'),
         ]
         return my_urls + super().get_urls()
+
+    def evaluated(self, obj) -> bool:
+        return obj.evaluation is not None
+    evaluated.boolean = True
+    evaluated.short_description = 'Evaluated'
 
     def pdf_response(self, jobs, filename: str = 'hipeac--jobs.pdf', as_attachment: bool = False):
         maker = JobsPdfMaker(jobs=jobs, filename=filename, as_attachment=as_attachment)

@@ -12,9 +12,10 @@ from typing import Tuple
 
 from hipeac.functions import send_task
 from hipeac.models import Metadata, Permission
+from hipeac.models.generic import HipeacCountries
+from hipeac.models.mixins import LinkMixin, MetadataMixin, UrlMixin
 from hipeac.validators import validate_no_badwords
-from .generic import HipeacCountries
-from .mixins import LinkMixin, MetadataMixin, EditorMixin, UrlMixin
+from .evaluation import JobEvaluation
 
 
 def validate_institution(institution, user) -> None:
@@ -117,6 +118,9 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     def deadline_is_near(self) -> bool:
         return (self.deadline - timezone.now().date()).days < 7
 
+    def is_closed(self) -> bool:
+        return self.deadline < timezone.now().date()
+
     def get_absolute_url(self) -> str:
         return reverse('job', args=[self.id, self.slug])
 
@@ -168,31 +172,3 @@ def job_post_save(sender, instance, created, *args, **kwargs):
         send_task('hipeac.tasks.recruitment.process_keywords', (instance.id,))
         send_task('hipeac.tasks.recruitment.share_in_linkedin', (instance.title, instance.get_status(), image_url))
         send_task('hipeac.tasks.recruitment.tweet', (instance.get_status('twitter'),))
-
-
-class JobEvaluation(EditorMixin, models.Model):
-    """
-    A job evaluation.
-    """
-    NO = 0
-    YES = 2
-    YES_HIPEAC = 1
-    VALUE_CHOICES = (
-        (NO, 'No'),
-        (YES, 'Yes'),
-        (YES_HIPEAC, 'Yes, via the HiPEAC Jobs portal!'),
-    )
-
-    job = models.OneToOneField(Job, on_delete=models.CASCADE)
-    value = models.SmallIntegerField(choices=VALUE_CHOICES)
-    comments = models.TextField(null=True, blank=True)
-    selected_candidate = models.TextField(null=True, blank=True)
-
-    def __str__(self) -> str:
-        return self.job.title
-
-    def can_be_managed_by(self, user) -> bool:
-        return (
-            self.job.created_by_id == user.id or
-            self.job.institution.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
-        )
