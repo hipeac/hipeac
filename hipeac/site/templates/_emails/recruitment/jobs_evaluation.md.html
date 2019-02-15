@@ -9,6 +9,7 @@ Dear {{ user_name }},
 A number of job vacancies at {{ institution_name }} expired a couple of weeks ago on the HiPEAC Jobs portal.
 {% for job in jobs %}
 - "{{ job.title }}" / has the position been filled?
+    * Not yet. I would like to [extend the deadline](https://www.hipeac.net{{ job.editor_url }})
     * [No](https://www.hipeac.net{{ job.no_url }})
     * [Yes](https://www.hipeac.net{{ job.yes_url }})
     * [Yes, via the HiPEAC Jobs portal!](https://www.hipeac.net{{ job.yes_hipeac_url }})
