@@ -7,7 +7,7 @@ from ..serializers import JobNestedSerializer, JobSerializer, JobEvaluationSeria
 
 
 class JobViewSet(ModelViewSet):
-    queryset = Job.objects.active().prefetch_related('employment_type', 'institution', 'project')
+    queryset = Job.objects.prefetch_related('employment_type', 'institution', 'project')
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = JobSerializer
 
@@ -15,8 +15,8 @@ class JobViewSet(ModelViewSet):
         serializer.save(created_by=self.request.user)
 
     def list(self, request, *args, **kwargs):
-        queryset = Job.objects.active().prefetch_related('employment_type', 'institution', 'project')
-        self.queryset = queryset.defer('description')
+        self.queryset = Job.objects.active().prefetch_related('employment_type', 'institution', 'project') \
+                                            .defer('description')
         self.pagination_class = None
         self.serializer_class = JobNestedSerializer
         return super().list(request, *args, **kwargs)
