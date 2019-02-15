@@ -4,8 +4,8 @@ import json
 from celery.decorators import periodic_task, task
 from celery.task.schedules import crontab
 from datetime import timedelta
-from django.core.mail import send_mail
 from django.db.models import Q, F
+from django.template.defaultfilters import date
 from django.utils import timezone
 from typing import Optional, Tuple
 
@@ -88,20 +88,26 @@ def send_evaluations():
             j.save()
 
 
-@periodic_task(run_every=crontab(day_of_week='fri', hour=10, minute=0))
+@periodic_task(run_every=crontab(day_of_week='thu', hour=10, minute=0))
 def send_weekly_digest():
     """Sends a digest to publicity@hipeac.net with the Jobs posted in the last 2 weeks, every two weeks."""
     today = timezone.now().date()
+    two_weeks_ago = today - timedelta(days=14)
+    queryset = Job.objects.active()
     week_number = int(today.strftime('%U'))
+
     if week_number % 2 == 0:  # ignore even weeks; @periodic_task doesn't allow this
         return
 
-    send_mail(
-        'Latest computing jobs and opportunities (10h)',
-        'Includes jobs posted in the last two weeks.',
+    send_from_template(
+        'recruitment.jobs.digest',
+        '[HiPEAC Jobs] Latest computing jobs and opportunities (%s)' % date(timezone.now(), 'F Y'),
         JOBS_DIGEST_EMAIL,
-        ['eneko@illarra.com'],
-        fail_silently=True,
+        ['publicity@hipeac.net'],
+        {
+            'jobs': queryset.filter(created_at__gte=two_weeks_ago),
+            'total': queryset.count(),
+        }
     )
 
 
