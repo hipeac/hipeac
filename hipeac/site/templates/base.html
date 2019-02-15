@@ -21,6 +21,7 @@
         <meta name="twitter:site" content="@hipeac">
         {% block structured_data %}{% endblock %}
         {% if not debug %}
+            <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise"></script>
             <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
             <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
             {% compress js inline %}
@@ -68,6 +69,9 @@
         <div id="particles"></div>
         {% block main %}{% block content %}{% endblock %}{% endblock %}
         {% block vue_templates %}{% endblock %}
+        {% if not debug %}
+            <script src="https://browser.sentry-cdn.com/4.6.1/bundle.min.js" crossorigin="anonymous"></script>
+        {% endif %}
         {% compress js file bootstrap %}
             <script src="{% static 'vendor/jquery@3.3.1/jquery.min.js' %}"></script>
             <script src="{% static 'vendor/popper.js@1.14.3/popper.min.js' %}"></script>
@@ -76,11 +80,13 @@
         {% compress js file helpers %}
             <script src="{% static 'vendor/commonmark@0.28.1/commonmark.js' %}"></script>
             <script src="{% static 'vendor/moment@2.22.2/moment.min.js' %}"></script>
-            <script src="{% static 'vendor/underscore@1.9.1/underscore.min.js' %}"></script>
             <script src="{% static 'js/__init__.js' %}"></script>
+            {% if not debug %}
+                <script src="{% static 'js/sentry.js' %}"></script>
+            {% endif %}
         {% endcompress %}
         {% compress js file vue %}
-            <script src="{% static 'vendor/es6-promise@4.2.5/es6-promise.auto.min.js' %}"></script>
+            <script src="{% static 'vendor/underscore@1.9.1/underscore.min.js' %}"></script>
             {% if debug %}
                 <script src="{% static 'vendor/vue@2.5.17/vue.js' %}"></script>
                 <script src="{% static 'vendor/vuex@3.0.1/vuex.js' %}"></script>
