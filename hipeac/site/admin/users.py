@@ -52,6 +52,7 @@ class ProfileInline(admin.StackedInline):
     exclude = ('is_bouncing',)
 
     autocomplete_fields = ('institution', 'second_institution', 'projects')
+    raw_id_fields = ('advisor',)
     fieldsets = (
         (None, {
             'fields': ('country', 'bio', 'meal_preference', 'image'),
