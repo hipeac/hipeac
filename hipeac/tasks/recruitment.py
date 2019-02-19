@@ -77,7 +77,7 @@ def send_evaluations():
     for key, context_data in Job.objects.grouped_for_email(jobs).items():
         send_from_template(
             'recruitment.jobs.evaluation',
-            f'[HiPEAC Jobs] Satisfaction survey @ {context_data["institution_name"]}',
+            f'[HiPEAC Jobs] Please evaluate your jobs / internships @ {context_data["institution_name"]}',
             RECRUITMENT_EMAIL,
             [context_data['user_email']],
             context_data,

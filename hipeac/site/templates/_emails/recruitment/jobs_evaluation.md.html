@@ -6,19 +6,27 @@
 {% block body %}
 Dear {{ user_name }},
 
-A number of job vacancies at {{ institution_name }} expired a couple of weeks ago on the HiPEAC Jobs portal.
+Thank you for using HiPEAC Jobs. A number of vacancies at {{ institution_name }} on the portal have now expired.
 {% for job in jobs %}
-- "{{ job.title }}" / has the position been filled?
-    * Not yet. I would like to [extend the deadline](https://www.hipeac.net{{ job.editor_url }})
-    * [No](https://www.hipeac.net{{ job.no_url }})
-    * [Yes](https://www.hipeac.net{{ job.yes_url }})
+- ["{{ job.title }}"](https://www.hipeac.net{{ job.absolute_url }}) / has the position been filled?
     * [Yes, via the HiPEAC Jobs portal!](https://www.hipeac.net{{ job.yes_hipeac_url }})
+    * [Yes](https://www.hipeac.net{{ job.yes_url }}), thanks!
+    * [No](https://www.hipeac.net{{ job.no_url }}), please close the offer.
+    * [Not yet, please etxend the deadline](https://www.hipeac.net{{ job.editor_url }})
 {% endfor %}
-How was your experience of using HiPEAC Jobs? Please send us your comments and feedback to [recruitment@hipeac.net](mailto:recruitment@hipeac.net).
+**Help us to help you.** How was your experience of using HiPEAC Jobs? Please send comments and feedback
+via the [evaluation page](https://www.hipeac.net{{ job.no_url }}).
 
-You can post any new vacancies anytime through the ["Add job"](https://www.hipeac.net/jobs/) option.
+For internship opportunities, **please indicate who the selected candidate is.**
+HiPEAC can then provide _funding for the internship_ or a _free pass_ to attend the HiPEAC conference or summer school.
+Full details can be found on the [internships webpage](https://www.hipeac.net/jobs/#/internships/).
 
-Thanks a lot for using the HiPEAC Jobs portal.
+You can post any new vacancies anytime through the ["Add job"](https://www.hipeac.net/jobs/) option
+or manage open vacancies through the [“Manage your jobs”](https://www.hipeac.net/jobs/management/) option.
+
+Further questions or feedback? Please email <recruitment@hipeac.net>.
+
+Thanks again for using the HiPEAC Jobs portal.
 {% endblock %}
 
 {% block footer %}HiPEAC Recruitment{% endblock %}

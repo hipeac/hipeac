@@ -53,6 +53,7 @@ class JobManager(models.Manager):
             grouped_jobs[key]['jobs'].append({
                 'id': job.id,
                 'title': job.title,
+                'absolute_url': job.get_absolute_url(),
                 'editor_url': job.get_editor_url(),
                 'no_url': job_evaluation_url.replace('/0/', f'/{JobEvaluation.NO}/'),
                 'yes_url': job_evaluation_url.replace('/0/', f'/{JobEvaluation.YES}/'),
