@@ -160,10 +160,6 @@
                 emptySessions: function () {
                     if (!this.registration) return true;
                     return this.registration.sessions.length == 0;
-                },
-                isPaid: function () {
-                    if (!this.registration) return true;
-                    return this.registration.saldo >= 0;
                 }
             }),
             methods: {
@@ -178,7 +174,7 @@
                     ajax().get(this.endpoint, {event_id: this.event.id}).done(function (res) {
                         if (res.results.length == 1) {
                             self.registrationIsNew = false;
-                            self.registration = res.results[0];
+                            self.registration = mapper().registrations(res.results)[0];
                         } else {
                             self.registrationIsNew = true;
                             self.registration = {
@@ -194,13 +190,13 @@
                     EventHub.$emit('loading', true);
                     if (this.registrationIsNew) {
                         ajax().post(this.endpoint, this.registration).done(function (res) {
-                            self.registration = res;
+                            self.registration = mapper().registrations([res])[0];
                             self.registrationIsNew = false;
                             EventHub.$emit('loading', false);
                         });
                     } else {
                         ajax().put(this.registration.url, this.registration).done(function (res) {
-                            self.registration = res;
+                            self.registration = mapper().registrations([res])[0];
                             EventHub.$emit('loading', false);
                         });
                     }

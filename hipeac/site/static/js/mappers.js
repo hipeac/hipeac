@@ -179,6 +179,13 @@ function mapper() {
                 return obj;
             });
         },
+        registrations: function (items) {
+            return items.map(function (obj) {
+                obj.fee = obj.base_fee + obj.extra_fees + obj.manual_extra_fees;
+                obj.isPaid = obj.saldo >= 0;
+                return obj;
+            });
+        },
         sessions: function (items) {
             return items.map(function (obj) {
                 obj.startAt = obj.start_at.substring(0, 5);

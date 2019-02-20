@@ -85,7 +85,7 @@ class Registration(models.Model):
         else:
             fee_type = Fee.EARLY if is_early else Fee.LATE
 
-        self.base_fee = self.event.fees_dict[fee_type]
+        self.base_fee = self.event.fees_dict[fee_type] if fee_type in self.event.fees_dict else 0
         self.extra_fees = self.event.fees_dict[Fee.BOOTH] if self.with_booth else 0
         self.saldo = -self.remaining_fee
         super().save(*args, **kwargs)

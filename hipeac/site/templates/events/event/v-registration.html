@@ -34,22 +34,24 @@
                         <loading text="Saving..." icon="save" class="float-right mt-2"></loading>
                         <button v-if="registrationIsNew" @click.prevent="save" class="btn btn-primary" :disabled="emptySessions">Create new registration</button>
                         <button v-else @click.prevent="save" class="btn btn-outline-success" :disabled="emptySessions">Update registration</button>
-                        <a v-if="isPaid" :href="registration.payment_href" class="float-right btn btn-outline-primary">
-                            <span>View payment info</span>
-                            <icon name="arrow_forward" class="sm ml-2"></icon>
-                        </a>
-                        <span v-else>
-                            <a v-if="!registration.invoice_requested" :href="registration.payment_href" class="float-right btn btn-outline-primary">
-                                <span>Proceed with payment</span>
+                        <p v-if="registration.fee > 0" class="float-right">
+                            <a v-if="registration.isPaid" :href="registration.payment_href" class="float-right btn btn-outline-primary">
+                                <span>View payment info</span>
                                 <icon name="arrow_forward" class="sm ml-2"></icon>
                             </a>
-                            <button v-else class="float-right btn btn-outline-secondary" disabled>
-                                <span>Invoice is being prepared</span>
-                                <icon name="receipt" class="sm ml-2"></icon>
-                            </button>
-                        </span>
+                            <span v-else>
+                                <a v-if="!registration.invoice_requested" :href="registration.payment_href" class="float-right btn btn-outline-primary">
+                                    <span>Proceed with payment</span>
+                                    <icon name="arrow_forward" class="sm ml-2"></icon>
+                                </a>
+                                <button v-else class="float-right btn btn-outline-secondary" disabled>
+                                    <span>Invoice is being prepared</span>
+                                    <icon name="receipt" class="sm ml-2"></icon>
+                                </button>
+                            </span>
+                        </p>
                         <hr class="my-4">
-                        <div v-if="event.fees">
+                        <div v-if="!_.isEmpty(event.fees)">
                             <div v-show="registrationIsNew">
                                 <display-sm class="mb-3">All-in ticket for 3 days</display-sm>
                                 <div class="big-checkbox">
