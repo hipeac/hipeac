@@ -73,8 +73,8 @@ class EventAdmin(admin.ModelAdmin):
                 ('registration_early_deadline', 'registration_deadline'),
             ),
         }),
-        ('VENUE AND TRAVEL', {
-            'fields': ('venues', 'travel_info'),
+        ('INFORMATION', {
+            'fields': ('presentation', 'venues', 'travel_info'),
         }),
         ('IMAGES', {
             'fields': ('image',),

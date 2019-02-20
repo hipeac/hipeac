@@ -71,6 +71,7 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     type = models.CharField(max_length=16, editable=False, choices=TYPE_CHOICES)
     coordinating_institution = models.ForeignKey('hipeac.Institution', null=True, blank=True, on_delete=models.SET_NULL,
                                                  related_name='coordinated_events')
+    presentation = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=100)
     country = CountryField(db_index=True)
     hashtag = models.CharField(max_length=32, null=True, blank=True)
