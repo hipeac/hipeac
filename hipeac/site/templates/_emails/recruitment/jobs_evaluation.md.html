@@ -8,11 +8,14 @@ Dear {{ user_name }},
 
 Thank you for using HiPEAC Jobs. A number of vacancies at {{ institution_name }} on the portal have now expired.
 {% for job in jobs %}
-- ["{{ job.title }}"](https://www.hipeac.net{{ job.absolute_url }}) / has the position been filled?
-    * [Yes, via the HiPEAC Jobs portal!](https://www.hipeac.net{{ job.yes_hipeac_url }})
-    * [Yes](https://www.hipeac.net{{ job.yes_url }}), thanks!
-    * [No](https://www.hipeac.net{{ job.no_url }}), please close the offer.
-    * [Not yet, please extend the deadline](https://www.hipeac.net{{ job.editor_url }})
+{% if email_format == 'html' %}<h4 style="margin:0"><strong>{% else %}**{% endif %}"{{ job.title }}"{% if email_format == 'html' %}</strong></h4><br>{% else %}**  {% endif %}
+<https://www.hipeac.net{{ job.absolute_url }}> / has the position been filled?
+
+- [Yes, via the HiPEAC Jobs portal!](https://www.hipeac.net{{ job.yes_hipeac_url }})
+- [Yes](https://www.hipeac.net{{ job.yes_url }}), thanks!
+- [No](https://www.hipeac.net{{ job.no_url }}), please close the offer.
+- [Not yet, please extend the deadline](https://www.hipeac.net{{ job.editor_url }})
+
 {% endfor %}
 **Help us to help you.** How was your experience of using HiPEAC Jobs? Please send comments and feedback
 via the [evaluation page](https://www.hipeac.net{{ job.no_url }}).
