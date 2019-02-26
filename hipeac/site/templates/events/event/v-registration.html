@@ -16,7 +16,7 @@
                             <strong>Created:</strong> {{ registration.created_at | moment('LLL') }}<br>
                             <strong>Last updated:</strong> {{ registration.updated_at | moment('LLL') }}<br>
                             <hr>
-                            <strong>Base fee: EUR {{ registration.base_fee }} ({{ registration.fee_type }})</strong><br>
+                            <strong>Base fee: <span v-if="registration.base_fee == 0">FREE</span><span v-else>EUR {{ registration.base_fee }}</span> ({{ registration.fee_type }})</strong><br>
                             <strong>Extras: EUR {{ registration.extra_fees }}</strong>
                             <hr>
                         </div>
