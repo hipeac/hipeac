@@ -13,6 +13,7 @@ class PublicationConferenceViewSet(ListModelMixin, GenericViewSet):
 
 
 class PaperAwardViewSet(ListModelMixin, GenericViewSet):
+    pagination_class = None
     serializer_class = PublicationListSerializer
 
     def list(self, request, *args, **kwargs):
@@ -20,6 +21,5 @@ class PaperAwardViewSet(ListModelMixin, GenericViewSet):
         if not year:
             raise PermissionDenied('Please include a `year` query parameter in your request.')
 
-        self.pagination_class = None
         self.queryset = Publication.objects.awarded(year=int(year))
         return super().list(request, *args, **kwargs)
