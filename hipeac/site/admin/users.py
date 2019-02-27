@@ -6,7 +6,7 @@ from django.forms import ModelForm
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField, MembershipTagsChoiceField
 from hipeac.functions import send_task
-from hipeac.models import Profile, Institution
+from hipeac.models import Profile, Institution, Link
 from hipeac.tools.csv import ModelCsvWriter
 
 
@@ -111,7 +111,7 @@ class MembershipTypeFilter(admin.SimpleListFilter):
 
 @admin.register(get_user_model())
 class UserAdmin(AuthUserAdmin):
-    actions = ('send_profile_update_reminder', 'select_export_users_csv')
+    actions = ('send_profile_update_reminder', 'select_export_users_csv', 'extract_publications_from_dblp')
     list_display = ('id', 'username', 'name', 'institution', 'email', 'membership_tags')
     list_filter = (MembershipTypeFilter,) + AuthUserAdmin.list_filter
     search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__institution__name')
@@ -139,3 +139,11 @@ class UserAdmin(AuthUserAdmin):
         ids = queryset.values_list('id', flat=True)
         return ProfileCsvWriter(filename='hipeac-users.csv', queryset=Profile.objects.filter(user_id__in=ids)).response
     select_export_users_csv.short_description = '[CSV] Export users\' data'
+
+    def extract_publications_from_dblp(self, request, queryset):
+        for user in queryset:
+            send_task('hipeac.tasks.dblp.extract_publications_for_user', (user.id,))
+        admin.ModelAdmin.message_user(self, request, 'Publication extraction has started, '
+                                                     'results from DBLP will be available soon.')
+        return True
+    extract_publications_from_dblp.short_description = '[DATA] Extract publications from DBLP'

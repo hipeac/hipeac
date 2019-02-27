@@ -2,7 +2,7 @@ import datetime
 import json
 
 from celery.decorators import periodic_task, task
-from celery.task.schedules import crontab
+from celery.schedules import crontab
 from datetime import timedelta
 from django.db.models import Q, F
 from django.template.defaultfilters import date

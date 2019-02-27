@@ -6,7 +6,7 @@ import os
 import re
 
 from celery.decorators import periodic_task
-from celery.task.schedules import crontab
+from celery.schedules import crontab
 from email.header import decode_header, make_header
 from email.utils import parseaddr, parsedate_to_datetime
 from lxml.html.clean import Cleaner
