@@ -47,13 +47,16 @@
         {
             "@context": "http://schema.org",
             "@type": "Event",
-            "name": "{{ event }}",
-            "url": "{{ request.url }}",
+            "name": "{{ roadshow.name }}",
+            "url": "{{ request.build_absolute_uri }}",
             "startDate": "{{ roadshow.start_date | date:'c' }}",
             "endDate": "{{ roadshow.end_date | date:'c' }}",
             "location": {
-                "@type": "PostalAddress",
-                "addressCountry": "{{ roadshow.country.name }}"
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressCountry": "{{ roadshow.country.code }}"
+                }
             }
         }
     {% endspaceless_json %}</script>

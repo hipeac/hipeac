@@ -541,14 +541,18 @@
             "@context": "http://schema.org",
             "@type": "Event",
             "name": "{{ event }}",
+            "description": "{{ event.presentation | truncate }}",
             "url": "{{ request.build_absolute_uri }}",
             "startDate": "{{ event.start_date | date:'c' }}",
             "endDate": "{{ event.end_date | date:'c' }}",
             {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
             "location": {
-                "@type": "PostalAddress",
-                "addressLocality": "{{ event.city }}",
-                "addressCountry": "{{ event.country.name }}"
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "{{ event.city }}",
+                    "addressCountry": "{{ event.country.code }}"
+                }
             }
         }
     {% endspaceless_json %}</script>
