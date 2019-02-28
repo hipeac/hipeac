@@ -121,5 +121,6 @@ def extract_publications_for_user(user_id):
 def check_member_publications():
     for profile in Profile.objects.exclude(membership_tags__is_null=True) \
                                   .exclude(membership_tags__exact='') \
-                                  .filter(profile__membership_revocation_date__isnull=True):
+                                  .filter(membership_revocation_date__isnull=True) \
+                                  .prefetch_related('links'):
         process_user_publications(profile)
