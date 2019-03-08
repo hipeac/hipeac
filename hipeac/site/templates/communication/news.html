@@ -67,6 +67,16 @@
             computed: _.extend(
                 Vuex.mapState(['magazines']), {
             }),
+            methods: {
+                sendEvent: function (magazine) {
+                    ga('send', {
+                        hitType: 'event',
+                        eventCategory: 'newsletter',
+                        eventAction: 'download',
+                        eventLabel: magazine.id + '-' + magazine.file
+                    });
+                }
+            },
             created: function () {
                 this.$store.commit('fetchMagazines');
             }
