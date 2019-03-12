@@ -1,5 +1,7 @@
 # flake8: noqa
 
+from ._legacy import *
+
 from .generic import *
 from .project import *
 

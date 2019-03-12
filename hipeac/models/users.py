@@ -5,6 +5,7 @@ from django.core.validators import FileExtensionValidator, validate_comma_separa
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django_countries.fields import CountryField
@@ -134,6 +135,9 @@ class Profile(ImagesMixin, LinkMixin, models.Model):
             email_hash = md5('hipeac@hipeac.net'.encode('utf-8')).hexdigest()
 
         return f'https://www.gravatar.com/avatar/{email_hash}?s={size}&d=retro&r=PG'
+
+    def get_absolute_url(self) -> str:
+        return reverse('user', args=[self.username])
 
     @property
     def membership(self) -> bool:
