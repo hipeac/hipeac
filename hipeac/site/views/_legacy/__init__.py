@@ -2,3 +2,4 @@
 
 from .events import *
 from .internships import *
+from .techtransfers import *
