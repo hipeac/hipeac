@@ -20,6 +20,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'DJANGO_SECRET_KEY')
 SITE_ID = int(os.environ.get('SITE_ID', 1))
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.flatpages',
@@ -29,7 +31,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic',
 
     # helpers
     'captcha',
@@ -60,8 +61,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
@@ -251,6 +252,7 @@ STATICFILES_FINDERS = (
 )
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
 COMPRESS_OFFLINE = True
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
