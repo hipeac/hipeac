@@ -46,7 +46,9 @@
                     });
                 </script>
             {% endcompress %}
-            {% if not request.DNT %}
+            {% if request.DNT %}
+                <meta name="twitter:dnt" content="on">
+            {% else %}
                 <script async src="//www.googletagmanager.com/gtag/js?id=UA-79856831-1"></script>
                 {% compress js inline %}
                     <script>
