@@ -119,7 +119,7 @@ def extract_publications_for_user(user_id):
 
 @periodic_task(run_every=crontab(day_of_week='sun', hour=3, minute=0))
 def check_member_publications():
-    for profile in Profile.objects.exclude(membership_tags__is_null=True) \
+    for profile in Profile.objects.exclude(membership_tags__isnull=True) \
                                   .exclude(membership_tags__exact='') \
                                   .filter(membership_revocation_date__isnull=True) \
                                   .prefetch_related('links'):
