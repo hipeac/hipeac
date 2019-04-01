@@ -23,7 +23,7 @@
 
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
-    <div>
+    <div v-if="event.sessions.length">
         <search-card placeholder="Search by type, title, main speaker, project, topics..." :showFiltersButton="topics.length > 0" class="mb-2">
             <filters-clear :onClick="resetFilters"></filters-clear>
             <div v-if="sessionTypes">

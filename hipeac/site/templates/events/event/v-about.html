@@ -24,7 +24,8 @@
                 <div class="col-6 col-md-3">
                     <router-link :to="{name: 'schedule'}" class="d-block inherit">
                         <i class="material-icons lg mb-2">category</i><br>
-                        <strong>{{ event.sessions.length }} sessions</strong>
+                        <strong v-if="event.sessions.length">{{ event.sessions.length }} sessions</strong>
+                        <span v-else>Propose a session</span>
                         <i class="material-icons sm ml-1">arrow_forward</i>
                     </router-link>
                 </div>

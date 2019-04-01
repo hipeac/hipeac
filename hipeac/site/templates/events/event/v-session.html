@@ -71,7 +71,9 @@
                         <li><i class="material-icons sm">today</i> {{ session.date | moment }}</li>
                         <li><i class="material-icons sm">schedule</i> {{ session.startAt }} - {{ session.endAt }}</li>
                         <li v-if="event.rooms[session.room]">
-                            <i class="material-icons sm">room</i> {{ event.rooms[session.room].name }}</li>
+                            <i class="material-icons sm">room</i> {{ event.rooms[session.room].venue }}</li>
+                        <li v-if="event.rooms[session.room]">
+                            <i class="material-icons sm">meeting_room</i> {{ event.rooms[session.room].name }}</li>
                     </ul>
                     <metadata-badges v-if="session.topics.length" title="Topics" :items="session.topics"></metadata-badges>
                     <metadata-badges v-if="session.application_areas.length" title="Application areas" :items="session.application_areas" color="secondary"></metadata-badges>

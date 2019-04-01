@@ -3,8 +3,8 @@
     <div v-if="event" class="row">
         <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
             <div class="hipeac-card">
-                <div v-for="venue in event.venues">
-                    <display-sm class="mb-3">Venue</display-sm>
+                <display-sm class="mb-3">Venues</display-sm>
+                <div v-for="venue in event.venues" class="mb-5">
                     <h5 class="text-light-weight mb-3">{{ venue.name }}</h5>
                     <marked v-if="venue.description" :text="venue.description" class="text-sm"></marked>
                 </div>
