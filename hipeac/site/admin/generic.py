@@ -1,7 +1,7 @@
 from django.contrib.admin import FieldListFilter
 from django.contrib.contenttypes.admin import GenericTabularInline
 
-from hipeac.models import Image, Link, Permission, PrivateFile
+from hipeac.models import Image, Link, Permission, PrivateFile, PublicFile
 
 
 def custom_titled_filter(title):
@@ -45,5 +45,11 @@ class PermissionsInline(GenericTabularInline):
 
 class PrivateFilesInline(GenericTabularInline):
     model = PrivateFile
+    classes = ('collapse',)
+    extra = 0
+
+
+class PublicFilesInline(GenericTabularInline):
+    model = PublicFile
     classes = ('collapse',)
     extra = 0

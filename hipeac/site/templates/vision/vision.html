@@ -10,16 +10,16 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <router-link :to="{name: 'latest'}" class="nav-link" exact>Latest</router-link>
+        <a is="router-link" :to="{name: 'latest'}" class="nav-link" exact>Latest</a>
     </li>
     <li class="nav-item">
-        <router-link :to="{name: 'archive'}" class="nav-link">Archive</router-link>
+        <a is="router-link" :to="{name: 'archive'}" class="nav-link">Archive</a>
     </li>
 {% endblock %}
 
 {% block content %}
     <div id="urls" data-vision-list="{% url 'v1:vision-list' %}" class="container">
-        <router-view></router-view>
+        <div is="router-view"></div>
     </div>
 {% endblock %}
 

@@ -29,6 +29,7 @@ class Vision(LinkMixin, models.Model):
 
     images = GenericRelation('hipeac.Image')
     links = GenericRelation('hipeac.Link')
+    public_files = GenericRelation('hipeac.PublicFile')
 
     objects = VisionManager()
 

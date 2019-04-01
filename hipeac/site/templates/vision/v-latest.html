@@ -22,6 +22,18 @@
                     <youtube-embed v-if="vision.youtube_url" :url="vision.youtube_url" :hideInfo="true" class="mb-4"></youtube-embed>
                     <display-sm class="mb-3">Summary</display-sm>
                     <marked :text="vision.summary"></marked>
+                    <div v-if="vision.public_files.length" class="mt-5">
+                        <display-sm class="mb-3 mt-5">Related files</display-sm>
+                        <table class="table table-sm">
+                            <tr v-for="file in vision.public_files" :key="file.id">
+                                <td class="sm"><i class="material-icons sm">description</i></td>
+                                <td>{{ file.description }}</td>
+                                <td class="text-right">
+                                    <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         {% endverbatim %}

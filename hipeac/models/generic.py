@@ -158,7 +158,15 @@ class Permission(models.Model):
         return f'{self.user} ({self.get_level_display()})'
 
 
-class PrivateFile(models.Model):
+class DeleteFileMixin:
+
+    def delete(self, *args, **kwargs):
+        if os.path.isfile(self.file.path):
+            os.remove(self.file.path)
+        super().delete(*args, **kwargs)
+
+
+class PrivateFile(DeleteFileMixin, models.Model):
     """
     Session files / attachments.
     """
@@ -175,9 +183,27 @@ class PrivateFile(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
+        db_table = 'hipeac_files_private'
         ordering = ['content_type', 'object_id', 'position']
 
-    def delete(self, *args, **kwargs):
-        if os.path.isfile(self.file.path):
-            os.remove(self.file.path)
-        super().delete(*args, **kwargs)
+
+class PublicFile(DeleteFileMixin, models.Model):
+    """
+    TODO: should we merge these two?
+    Session files / attachments.
+    """
+    FOLDER = 'public/files'
+
+    def get_upload_path(instance, filename):
+        return f'{instance.FOLDER}/{instance.content_type_id}/{instance.object_id}/{filename}'
+
+    file = models.FileField(upload_to=get_upload_path)
+    position = models.PositiveSmallIntegerField(default=0)
+    description = models.TextField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='public_files')
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        db_table = 'hipeac_files_public'
+        ordering = ['content_type', 'object_id', 'position']

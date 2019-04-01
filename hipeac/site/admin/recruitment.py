@@ -48,7 +48,7 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     autocomplete_fields = ('institution', 'project')
     radio_fields = {'employment_type': admin.VERTICAL}
     raw_id_fields = ('created_by',)
-    inlines = [LinksInline, JobEvaluationInline]
+    inlines = (LinksInline, JobEvaluationInline)
     fieldsets = (
         (None, {
             'fields': ('created_by', 'title', 'institution', 'project'),

@@ -261,7 +261,7 @@ class SessionAdmin(admin.ModelAdmin):
 
     autocomplete_fields = ('event', 'projects', 'main_speaker', 'room')
     radio_fields = {'session_type': admin.VERTICAL}
-    inlines = [LinksInline, PrivateFilesInline, PermissionsInline]
+    inlines = (LinksInline, PrivateFilesInline, PermissionsInline)
     fieldsets = (
         (None, {
             'fields': ('event', ('date', 'start_at', 'end_at'), 'room', 'session_type', 'title', 'is_private'),

@@ -41,7 +41,7 @@ class MembershipRequestAdmin(admin.ModelAdmin):
     list_filter = ('accepted',)
     search_fields = ('name', 'affiliation', 'email')
 
-    inlines = [PrivateFilesInline]
+    inlines = (PrivateFilesInline,)
     raw_id_fields = ('user',)
     fieldsets = (
         (None, {
