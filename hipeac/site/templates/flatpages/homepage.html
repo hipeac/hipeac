@@ -104,8 +104,8 @@
                 fetchEvents: function () {
                     var self = this;
                     api().getEvents().done(function (res) {
-                        self.events = mapper().events(res);
-                        upcomingEvents = self.events.filter(function (obj) {
+                        self.events = Object.freeze(mapper().events(res));
+                        upcomingEvents = self.events.slice().filter(function (obj) {
                             return obj.past == false;
                         });
                         if (upcomingEvents.length > 0) {

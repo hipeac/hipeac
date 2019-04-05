@@ -34,7 +34,7 @@
             mutations: {
                 fetchConferences: function (state) {
                     ajax().get($('#urls').data('publication-conference-list')).done(function (res) {
-                        state.conferences = res;
+                        state.conferences = Object.freeze(res);
                     });
                 }
             },
@@ -73,7 +73,7 @@
                 fetchPaperAwards: function () {
                     var self = this;
                     ajax().get($('#urls').data('paper-award-list'), {year: this.year}).done(function (res) {
-                        self.paperAwards = res;
+                        self.paperAwards = Object.freeze(res);
                     });
                 },
                 redirect: function () {

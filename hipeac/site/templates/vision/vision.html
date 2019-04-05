@@ -38,7 +38,7 @@
             mutations: {
                 fetchVisions: function (state) {
                     ajax().get($('#urls').data('vision-list')).done(function (res) {
-                        state.visions = mapper().visions(res);
+                        state.visions = Object.freeze(mapper().visions(res));
                     });
                 }
             }

@@ -48,13 +48,13 @@
                 fetchClippings: function (state) {
                     if (!state.clippings) {
                         api().getClippings().then(function (res) {
-                            state.clippings = mapper().clippings(res);
+                            state.clippings = Object.freeze(mapper().clippings(res));
                         });
                     }
                 },
                 fetchVideos: function (state) {
                     ajax().get($('#urls').data('video-list')).then(function (res) {
-                        state.videos = mapper().videos(res);
+                        state.videos = Object.freeze(mapper().videos(res));
                     });
                 }
             }

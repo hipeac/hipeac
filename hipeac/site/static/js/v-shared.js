@@ -18,28 +18,28 @@ var ComponentStore = new Vuex.Store({
         fetchArticles: _.debounce(function (state) {
             if (!state.articles) {
                 api().getArticles().then(function (res) {
-                    state.articles = mapper().articles(res);
+                    state.articles = Object.freeze(mapper().articles(res));
                 });
             }
         }, FETCH_WAIT),
         fetchQuotes: _.debounce(function (state) {
             if (!state.quotes.length) {
                 api().getQuotes().then(function (res) {
-                    state.quotes = res;
+                    state.quotes = Object.freeze(res);
                 });
             }
         }, FETCH_WAIT),
         fetchMetadata: _.debounce(function (state) {
             if (!state.metadata.length) {
                 api().getMetadata().then(function (res) {
-                    state.metadata = res;
+                    state.metadata = Object.freeze(res);
                 });
             }
         }, FETCH_WAIT),
         fetchInstitutions: _.debounce(function (state) {
             if (!state.institutions.length) {
                 api().getAllInstitutions().then(function (res) {
-                    state.institutions = res.map(function (obj) {
+                    state.institutions = Object.freeze(res.map(function (obj) {
                         obj.display = obj.name;
                         obj.q = [
                             obj.name,
@@ -47,14 +47,14 @@ var ComponentStore = new Vuex.Store({
                             obj.short_name
                         ].join(' ').toLowerCase();
                         return obj;
-                    });
+                    }));
                 });
             }
         }, FETCH_WAIT),
         fetchProjects: _.debounce(function (state) {
             if (!state.projects.length) {
                 api().getAllProjects().then(function (res) {
-                    state.projects = res.map(function (obj) {
+                    state.projects = Object.freeze(res.map(function (obj) {
                         obj.display = [
                             obj.acronym,
                             (obj.ec_project_id) ? ' #' + obj.ec_project_id : ''
@@ -64,12 +64,12 @@ var ComponentStore = new Vuex.Store({
                             obj.name
                         ].join(' ').toLowerCase();
                         return obj;
-                    });
+                    }));
                 });
             }
         }, FETCH_WAIT),
         setOptions: function (state, options) {
-            state.options = options;
+            state.options = Object.freeze(options);
         }
     },
     getters: {
@@ -606,7 +606,7 @@ Vue.component('user-viewer', {
     computed: {
         sortedUsers: function () {
             if (!this.users) return [];
-            return this.users.sort(function (a, b) {
+            return this.users.slice().sort(function (a, b) {
                 return sort().text(a.profile.name, b.profile.name);
             });
         },
@@ -989,7 +989,7 @@ Vue.component('open-jobs-row', {
         fetchData: function () {
             var self = this;
             ajax().get(this.url).done(function (res) {
-                self.jobs = mapper().jobs(res);
+                self.jobs = Object.freeze(mapper().jobs(res));
             });
         }
     },
@@ -1057,7 +1057,7 @@ Vue.component('videos-row', {
         fetchData: function () {
             var self = this;
             ajax().get(this.url).done(function (res) {
-                self.videos = mapper().videos(res);
+                self.videos = Object.freeze(mapper().videos(res));
             });
         }
     },

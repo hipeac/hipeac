@@ -84,40 +84,40 @@
             mutations: {
                 fetchCommittees: function (state) {
                     ajax().get($('#urls').data('committees-url')).done(function (res) {
-                        state.committees = res;
+                        state.committees = Object.freeze(res);
                     });
                 },
                 fetchEvent: function (state) {
                     ajax().get($('#urls').data('event-url')).done(function (res) {
-                        state.event = mapper().events([res])[0];
+                        state.event = Object.freeze(mapper().events([res])[0]);
                     });
                 },
                 fetchJobs: function (state) {
                     ajax().get($('#urls').data('jobs-url')).done(function (res) {
-                        state.jobs = mapper().jobs(res);
+                        state.jobs = Object.freeze(mapper().jobs(res));
                     });
                 },
                 fetchRegistrations: function (state) {
                     if (!USER_IS_AUTHENTICATED) return;
                     ajax().get($('#urls').data('registrations-url')).done(function (res) {
                         state.user.isRegistered = true;
-                        state.attendees = mapper().users(res.map(function (obj) {
+                        state.attendees = Object.freeze(mapper().users(res.map(function (obj) {
                             return obj.user;
-                        }));
+                        })));
                     });
                 },
                 fetchKeynotes: function (state) {
                     ajax().get($('#urls').data('sessions-url'), {session_type: 69}).done(function (res) {
-                        state.keynotes = mapper().sessions(res);
+                        state.keynotes = Object.freeze(mapper().sessions(res));
                     });
                 },
                 fetchPapers: function (state) {
                     ajax().get($('#urls').data('sessions-url'), {session_type: 71}).done(function (res) {
-                        state.papers = mapper().sessions(res);
+                        state.papers = Object.freeze(mapper().sessions(res));
                     });
                 },
                 updateSession: function (state, data) {
-                    state.session = data;
+                    state.session = Object.freeze(data);
                 }
             }
         });
@@ -378,9 +378,9 @@
                 fetchAttendees: function () {
                     var self = this;
                     api().getSessionAttendees(this.sessionId).done(function (res) {
-                        self.attendees = mapper().users(res.map(function (obj) {
+                        self.attendees = Object.freeze(mapper().users(res.map(function (obj) {
                             return obj.user;
-                        }));
+                        })));
                     });
                 }
             },

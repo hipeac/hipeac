@@ -118,12 +118,12 @@
             mutations: {
                 fetchJobs: function (state) {
                     ajax().get($('#urls').data('job-list')).done(function (res) {
-                        state.jobs = mapper().jobs(res);
+                        state.jobs = Object.freeze(mapper().jobs(res));
                     });
                 },
                 fetchMagazines: function (state) {
                     ajax().get($('#urls').data('magazine-list')).done(function (res) {
-                        state.magazines = res;
+                        state.magazines = Object.freeze(res);
                     });
                 }
             }

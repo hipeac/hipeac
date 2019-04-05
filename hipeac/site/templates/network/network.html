@@ -74,13 +74,13 @@
                             }
                             return obj;
                         });
-                        state.institutions = institutions;
-                        state.members = mapper().users(users);
+                        state.institutions = Object.freeze(institutions);
+                        state.members = Object.freeze(mapper().users(users));
                     });
                 },
                 fetchProjects: function (state) {
                     ajax().get($('#urls').data('project-list')).done(function (res) {
-                        state.projects = mapper().projects(res);
+                        state.projects = Object.freeze(mapper().projects(res));
                     });
                 }
             }
@@ -106,16 +106,7 @@
             template: '#v-members-main',
             computed: _.extend(
                 Vuex.mapState(['members']), {
-                filteredIds: function () {
-                    if (!this.members) return null;
-                    return _.pluck(filterMultiple(this.members, this.q), 'id');
-                }
             }),
-            methods: {
-                resetFilters: function () {
-                    this.filters.topics = [];
-                }
-            },
             created: function () {
                 $.when(
                     this.$store.commit('fetchMembers')

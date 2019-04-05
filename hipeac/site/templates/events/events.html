@@ -51,12 +51,12 @@
             mutations: {
                 fetchEvents: function (state) {
                     api().getEvents().done(function (res) {
-                        state.events = mapper().events(res);
+                        state.events = Object.freeze(mapper().events(res));
                     });
                 },
                 fetchRoadshows: function (state) {
                     ajax().get($('#urls').data('roadshow-list')).done(function (res) {
-                        state.roadshows = mapper().events(res);
+                        state.roadshows = Object.freeze(mapper().events(res));
                     });
                 }
             },

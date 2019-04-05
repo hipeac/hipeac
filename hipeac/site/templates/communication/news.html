@@ -52,7 +52,7 @@
             mutations: {
                 fetchMagazines: function (state) {
                     ajax().get($('#urls').data('magazine-list')).done(function (res) {
-                        state.magazines = res;
+                        state.magazines = Object.freeze(res);
                     });
                 }
             }
