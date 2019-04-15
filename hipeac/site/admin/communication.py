@@ -44,6 +44,7 @@ class MagazineAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'publication_date')
 
     autocomplete_fields = ('users', 'projects')
+    inlines = (ImagesInline,)
     fieldsets = (
         (None, {
             'fields': ('title', 'publication_date', 'issuu_url', 'file', 'file_tablet',),
