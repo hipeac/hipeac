@@ -20,7 +20,7 @@
                 <markdown-textarea v-model.trim="obj.organizers" field="organizers" :rows="3"></markdown-textarea>
                 <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
                 <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
-                <autocomplete-popup v-if="obj.is_industrial_session" v-model="obj.institutions" type="institution" field="institutions" customLabel="Companies involved" :hideRequired="true"></autocomplete-popup>
+                <autocomplete-popup v-model="obj.institutions" type="institution" field="institutions" customLabel="Institutions involved" :hideRequired="true"></autocomplete-popup>
                 <autocomplete-popup v-model="obj.projects" type="project" field="projects" customLabel="EU projects involved" :hideRequired="true"></autocomplete-popup>
                 <link-fieldset v-model="obj.links" field="links"></link-fieldset>
             </form>
