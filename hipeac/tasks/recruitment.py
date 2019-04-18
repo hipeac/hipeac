@@ -101,7 +101,7 @@ def send_weekly_digest():
 
     send_from_template(
         'recruitment.jobs.digest',
-        '[HiPEAC Jobs] Latest computing jobs and opportunities (%s)' % date(timezone.now(), 'F Y'),
+        'Latest computing jobs and opportunities (%s)' % date(timezone.now(), 'F Y'),
         JOBS_DIGEST_EMAIL,
         ['publicity@hipeac.net'],
         {
