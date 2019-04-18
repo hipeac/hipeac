@@ -6,6 +6,7 @@ from typing import List
 JOBS_DIGEST_EMAIL = 'HiPEAC Jobs <jobs@hipeac.net>'
 RECRUITMENT_EMAIL = 'HiPEAC Recruitment <recruitment@hipeac.net>'
 TEMPLATE_PATHS = {
+    'events.no_shows': '_emails/events/no_shows.md.html',
     'events.registrations.created': '_emails/events/registrations_created.md.html',
     'events.registrations.payment_reminder': '_emails/events/registrations_payment_reminder.md.html',
     'events.registrations.reminder': '_emails/events/registrations_reminder.md.html',

@@ -1,0 +1,25 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block header %}About your {{ event_name }} registration.{% endblock %}
+
+{% block body %}
+**Registration number: {{ registration_id }}**
+
+Dear {{ user_name }},
+
+We still have a badge for you at the reception desk for this event.
+
+Please let us know if:
+
+- You still need to get your badge
+- You were not able to attend the event in the end
+
+Please note that in order to keep Computing Systems Week free, it is important for us to minimize no-shows.
+If you are not able to attend a HiPEAC event, please let us know in advance to avoid wasting food and
+other resources, especially if you registered for the social event.
+
+Many thanks and best wishes.
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}

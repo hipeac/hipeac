@@ -69,3 +69,26 @@ class SessionReminderEmail(TemplateEmail):
             'session_type': self.instance.session_type.value,
             'session_editor_url': self.instance.get_editor_url(),
         }
+
+
+class NoShowsEmail(TemplateEmail):
+    template_key_legacy = 'events.no_shows'
+    template = '_emails/events/no_shows.md.html'
+    from_email = 'HiPEAC <management@hipeac.net>'
+
+    def get_subject(self) -> str:
+        return f'[HiPEAC] Please confirm your attendance for {self.instance.event.name}'
+
+    def get_to_emails(self) -> List[str]:
+        return [self.instance.user.email]
+
+    def get_context_data(self):
+        return {
+            'user_name': self.instance.user.profile.name,
+            'event_name': self.instance.event.name,
+            'event_city': self.instance.event.city,
+            'event_url': self.instance.event.get_absolute_url(),
+            'registrations_count': self.instance.event.registrations_count,
+            'registration_id': self.instance.id,
+            'registration_url': self.instance.get_absolute_url(),
+        }
