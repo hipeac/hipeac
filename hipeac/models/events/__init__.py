@@ -7,6 +7,7 @@ from .fees import *
 from .posters import *
 from .registrations import *
 from .roadshows import *
+from .session_proposals import *
 from .sessions import *
 from .sponsors import *
 from .venues import *

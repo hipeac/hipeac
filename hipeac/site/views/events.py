@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError
 from django.template.defaultfilters import date as date_filter
@@ -7,9 +8,10 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
 
-from hipeac.models import Event, Roadshow, Registration, Coupon
+from hipeac.models import Event, Roadshow, Registration, Coupon, SessionProposal
 from hipeac.tools.payments.legacy import Ogone, process_ogone_parameters, OGONE_URL, OGONE_PSPID
 from hipeac.tools.pdf import PdfResponse, Pdf, H2020
+from hipeac.site.forms import SessionProposalForm
 from .mixins import SlugMixin
 
 
@@ -193,3 +195,35 @@ paid the registration fee of <strong>EUR {reg.total_fee}</strong>.''', 'p')
     @property
     def response(self) -> PdfResponse:
         return self._response
+
+
+class SessionProposalView(SuccessMessageMixin, generic.FormView):
+    model = SessionProposal
+    template_name = 'flatpages/form.html'
+    form_class = SessionProposalForm
+
+    def get_event(self, **kwargs):
+        if not hasattr(self, 'event'):
+            self.event = Event.objects.get(pk=self.kwargs.get('pk'))
+        return self.event
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['event'] = self.get_event()
+        return context
+
+
+class SessionProposalCreate(SessionProposalView, generic.CreateView):
+    success_message = 'Thank you! We have received your session proposal.'
+
+    def get_initial(self):
+        return {
+            'event': self.get_event()
+        }
+
+
+class SessionProposalUpdate(SessionProposalView, generic.UpdateView):
+    success_message = 'Thank you! Your session proposal has been updated.'
+
+    def get_object(self, queryset=None):
+        return SessionProposal.objects.get(uuid=self.kwargs.get('slug'))

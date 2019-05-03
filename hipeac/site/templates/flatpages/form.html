@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block title %}{{ flatpage.title }} - {{ block.super }}{% endblock %}
+
+{% block subtitle %}{{ event.hashtag }} workshop and tutorials{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-lg-8">
+                <div class="hipeac-card">
+                    <p>{{ event }}. In parallel with the main paper track, a number of workshops and tutorials will be held. To submit your workshop or tutorial proposal, please complete the following form.</p>
+
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error | escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error | escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                        {% if object %}
+                            <button type="submit" class="btn btn-outline-success mt-3">Update</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-outline-success mt-3">Submit</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
