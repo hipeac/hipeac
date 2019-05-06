@@ -8,6 +8,7 @@ from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField, Members
 from hipeac.functions import send_task
 from hipeac.models import Profile, Institution, Link
 from hipeac.tools.csv import ModelCsvWriter
+from .generic import LinksInline
 
 
 admin.site.unregister(get_user_model())
@@ -53,6 +54,7 @@ class ProfileInline(admin.StackedInline):
 
     autocomplete_fields = ('institution', 'second_institution', 'projects')
     raw_id_fields = ('advisor',)
+    inlines = (LinksInline,)
     fieldsets = (
         (None, {
             'fields': ('country', 'bio', 'meal_preference', 'image'),
