@@ -13,9 +13,20 @@
     <li class="nav-item">
         <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
     </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'schedule'}" class="nav-link">Schedule</a>
-    </li>
+    {% if event.is_ready %}
+        <li class="nav-item">
+            <a is="router-link" :to="{name: 'schedule'}" class="nav-link">Schedule</a>
+        </li>
+    {% else %}
+        {% if event.type == 'conference' %}
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'call-papers'}" class="nav-link">Call for papers</a>
+            </li>
+        {% endif %}
+        <li class="nav-item">
+            <a is="router-link" :to="{name: 'call-workshops'}" class="nav-link">Call for workshops</a>
+        </li>
+    {% endif %}
     <li class="nav-item">
         <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
     </li>
@@ -57,10 +68,19 @@
     {% include './v-attendees.html' with id='v-attendees' %}
     {% include './v-jobs.html' with id='v-jobs' hashtag=event.hashtag %}
     {% include './v-registration.html' with id='v-registration' %}
-    {% include './v-schedule.html' with id='v-schedule' %}
     {% include './v-session.html' with id='v-session' %}
     {% include './v-sponsorship.html' with id='v-sponsorship' %}
     {% include './v-venue.html' with id='v-venue' %}
+
+    {% if event.is_ready %}
+        {% include './v-schedule.html' with id='v-schedule' %}
+    {% else %}
+        {% if event.type == 'conference' %}
+            {% include './v-call-papers.html' with id='v-call-papers' %}
+            {% include './v-call-workshops.html' with id='v-call-workshops' event=event %}
+        {% endif %}
+        {% include './v-call-sessions.html' with id='v-call-workshops' event=event %}
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -133,6 +153,20 @@
             template: '#v-attendees',
             computed: _.extend(
                 Vuex.mapState(['user', 'event', 'attendees']), {
+            })
+        };
+
+        var CallPapersView = {
+            template: '#v-call-papers',
+            computed: _.extend(
+                Vuex.mapState(['user', 'event']), {
+            })
+        };
+
+        var CallWorkshopsView = {
+            template: '#v-call-workshops',
+            computed: _.extend(
+                Vuex.mapState(['user', 'event']), {
             })
         };
 
@@ -424,6 +458,18 @@
                     path: '/attendees/',
                     pathToRegexpOptions: {strict: true},
                     component: AttendeesView
+                },
+                {
+                    name: 'call-papers',
+                    path: '/call-for-papers/',
+                    pathToRegexpOptions: {strict: true},
+                    component: CallPapersView
+                },
+                {
+                    name: 'call-workshops',
+                    path: '/call-for-workshops/',
+                    pathToRegexpOptions: {strict: true},
+                    component: CallWorkshopsView
                 },
                 {
                     name: 'jobs',

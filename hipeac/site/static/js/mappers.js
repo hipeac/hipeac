@@ -56,6 +56,7 @@ function mapper() {
                 obj.links = linkTransform(obj.links);
                 obj.href = obj.redirect_url || obj.href;
                 obj.past = moment().subtract(1, 'days').isAfter(obj.end_date);
+                obj.year = moment(obj.start_date).year();
                 obj.datesStr = [
                     moment(obj.start_date).format('MMMM D'),
                     moment(obj.end_date).format('D, YYYY'),

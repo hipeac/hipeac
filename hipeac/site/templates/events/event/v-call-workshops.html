@@ -1,0 +1,37 @@
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div v-if="event">
+        <div class="row">
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <a href="{% endverbatim %}{% url 'session_proposals' event.id %}{% verbatim %}" target="_blank" class="btn btn-sm btn-block btn-primary"><i class="material-icons mr-1">send</i>Submit your proposal</a>
+                    <hr class="my-4">
+                    <catchphrase>The success of the workshops and tutorials of the previous years' HiPEAC Conferences with more than 35 events each encouraged the HiPEAC {{ event.year }} organizers to try following this success story again. Hence, in conjunction with the {{ event.year - 2005 }}th HiPEAC Conference in {{ event.city }}, {{ event.country.name }}, {{ event.datesStr }} we will organize parallel workshops and tutorials.</catchphrase>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <p>Proposals for workshops and tutorials covering at least one of the following topics are welcome:</p>
+                    <ul>
+                        <li><strong>High performance computer architecture:</strong> processor architecture, multi-/many-core system design, reconfigurable architectures.</li>
+                        <li><strong>Software development for high performance parallel systems:</strong> development patterns/automatic techniques for parallel and reconfigurable architectures.</li>
+                        <li><strong>Tools for compilation, evaluation, optimization as well as synthesis of high performance parallel systems:</strong> compiler support, tracing, and debugging for parallel and reconfigurable architectures, high-level synthesis.</li>
+                        <li><strong>Embedded (parallel) computer architectures:</strong> embedded homogeneous and heterogeneous multicore architectures, embedded reconfigurable architectures, embedded real-time systems, mixed criticality system support, dependable systems.</li>
+                        <li><strong>Software support for embedded architectures:</strong> tracing and real-time analysis of embedded applications, runtime software.</li>
+                        <li><strong>(Real-Time) Operating and runtime systems for embedded parallel computer architectures.</strong></li>
+                        <li><strong>Crazy architectural ideas:</strong> any idea to solve computational problems away from the conventional concepts.</li>
+                        <li><strong>Low-Power Solutions:</strong> Software, Runtime, Compilation, Hardware, Error-Aware Computation, Sub-Threshold operation, Approximate Computing, Reversible Computing.</li>
+                        <li><strong>Future Scalable Memory Architectures:</strong> Processing-In-Memory, Near-Memory Computing, Intelligent Memory, etc.</li>
+                        <li><strong>Green Data Centers / Microserver:</strong> System architecture, Software tools.</li>
+                        <li><strong>Cloud, Fog, and Edge Computing:</strong> Architectures, Systems, Tools, Evaluation, Applications, Benchmarking.</li>
+                    </ul>
+                    <p>We also appreciate <strong>industrial and EC project based workshops</strong> that fit into one of the mentioned focuses.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+{% endverbatim %}
