@@ -121,6 +121,7 @@ def truncate_md(markdown_string: str, *, limit: int = 200) -> str:
     while event is not None:
         if event['node'].t == 'text':
             buf += event['node'].literal
+            break  # this limits results to first paragraph only
         event = walker.nxt()
 
-    return f'{buf[:limit]}...'
+    return f'{buf[:limit]}...' if len(buf) > limit else buf

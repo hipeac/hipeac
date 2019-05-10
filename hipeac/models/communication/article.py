@@ -7,7 +7,7 @@ from django.utils import timezone
 from ..mixins import UrlMixin
 
 
-class ArticleManager(models.Manager):
+class ArticleQuerySet(models.QuerySet):
     def published(self):
         return self.filter(
             is_ready=True,
@@ -45,7 +45,7 @@ class Article(UrlMixin, models.Model):
     created_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL,
                                    related_name='authored_articles')
 
-    objects = ArticleManager()
+    objects = ArticleQuerySet.as_manager()
 
     class Meta:
         ordering = ['-publication_date']

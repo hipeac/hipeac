@@ -14,6 +14,10 @@
                 <a is="router-link" class="nav-link" :to="{name: 'papers'}" exact>
                     <icon name="bookmark" class="mr-1"></icon>Paper Track</a>
             </li>
+            <li v-if="event.type == 'conference'" class="nav-item">
+                <a is="router-link" class="nav-link" :to="{name: 'posters'}" exact>
+                    <icon name="amp_stories" class="mr-1"></icon>Poster exhibition</a>
+            </li>
         </ul>
         <router-view></router-view>
         <router-view name="modal"></router-view>
@@ -126,6 +130,27 @@
         <div v-for="papers in papers">
             <display-sm>{{ papers.date | moment }}: {{ papers.title }}</display-sm>
             <marked :text="papers.summary"></marked>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-posters">
+{% verbatim %}
+    <div v-if="event && posters.length" class="hipeac-card">
+        <div class="text-center">
+            <catchphrase>HiPEAC offers attendees the chance to display a poster highlighting their work in {{ posters.length }} different poster sessions. To participate in the poster session, simply select the relevant tick box on your registration form.</catchphrase>
+        </div>
+        <hr class="my-4">
+        <div class="row">
+            <div v-for="posterSession in posters" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
+                <p><strong>{{ posterSession.date | moment('dddd, MMM Do') }}</strong> / <span class="text-nowrap">{{ posterSession.startAt }} - {{ posterSession.endAt }}</span></p>
+                <h5 class="text-light-weight mb-auto">{{ posterSession.title }}</h5>
+                <marked :text="posterSession.excerpt" class="mt-3"></marked>
+                <router-link :to="{name: 'session', params: {sessionId: posterSession.id}}">
+                    <span class="text-sm"><icon name="add" class="sm mr-1"></icon>More info</span>
+                </router-link>
+            </div>
         </div>
     </div>
 {% endverbatim %}

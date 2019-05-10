@@ -2,8 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 
-class TechTransferCallManager(models.Manager):
-
+class TechTransferCallQuerySet(models.QuerySet):
     def active(self):
         today = timezone.now().date()
         return self.filter(start_date__lte=today, end_date__gte=today).first()
@@ -18,7 +17,7 @@ class TechTransferCall(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_frozen = models.BooleanField(default=False, help_text='Check this box to avoid further editing on applications.')
 
-    objects = TechTransferCallManager()
+    objects = TechTransferCallQuerySet.as_manager()
 
     class Meta:
         ordering = ('-start_date',)

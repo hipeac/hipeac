@@ -9,7 +9,7 @@ from hipeac.models import (
 from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
-from .users import UserPublicMiniSerializer, UserPublicListSerializer
+from .users import UserPublicMiniSerializer, UserPublicSerializer
 
 
 class B2bSerializer(serializers.ModelSerializer):
@@ -112,7 +112,7 @@ class SessionSerializer(SessionListSerializer):
     links = LinkSerializer(required=False, many=True, allow_null=True)
     href = serializers.URLField(source='get_absolute_url', read_only=True)
     editor_href = serializers.URLField(source='get_editor_url', read_only=True)
-    main_speaker = UserPublicListSerializer(read_only=True)
+    main_speaker = UserPublicSerializer(read_only=True)
     excerpt = serializers.SerializerMethodField(read_only=True)
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
     projects_info = serializers.SerializerMethodField(read_only=True)

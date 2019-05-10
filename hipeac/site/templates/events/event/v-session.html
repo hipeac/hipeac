@@ -8,6 +8,9 @@
                         <li class="nav-item">
                             <router-link class="nav-link" :to="{name: 'session', params: {sessionId: session.id}}" exact><i class="material-icons mr-2">category</i>{{ session.session_type.value }}</a></router-link>
                         </li>
+                        <li v-if="session.isKeynote && session.main_speaker" class="nav-item">
+                            <router-link class="nav-link" :to="{name: 'sessionBio', params: {sessionId: session.id}}" exact><i class="material-icons mr-2">account_circle</i>{{ session.main_speaker.profile.name }}</router-link>
+                        </li>
                         <li v-if="session.program" class="nav-item">
                             <router-link class="nav-link" :to="{name: 'sessionProgram', params: {sessionId: session.id}}" exact>Program</router-link>
                         </li>
@@ -44,15 +47,6 @@
 {% verbatim %}
     <div v-if="event" class="row">
         <div class="col-12 col-md-8 pr-md-5">
-            <div v-if="session.main_speaker && session.main_speaker.profile">
-                <div class="media mb-4">
-                    <img :src="session.main_speaker.profile.avatar_url" class="rounded-circle mr-3">
-                    <div class="media-body">
-                        <h6 class="mt-0 mb-1">{{ session.main_speaker.profile.name }}</h6>
-                        <p v-if="session.main_speaker.profile.institution" class="text-sm">{{ session.main_speaker.profile.institution.name }}<br>{{ session.main_speaker.profile.institution.country.name }}</p>
-                    </div>
-                </div>
-            </div>
             <marked v-if="session.summary" :text="session.summary"></marked>
             <skeleton-content v-else></skeleton-content>
             <div v-if="session.is_industrial_session && session.institutions.length" class="my-4">
@@ -107,6 +101,39 @@
 {% endverbatim %}
 </script>
 
+<script type="text/x-template" id="{{ id }}-bio">
+{% verbatim %}
+    <div v-if="event && session.main_speaker" class="row">
+        <div class="col-12 col-md-8 pr-md-5">
+            <div v-if="session.main_speaker && session.main_speaker.profile">
+                <div class="media mb-4">
+                    <img :src="session.main_speaker.profile.avatar_url" class="rounded-circle mr-3">
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-1">{{ session.main_speaker.profile.name }}</h6>
+                        <p v-if="session.main_speaker.profile.institution" class="text-sm">{{ session.main_speaker.profile.institution.name }}<br>{{ session.main_speaker.profile.institution.country.name }}</p>
+                    </div>
+                </div>
+            </div>
+            <marked :text="session.main_speaker.profile.bio"></marked>
+        </div>
+        <div class="col-12 col-md-4">
+            <div v-if="session.main_speaker.profile.links && session.main_speaker.profile.links.length" class="mb-4">
+                <display-sm class="mb-1">External links</display-sm>
+                <ul class="list-group list-group-flush list-group-links text-sm">
+                    <li class="list-group-item" v-for="link in session.main_speaker.profile.links" :key="link.id">
+                        <a :href="link.url" target="_blank" rel="noopener" class="inherit">
+                            <website-icon :type="link.type"></website-icon>
+                            <span>{{ link.type_display }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <metadata-badges v-if="session.main_speaker.profile.topics.length" title="Topics" :items="session.main_speaker.profile.topics"></metadata-badges>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
+
 <script type="text/x-template" id="{{ id }}-program">
 {% verbatim %}
     <div>
@@ -126,15 +153,7 @@
 <script type="text/x-template" id="{{ id }}-downloads">
 {% verbatim %}
     <div>
-        <table class="table table-sm">
-            <tr v-for="file in session.private_files" :key="file.id">
-                <td class="sm"><i class="material-icons sm">description</i></td>
-                <td>{{ file.description }}</td>
-                <td class="text-right">
-                    <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
-                </td>
-            </tr>
-        </table>
+        <attachments-table :attachments="session.private_files"></attachments-table>
     </div>
 {% endverbatim %}
 </script>

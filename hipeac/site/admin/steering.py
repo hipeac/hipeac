@@ -4,8 +4,27 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from hipeac.functions import send_task
-from hipeac.models import MembershipRequest
+from hipeac.models import ActionPoint, Meeting, MembershipRequest
 from .generic import PrivateFilesInline
+
+
+@admin.register(ActionPoint)
+class ActionPointAdmin(admin.ModelAdmin):
+    date_hierarchy = 'created_at'
+    list_display = ('id', 'title', 'status')
+    list_filter = ('status',)
+    search_fields = ('id', 'title')
+
+    inlines = (PrivateFilesInline,)
+    raw_id_fields = ('owners',)
+
+
+@admin.register(Meeting)
+class MeetingAdmin(admin.ModelAdmin):
+    date_hierarchy = 'start_at'
+    list_display = ('id', 'start_at', 'location')
+
+    inlines = (PrivateFilesInline,)
 
 
 def send_members_welcome(queryset):
@@ -25,7 +44,6 @@ def send_members_welcome(queryset):
 
 
 class MembershipRequestForm(ModelForm):
-
     class Meta:
         help_texts = {
             'user': 'If the proposed member had already a HiPEAC user account, please select his account.',

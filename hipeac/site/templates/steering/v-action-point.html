@@ -1,0 +1,55 @@
+<script type="text/x-template" id="{{ id }}-list">
+{% verbatim %}
+    <div>
+        <div class="row d-flex align-items-stretch">
+            <div class="col-12 col-md-4 col-lg-3 border-right pr-md-4 steering-sidenav">
+                <display-sm><icon name="filter_list" class="sm mr-1"></icon> by status</display-sm>
+                <ul class="mt-3 one-line">
+                    <li><a href="#" @click.prevent="changeStatus('all')" :class="{active: filters.status == 'all'}">
+                        <icon name="chevron_right"></icon>ALL</a></li>
+                    <li><a href="#" @click.prevent="changeStatus('completed')" :class="{active: filters.status == 'completed'}">
+                        <icon name="chevron_right"></icon>Completed</a></li>
+                    <li><a href="#" @click.prevent="changeStatus('in_progress')" :class="{active: filters.status == 'in_progress'}">
+                        <icon name="chevron_right"></icon>In progress</a></li>
+                    <li><a href="#" @click.prevent="changeStatus('not_started')" :class="{active: filters.status == 'not_started'}">
+                        <icon name="chevron_right"></icon>Not started</a></li>
+                </ul>
+                <div v-if="users.length" class="d-none d-md-block">
+                    <display-sm><icon name="filter_list" class="sm mr-1"></icon> by user</display-sm>
+                    <ul class="mt-3 one-line">
+                        <li><a href="#" @click.prevent="filters.owner = 'all'" :class="{active: filters.owner == 'all'}">
+                            <icon name="chevron_right"></icon>ALL</a></li>
+                        <li v-for="userName in users" :key="userName">
+                            <a href="#" @click.prevent="filters.owner = userName" :class="{active: filters.owner == userName}">
+                            <icon name="chevron_right"></icon>{{ userName }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 col-md-8 col-lg-9 pl-md-5">
+                <display-sm>ACTION POINTS ({{ filteredActionPoints.length }})</display-sm>
+                <table class="table table-sm mt-3">
+                    <tr v-for="ap in filteredActionPoints">
+                        <td>
+                            <icon v-if="ap.status == 'completed'" name="check_circle" class="smr text-success"></icon>
+                            <icon v-if="ap.status == 'in_progress'" name="album" class="smr text-warning"></icon>
+                            <icon v-if="ap.status == 'not_started'" name="album" class="smr text-danger"></icon>
+                        </td>
+                        <td class="px-3"><small>A{{ ap.id }}</small></td>
+                        <td>
+                            <span class="mr-2">{{ ap.title }} </span>
+                            <span class="text-sm text-black-50 text-nowrap">
+                                <icon name="schedule" class="sm mr-1"></icon>
+                                <span class="mr-3">{{ ap.created_at | moment('llll') }}</span>
+                            </span>
+                        </td>
+                        <td v-if="canEdit">
+                            <a :href="ap.url_admin"><icon name="edit" class="sm"></icon></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

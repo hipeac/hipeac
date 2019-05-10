@@ -2,6 +2,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
+
+
+class MembershipRequestQuerySet(models.QuerySet):
+    def pending(self):
+        return self.filter(accepted__isnull=True)
 
 
 class MembershipRequest(models.Model):
@@ -26,11 +32,13 @@ class MembershipRequest(models.Model):
     accepted = models.BooleanField(default=None, null=True)
     decision_date = models.DateField(null=True, blank=True)
 
-    private_files = GenericRelation('hipeac.PrivateFile')
+    attachments = GenericRelation('hipeac.PrivateFile')
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta(object):
+    objects = MembershipRequestQuerySet.as_manager()
+
+    class Meta:
         db_table = 'hipeac_steering_membership_request'
         ordering = ('-created_at',)
 
@@ -50,3 +58,6 @@ class MembershipRequest(models.Model):
     @property
     def clean_email(self) -> str:
         return self.user.email if self.user else self.email
+
+    def get_absolute_url(self) -> str:
+        return ''.join([reverse('steering'), f'#/membership-requests/{self.id}/'])

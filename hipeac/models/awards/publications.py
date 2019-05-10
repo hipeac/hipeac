@@ -37,7 +37,7 @@ class PublicationConference(models.Model):
         return f'{self.acronym} {self.year}'
 
 
-class PublicationManager(models.Manager):
+class PublicationQuerySet(models.QuerySet):
 
     def awarded(self, *, year: int):
         date = datetime.date(year, 12, 31)
@@ -68,7 +68,7 @@ class Publication(models.Model):
     conference = models.ForeignKey(PublicationConference, null=True, blank=True, related_name='publications',
                                    on_delete=models.SET_NULL)
 
-    objects = PublicationManager()
+    objects = PublicationQuerySet.as_manager()
 
     class Meta:
         ordering = ('-year', 'title')

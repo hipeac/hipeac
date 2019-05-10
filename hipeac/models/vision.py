@@ -7,7 +7,7 @@ from django.utils import timezone
 from .mixins import LinkMixin
 
 
-class VisionManager(models.Manager):
+class VisionQuerySet(models.QuerySet):
     def published(self):
         return self.filter(
             publication_date__lte=timezone.now().date()
@@ -32,7 +32,7 @@ class Vision(LinkMixin, models.Model):
     links = GenericRelation('hipeac.Link')
     public_files = GenericRelation('hipeac.PublicFile')
 
-    objects = VisionManager()
+    objects = VisionQuerySet.as_manager()
 
     class Meta:
         ordering = ['-publication_date']

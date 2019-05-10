@@ -6,7 +6,7 @@
 
 
 {% block main %}
-    <div id="vue">
+    <div id="vue" class="{% block custom_section_class %}{% endblock %}">
         {% if user.is_authenticated %}<div is="user-notifications"></div>{% endif %}
         <nav class="hipeac navbar sticky-top navbar-expand-lg navbar-light">
             <div class="container d-flex">

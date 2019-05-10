@@ -42,10 +42,9 @@ def validate_event_dates(event):
             raise ValidationError('Early deadline cannot be later than registration deadline.')
 
 
-class EventManager(models.Manager):
-
+class EventQuerySet(models.QuerySet):
     def public(self):
-        return super().get_queryset().exclude(type=EC_MEETING)
+        return self.exclude(type=EC_MEETING)
 
     def registering(self):
         now = timezone.now()
@@ -91,7 +90,7 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     links = GenericRelation('hipeac.Link')
     venues = models.ManyToManyField('hipeac.Venue', blank=True, related_name='events')
 
-    objects = EventManager()
+    objects = EventQuerySet.as_manager()
 
     def clean(self) -> None:
         validate_event_dates(self)

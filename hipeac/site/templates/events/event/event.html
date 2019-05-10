@@ -107,7 +107,8 @@
                 attendees: [],
                 session: null,
                 keynotes: [],
-                papers: []
+                papers: [],
+                posters: []
             },
             mutations: {
                 fetchCommittees: function (state) {
@@ -142,6 +143,11 @@
                 fetchPapers: function (state) {
                     ajax().get($('#urls').data('sessions-url'), {session_type: 71}).done(function (res) {
                         state.papers = Object.freeze(mapper().sessions(res));
+                    });
+                },
+                fetchPosters: function (state) {
+                    ajax().get($('#urls').data('sessions-url'), {session_type: 73}).done(function (res) {
+                        state.posters = Object.freeze(mapper().sessions(res));
                     });
                 },
                 updateSession: function (state, data) {
@@ -374,6 +380,16 @@
             }
         };
 
+        var SchedulePostersView = {
+            template: '#v-schedule-posters',
+            computed: _.extend(
+                Vuex.mapState(['event', 'posters']), {
+            }),
+            created: function () {
+                this.$store.commit('fetchPosters');
+            }
+        };
+
         var SessionModalView = {
             template: '#v-session',
             data: function () {
@@ -423,6 +439,13 @@
 
         var SessionMainView = {
             template: '#v-session-main',
+            computed: _.extend(
+                Vuex.mapState(['event', 'session']), {
+            }),
+        };
+
+        var SessionBioView = {
+            template: '#v-session-bio',
             computed: _.extend(
                 Vuex.mapState(['event', 'session']), {
             }),
@@ -560,6 +583,12 @@
                             component: SchedulePapersView
                         },
                         {
+                            name: 'posters',
+                            path: 'posters/',
+                            pathToRegexpOptions: {strict: true},
+                            component: SchedulePostersView
+                        },
+                        {
                             path: 'sessions/:sessionId/',
                             pathToRegexpOptions: {strict: true},
                             components: {
@@ -577,6 +606,12 @@
                                     pathToRegexpOptions: {strict: true},
                                     component: SessionMainView,
                                     props: true
+                                },
+                                {
+                                    name: 'sessionBio',
+                                    path: 'bio/',
+                                    pathToRegexpOptions: {strict: true},
+                                    component: SessionBioView
                                 },
                                 {
                                     name: 'sessionProgram',

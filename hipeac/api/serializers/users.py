@@ -63,12 +63,21 @@ class ProfileNestedSerializer(ProfileSerializer):
                   'application_areas', 'topics', 'avatar_url')
 
 
+class ProfilePublicSerializer(ProfileNestedSerializer):
+    links = LinkSerializer(required=False, many=True, allow_null=True)
+
+    class Meta:
+        model = Profile
+        fields = ('bio', 'name', 'country', 'institution', 'second_institution', 'membership_date', 'membership_tags',
+                  'application_areas', 'topics', 'links', 'avatar_url')
+
+
 # Users
 # -----
 
 
 class UserPublicSerializer(serializers.ModelSerializer):
-    profile = ProfileNestedSerializer()
+    profile = ProfilePublicSerializer()
     url = serializers.HyperlinkedIdentityField(view_name='v1:user-detail')
     href = serializers.SerializerMethodField()
 

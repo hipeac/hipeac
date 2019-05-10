@@ -1,7 +1,7 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import IsAuthenticated
 
 
-class SteeringPermission(BasePermission):
+class IsSteeringMember(IsAuthenticated):
 
     def is_steering(self, user=None):
         if not hasattr(self, 'user_is_steering'):
@@ -17,9 +17,5 @@ class SteeringPermission(BasePermission):
         return self.is_steering(request.user)
 
 
-class ActionPointPermission(SteeringPermission):
-    pass
-
-
-class MeetingPermission(SteeringPermission):
+class ActionPointPermission(IsSteeringMember):
     pass

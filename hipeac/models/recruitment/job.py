@@ -32,9 +32,17 @@ def validate_institution(institution, user) -> None:
         raise ValidationError('You cannot create a job position for this institution.')
 
 
-class JobManager(models.Manager):
+class JobQuerySet(models.QuerySet):
     def active(self):
         return self.filter(deadline__gte=timezone.now().date()).order_by('deadline')
+
+
+class JobManager(models.Manager):
+    def get_queryset(self):
+        return JobQuerySet(self.model, using=self._db)
+
+    def active(self):
+        return self.get_queryset().active()
 
     @staticmethod
     def grouped_for_email(queryset) -> dict:

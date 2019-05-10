@@ -1,0 +1,129 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div>
+        <!--<div v-if="lastMeeting">
+            <div v-if="lastMeeting.isPast">Last meeting: {{ lastMeeting.start_at | moment('LLL') }}</div>
+            <div v-else>Next meeting: {{ lastMeeting.start_at | moment('LLL') }}</div>
+        </div>
+        <hr>
+        <span v-if="membershipRequests">Membership requests: {{ membershipRequests.length }}</span>
+        <hr>-->
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <h6>Membership action plan</h6>
+                <table class="table table-sm text-sm">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-right">2017</th>
+                            <th class="text-right">2018</th>
+                            <th class="text-right">2019</th>
+                            <th class="text-right">2020</th>
+                            <th class="text-right">Evolution 17-20</th>
+                        <tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-light-yellow">
+                            <td>Members (total)</td>
+                            <td class="text-right">636</td>
+                            <td class="text-right">705</td>
+                            <td class="text-right">750</td>
+                            <td class="text-right">757</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 19%</td>
+                        </tr>
+                        <tr>
+                            <td>Full members</td>
+                            <td class="text-right">522</td>
+                            <td class="text-right">587</td>
+                            <td class="text-right">620</td>
+                            <td class="text-right">627</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 25%</td>
+                        </tr>
+                        <tr>
+                            <td>Associated members</td>
+                            <td class="text-right">114</td>
+                            <td class="text-right">118</td>
+                            <td class="text-right">130</td>
+                            <td class="text-right">130</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 14%</td>
+                        </tr>
+                        <tr>
+                            <td>Community: academic members</td>
+                            <td class="text-right">433</td>
+                            <td class="text-right">459</td>
+                            <td class="text-right">483</td>
+                            <td class="text-right">487</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 12%</td>
+                        </tr>
+                        <tr>
+                            <td>Community: industry members</td>
+                            <td class="text-right">185</td>
+                            <td class="text-right">215</td>
+                            <td class="text-right">236</td>
+                            <td class="text-right">237</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 28%</td>
+                        </tr>
+                        <tr>
+                            <td>Community: innovation members</td>
+                            <td class="text-right">7</td>
+                            <td class="text-right">22</td>
+                            <td class="text-right">26</td>
+                            <td class="text-right">28</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 300%</td>
+                        </tr>
+                        <tr>
+                            <td>Community: NMS members</td>
+                            <td class="text-right">57</td>
+                            <td class="text-right">69</td>
+                            <td class="text-right">73</td>
+                            <td class="text-right">76</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 33%</td>
+                        </tr>
+                        <tr>
+                            <td>Community: female members</td>
+                            <td class="text-right">44</td>
+                            <td class="text-right">51</td>
+                            <td class="text-right">61</td>
+                            <td class="text-right">61</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 39%</td>
+                        </tr>
+                        <tr>
+                            <td>Affiliated members</td>
+                            <td class="text-right">1280</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">1460</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 14%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12 col-md-6">
+                <h6>Recruitment action plan</h6>
+                <table class="table table-sm text-sm">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-right">2017</th>
+                            <th class="text-right">2018</th>
+                            <th class="text-right">2019</th>
+                            <th class="text-right">2020</th>
+                            <th class="text-right">Evolution 17-20</th>
+                        <tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-light-yellow">
+                            <td>Jobs posted (total)</td>
+                            <td class="text-right">1814</td>
+                            <td class="text-right">2455</td>
+                            <td class="text-right">3093</td>
+                            <td class="text-right">3230</td>
+                            <td class="text-right"><i class="material-icons text-success sm">arrow_upward</i> 78%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

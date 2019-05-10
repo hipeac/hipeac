@@ -8,5 +8,6 @@ from .events import *
 from .network import *
 from .open_events import *
 from .recruitment import *
+from .steering import *
 from .users import *
 from .vision import *

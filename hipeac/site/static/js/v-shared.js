@@ -193,18 +193,13 @@ Vue.component('loading2', {
     ''
 });
 
-Vue.component('editor-link', {
+var EditLink = Vue.extend({
     data: function () {
         return {
             show: false
         }
     },
     props: ['url'],
-    template: '' +
-        '<li v-if="show" class="nav-item">' +
-            '<a class="nav-link" :href="url"><i class="material-icons mr-1">edit</i>Edit</a>' +
-        '</li>' +
-    '',
     created: function () {
         var self = this;
         if (USER_IS_AUTHENTICATED) {
@@ -214,6 +209,22 @@ Vue.component('editor-link', {
         }
     }
 });
+
+Vue.component('editor-link', EditLink.extend({
+    template: '' +
+        '<li v-if="show" class="nav-item">' +
+            '<a class="nav-link" :href="url"><i class="material-icons mr-1">edit</i>Edit</a>' +
+        '</li>' +
+    ''
+}));
+
+Vue.component('editor-button', EditLink.extend({
+    template: '' +
+        '<a v-if="show" class="btn btn-sm btn-outline-secondary" :href="url">' +
+            '<i class="material-icons sm mr-1">edit</i>Edit' +
+        '</a>' +
+    ''
+}));
 
 Vue.component('hipeac-logo', {
     template: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 366"><g fill-rule="evenodd" clip-rule="evenodd"><path fill="#005eb8" d="M7.5 251.8L34.3 82.3h34.5l-10.2 64.6h39.6l10.2-64.6h34.5L116 251.8H81.6l11.9-75H53.8l-11.8 75zM198 361l-17.2-109.2h18.7v-36h9.6c26.4 0 35.9-7.7 35.9-38.3v-22c0-23.4-11.6-31.3-33-31.3h-22.9l-20.2 127.6h-28.5l20.2-127.6-11.3-70.8L457 4.7l19.5 123.1a51.6 51.6 0 0 0-27-5.3H439c-22 0-28.1 10.8-24.9 31.4l11.3 71.4C428 242 437.6 253 459.5 253h10.7c12.5 0 20.6-1.8 25.1-6.6l10.5 66L198 361zm10-168.5h-8.5v-45h8.2c5 0 6.6 1.3 6.6 5.5v30.2c0 7-2.2 9.3-6.4 9.3m50.3-68.3v127.6h58.3v-23.4h-29v-31.6h25v-22h-25l-.1-27.2h27v-23.4h-56.2zm111 17.6L376 199H362l6.9-57.2h.3zM345 124.2l-19.3 127.6h30l3.7-30.8h19.1l3.7 30.8h30l-19.3-127.6H345zm114.1 27l2.6 16.6H483l5.8 36.5h-21.2l3.2 20c.6 3.8-1.8 5.3-6.6 5.3s-7.6-1.5-8.2-5.4l-11.6-73c-.6-3.8 1.7-5.4 6.7-5.4 4.7 0 7.5 1.6 8.1 5.4"/><path fill="#ffe800" d="M167.3 82.2h28.4l-4 25.1h-28.4z"/></g></svg>'
@@ -906,6 +917,30 @@ Vue.component('open-jobs-row', {
     },
     created: function () {
         this.fetchData();
+    }
+});
+
+Vue.component('attachments-table', {
+    props: {
+        attachments: {
+            type: Array
+        }
+    },
+    template: '' +
+        '<table v-if="attachments.length" class="table table-sm mb-0">' +
+            '<tr v-for="file in attachments" :key="file.id" @click="openFile(file.file)" class="pointer">' +
+                '<td class="sm"><i class="material-icons sm">description</i></td>' +
+                '<td>{{ file.description }}</td>' +
+                '<td class="text-right">' +
+                    '<a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>' +
+                '</td>' +
+            '</tr>' +
+        '</table>' +
+    '',
+    methods: {
+        openFile: function (href) {
+            window.open(href, '_blank');
+        }
     }
 });
 

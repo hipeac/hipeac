@@ -1,0 +1,49 @@
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}-list">
+{% verbatim %}
+    <div v-if="meetings">
+        <div class="row d-flex align-items-stretch">
+            <div class="col-12 col-md-4 col-lg-3 border-right pr-md-4 steering-sidenav dropright">
+                <display-sm class="dropdown-toggle d-inline pointer" data-toggle="dropdown">Meetings in {{ year }}<icon name="keyboard_arrow_down" class="ml-1 smr"></icon></display-sm>
+                <div v-if="years" class="dropdown-menu">
+                    <a v-for="y in years" :key="y" class="dropdown-item" href="#" @click.prevent="changeYear(y)">{{ y }}</a>
+                </div>
+                <ul class="mt-3">
+                    <li v-for="meeting in filteredMeetings" :key="meeting.id">
+                        <router-link :to="{name: 'meetingDetail', params: {meetingId: meeting.id}}"><icon name="chevron_right"></icon>{{ meeting.location }}<br><small>{{ meeting.start_at | moment('lll') }}</small></router-link>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-8 col-lg-9 pl-md-5">
+                <router-view></router-view>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-detail">
+{% verbatim %}
+    <div v-if="meeting">
+        <div class="text-sm text-secondary mb-3">
+            <p class="float-right text-black-50 mb-3 ml-2">
+                <icon name="schedule" class="sm mr-1"></icon>
+                <span>{{ meeting.start_at | moment('llll') }}</span>
+            </p>
+            <span>{{ meeting.location }}</span>
+            <a v-if="meeting.isWebEx && !meeting.isPast && meeting.url_webex" :href="meeting.url_webex" target="_blank"><icon name="double_arrow" class="sm mx-1"></icon><span  class="bg-yellow">Join the meeting here</span></a>
+        </div>
+        <p class="text-sm">
+            <a is="editor-button" :url="'/admin/hipeac/meeting/' + meeting.id + '/change/'" class="float-right ml-4 mb-2"></a>
+            <a v-if="meeting.file" :href="meeting.file" target="_blank" class="btn btn-sm btn-outline-secondary mr-2"><icon name="get_app" class="sm mr-1"></icon>Download meeting minutes</a>
+        </p>
+        <marked :text="meeting.description" class="with-h mt-5"></marked>
+        <div v-if="meeting.attachments.length" class="mt-5 rounded steering-box-ml bg-light p-3 text-sm">
+            <display-sm class="mb-3">Attachments</display-sm>
+            <attachments-table :attachments="meeting.attachments"></attachments-table>
+        </div>
+    </div>
+{% endverbatim %}
+</script>

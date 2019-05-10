@@ -11,5 +11,6 @@ from .open_events import *
 from .partners import *
 from .projects import *
 from .recruitment import *
+from .steering import *
 from .users import *
 from .vision import *

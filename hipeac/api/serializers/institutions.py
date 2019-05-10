@@ -26,7 +26,7 @@ class InstitutionMiniSerializer(InstitutionSerializer):
 
     class Meta:
         model = Institution
-        fields = ('id', 'type', 'name', 'local_name', 'short_name', 'country')
+        fields = ('id', 'type', 'name', 'local_name', 'short_name', 'country', 'href')
 
 
 class InstitutionNestedSerializer(InstitutionSerializer):

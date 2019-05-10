@@ -31,16 +31,23 @@ def validate_membership_tags(value: str):
             raise ValidationError(f'Only one of the following can be set: "{",".join(t)}".')
 
 
-class ProfileManager(models.Manager):
-
-    def get_queryset(self):
-        return super().get_queryset().select_related('user', 'gender', 'title', 'meal_preference')
+class ProfileQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(user__is_active=True)
 
     def public(self):
         return self.filter(user__is_active=True, is_public=True)
 
+
+class ProfileManager(models.Manager):
+    def get_queryset(self):
+        return ProfileQuerySet(self.model, using=self._db).select_related('user', 'gender', 'title', 'meal_preference')
+
     def active(self):
-        return self.filter(user__is_active=True)
+        return self.get_queryset().active()
+
+    def public(self):
+        return self.get_queryset().public()
 
 
 class Profile(ImagesMixin, LinkMixin, MetadataMixin, models.Model):

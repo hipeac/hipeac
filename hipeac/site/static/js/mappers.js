@@ -21,6 +21,12 @@ function mapper() {
                 return obj;
             });
         },
+        actionPoints: function (items) {
+            return items.map(function (obj) {
+                obj.url_admin = '/admin/hipeac/actionpoint/' + obj.id + '/change/';
+                return obj;
+            });
+        },
         articles: function (items) {
             return items.map(function (obj) {
                 obj.subheader = obj.type_display;
@@ -139,6 +145,13 @@ function mapper() {
                     obj.city,
                     obj.keywords.join(' ')
                 ].join(' ').toLowerCase();
+                return obj;
+            });
+        },
+        meetings: function (items) {
+            return items.map(function (obj) {
+                obj.isPast = moment().isAfter(obj.end_at);
+                obj.isWebEx = obj.location.toLowerCase() == 'webex';
                 return obj;
             });
         },

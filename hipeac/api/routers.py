@@ -36,5 +36,9 @@ class Router(DefaultRouter):
         self.register(r'users', views.UserViewSet, basename='user')
         self.register(r'vision', views.VisionViewSet, basename='vision')
 
+        self.register(r'steering/action-points', views.ActionPointViewSet, basename='sc-action-point')
+        self.register(r'steering/meetings', views.MeetingViewSet, basename='sc-meeting')
+        self.register(r'steering/membership-requests', views.MembershipRequestViewSet, basename='sc-membership-request')
+
     def get_urls(self):
         return [url for url in super().get_urls() if url.name != 'auth-user-detail']

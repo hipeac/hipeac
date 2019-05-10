@@ -17,18 +17,19 @@
                 <div class="dropdown-divider"></div>
             {% endif %}
             <a href="{% url 'user_profile' %}" class="dropdown-item">Settings</a>
+            {% if user.profile.is_steering_member %}
+                <div class="dropdown-divider"></div>
+                <h6 class="dropdown-header">Steering Committee</h6>
+                <a href="{% url 'steering' %}#/" class="dropdown-item">Dashboard</a>
+                <a href="{% url 'steering' %}#/meetings/" class="dropdown-item">Meetings</a>
+                <a href="{% url 'steering' %}#/action-points/" class="dropdown-item">Action points</a>
+                <a href="{% url 'steering' %}#/membership-requests/" class="dropdown-item">Membership requests</a>
+            {% endif %}
             <div class="dropdown-divider"></div>
             <h6 class="dropdown-header">Management</h6>
             <a href="{% url 'jobs_management' %}" class="dropdown-item">My job posts</a>
             {% if user.is_staff %}
                 <a href="{% url 'admin:index' %}" class="dropdown-item">Admin area</a>
-            {% endif %}
-            {% if user.profile.is_steering_member %}
-                <div class="dropdown-divider"></div>
-                <h6 class="dropdown-header">Steering Committee</h6>
-                <a href="https://v4.hipeac.net/sc/meetings/" class="dropdown-item">Meetings</a>
-                <a href="https://v4.hipeac.net/sc/action-points/" class="dropdown-item">Action points</a>
-                <a href="https://v4.hipeac.net/sc/membership-requests/" class="dropdown-item">Membership requests</a>
             {% endif %}
             <div class="dropdown-divider"></div>
             <a href="{% url 'account_logout' %}" class="dropdown-item">Sign out</a>

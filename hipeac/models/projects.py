@@ -13,7 +13,7 @@ from hipeac.validators import validate_no_badwords
 from .mixins import ImagesMixin, LinkMixin, UrlMixin
 
 
-class ProjectManager(models.Manager):
+class ProjectQuerySet(models.QuerySet):
     ERC_PROGRAMME = 88
     OTHER = 87
 
@@ -61,7 +61,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     keywords = models.TextField(null=True, blank=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = ProjectManager()
+    objects = ProjectQuerySet.as_manager()
 
     class Meta:
         ordering = ['-end_date']

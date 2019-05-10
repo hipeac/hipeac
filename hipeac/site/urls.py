@@ -74,6 +74,8 @@ urlpatterns = [
     path('accounts/profile/', views.UserSettings.as_view(), name='user_profile'),
     path('accounts/certificates/', views.UserCertificates.as_view(), name='user_certificates'),
     path('accounts/certificates/<uuid:uuid>.pdf', views.UserCertificatePdf.as_view(), name='user_certificate_pdf'),
+    # SC
+    path('sc/', views.SteeringCommittee.as_view(), name='steering'),
     # Mailing lists
     path('sympa/<slug:mailing_list>/', views.DataSourceView.as_view(), name='datasource'),
     # Media

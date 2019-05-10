@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.translation import pgettext_lazy
 
 
-class NotificationManager(models.Manager):
+class NotificationQuerySet(models.QuerySet):
 
     def active(self):
         return self.filter(Q(deadline__gt=timezone.now()) | Q(deadline__isnull=True))
@@ -21,7 +21,7 @@ class Notification(models.Model):
     deadline = models.DateTimeField(pgettext_lazy('-- admin: labels', 'deadline'), null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    objects = NotificationManager()
+    objects = NotificationQuerySet.as_manager()
 
     class Meta:
         indexes = [
