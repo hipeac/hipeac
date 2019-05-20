@@ -8,6 +8,7 @@ from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField, Members
 from hipeac.functions import send_task
 from hipeac.models import Profile, Institution, Link
 from hipeac.tools.csv import ModelCsvWriter
+from .csv.users import csv_users_activity
 from .generic import LinksInline
 
 
@@ -117,7 +118,10 @@ class MembershipTypeFilter(admin.SimpleListFilter):
 
 @admin.register(get_user_model())
 class UserAdmin(AuthUserAdmin):
-    actions = ('send_profile_update_reminder', 'select_export_users_csv', 'extract_publications_from_dblp')
+    actions = (
+        'send_profile_update_reminder', 'export_users_csv', 'export_csv_activity',
+        'extract_publications_from_dblp'
+    )
     list_display = ('id', 'username', 'name', 'institution', 'email', 'membership_tags')
     list_filter = (MembershipTypeFilter,) + AuthUserAdmin.list_filter
     search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__institution__name')
@@ -142,10 +146,14 @@ class UserAdmin(AuthUserAdmin):
         admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
     send_profile_update_reminder.short_description = ('[Mailer] Send profile update reminder')
 
-    def select_export_users_csv(self, request, queryset):
+    def export_users_csv(self, request, queryset):
         ids = queryset.values_list('id', flat=True)
         return ProfileCsvWriter(filename='hipeac-users.csv', queryset=Profile.objects.filter(user_id__in=ids)).response
-    select_export_users_csv.short_description = '[CSV] Export users\' data'
+    export_users_csv.short_description = '[CSV] Export users\' data'
+
+    def export_csv_activity(self, request, queryset):
+        return csv_users_activity(queryset, 'hipeac-users--activity.csv')
+    export_csv_activity.short_description = '[CSV] Export activity report for selected users'
 
     def extract_publications_from_dblp(self, request, queryset):
         for user in queryset:

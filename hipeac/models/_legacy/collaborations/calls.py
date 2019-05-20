@@ -1,14 +1,14 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
 
-from hipeac.apps.core.functions import get_asset_path
-from hipeac.apps.core.mailer import Mailer
-from hipeac.apps.core.models import Hipeac, User, Institution
-from hipeac.apps.core.models import WideCharField
+from hipeac.functions import get_asset_path
+from hipeac.models import Institution
+# from hipeac.apps.core.models import Hipeac
 
 
 class Call(models.Model):
@@ -26,9 +26,9 @@ class Call(models.Model):
     )
     start_date = models.DateField()
     end_date = models.DateField()
-    manager = models.ForeignKey(User, related_name='managed_collaboration_calls',
-                                limit_choices_to={'membership_type__in': User.MEMBERS})
-    reviewers = models.ManyToManyField(User, related_name='reviewed_collaboration_calls',
+    manager = models.ForeignKey(get_user_model(), null=True, related_name='managed_collaboration_calls',
+                                on_delete=models.SET_NULL)
+    reviewers = models.ManyToManyField(get_user_model(), related_name='reviewed_collaboration_calls',
                                        limit_choices_to={'membership_type__isnull': False})
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=6, choices=STATUS_CHOICES, default=STATUS_ASSIGNING,
@@ -58,7 +58,8 @@ class Call(models.Model):
     has_ended.short_description = 'Ended'
 
     def hipeac(self):
-        return Hipeac.objects.get(start_date__lte=self.start_date, end_date__gte=self.end_date)
+        return None
+        # return Hipeac.objects.get(start_date__lte=self.start_date, end_date__gte=self.end_date)
 
     def is_editable_by_user(self, user):
         """
@@ -103,28 +104,26 @@ class Application(models.Model):
         ('UN', 'Pending'),
         ('BY', 'Retired (after being accepted)'),
     )
-    call = models.ForeignKey(Call, related_name='applications')
+    call = models.ForeignKey(Call, related_name='applications', on_delete=models.CASCADE)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='UN')
     rank = models.PositiveSmallIntegerField(null=True, blank=True)
-    advisor = models.ForeignKey(User, related_name='managed_collaborations', null=True, blank=True,
-                                limit_choices_to={'membership_type__in': User.MEMBERS + (User.MEMBERSHIP_AFFILIATED,)},
-                                help_text='Applicant\'s advisor or manager.')
+    advisor = models.ForeignKey(get_user_model(), related_name='managed_collaborations', null=True, blank=True,
+                                on_delete=models.SET_NULL, help_text='Applicant\'s advisor or manager.')
     advisor_string = models.CharField('Advisor (alt)', max_length=250, null=True, blank=True,
                                       help_text='Fill in only if advisor is not in the dropdown list.')
     institution = models.ForeignKey(Institution, related_name='collaborations', null=True, blank=True,
-                                    help_text='Applicant\'s institution.')
-    host = models.ForeignKey(User, related_name='hosted_collaborations', null=True, blank=True,
-                             limit_choices_to={'membership_type__in': User.MEMBERS + (User.MEMBERSHIP_AFFILIATED,)},
-                             help_text='Host in the collaborating institution.')
+                                    on_delete=models.SET_NULL, help_text='Applicant\'s institution.')
+    host = models.ForeignKey(get_user_model(), related_name='hosted_collaborations', null=True, blank=True,
+                             on_delete=models.SET_NULL, help_text='Host in the collaborating institution.')
     host_string = models.CharField('Host (alt)', max_length=250, null=True, blank=True,
                                    help_text='Fill in only if host is not in the dropdown list.')
     host_institution = models.ForeignKey(Institution, related_name='hosted_collaborations', null=True, blank=True,
                                          # limit_choices_to={'users__membership_type__isnull': False},
-                                         help_text='Collaborating institution.')
+                                         on_delete=models.SET_NULL, help_text='Collaborating institution.')
     host_institution_string = models.CharField('Host institution (alt)', max_length=250, null=True,
                                                blank=True, help_text='Fill in only if host institution is not in the '
                                                                      'dropdown list.')
-    title = WideCharField('Title for the collaboration', max_length=250)
+    title = models.CharField('Title for the collaboration', max_length=250)
     description = models.TextField('Goals of the project')
     statement = models.TextField('About the collaboration',
                                  help_text='Has there been research collaboration between the institutions before?')
@@ -136,7 +135,8 @@ class Application(models.Model):
     cv_file = models.FileField('Curriculum Vitae', upload_to=get_asset_path, null=True, blank=True,
                                help_text='This file will only be visible for the application reviewers.')
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, related_name='collaborations')
+    created_by = models.ForeignKey(get_user_model(), null=True, related_name='collaborations',
+                                   on_delete=models.SET_NULL)
     summary = models.TextField(null=True, blank=True, help_text='Summary sent by the student to HiPEAC.')
 
     class Meta(object):
@@ -175,13 +175,15 @@ class Application(models.Model):
         return self.advisor if self.advisor else (u'%s' % self.advisor_string)
 
     def advisor_is_member(self):
-        return self.advisor and self.advisor.membership_type in User.MEMBERS + (User.MEMBERSHIP_AFFILIATED,)
+        return False
+        # return self.advisor and self.advisor.membership_type in User.MEMBERS + (User.MEMBERSHIP_AFFILIATED,)
 
     def host_name(self):
         return self.host if self.host else (u'%s' % self.host_string)
 
     def host_is_member(self):
-        return self.host and self.host.membership_type in User.MEMBERS + (User.MEMBERSHIP_AFFILIATED,)
+        return False
+        # return self.host and self.host.membership_type in User.MEMBERS + (User.MEMBERSHIP_AFFILIATED,)
 
     def host_institution_name(self):
         return self.host_institution.name if self.host_institution else (u'%s' % self.host_institution_string)
@@ -272,8 +274,9 @@ class Review(models.Model):
         (5, 'Rather independent'),
         (10, 'Very independent'),
     )
-    application = models.ForeignKey(Application, related_name='reviews')
-    reviewer = models.ForeignKey(User, related_name='collaboration_reviews')
+    application = models.ForeignKey(Application, related_name='reviews', on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(get_user_model(), null=True, related_name='collaboration_reviews',
+                                 on_delete=models.SET_NULL)
     track_record = models.PositiveSmallIntegerField(choices=TRACK_RECORD_CHOICES, default=0)
     publication_rate = models.PositiveSmallIntegerField(choices=PUBLICATION_RATE_CHOICES, default=0)
     destination = models.PositiveSmallIntegerField(choices=DESTINATION_CHOICES, default=0)
@@ -320,9 +323,11 @@ def post_save_CollaborationApplication(sender, instance, created, *args, **kwarg
         if instance.host:
             cc_emails = cc_emails + (instance.host.email,)
 
+        """
         email = Mailer('management@hipeac.net', to_emails, 'Your HiPEAC Collaboration Grant application')
         email.set_context({'application': instance})
         email.set_text_template('collaboration/_emails/application_created.txt')
         email.set_html_template('collaboration/_emails/application_created.html')
         email.set_cc_emails(cc_emails)
         email.send()
+        """

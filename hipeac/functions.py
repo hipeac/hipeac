@@ -13,6 +13,16 @@ def get_absolute_uri() -> str:
     return protocol + Site.objects.get_current().domain
 
 
+def get_asset_path(instance, filename):
+    split = filename.rsplit('.', 1)
+    name = slugify(split[0])
+    extension = split[1]
+    path = '%s/%s.%s' % (instance.get_asset_directory(), name, extension)
+    if len(path) > 90:
+        return '%s.%s' % (path[0:85], extension)
+    return path
+
+
 def get_images_path(instance, filename: str) -> str:
     content_type = ContentType.objects.get_for_model(instance)
     extension = filename.rsplit('.', 1)[1]

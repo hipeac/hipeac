@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django_countries.fields import CountryField
 from hashlib import md5
+from typing import Optional
 
 from hipeac.functions import get_images_path, send_task
 from hipeac.models import Metadata
@@ -143,7 +144,7 @@ class Profile(ImagesMixin, LinkMixin, MetadataMixin, models.Model):
         return reverse('user', args=[self.username])
 
     @property
-    def membership(self) -> bool:
+    def membership(self) -> Optional[str]:
         if not self.membership_tags:
             return None
         if 'affiliated' in self.membership_tags:
@@ -151,6 +152,9 @@ class Profile(ImagesMixin, LinkMixin, MetadataMixin, models.Model):
         if 'member' in self.membership_tags and not self.membership_revocation_date:
             return 'member'
         return None
+
+    def is_member(self) -> bool:
+        return self.membership == 'member'
 
     def is_steering_member(self) -> bool:
         return self.user.groups.filter(name='Steering Committee').exists()
