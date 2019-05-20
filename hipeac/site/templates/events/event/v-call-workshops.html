@@ -10,6 +10,7 @@
                     <a href="{% endverbatim %}{% url 'session_proposals' event.id %}{% verbatim %}" target="_blank" class="btn btn-sm btn-block btn-primary"><i class="material-icons mr-1">send</i>Submit your proposal</a>
                     <hr class="my-4">
                     <catchphrase>The success of the workshops and tutorials of the previous years' HiPEAC Conferences with more than 35 events each encouraged the HiPEAC {{ event.year }} organizers to try following this success story again. Hence, in conjunction with the {{ event.year - 2005 }}th HiPEAC Conference in {{ event.city }}, {{ event.country.name }}, {{ event.datesStr }} we will organize parallel workshops and tutorials.</catchphrase>
+                    <p>Please submit your proposal not later than <strong>June 30, {{ event.year - 1 }}</strong>.</p>
                 </div>
             </div>
             <div class="col-12 col-md-6 d-flex align-items-stretch">
