@@ -70,7 +70,7 @@ function storage() {
             try {
                 ls.setItem(key, JSON.stringify(value));
             } catch (e) {
-                this.setCookie(key, value, days)
+                this.setCookie(key, value, days);
             }
         },
         getCookie: function (key, defaultValue) {

@@ -6,8 +6,8 @@ var FormElement = Vue.extend({
     data: function () {
         return {
             invalid: false,
-            mutableHelpText: null,
-        }
+            mutableHelpText: null
+        };
     },
     props: ['field', 'value', 'default', 'help', 'customLabel', 'hideRequired'],
     computed: _.extend(
@@ -204,7 +204,7 @@ Vue.component('country-select', SelectElement.extend({
             return {
                 code: obj.value,
                 name: obj.display_name,
-            }
+            };
         },
         forceCountry: function (code) {
             if (!this.force) return;

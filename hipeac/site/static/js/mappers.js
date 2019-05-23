@@ -1,6 +1,6 @@
 function linkTransform(items) {
     var output = {};
-    _.each(items, function(obj){
+    _.each(items, function (obj) {
         output[obj.type] = obj.url;
     });
     return output;
@@ -59,7 +59,7 @@ function mapper() {
                 obj.year = moment(obj.start_date).year();
                 obj.datesStr = [
                     moment(obj.start_date).format('MMMM D'),
-                    moment(obj.end_date).format('D, YYYY'),
+                    moment(obj.end_date).format('D, YYYY')
                 ].join('-');
 
                 // shortcuts
