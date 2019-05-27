@@ -67,7 +67,7 @@ class ProfileInline(admin.StackedInline):
         }),
         ('METADATA', {
             'classes': ('collapse',),
-            'fields': ('application_areas', 'topics'),
+            'fields': ('application_areas', 'topics', 'projects'),
         }),
         ('PRIVACY', {
             'classes': ('collapse',),
