@@ -30,13 +30,15 @@
     <li class="nav-item">
         <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
     </li>
-    {% if event.type == 'conference' and not event.is_finished %}
-        <li class="nav-item" v-if="jobs.length">
+    {% if event.type == 'conference' %}
+        <li class="nav-item">
             <a is="router-link" :to="{name: 'jobs'}" class="nav-link">Recruitment</a>
         </li>
-        <li class="nav-item">
-            <a is="router-link" :to="{name: 'sponsorship'}" class="nav-link">Sponsorship</a>
-        </li>
+        {% if not event.is_finished %}
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'sponsorship'}" class="nav-link">Sponsorship</a>
+            </li>
+        {% endif %}
     {% endif %}
     {% if user.is_authenticated %}
         <li v-if="user.isRegistered" class="nav-item" v-cloak>
