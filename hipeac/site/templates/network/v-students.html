@@ -3,18 +3,20 @@
 
 <script type="text/x-template" id="{{ id }}">
     <div>
-        <div class="row mt-5">
-            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <a is="router-link" :to="{name: 'membership'}" class="btn btn-sm btn-block btn-primary">Is your advisor a Member?</a>
-                    <hr class="my-4">
-                    <catchphrase class="marked">{{ header }}</catchphrase>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+        <div class="mt-0 hipeac-card">
+            <catchphrase class="marked m-0">{{ header | markdown }}</catchphrase>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
                 <div class="hipeac-card">
                     <display-sm class="mb-3">{{ benefits.header }}</display-sm>
                     <div class="marked icon-list">{{ benefits.content | markdown }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card">
+                    <a is="router-link" :to="{name: 'membership'}" class="btn btn-sm btn-block btn-primary">Is your advisor a Member?</a>
+                    <hr class="my-4">
                     <display-sm class="mt-4 mb-3">{{ get_involved.header }}</display-sm>
                     <div class="marked">{{ get_involved.content | markdown }}</div>
                 </div>

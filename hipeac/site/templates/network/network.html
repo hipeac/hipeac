@@ -19,31 +19,25 @@
         <a is="router-link" :to="{name: 'projects'}" class="nav-link">Projects</a>
     </li>
     <li class="nav-item">
-        <a is="router-link" :to="{name: 'researchers'}" class="nav-link">{{ flatpage.page.tbs.about_researchers.header }}</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'industry'}" class="nav-link">{{ flatpage.page.tbs.about_industry.header }}</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'students'}" class="nav-link">{{ flatpage.page.tbs.about_students.header }}</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'innovation'}" class="nav-link">{{ flatpage.page.tbs.about_innovation.header }}</a>
+        <a is="router-link" :to="{name: 'researchersBenefits'}" class="nav-link">
+            <i class="material-icons mr-1">info</i>Benefits</a>
     </li>
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}"data-project-list="{% url 'v1:project-list' %}" class="container">
+    <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
         <div is="router-view"></div>
     </div>
 {% endblock %}
 
 {% block vue_templates %}
     {% include './v-about.html' with id='v-about' tbs=flatpage.page.tbs %}
+    {% include './v-benefits.html' with id='v-benefits' tbs=flatpage.page.tbs %}
     {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
     {% include './v-innovation.html' with id='v-innovation' header=flatpage.page.tbs.about_innovation.content benefits=flatpage.page.tbs.innovation_benefits get_involved=flatpage.page.tbs.innovation_get_involved %}
     {% include './v-members.html' with id='v-members' membership=flatpage.page.tbs.membership charter=flatpage.page.tbs.membership_charter how_to=flatpage.page.tbs.membership_how_to %}
-    {% include './v-projects.html' with id='v-projects' %}
+    {% include './v-projects.html' with id='v-projects' header=flatpage.page.tbs.about_projects.content benefits=flatpage.page.tbs.projects_benefits get_involved=flatpage.page.tbs.projects_get_involved%}
+    {% include './v-projects-list.html' with id='v-projects-list' %}
     {% include './v-researchers.html' with id='v-researchers' header=flatpage.page.tbs.about_researchers.content benefits=flatpage.page.tbs.researchers_benefits get_involved=flatpage.page.tbs.researchers_get_involved %}
     {% include './v-students.html' with id='v-students' header=flatpage.page.tbs.about_students.content benefits=flatpage.page.tbs.students_benefits get_involved=flatpage.page.tbs.students_get_involved %}
 {% endblock %}
@@ -90,6 +84,10 @@
             template: '#v-about'
         };
 
+        var BenefitsView = {
+            template: '#v-benefits'
+        };
+
         var IndustryView = {
             template: '#v-industry'
         };
@@ -119,7 +117,11 @@
         };
 
         var ProjectsView = {
-            template: '#v-projects',
+            template: '#v-projects'
+        };
+
+        var ProjectsListView = {
+            template: '#v-projects-list',
             data: function () {
                 return {
                     q: '',
@@ -172,16 +174,41 @@
                     component: AboutView
                 },
                 {
-                    name: 'industry',
-                    path: '/industry/',
+                    path: '/benefits/',
                     pathToRegexpOptions: {strict: true},
-                    component: IndustryView
-                },
-                {
-                    name: 'innovation',
-                    path: '/innovation/',
-                    pathToRegexpOptions: {strict: true},
-                    component: InnovationView
+                    component: BenefitsView,
+                    children: [
+                        {
+                            name: 'industryBenefits',
+                            path: 'industry/',
+                            pathToRegexpOptions: {strict: true},
+                            component: IndustryView
+                        },
+                        {
+                            name: 'innovationBenefits',
+                            path: 'innovation/',
+                            pathToRegexpOptions: {strict: true},
+                            component: InnovationView
+                        },
+                        {
+                            name: 'projectsBenefits',
+                            path: 'projects/',
+                            pathToRegexpOptions: {strict: true},
+                            component: ProjectsView
+                        },
+                        {
+                            name: 'researchersBenefits',
+                            path: '',
+                            pathToRegexpOptions: {strict: true},
+                            component: ResearchersView
+                        },
+                        {
+                            name: 'studentsBenefits',
+                            path: 'students/',
+                            pathToRegexpOptions: {strict: true},
+                            component: StudentsView
+                        }
+                    ]
                 },
                 {
                     path: '/members/',
@@ -206,19 +233,7 @@
                     name: 'projects',
                     path: '/projects/',
                     pathToRegexpOptions: {strict: true},
-                    component: ProjectsView
-                },
-                {
-                    name: 'researchers',
-                    path: '/researchers/',
-                    pathToRegexpOptions: {strict: true},
-                    component: ResearchersView
-                },
-                {
-                    name: 'students',
-                    path: '/students/',
-                    pathToRegexpOptions: {strict: true},
-                    component: StudentsView
+                    component: ProjectsListView
                 }
             ]
         });
