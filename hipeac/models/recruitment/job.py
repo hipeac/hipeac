@@ -134,6 +134,7 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     def get_status(self, social_media: str = 'any', prepend: str = '') -> Tuple[str, str]:
         at = ''
         url = f'https://www.hipeac.net{self.get_absolute_url()}'
+        hashtag = '#internship' if self.employment_type.value == 'Internship' else '#job'
 
         if self.institution:
             at = f' at #{"".join(self.institution.short_name.split())}'
@@ -142,7 +143,7 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
                 at = f' at @{self.institution.twitter_username}'
                 url = f'hipeac.net{self.get_short_url()}'
 
-        return f'{prepend}#job{at}: {self.title}', url
+        return f'{prepend}{hashtag}{at}: {self.title}', url
 
     @property
     def slug(self) -> str:
