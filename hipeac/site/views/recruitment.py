@@ -9,6 +9,7 @@ from typing import List
 
 from hipeac.models import Job, JobEvaluation
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
+from hipeac.tools.euraxess import EuraxessXMLGenerator
 from .mixins import SlugMixin
 
 
@@ -94,3 +95,11 @@ class JobsPdf(generic.DetailView):
         job = self.get_object()
         maker = JobsPdfMaker(jobs=[job], filename=f'hipeac-jobs--{job.id}.pdf', as_attachment=False)
         return maker.response
+
+
+class JobsEuraxessXML(generic.View):
+    queryset = Job.objects.active().order_by('-created_at')
+
+    def get(self, request, *args, **kwargs):
+        generator = EuraxessXMLGenerator(queryset=self.queryset)
+        return generator.response

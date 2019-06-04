@@ -23,6 +23,7 @@ sitemaps = {
 urlpatterns = [
     # Recruitment
     path('', TemplateView.as_view(template_name='flatpages/homepage.html'), name='homepage'),
+    path('jobs/euraxess.xml', views.JobsEuraxessXML.as_view(), name='jobs_euraxess_xml'),
     path('jobs/', flatpage, {'url': '/jobs/'}, name='jobs'),
     path('jobs/feed/', views.JobsFeed(), name='jobs_feed'),
     path('jobs/management/', views.JobManagementView.as_view(), name='jobs_management'),
