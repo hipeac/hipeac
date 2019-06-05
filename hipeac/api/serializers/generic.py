@@ -57,6 +57,17 @@ class MetadataListField(serializers.CharField):
         } for pk in obj.split(',') if int(pk) in self.metadata]
 
 
+class MetadataListFieldWithEuraxess(MetadataListField):
+
+    def to_representation(self, obj):
+        self.get_metadata()
+        return [] if obj == '' else [{
+            'id': self.metadata[int(pk)].id,
+            'value': self.metadata[int(pk)].value,
+            'euraxess_value': self.metadata[int(pk)].euraxess_value
+        } for pk in obj.split(',') if int(pk) in self.metadata]
+
+
 class MetadataField(RelatedField):
     queryset = get_cached_metadata_queryset()
     pk_field = 'pk'

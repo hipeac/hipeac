@@ -101,6 +101,7 @@ class Metadata(models.Model):
 
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
     value = models.CharField(max_length=64)
+    euraxess_value = models.CharField(max_length=250, null=True, blank=True)
     position = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
@@ -132,7 +133,7 @@ def get_cached_metadata() -> Dict[int, Metadata]:
             cache.set('cached_metadata_objects', objects, 30)
         return objects
     except ProgrammingError:
-        return []
+        return {}
 
 
 class Permission(models.Model):
