@@ -10,6 +10,7 @@ TEMPLATE_PATHS = {
     'events.registrations.created': '_emails/events/registrations_created.md.html',
     'events.registrations.payment_reminder': '_emails/events/registrations_payment_reminder.md.html',
     'events.registrations.reminder': '_emails/events/registrations_reminder.md.html',
+    'events.session_proposals.created': '_emails/events/session_proposals_created.md.html',
     'events.sessions.reminder': '_emails/events/sessions_reminder.md.html',
     'recruitment.jobs.digest': '_emails/recruitment/jobs_digest.md.html',
     'recruitment.jobs.created': '_emails/recruitment/jobs_created.md.html',

@@ -6,15 +6,14 @@
 
 {% block title %}{{ flatpage.title }} - {{ block.super }}{% endblock %}
 
-{% block subtitle %}{{ event.hashtag }} workshop and tutorials{% endblock %}
+{% block subtitle %}#{{ event.hashtag }} {{ subtitle }}{% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-lg-8">
                 <div class="hipeac-card">
-                    <p>{{ event }}. In parallel with the main paper track, a number of workshops and tutorials will be held. To submit your workshop or tutorial proposal, please complete the following form.</p>
-
+                    <p>{{ event }}. {{ intro }}</p>
                     {% if form.errors %}
                         {% for field in form %}
                             {% for error in field.errors %}

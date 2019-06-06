@@ -1,0 +1,18 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block body %}
+Dear {{ user_name }},
+
+We have correctly received your session proposal for the {{ event_name }}:
+"{{ session_title }}".
+
+You can update your proposal here:
+https://www.hipeac.net{{ session_url }}
+
+You can use the same link if you want to share the proposal with other organizers.
+
+Thank you for your collaboration!
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}

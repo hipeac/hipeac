@@ -2,7 +2,12 @@ import uuid
 
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
+
+from hipeac.functions import send_task
+from hipeac.site.emails.events import SessionProposalEmail
 
 
 class SessionProposal(models.Model):
@@ -23,7 +28,7 @@ class SessionProposal(models.Model):
     workshop_deadlines = models.TextField(null=True, blank=True)
     tutorial_biblio = models.TextField(null=True, blank=True)
     duration = models.CharField(max_length=250)
-    session_format = models.CharField(max_length=250)
+    session_format = models.CharField(max_length=250, null=True, blank=True)
     expected_attendees = models.CharField(max_length=250)
     room_configuration = models.CharField(max_length=250)
     previous_editions = models.TextField(null=True, blank=True)
@@ -37,3 +42,10 @@ class SessionProposal(models.Model):
 
     def get_absolute_url(self) -> str:
         return reverse('session_proposal_update', args=[self.event_id, self.uuid])
+
+
+@receiver(post_save, sender=SessionProposal)
+def session_proposal_post_save(sender, instance, created, *args, **kwargs):
+    if created:
+        email = SessionProposalEmail(instance=instance)
+        send_task('hipeac.tasks.emails.send_from_template', email.data)

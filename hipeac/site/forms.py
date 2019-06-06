@@ -40,3 +40,29 @@ class SessionProposalForm(BaseSessionProposalForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+
+
+class ThematicSessionProposalForm(SessionProposalForm):
+
+    class Meta(BaseSessionProposalForm.Meta):
+        exclude = ('accepted', 'workshop_deadlines', 'tutorial_biblio', 'session_format', 'previous_editions')
+        labels = {
+            'title': 'Please provide your Thematic Session title',
+            'organizers': 'Please list the organizers and their affiliations.',
+            'summary': 'Motivation and objectives',
+            'topics': 'Please select the keywords which relate to this event (select all that apply)',
+            'application_areas': 'Please select which of the following broad application areas this '
+                                 'technology could be used for (select all that apply)',
+            'projects': 'Is your event connected to one or more European Union-funded projects? '
+                        'If so, please indicate which ones',
+            'duration': 'Please indicate the expected duration of your event',
+            'expected_attendees': 'Please indicate the expected number of attendees at your event',
+            'room_configuration': 'Please let us know what room configuration you would like',
+            'other': 'HiPEAC financial support',
+        }
+        help_texts = {
+            'duration': 'One slot (1.5hr) / Two slots (3hr) / Other',
+            'room_configuration': 'Classroom-style / Theatre-style / Other',
+            'other': 'The network has a small budget to partially cover travel expenses of a key participant '
+                     'and possibly the organizer of the thematic session.',
+        }

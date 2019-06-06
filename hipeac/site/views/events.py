@@ -11,7 +11,7 @@ from django.views import generic
 from hipeac.models import Event, Roadshow, Registration, Coupon, SessionProposal
 from hipeac.tools.payments.legacy import Ogone, process_ogone_parameters, OGONE_URL, OGONE_PSPID
 from hipeac.tools.pdf import PdfResponse, Pdf, H2020
-from hipeac.site.forms import SessionProposalForm
+from hipeac.site.forms import SessionProposalForm, ThematicSessionProposalForm
 from .mixins import SlugMixin
 
 
@@ -199,8 +199,22 @@ paid the registration fee of <strong>EUR {reg.total_fee}</strong>.''', 'p')
 
 class SessionProposalView(SuccessMessageMixin, generic.FormView):
     model = SessionProposal
-    template_name = 'flatpages/form.html'
-    form_class = SessionProposalForm
+    template_name = 'events/event/session_proposal.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        event = self.get_event()
+        if event.type not in [Event.CONFERENCE, Event.CSW]:
+            messages.error(request, 'You cannot submit a proposal for this event.')
+            raise PermissionDenied
+        elif event.is_finished():
+            messages.error(request, 'You cannot submit a proposal for a past event.')
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_class(self):
+        if self.get_event().type == Event.CSW:
+            return ThematicSessionProposalForm
+        return SessionProposalForm
 
     def get_event(self, **kwargs):
         if not hasattr(self, 'event'):
@@ -208,8 +222,14 @@ class SessionProposalView(SuccessMessageMixin, generic.FormView):
         return self.event
 
     def get_context_data(self, **kwargs):
+        event = self.get_event()
         context = super().get_context_data()
-        context['event'] = self.get_event()
+        context['event'] = event
+        context['subtitle'] = 'Thematic Sessions' if event.type == Event.CSW else 'workshop and tutorials'
+        context['intro'] = ('Please fill in all the information relative to your Thematic Session proposal '
+                            'and submit it for review.') if event.type == Event.CSW else (
+                            'In parallel with the main paper track, a number of workshops and tutorials will be held. '
+                            'To submit your workshop or tutorial proposal, please complete the following form.')
         return context
 
 
