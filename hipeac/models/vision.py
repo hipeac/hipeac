@@ -16,14 +16,15 @@ class VisionManager(models.Manager):
 
 class Vision(LinkMixin, models.Model):
     ASSETS_FOLDER = 'public/vision'
+    ASSETS_PRIVATE_FOLDER = 'private/vision'
 
     title = models.CharField(max_length=250)
     introduction = models.TextField(null=True)
     summary = models.TextField(null=True)
     publication_date = models.DateField(default=timezone.now)
 
-    file_draft = models.FileField(upload_to=ASSETS_FOLDER, null=True, blank=True)
-    file = models.FileField(upload_to=ASSETS_FOLDER, null=True, blank=True)
+    file_draft = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
+    file = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
     flyer = models.FileField(upload_to=ASSETS_FOLDER, null=True, blank=True)
     downloads = models.PositiveSmallIntegerField(default=0)
 

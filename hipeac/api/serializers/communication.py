@@ -35,10 +35,11 @@ class QuoteListSerializer(QuoteNestedSerializer):
 
 class MagazineListSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True)
+    download_url = serializers.CharField(source='get_download_url', read_only=True)
 
     class Meta:
         model = Magazine
-        fields = '__all__'
+        exclude = ('file', 'file_tablet', 'downloads')
 
 
 class VideoListSerializer(serializers.ModelSerializer):

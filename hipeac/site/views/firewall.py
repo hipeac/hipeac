@@ -9,7 +9,7 @@ from django.utils.http import urlquote
 from django.views.generic import View
 from mimetypes import guess_type
 
-from hipeac.models import Vision
+from hipeac.models import Magazine, Vision
 
 
 class SendfileView(View):
@@ -44,13 +44,26 @@ class FirewallView(SendfileView):
         return super().dispatch(request, *args, **kwargs)
 
 
+class MagazineDownload(SendfileView):
+    """
+    Serves `private` magazine files, but records downloads first.
+    """
+    def get_path_and_filename(self, *args, **kwargs):
+        magazine = get_object_or_404(Magazine, id=kwargs.get('pk'))
+        magazine.downloads = F('downloads') + 1
+        magazine.save()
+
+        path, filename = os.path.split(magazine.file.name.replace('private/', '/'))
+
+        return f'{path}/', filename
+
+
 class VisionDownload(SendfileView):
     """
     Serves `private` vision files, but records downloads first.
     """
     def get_path_and_filename(self, *args, **kwargs):
         vision = get_object_or_404(Vision, publication_date__year=kwargs.get('year'))
-
         vision_file = vision.file if vision.file else vision.file_draft
         vision.downloads = F('downloads') + 1
         vision.save()

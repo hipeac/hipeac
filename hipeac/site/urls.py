@@ -41,6 +41,7 @@ urlpatterns = [
     path('news/feed/', views.NewsFeed(), name='news_feed'),
     re_path(r'^news/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ArticleDetail.as_view(), name='article'),
     path('press/', flatpage, {'url': '/press/'}, name='press'),
+    path('magazine/<int:pk>/', views.MagazineDownload.as_view(), name='magazine_download'),
     path('vision/', flatpage, {'url': '/vision/'}, name='vision'),
     path('vision/<int:year>/', views.VisionDownload.as_view(), name='vision_download'),
     # Research

@@ -41,13 +41,14 @@ class MagazineAdmin(admin.ModelAdmin):
     form = MagazineAdminForm
 
     date_hierarchy = 'publication_date'
-    list_display = ('id', 'title', 'publication_date')
+    list_display = ('id', 'title', 'publication_date', 'downloads')
 
     autocomplete_fields = ('users', 'projects')
     inlines = (ImagesInline,)
+    readonly_fields = ('downloads',)
     fieldsets = (
         (None, {
-            'fields': ('title', 'publication_date', 'issuu_url', 'file', 'file_tablet',),
+            'fields': ('title', 'publication_date', 'issuu_url', 'file', 'downloads'),
         }),
         ('RELATIONS', {
             'classes': ('collapse',),
