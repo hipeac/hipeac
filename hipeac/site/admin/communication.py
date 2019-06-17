@@ -41,9 +41,9 @@ class MagazineAdmin(admin.ModelAdmin):
     form = MagazineAdminForm
 
     date_hierarchy = 'publication_date'
-    list_display = ('id', 'title', 'publication_date', 'downloads')
+    list_display = ('id', 'title', 'event', 'publication_date', 'downloads')
 
-    autocomplete_fields = ('users', 'projects')
+    autocomplete_fields = ('event', 'users', 'projects')
     inlines = (ImagesInline,)
     readonly_fields = ('downloads',)
     fieldsets = (
@@ -52,13 +52,16 @@ class MagazineAdmin(admin.ModelAdmin):
         }),
         ('RELATIONS', {
             'classes': ('collapse',),
-            'fields': ('users', 'projects'),
+            'fields': ('event', 'users', 'projects'),
         }),
         ('METADATA', {
             'classes': ('collapse',),
             'fields': ('application_areas', 'topics'),
         }),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('event')
 
 
 @admin.register(Quote)

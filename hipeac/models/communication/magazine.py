@@ -19,6 +19,8 @@ class Magazine(LinkMixin, models.Model):
     issuu_url = models.URLField(null=True, blank=True)
     downloads = models.PositiveSmallIntegerField(default=0)
 
+    event = models.ForeignKey('hipeac.Event', null=True, blank=True, on_delete=models.SET_NULL,
+                              related_name='magazines')
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='magazines')
