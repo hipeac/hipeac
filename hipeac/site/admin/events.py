@@ -9,7 +9,8 @@ from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
 from hipeac.functions import send_task
 from hipeac.models import (
     Profile,
-    Event, Committee, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room
+    Event, Committee, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room,
+    SessionProposal
 )
 from hipeac.site.emails.events import RegistrationReminderEmail, SessionReminderEmail, NoShowsEmail
 from .generic import ImagesInline, LinksInline, PermissionsInline, PrivateFilesInline
@@ -324,3 +325,25 @@ class VenueAdmin(admin.ModelAdmin):
     search_fields = ('name', 'city', 'country')
 
     inlines = (ImagesInline, LinksInline)
+
+
+class SessionProposalAdminForm(ModelForm):
+    application_areas = ApplicationAreasChoiceField(required=False)
+    topics = TopicsChoiceField(required=False)
+
+
+@admin.register(SessionProposal)
+class SessionProposalAdmin(admin.ModelAdmin):
+    form = SessionProposalAdminForm
+
+    date_hierarchy = 'created_at'
+    list_display = ('id', 'event', 'title', 'created_by', 'created_at', 'link')
+    list_filter = ('event',)
+    search_fields = ('uuid', 'first_name', 'last_name')
+
+    def created_by(self, obj):
+        return f'{obj.first_name} {obj.last_name} <{obj.email}>'
+
+    def link(self, obj):
+        return mark_safe(f'<a class="viewlink" href="{obj.get_absolute_url()}" target="_blank"></a>')
+    link.short_description = 'View'
