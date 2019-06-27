@@ -16,11 +16,11 @@
                             <li v-if="user.isRegistered" class="nav-item">
                                 <router-link class="nav-link" :to="{name: 'sessionAttendees', params: {sessionId: session.id}}" exact>Attendees</router-link>
                             </li>
-                            <li v-if="session.private_files.length" class="nav-item">
-                                <router-link class="nav-link" :to="{name: 'sessionDownloads', params: {sessionId: session.id}}" exact>Downloads</router-link>
-                            </li>
                         {% endif %}
                         {% verbatim %}
+                        <li v-if="session.private_files.length" class="nav-item">
+                            <router-link class="nav-link" :to="{name: 'sessionDownloads', params: {sessionId: session.id}}" exact>Downloads</router-link>
+                        </li>
                         <li class="nav-item pointer ml-auto">
                             <a class="nav-link" @click.prevent="closeModal"><i class="material-icons">close</i></a>
                         </li>

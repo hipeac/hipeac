@@ -2,7 +2,6 @@
 
 from ._legacy import *
 
-from .errors import *
 from .project import *
 
 from .communication import *

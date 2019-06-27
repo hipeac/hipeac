@@ -23,4 +23,5 @@ if settings.DEBUG:
 
 # error handlers
 
-handler500 = 'hipeac.site.views.server_error'
+handler403 = 'hipeac.site.views.errors.permission_denied_error'
+handler500 = 'hipeac.site.views.errors.server_error'
