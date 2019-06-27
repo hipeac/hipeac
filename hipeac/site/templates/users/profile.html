@@ -139,6 +139,11 @@
             computed: _.extend(
                 Vuex.mapState(['publications']), {
             }),
+            beforeCreate: function () {
+                if (this.$route.path.substr(-1) != '/') {
+                    this.$router.push({'path': this.$route.path + '/'});
+                }
+            },
             created: function () {
                 $.when(
                     this.$store.commit('fetchPublications')

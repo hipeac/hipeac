@@ -162,7 +162,12 @@
         new Vue({
             el: '#vue',
             store: Store,
-            router: Router
+            router: Router,
+            beforeCreate: function () {
+                if (this.$route.path.substr(-1) != '/') {
+                    this.$router.push({'path': this.$route.path + '/'});
+                }
+            }
         });
     </script>
 {% endcompress %}
