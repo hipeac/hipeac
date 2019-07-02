@@ -24,11 +24,11 @@ django-dnt==0.2.0
 django-libsass==0.7
 django-recaptcha==2.0.4
 django-redis==4.10.0
-django==2.2.2
+django==2.2.3
 djangorestframework==3.9.4
 drf-writable-nested==0.5.1
 future==0.17.1
-google-api-core[grpc]==1.12.0
+google-api-core[grpc]==1.13.0
 google-auth==1.6.3
 google-cloud-language==1.2.0
 googleapis-common-protos==1.6.0
@@ -64,10 +64,10 @@ requests==2.22.0
 retrying==1.3.3
 rjsmin==1.1.0
 rsa==4.0
-sentry-sdk==0.9.0
+sentry-sdk==0.9.5
 six==1.12.0
 sqlparse==0.3.0
-svglib==0.9.0
+svglib==0.9.1
 tinycss2==1.0.2
 traitlets==4.3.2
 twitter==1.18.0
