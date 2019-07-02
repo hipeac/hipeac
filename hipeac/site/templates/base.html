@@ -92,9 +92,6 @@
         <div id="particles"></div>
         {% block main %}{% block content %}{% endblock %}{% endblock %}
         {% block vue_templates %}{% endblock %}
-        {% if not debug %}
-            <script src="https://browser.sentry-cdn.com/4.6.1/bundle.min.js" crossorigin="anonymous"></script>
-        {% endif %}
         {% compress js file bootstrap %}
             <script src="{% static 'vendor/jquery@3.3.1/jquery.min.js' %}"></script>
             <script src="{% static 'vendor/popper.js@1.14.3/popper.min.js' %}"></script>
@@ -104,9 +101,6 @@
             <script src="{% static 'vendor/commonmark@0.28.1/commonmark.js' %}"></script>
             <script src="{% static 'vendor/moment@2.22.2/moment.min.js' %}"></script>
             <script src="{% static 'js/__init__.js' %}"></script>
-            {% if not debug %}
-                <script src="{% static 'js/sentry.js' %}"></script>
-            {% endif %}
         {% endcompress %}
         {% compress js file vue %}
             <script src="{% static 'vendor/underscore@1.9.1/underscore.min.js' %}"></script>
@@ -125,6 +119,28 @@
             <script src="{% static 'js/mappers.js' %}"></script>
             <script src="{% static 'js/v-shared.js' %}"></script>
         {% endcompress %}
+        {% if not debug %}
+            <script src="https://browser.sentry-cdn.com/5.4.3/bundle.min.js" crossorigin="anonymous"></script>
+            <script src="https://browser.sentry-cdn.com/5.4.3/vue.min.js" crossorigin="anonymous"></script>
+            {% compress js inline %}
+                <script>
+                    Sentry.init({
+                        dsn: 'https://ca3e62d60cfb404fb5a64bd13e0e162e@sentry.io/291640',
+                        release: GIT_REV,
+                        environment: 'production',
+                        integrations: [new Sentry.Integrations.Vue({Vue, attachProps: true})]
+                    });
+
+                    if (USER_ID > 0) {
+                        Sentry.configureScope(function (scope) {
+                            scope.setUser({
+                                id: USER_ID
+                            });
+                        });
+                    }
+                </script>
+            {% endcompress %}
+        {% endif %}
         {% block extra_scripts %}{% endblock %}
         {% block scripts %}{% endblock %}
         {% compress js file particles %}
