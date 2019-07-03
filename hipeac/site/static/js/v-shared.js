@@ -1023,8 +1023,7 @@ Vue.component('video-cards', SimpleList.extend({
                     '<img :src="item.snapshot" class="rounded w-100">' +
                     '<h6 class="title mb-auto">{{ item.title }}</h6>' +
                     '<ul class="list-unstyled text-secondary">' +
-                        '<li v-if="item.user"><a :href="item.user.href" @click.stop="updateLocation(item.user.href)" class="inherit"><i class="material-icons sm">face</i>{{ item.user.profile.name }}</a></li>' +
-                        '<li v-if="item.user && item.user.profile.institution"><i class="material-icons sm">business</i>{{ item.user.profile.institution.name }}</li>' +
+                        '<li v-for="user in item.users"><a :href="user.href" @click.stop="updateLocation(user.href)" class="inherit"><i class="material-icons sm">face</i>{{ user.profile.name }}</a></li>' +
                         '<li><i class="material-icons sm">label</i><metadata-join :items="item.topics"></metadata-join></li>' +
                     '</ul>' +
                 '</div>' +

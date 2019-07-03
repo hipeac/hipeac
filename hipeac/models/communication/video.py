@@ -8,11 +8,11 @@ class Video(models.Model):
     publication_date = models.DateField()
     youtube_id = models.CharField(max_length=40, unique=True)
     is_expert = models.BooleanField(default=True)
-    user = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL, related_name='videos')
 
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     event = models.ForeignKey('hipeac.Event', null=True, blank=True, on_delete=models.SET_NULL, related_name='videos')
+    users = models.ManyToManyField(get_user_model(), blank=True, related_name='videos')
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='videos')
 
     class Meta:

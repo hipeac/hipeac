@@ -30,7 +30,7 @@ class UserViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
     @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
     def videos(self, request, *args, **kwargs):
-        self.queryset = Video.objects.filter(user_id=kwargs.get('pk'))
+        self.queryset = Video.objects.filter(users__in=[kwargs.get('pk')])
         return super().list(request, *args, **kwargs)
 
 

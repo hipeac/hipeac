@@ -37,6 +37,6 @@ class MagazineViewSet(ListModelMixin, GenericViewSet):
 
 class VideoViewSet(ListModelMixin, GenericViewSet):
     queryset = Video.objects.filter(is_expert=True) \
-                            .prefetch_related('user__profile__institution', 'user__profile__second_institution')
+                            .prefetch_related('users__profile__institution', 'users__profile__second_institution')
     pagination_class = None
     serializer_class = VideoListSerializer

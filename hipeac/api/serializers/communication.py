@@ -45,7 +45,7 @@ class MagazineListSerializer(serializers.ModelSerializer):
 class VideoListSerializer(serializers.ModelSerializer):
     application_areas = MetadataListField()
     topics = MetadataListField()
-    user = UserPublicListSerializer()
+    users = UserPublicListSerializer(many=True)
 
     class Meta:
         model = Video
