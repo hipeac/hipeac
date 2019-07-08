@@ -50,65 +50,8 @@
 
 {% block scripts %}
     <script src="{% static 'vendor/jcarousel@0.3.8/jquery.jcarousel.min.js' %}"></script>
+    <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
 {% compress js inline %}
-    <script>
-        Vue.component('jobs-carousel', {
-            props: ['jobs'],
-            template: '' +
-                '<div v-if="institutions.length">' +
-                    '<div ref="carousel" class="carousel-logos">' +
-                        '<ul>' +
-                            '<li v-for="institution in institutions" :key="institution.id">' +
-                                '<a :href="\'./#/?q=\' + institution.short_name">' +
-                                    '<span :style="{\'background-image\': \'url( \'+ institution.images.md + \')\' }"></span>' +
-                                '</a>' +
-                            '</li>' +
-                        '</ul>' +
-                    '</div>' +
-                '</div>' +
-                '<loading v-else></loading>' +
-            '',
-            computed: {
-                institutions: function () {
-                    if (!this.jobs) [];
-
-                    return _.shuffle(_.reject(_.uniq(_.pluck(this.jobs, 'institution'), function (obj) {
-                        return obj.id;
-                    }), function (obj) {
-                        return obj.images == null;
-                    }));
-                }
-            },
-            methods: {
-                initCarousel: function () {
-                    $(this.$refs.carousel).jcarousel({
-                        auto: 0.001,
-                        transforms3d: true,
-                        animation: {
-                            duration: 2500,
-                            easing: 'linear',
-                        }
-                    }).jcarouselAutoscroll({
-                        interval: 0
-                    });
-                }
-            },
-            watch: {
-                'institutions': function (val, oldVal) {
-                    if (!oldVal) return;
-
-                    setTimeout(function () {
-                        this.initCarousel();
-                    }.bind(this), 50);
-                }
-            },
-            mounted: function () {
-                if (this.institutions) {
-                    this.initCarousel();
-                }
-            }
-        });
-    </script>
     <script>
         var Store = new Vuex.Store({
             state: {
@@ -133,6 +76,15 @@
             template: '#v-about',
             computed: _.extend(
                 Vuex.mapState(['jobs']), {
+                institutions: function () {
+                    if (!this.jobs) return [];
+
+                    return _.shuffle(_.reject(_.uniq(_.pluck(this.jobs, 'institution'), function (obj) {
+                        return obj.id;
+                    }), function (obj) {
+                        return obj.images == null;
+                    }));
+                }
             })
         };
 

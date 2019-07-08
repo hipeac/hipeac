@@ -43,11 +43,13 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src="{% static 'vendor/jcarousel@0.3.8/jquery.jcarousel.min.js' %}"></script>
+    <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
 {% compress js inline %}
     <script>
         var Store = new Vuex.Store({
             state: {
-                institutions: null,
+                institutions: [],
                 members: [],
                 affiliates: [],
                 projects: []
@@ -68,7 +70,7 @@
                             }
                             return obj;
                         });
-                        state.institutions = Object.freeze(institutions);
+                        state.institutions = Object.freeze(_.values(institutions));
                         state.members = Object.freeze(mapper().users(users));
                     });
                 },
@@ -103,7 +105,12 @@
         var MembersMainView = {
             template: '#v-members-main',
             computed: _.extend(
-                Vuex.mapState(['members']), {
+                Vuex.mapState(['members', 'institutions']), {
+                randomInstitutions: function () {
+                    return _.first(_.shuffle(this.institutions.filter(function (obj) {
+                        return obj.images != null;
+                    })), 30);
+                }
             }),
             created: function () {
                 $.when(

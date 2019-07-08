@@ -7,7 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 from hipeac.models import Institution, Project
 from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import (
-    InstitutionMiniSerializer, InstitutionListSerializer, InstitutionSerializer,
+    InstitutionNestedSerializer, InstitutionListSerializer, InstitutionSerializer,
     ProjectMiniSerializer, ProjectListSerializer, ProjectSerializer,
     JobNestedSerializer,
     UserPublicMembershipSerializer,
@@ -25,7 +25,7 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
         self.serializer_class = InstitutionListSerializer
         return super().list(request, *args, **kwargs)
 
-    @action(detail=False, pagination_class=None, serializer_class=InstitutionMiniSerializer)
+    @action(detail=False, pagination_class=None, serializer_class=InstitutionNestedSerializer)
     def all(self, request, *args, **kwargs):
         self.queryset = self.queryset.only('id', 'name', 'local_name', 'colloquial_name', 'type', 'country', 'image')
         return super().list(request, *args, **kwargs)
@@ -61,7 +61,7 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
         institutions = Institution.objects.filter(id__in=institution_ids)
         ctx = {'request': request}
         return Response({
-            'institutions': InstitutionMiniSerializer(institutions, many=True, context=ctx).data,
+            'institutions': InstitutionNestedSerializer(institutions, many=True, context=ctx).data,
             'members': UserPublicMembershipSerializer(members, many=True, context=ctx).data,
             'affiliates': UserPublicMembershipSerializer(affiliates, many=True, context=ctx).data
         })
