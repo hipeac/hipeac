@@ -87,7 +87,7 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
 
     email = models.EmailField(null=True, blank=False)
     share = models.BooleanField(default=True, editable=False)
-    add_to_euraxess = models.BooleanField(default=True, editable=False)
+    add_to_euraxess = models.BooleanField(default=True)
 
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     career_levels = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])

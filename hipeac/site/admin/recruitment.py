@@ -30,6 +30,7 @@ class JobAdminForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['add_to_euraxess'].label = 'Add to EURAXESS'
         self.fields['created_by'].required = True
 
 
@@ -54,14 +55,15 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
             'fields': ('created_by', 'title', 'institution', 'project'),
         }),
         ('INFO', {
-            'fields': (('country', 'location'), 'description', 'employment_type', 'positions', 'deadline'),
+            'fields': (('country', 'location'), 'description', 'employment_type', 'positions',
+                       'deadline', 'add_to_euraxess'),
         }),
         ('CONTACT', {
             'fields': ('email',),
         }),
         ('METADATA', {
             'classes': ('collapse',),
-            'fields': ('career_levels', 'application_areas', 'topics', 'add_to_euraxess'),
+            'fields': ('career_levels', 'application_areas', 'topics'),
         }),
     )
 
