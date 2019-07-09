@@ -67,6 +67,17 @@ Vue.component('automatic-updates', {
     ''
 });
 
+Vue.component('checkbox-input', FormElement.extend({
+    template: '' +
+        '<input ref="el" :value="value" @change="updateValue" type="checkbox" class="form-check-input" style="margin-top:.1rem" :checked="value">' +
+    '',
+    methods: {
+        transformValue: function (value) {
+            return !JSON.parse(value);
+        }
+    }
+}));
+
 Vue.component('only-input', FormElement.extend({
     props: ['type', 'placeholder'],
     template: '' +

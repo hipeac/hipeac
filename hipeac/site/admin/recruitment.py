@@ -61,7 +61,7 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
         }),
         ('METADATA', {
             'classes': ('collapse',),
-            'fields': ('career_levels', 'application_areas', 'topics'),
+            'fields': ('career_levels', 'application_areas', 'topics', 'add_to_euraxess'),
         }),
     )
 

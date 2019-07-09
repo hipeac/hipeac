@@ -1,5 +1,7 @@
 {% extends 'editor.html' %}
 
+{% load static %}
+
 
 {% block subtitle %}
 <span id="extraData" data-email="{{ user.email }}"></span>
@@ -43,7 +45,8 @@
                 type: 'website',
                 url: ''
             }],
-            deadline: moment().add(60, 'days').format('YYYY-MM-DD')
+            deadline: moment().add(60, 'days').format('YYYY-MM-DD'),
+            add_to_euraxess: true
         };
     </script>
 {% endblock %}
@@ -88,6 +91,11 @@
                 <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
                 <link-fieldset v-model="obj.links" field="links" help="Please include the link to the website for the candidates to apply. One or more external sources related to this job application can be added (e.g. LinkedIn). If no link is provided applications will be forwarded directly to the contact e-mail."></link-fieldset>
             </form>
+            <hr class="my-4">
+            <p class="float-right socialaccounts ml-4 mb-2">{% endverbatim %}<img src="{% static 'images/euraxess.png' %}">{% verbatim %}</p>
+            <div class="form-check text-sm">
+                <label class="form-check-label pointer"><checkbox-input v-model="obj.add_to_euraxess"></checkbox-input><strong>Add this job to EURAXESS. </strong> Backed by the European Union, member states and associated countries, <a href="https://euraxess.ec.europa.eu/" taregt="_blank">EURAXESS</a> supports researcher mobility and career development, while enhancing scientific collaboration between Europe and the world.</label>
+            </div>
             <hr class="my-4">
             <button v-if="isNew" @click="createObj" class="btn btn-success btn-block">
                 <icon name="save" class="sm mr-1"></icon>Add new position</button>

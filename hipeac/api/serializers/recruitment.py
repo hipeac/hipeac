@@ -20,6 +20,7 @@ class JobBaseSerializer(WritableNestedModelSerializer):
     email = serializers.EmailField(required=True)
     url = serializers.HyperlinkedIdentityField(view_name='v1:job-detail', read_only=True)
     href = serializers.CharField(source='get_absolute_url', read_only=True)
+    add_to_euraxess = serializers.BooleanField(required=True)
 
     class Meta:
         model = Job

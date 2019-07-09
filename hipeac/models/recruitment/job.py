@@ -87,6 +87,7 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
 
     email = models.EmailField(null=True, blank=False)
     share = models.BooleanField(default=True, editable=False)
+    add_to_euraxess = models.BooleanField(default=True, editable=False)
 
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     career_levels = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
@@ -168,6 +169,7 @@ def job_post_save(sender, instance, created, *args, **kwargs):
                 'job_title': instance.title,
                 'job_pdf_url': instance.get_pdf_url(),
                 'user_name': instance.created_by.profile.name,
+                'show_euraxess': instance.add_to_euraxess,
             }
         )
         send_task('hipeac.tasks.emails.send_from_template', email)

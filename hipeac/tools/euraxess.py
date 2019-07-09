@@ -38,7 +38,8 @@ class EuraxessXMLGenerator:
         md_parser = Parser()
         md_renderer = HtmlRenderer()
 
-        for job in queryset.select_related('institution') \
+        for job in queryset.filter(add_to_euraxess=True) \
+                           .select_related('institution') \
                            .prefetch_related('links', 'institution__links', 'project__programme'):
             el = etree.SubElement(self.root, 'job-opportunity')
             el.set('organisationIDKey', self.organisation_id_key)
