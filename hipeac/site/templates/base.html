@@ -43,8 +43,29 @@
         {% block structured_data %}{% endblock %}
         <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise"></script>
         {% if not debug %}
-            <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
-            <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+            {% if request.DNT %}
+                <meta name="twitter:dnt" content="on">
+            {% else %}
+                <script async src="//www.googletagmanager.com/gtag/js?id=UA-79856831-1"></script>
+                {% compress js inline %}
+                    <script>
+                        var userId = document.getElementsByTagName('html')[0].getAttribute('data-user');
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag() {
+                            dataLayer.push(arguments);
+                        };
+                        gtag('js', new Date());
+                        gtag('config', 'UA-2857653-1', {
+                            'user_id': (userId == 0) ? undefined : userId
+                        });
+                    </script>
+                {% endcompress %}
+            {% endif %}
+        {% endif %}
+        {% block head_scripts %}{% endblock %}
+        {% if not debug %}
+            <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+            <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
             {% compress js inline %}
                 <script>
                     window.addEventListener('load', function () {
@@ -67,26 +88,7 @@
                     });
                 </script>
             {% endcompress %}
-            {% if request.DNT %}
-                <meta name="twitter:dnt" content="on">
-            {% else %}
-                <script async src="//www.googletagmanager.com/gtag/js?id=UA-79856831-1"></script>
-                {% compress js inline %}
-                    <script>
-                        var userId = document.getElementsByTagName('html')[0].getAttribute('data-user');
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag() {
-                            dataLayer.push(arguments);
-                        };
-                        gtag('js', new Date());
-                        gtag('config', 'UA-2857653-1', {
-                            'user_id': (userId == 0) ? undefined : userId
-                        });
-                    </script>
-                {% endcompress %}
-            {% endif %}
         {% endif %}
-        {% block head_scripts %}{% endblock %}
     </head>
     <body class="bg-light">
         <div id="particles"></div>
