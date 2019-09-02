@@ -18,7 +18,7 @@
                             </li>
                         {% endif %}
                         {% verbatim %}
-                        <li v-if="session.private_files.length" class="nav-item">
+                        <li v-if="session.private_files && session.private_files.length" class="nav-item">
                             <router-link class="nav-link" :to="{name: 'sessionDownloads', params: {sessionId: session.id}}" exact>Downloads</router-link>
                         </li>
                         <li class="nav-item pointer ml-auto">
