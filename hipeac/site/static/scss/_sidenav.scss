@@ -30,3 +30,43 @@
         padding: 0;
     }
 }
+
+.list-group-links {
+    padding-left: 24px;
+    font-size: smaller;
+
+    .material-icons, svg {
+        float: left;
+        margin-left: -24px;
+        font-size: 1.1rem;
+        margin-top: 0rem;
+    }
+
+    svg {
+        max-height: 16px;
+        max-width: 16px;
+        margin-left: -23px;
+
+        path.fillit {
+            fill: $hipeac-blue !important;
+        }
+
+        &.github,
+        &.linkedin,
+        &.twitter {
+            margin-top: .1rem;
+        }
+
+        &.youtube {
+            margin-top: .25rem;
+        }
+    }
+
+    .list-group-item {
+        padding: .4rem 0;
+
+        &:first-child {
+            border-top: 0;
+        }
+    }
+}

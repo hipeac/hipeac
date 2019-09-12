@@ -67,6 +67,7 @@
                             {% endif %}
                             {{ institution.topics | metadata_badges:'Topics' }}
                             {{ institution.application_areas | metadata_list:'Application areas' }}
+                            {% include 'components/links.html' with title='External links' items=institution.get_ordered_links %}
                             {% if institution.coordinated_projects.count %}
                                 <h5 class="display-sm">Coordinated projects</h5>
                                 <ul class="list-inline">
@@ -83,7 +84,6 @@
                                 {% endfor %}
                                 </ul>
                             {% endif %}
-                            {% include 'components/links.html' with title='More information' items=institution.links %}
                         </div>
                     </div>
                 </div>

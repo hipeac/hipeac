@@ -39,6 +39,7 @@
                         <div class="col-12 col-md-4">
                             {{ project.topics | metadata_badges:'Topics' }}
                             {{ project.application_areas | metadata_list:'Application areas' }}
+                            {% include 'components/links.html' with title='External links' items=project.get_ordered_links %}
                             <h2 class="display-sm mb-3">Coordinator</h2>
                             <div class="media mb-3">
                                 <div class="media-body">
@@ -60,7 +61,6 @@
                                 {% endfor %}
                             {% endif %}
                             <br><br><br>
-                            {% include 'components/links.html' with title='Links' items=project.links %}
                         </div>
                     </div>
                 </div>

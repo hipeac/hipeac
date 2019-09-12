@@ -78,7 +78,7 @@
                             {{ job.topics | metadata_badges_jobs:'Topics' }}
                             {{ job.application_areas | metadata_list_jobs:'Application areas' }}
                             {{ job.career_levels | metadata_list_jobs:'Career levels' }}
-                            {% include 'components/links.html' with title='More information' items=job.links %}
+                            {% include 'components/links.html' with title='More information' items=job.get_ordered_links %}
                             {% if job.project %}
                                 <div class="mb-4">
                                     <h5 class="display-sm">Related project</h5>

@@ -2,10 +2,13 @@ import os
 
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from hipeac.functions import get_absolute_uri, get_image_variant_paths
 from hipeac.models import Link, get_cached_metadata
+
+
+
 
 
 class ImagesMixin:
@@ -29,6 +32,14 @@ class ImagesMixin:
 
 class LinkMixin:
     links_cache = None
+
+    def get_ordered_links(self) -> List[Link]:
+        links = list(dict(Link.TYPE_CHOICES).keys())
+        links_order = {links[i]: i for i in range(0, len(links))}
+
+        if not self.links_cache:
+            self.links_cache = self.links.all()  # noqa
+        return sorted(self.links_cache, key=lambda x: links_order[x.type])
 
     def get_link(self, link_type: str) -> Optional[str]:
         if not self.links_cache:

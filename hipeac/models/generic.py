@@ -48,19 +48,21 @@ class Link(models.Model):
     GITHUB = 'github'
     YOUTUBE = 'youtube'
     EASYCHAIR = 'easychair'
+    CORDIS = 'cordis'
     GOOGLE_MAPS = 'google_maps'
     GOOGLE_PHOTOS = 'google_photos'
     OTHER = 'other'
     TYPE_CHOICES = (
         (WEBSITE, 'Website'),
         (DBLP, 'DBLP'),
-        (TWITTER, 'Twitter'),
         (LINKEDIN, 'LinkedIn'),
         (GITHUB, 'GitHub'),
+        (TWITTER, 'Twitter'),
         (YOUTUBE, 'YouTube'),
+        (EASYCHAIR, 'EasyChair'),
+        (CORDIS, 'Cordis'),
         (GOOGLE_MAPS, 'Google Maps'),
         (GOOGLE_PHOTOS, 'Google Photos'),
-        (EASYCHAIR, 'EasyChair'),
         (OTHER, 'Other'),
     )
 
