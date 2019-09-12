@@ -28,7 +28,7 @@
             <div class="col-12 col-md-2 d-none d-md-block">
                 {% if profile.institution.images %}
                     <a href="{{ profile.institution.get_absolute_url }}" class="d-block mt-md-4 mb-5">
-                        <img src="{{ profile.institution.images.md }}" class="max-90">
+                        <img src="{{ profile.institution.images.md }}" title="{{ profile.institution.short_name }}" class="max-90">
                     </a>
                 {% endif %}
             </div>

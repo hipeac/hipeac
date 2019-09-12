@@ -925,7 +925,7 @@ Vue.component('job-cards', SimpleList.extend({
         }
     },
     template: '' +
-        '<div class="row mini-card-gutters">' +
+        '<div v-if="items.length" class="row mini-card-gutters">' +
             '<div v-for="item in items" :key="item.id" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" :v-hide="ids.indexOf(item.id) < 0">' +
                 '<div class="hipeac-card mini-card mb-0 inherit d-flex flex-column pointer" @click="updateLocation(item.href)">' +
                     '<span class="header">' +
@@ -973,9 +973,9 @@ Vue.component('open-jobs-row', {
         }
     },
     template: '' +
-        '<div class="row">' +
+        '<div v-if="jobs && jobs.length" class="row">' +
             '<div class="col-12 col-lg-2">' +
-                '<div v-if="jobs && jobs.length">' +
+                '<div>' +
                     '<h5 class="display-sm mt-4 mb-1">{{ title }}</h5><hr>' +
                 '</div>' +
             '</div>' +
@@ -1017,7 +1017,7 @@ Vue.component('video-cards', SimpleList.extend({
         }
     },
     template: '' +
-        '<div class="row mini-card-gutters">' +
+        '<div v-if="items.length" class="row mini-card-gutters">' +
             '<div v-for="item in items" :key="item.id" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" :v-hide="ids.indexOf(item.id) < 0">' +
                 '<div class="hipeac-card mini-card mb-0 inherit d-flex flex-column pointer" @click="updateLocation(item.href, \'_blank\')">' +
                     '<img :src="item.snapshot" class="rounded w-100">' +
@@ -1040,7 +1040,7 @@ Vue.component('videos-row', {
     },
     props: ['url'],
     template: '' +
-        '<div class="row">' +
+        '<div v-if="items.length" class="row">' +
             '<div class="col-12 col-lg-2">' +
                 '<div v-if="videos && videos.length">' +
                     '<h5 class="display-sm mt-4 mb-1">Videos</h5><hr>' +

@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-12 col-md-2 d-none d-md-block">
                 {% if institution.images %}
-                    <img src="{{ institution.images.md }}" class="max-90 mt-md-4 mb-5">
+                    <img src="{{ institution.images.md }}" title="{{ institution.short_name }}" class="max-90 mt-md-4 mb-5">
                 {% endif %}
             </div>
             <div class="col-12 col-md-10">
@@ -48,7 +48,7 @@
                                 <div class="mb-4">
                                     <h5 class="display-sm">Parent institution</h5>
                                     <a href="{{ institution.parent.get_absolute_url }}" class="inherit">
-                                        <img src="{{ institution.parent.images.sm }}" class="logo-sm mt-3 mr-3">
+                                        <img src="{{ institution.parent.images.sm }}" title="{{ institution.parent.short_name }}" class="logo-sm mt-3 mr-3">
                                     </a>
                                 </div>
                             {% endif %}
@@ -68,28 +68,44 @@
                             {{ institution.topics | metadata_badges:'Topics' }}
                             {{ institution.application_areas | metadata_list:'Application areas' }}
                             {% include 'components/links.html' with title='External links' items=institution.get_ordered_links %}
-                            {% if institution.coordinated_projects.count %}
-                                <h5 class="display-sm">Coordinated projects</h5>
-                                <ul class="list-inline">
-                                {% for project in institution.coordinated_projects.all %}
-                                    <li class="list-inline-item"><a href="{{ project.get_absolute_url }}">{{ project }}</a></li>
-                                {% endfor %}
-                                </ul>
-                            {% endif %}
-                            {% if institution.participated_projects.count %}
-                                <h5 class="display-sm">Participated projects</h5>
-                                <ul class="list-inline">
-                                {% for project in institution.participated_projects.all %}
-                                    <li class="list-inline-item"><a href="{{ project.get_absolute_url }}">{{ project }}</a></li>
-                                {% endfor %}
-                                </ul>
-                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div is="open-jobs-row" url="{% url 'v1:institution-jobs' institution.id %}"></div>
+        <div is="open-jobs-row" url="{% url 'v1:institution-jobs' institution.id %}" class="mb-4"></div>
+        {% if institution.coordinated_projects.count or institution.participated_projects.count %}
+            <div class="row">
+                <div class="col-12 col-lg-2">
+                    <h5 class="display-sm mt-4 mb-1">Participated projects</h5><hr>
+                </div>
+                <div class="col-12 col-lg-10">
+                    <div class="hipeac-card">
+                        <ul class="logos text-left">
+                        {% if institution.coordinated_projects.count %}
+                            {% for project in institution.coordinated_projects.all %}
+                                <li>
+                                    <a href="{{ project.get_absolute_url }}" class="inherit">
+                                        <img src="{{ project.images.sm }}" title="{{ project.acronym }}">
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            {% if institution.participated_projects.count %}
+                                </ul><hr class="my-4"><ul class="logos text-left">
+                            {% endif %}
+                        {% endif %}
+                        {% for project in institution.participated_projects.all %}
+                            <li>
+                                <a href="{{ project.get_absolute_url }}" class="inherit">
+                                    <img src="{{ project.images.sm }}" title="{{ project.acronym }}">
+                                </a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 
