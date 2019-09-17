@@ -80,8 +80,11 @@ def process_user_publications(profile: Profile):
         if element.get('id') is None:
             year = element.text
         else:
-            data_el = element.cssselect('div.data')[0]
-            title_el = element.cssselect('div.data span.title')[0]
+            try:
+                data_el = element.cssselect('div.data')[0]
+                title_el = element.cssselect('div.data span.title')[0]
+            except Exception:
+                continue
 
             try:
                 url_el = element.cssselect('.publ > ul > li:first-child .head a')[0]
