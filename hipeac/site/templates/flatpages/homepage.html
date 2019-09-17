@@ -16,6 +16,15 @@
     <li class="nav-item">
         <a href="{% url 'jobs' %}" class="nav-link">Find your next job <i class="material-icons sm">arrow_forward</i></a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="https://twitter.com/hipeac" target="_blank"><span is="twitter-icon"></span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="https://www.hipeac.net/youtube/" target="_blank"><span is="youtube-icon"></span></a>
+    </li>
 {% endblock %}
 
 {% block content %}
@@ -74,15 +83,9 @@
             <div class="col-12 col-md-6 col-lg-5 d-flex align-items-stretch">
                 <div is="article-card" title="Latest news" :max="10" :show-more="true"></div>
             </div>
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-3 d-flex align-items-stretch">
                 <div class="hipeac-card p-3">
-                    <a class="twitter-timeline" data-height="800" data-dnt="true" href="https://twitter.com/hipeac"></a>
-                    <hr>
-                    <p class="text-center socialaccounts m-0">
-                        <a href="/twitter/" target="_blank" class="mx-2">{% include 'socialaccount/snippets/_logos.html' with provider='Twitter' %}</a>
-                        <a href="/linkedin/" target="_blank" class="mx-2">{% include 'socialaccount/snippets/_logos.html' with provider='LinkedIn' %}</a>
-                        <a href="/youtube/" target="_blank" class="mx-2">{% include 'socialaccount/snippets/_logos.html' with provider='YouTube' %}</a>
-                    </p>
+                    <a class="twitter-timeline" data-height="900" data-dnt="true" href="https://twitter.com/hipeac"></a>
                 </div>
             </div>
         </div>
