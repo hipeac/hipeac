@@ -8,6 +8,7 @@ from .project import *
 from .communication import *
 from .events import *
 from .institutions import *
+from .notifications import *
 from .pages import *
 from .projects import *
 from .publicity import *

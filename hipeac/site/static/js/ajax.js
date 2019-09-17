@@ -93,6 +93,9 @@ function api() {
         getSessionAttendees: function (id) {
             return ajax().get('/api/v1/events/sessions/' + id + '/attendees/');
         },
+        getNotifications: function () {
+            return ajax().get('/api/v1/user/notifications/');
+        },
         getMetadata: function () {
             return ajax().get('/api/v1/metadata/');
         }

@@ -134,6 +134,13 @@ function mapper() {
                 return obj;
             });
         },
+        notifications: function (objs) {
+            return objs.map(function (obj) {
+                obj.icon = {
+                }[obj.category] || 'notification_important';
+                return obj;
+            });
+        },
         projects: function (items) {
             return items.map(function (obj) {
                 obj.isNew = moment().diff(moment(obj.start_date), 'days') < 60;

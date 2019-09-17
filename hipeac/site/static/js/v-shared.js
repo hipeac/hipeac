@@ -1158,3 +1158,101 @@ Vue.component('skeleton-table', {
         }
     }
 });
+
+Vue.component('user-notifications-button', {
+    data: function () {
+        return {
+            counter: 0
+        }
+    },
+    template: '' +
+        '<button v-cloak class="btn text-center px-2" :class="{\'btn-outline-danger\': counter > 0, \'btn-outline-secondary\': counter == 0}" :disabled="counter == 0" @click.prevent="show">' +
+            '<i v-if="counter == 0" class="material-icons">notifications_none</i>' +
+            '<strong v-else class="text-sm">' +
+                '<i class="material-icons">notifications_active</i> {{ counter }}' +
+            '</strong>' +
+        '</button>' +
+    '',
+    methods: {
+        updateCounter: function (num) {
+            this.counter = num;
+        },
+        show: function () {
+            if (this.counter == 0) return;
+            EventHub.$emit('show-notifications');
+        }
+    },
+    created: function () {
+        EventHub.$on('update-notifications-count', this.updateCounter);
+    },
+    beforeDestroy: function () {
+        EventHub.$off('update-notifications-count');
+    }
+});
+
+Vue.component('user-notifications', {
+    data: function () {
+        return {
+            notifications: []
+        }
+    },
+    template: '' +
+        '<div ref="notificationsModal" class="modal modal-side" tabindex="-1" role="dialog">' +
+            '<div v-if="notifications.length" class="modal-dialog modal-dialog-centered modal-md" role="notifications">' +
+                '<div class="modal-content">' +
+                    '<div class="modal-body">' +
+                        '<button type="button" class="close" style="margin-top: -0.4rem;" data-dismiss="modal" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span>' +
+                        '</button>' +
+                        '<display-sm class="mb-3">Notifications</display-sm>' +
+                        '<table class="table mb-0">' +
+                            '<tbody>' +
+                                '<tr v-for="noti in notifications" :key="noti.id" @click="goTo(noti.message.path)" class="pointer">' +
+                                    '<td class="sm px-0">' +
+                                        '<i class="material-icons text-primary">{{ noti.icon }}</i>' +
+                                    '</td>' +
+                                    '<td>' +
+                                        '{{ noti.message.text }}' +
+                                    '</td>' +
+                                    '<td class="sm px-0 text-light">' +
+                                        '<i class="material-icons">arrow_forward_ios</i>' +
+                                    '</td>' +
+                                '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+    '',
+    methods: {
+        goTo: function (href) {
+            var w = window.open(href, '_self');
+            w.focus();
+        },
+        show: function () {
+            $(this.$refs.notificationsModal).modal();
+        },
+        fetchNotifications: function () {
+            var self = this;
+            api().getNotifications().done(function (res) {
+                self.notifications = Object.freeze(mapper().notifications(res));
+                setTimeout(function () {
+                    self.fetchNotifications();
+                }, 1000 * 20);
+            });
+        }
+    },
+    watch: {
+        'notifications': function (val) {
+            EventHub.$emit('update-notifications-count', val.length);
+        }
+    },
+    created: function () {
+        EventHub.$on('show-notifications', this.show);
+        this.fetchNotifications();
+    },
+    beforeDestroy: function () {
+        EventHub.$off('show-notifications');
+    }
+});

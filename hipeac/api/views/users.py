@@ -8,7 +8,8 @@ from rest_framework.viewsets import GenericViewSet
 from hipeac.models import Profile, Video
 from ..serializers import (
     AuthUserSerializer, UserPublicSerializer, UserPublicListSerializer,
-    PublicationListSerializer, VideoListSerializer
+    NotificationSerializer,
+    PublicationListSerializer, VideoListSerializer,
 )
 
 
@@ -49,3 +50,8 @@ class AuthUserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
             'patch': self.partial_update,
             'put': self.update,
         }[request.method.lower()](request, *args, **kwargs)
+
+    @action(detail=False, pagination_class=None, serializer_class=NotificationSerializer)
+    def notifications(self, request, *args, **kwargs):
+        self.queryset = request.user.notifications.active()
+        return ListModelMixin.list(self, request, *args, **kwargs)

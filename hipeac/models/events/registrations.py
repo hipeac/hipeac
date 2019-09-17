@@ -134,6 +134,9 @@ def registration_post_save(sender, instance, created, *args, **kwargs):
         event.registrations_count = event.registrations.count()
         event.save()
 
+        from hipeac.tools.notifications.events import RegistrationPendingNotificator
+        RegistrationPendingNotificator().deleteOne(user_id=instance.user_id, event_id=event.id)
+
         email = (
             'events.registrations.created',
             f'[HiPEAC] Your registration for #{instance.event.hashtag} / {instance.id}',

@@ -43,8 +43,13 @@ def validate_event_dates(event):
 
 
 class EventManager(models.Manager):
+
     def public(self):
         return super().get_queryset().exclude(type=EC_MEETING)
+
+    def registering(self):
+        now = timezone.now()
+        return self.filter(registration_start_date__lte=now.date(), registration_deadline__gt=now)
 
     def upcoming(self):
         return self.public().filter(end_date__gte=timezone.now().date()).order_by('end_date').first()
