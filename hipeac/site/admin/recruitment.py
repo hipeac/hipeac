@@ -11,7 +11,8 @@ from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
 
 class JobCsvWriter(ModelCsvWriter):
     model = Job
-    exclude = ('description', 'links', 'evaluation')
+    custom_fields = ('institution_type',)
+    exclude = ('links', 'evaluation')
     metadata_fields = ('application_areas', 'career_levels', 'topics')
 
 
@@ -44,7 +45,7 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     list_display = ('id', 'title', 'institution', 'employment_type', 'deadline', 'created_at', 'evaluated')
     list_filter = (('evaluation__value', custom_titled_filter('evaluation')),
                    'employment_type', 'deadline', 'created_at', 'country')
-    search_fields = ('title', 'institution__name')
+    search_fields = ('title', 'institution__name', 'keywords', 'description')
 
     autocomplete_fields = ('institution', 'project')
     radio_fields = {'employment_type': admin.VERTICAL}

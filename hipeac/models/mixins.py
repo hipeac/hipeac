@@ -8,9 +8,6 @@ from hipeac.functions import get_absolute_uri, get_image_variant_paths
 from hipeac.models import Link, get_cached_metadata
 
 
-
-
-
 class ImagesMixin:
 
     def __init__(self, *args, **kwargs):

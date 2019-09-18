@@ -147,6 +147,10 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
         return f'{prepend}{hashtag}{at}: {self.title}', url
 
     @property
+    def institution_type(self) -> str:
+        return self.institution.type if self.institution else ''
+
+    @property
     def slug(self) -> str:
         return slugify(self.title)
 
