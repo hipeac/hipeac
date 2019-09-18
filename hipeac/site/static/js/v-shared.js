@@ -1212,7 +1212,7 @@ Vue.component('user-notifications', {
                                         '<i class="material-icons text-primary">{{ noti.icon }}</i>' +
                                     '</td>' +
                                     '<td>' +
-                                        '{{ noti.message.text }}' +
+                                        '<marked :text="noti.message.text"></marked>' +
                                     '</td>' +
                                     '<td class="sm px-0 text-light">' +
                                         '<i class="material-icons">arrow_forward_ios</i>' +

@@ -137,6 +137,7 @@ function mapper() {
         notifications: function (objs) {
             return objs.map(function (obj) {
                 obj.icon = {
+                    'research_topics_pending': 'ballot'
                 }[obj.category] || 'notification_important';
                 return obj;
             });

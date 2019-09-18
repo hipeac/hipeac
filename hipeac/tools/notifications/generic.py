@@ -40,9 +40,11 @@ class Notificator:
 
 def parse_notification(notification: Notification):
     from .events import RegistrationPendingNotificator
+    from .users import ResearchTopicsPendingNotificator
 
     notification_class = {
         RegistrationPendingNotificator.category: RegistrationPendingNotificator,
+        ResearchTopicsPendingNotificator.category: ResearchTopicsPendingNotificator,
     }[notification.category]
 
     return notification_class().parse_notification(notification)
