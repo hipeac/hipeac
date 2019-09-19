@@ -16,7 +16,7 @@ Vue.component('institutions-carousel', {
                     '<li v-for="institution in institutions" :key="institution.id">' +
                         '<router-link :to="{name: targetRoute, query: { q: institution.short_name}}">' +
                             '<span :style="{\'background-image\': \'url( \'+ institution.images.md + \')\' }"></span>' +
-                        '</a>' +
+                        '</router-link>' +
                     '</li>' +
                 '</ul>' +
             '</div>' +

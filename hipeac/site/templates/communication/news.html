@@ -72,12 +72,15 @@
             }),
             methods: {
                 sendEvent: function (magazine) {
-                    ga('send', {
-                        hitType: 'event',
-                        eventCategory: 'newsletter',
-                        eventAction: 'download',
-                        eventLabel: magazine.id + magazine.download_url
-                    });
+                    // see: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/Tracking_Protection
+                    if (window.ga && ga.loaded) {
+                        ga('send', {
+                            hitType: 'event',
+                            eventCategory: 'newsletter',
+                            eventAction: 'download',
+                            eventLabel: magazine.id + magazine.download_url
+                        });
+                    }
                 }
             },
             created: function () {

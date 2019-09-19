@@ -118,6 +118,7 @@ Vue.component('marked', {
     '',
     computed: {
         compiledMarkdown: function () {
+            if (!this.text) return '';
             return CommonMarkWriter.render(CommonMarkReader.parse(this.text));
         }
     }
@@ -988,7 +989,7 @@ Vue.component('open-jobs-row', {
                 '</div>' +
             '</div>' +
             '<div class="col-12 col-lg-10">' +
-                '<job-cards v-if="jobs" :items="jobs" :ids="ids"></job-cards>' +
+                '<job-cards :items="jobs" :ids="ids"></job-cards>' +
                 '<skeleton-cards v-else :number="4"></skeleton-cards>' +
             '</div>' +
         '</div>' +
@@ -1048,14 +1049,14 @@ Vue.component('videos-row', {
     },
     props: ['url'],
     template: '' +
-        '<div v-if="items.length" class="row">' +
+        '<div v-if="videos && videos.length" class="row">' +
             '<div class="col-12 col-lg-2">' +
-                '<div v-if="videos && videos.length">' +
+                '<div>' +
                     '<h5 class="display-sm mt-4 mb-1">Videos</h5><hr>' +
                 '</div>' +
             '</div>' +
             '<div class="col-12 col-lg-10">' +
-                '<video-cards v-if="videos" :items="videos" :ids="ids"></video-cards>' +
+                '<video-cards :items="videos" :ids="ids"></video-cards>' +
                 '<skeleton-cards v-else :number="4"></skeleton-cards>' +
             '</div>' +
         '</div>' +

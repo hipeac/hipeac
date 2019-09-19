@@ -124,8 +124,10 @@
                     state.ui.status = 'saving';
                 },
                 endSaving: function (state, obj) {
-                    state.obj.updated_at = obj.updated_at;
-                    state.obj.href = obj.href;
+                    if (obj) {
+                        state.obj.updated_at = obj.updated_at;
+                        state.obj.href = obj.href;
+                    }
                     setTimeout(function () {
                         state.ui.status = 'saved';
                         setTimeout(function () { state.ui.status = 'waiting'; }, 2000);

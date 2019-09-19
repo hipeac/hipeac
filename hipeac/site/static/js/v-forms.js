@@ -380,9 +380,9 @@ var AucompletePopupElement = FormElement.extend({
                 this.$emit('input', this.values);
             } else {
                 this.$emit('input', this.values[0]);
-                if (this.type == 'institution') {
-                    var countryCode = _.findWhere(this.filteredItems, {id: this.values[0]}).country.code;
-                    EventHub.$emit('force-country', countryCode);
+                var found = _.findWhere(this.filteredItems, {id: this.values[0]});
+                if (this.type == 'institution' && found) {
+                    EventHub.$emit('force-country', found.country.code);
                 }
             }
         }

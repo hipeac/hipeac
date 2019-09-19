@@ -79,9 +79,13 @@
                 institutions: function () {
                     if (!this.jobs) return [];
 
-                    return _.shuffle(_.reject(_.uniq(_.pluck(this.jobs, 'institution'), function (obj) {
-                        return obj.id;
+                    var institutions = _.uniq(_.filter(_.pluck(this.jobs, 'institution'), function (obj) {
+                        return obj;
                     }), function (obj) {
+                        return obj.id;
+                    });
+
+                    return _.shuffle(_.reject(institutions, function (obj) {
                         return obj.images == null;
                     }));
                 }

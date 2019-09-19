@@ -92,10 +92,6 @@
             template: '#v-preview',
             computed: _.extend(
                 Vuex.mapState(['user', 'ui']), {
-                bio: function () {
-                    if (!this.user || !this.user.profile.bio) return '';
-                    return marked(this.user.profile.bio);
-                }
             }),
         };
 

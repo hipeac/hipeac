@@ -25,7 +25,7 @@
         <h5>{{ user.first_name }} {{ user.last_name }}</h5>
         <strong v-if="user.profile.institution">{{ user.profile.institution.name }}</strong>
         <img :src="user.profile.avatar_url" class="float-right ml-3 mb-2 rounded-circle">
-        <div class="marked text-sm mb-4" v-html="bio"></div>
+        <marked :text="user.profile.bio" class="text-sm mb-4"></marked>
         <metadata-badges title="Areas of expertise" :items="user.profile.topics" color="secondary"></metadata-badges>
         <metadata-badges title="Application areas" :items="user.profile.application_areas" color="secondary"></metadata-badges>
     </div>

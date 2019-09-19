@@ -23,7 +23,7 @@
 
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
-    <div v-if="event.sessions.length">
+    <div v-if="event && event.sessions.length">
         <search-card placeholder="Search by type, title, main speaker, project, topics..." :showFiltersButton="topics.length > 0" class="mb-2">
             <filters-clear :onClick="resetFilters"></filters-clear>
             <div v-if="sessionTypes">
@@ -54,7 +54,7 @@
                 </div>
             </div>
         </search-card>
-        <div v-if="event" class="hipeac-card">
+        <div class="hipeac-card">
             <div v-for="(data, date) in event.schedule" class="row">
                 <div class="col-12 col-md-2">
                     <display-md class="mt-0 mb-3 text-left">{{ date | moment }}</display-md>
@@ -102,8 +102,10 @@
         <div class="row">
             <div v-for="keynote in keynotes" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
                 <p><strong>{{ keynote.date | moment('dddd, MMM Do') }}</strong> / {{ keynote.startAt }} - {{ keynote.endAt }}</p>
-                <h6 class="text-light-weight">{{ keynote.main_speaker.profile.name }}</h6>
-                <img class="mr-3" :src="keynote.main_speaker.profile.avatar_url" class="rounded-circle float-right ml-3 mb-3">
+                <div v-if="keynote.main_speaker && keynote.main_speaker.profile">
+                    <h6 class="text-light-weight">{{ keynote.main_speaker.profile.name }}</h6>
+                    <img class="mr-3" :src="keynote.main_speaker.profile.avatar_url" class="rounded-circle float-right ml-3 mb-3">
+                </div>
                 <h5 class="text-light-weight mb-auto">{{ keynote.title }}</h5>
                 <marked :text="keynote.excerpt" class="mt-3"></marked>
                 <router-link :to="{name: 'session', params: {sessionId: keynote.id}}">
