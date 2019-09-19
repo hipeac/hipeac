@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 from whitenoise import WhiteNoise
 
 
@@ -16,7 +17,7 @@ if env in ['production']:
         dsn=os.environ.get('SENTRY_DSN', 'SENTRY_DSN'),
         release=os.environ.get('GIT_REV', None),
         environment=env,
-        integrations=[DjangoIntegration(), CeleryIntegration()],
+        integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()],
         ignore_errors=['django.security.DisallowedHost'],
         send_default_pii=True,
     )
