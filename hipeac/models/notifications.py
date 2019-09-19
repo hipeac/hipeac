@@ -31,7 +31,7 @@ class Notification(models.Model):
         verbose_name_plural = pgettext_lazy('-- admin: notification.verbose_name_plural', 'notifications')
 
     def __str__(self) -> str:
-        return f'{self.user_id}: {self.key}'
+        return f'{self.user_id}: {self.category}'
 
     @property
     def data(self) -> dict:
