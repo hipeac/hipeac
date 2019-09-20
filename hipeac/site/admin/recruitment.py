@@ -6,6 +6,7 @@ from hipeac.forms import ApplicationAreasChoiceField, JobPositionChoiceField, To
 from hipeac.models import Job, JobEvaluation, Event
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
 from hipeac.tools.csv import ModelCsvWriter
+from .csv.recruitment import csv_keywords_analysis
 from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
 
 
@@ -40,7 +41,7 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     form = JobAdminForm
     exclude = ('updated_at',)
 
-    actions = ('select_export_pdf', 'select_export_csv')
+    actions = ('export_pdf', 'export_csv', 'export_csv_keywords')
     date_hierarchy = 'created_at'
     list_display = ('id', 'title', 'institution', 'employment_type', 'deadline', 'created_at', 'evaluated')
     list_filter = (('evaluation__value', custom_titled_filter('evaluation')),
@@ -97,10 +98,14 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
         jobs = upcoming_event.jobs.order_by('institution__name', 'deadline')
         return self.pdf_response(jobs, f'{upcoming_event.slug}-{upcoming_event.year}--jobs.pdf')
 
-    def select_export_pdf(self, request, queryset):
+    def export_pdf(self, request, queryset):
         return self.pdf_response(queryset)
-    select_export_pdf.short_description = ('[PDF] Generate printable document for selected jobs')
+    export_pdf.short_description = ('[PDF] Generate printable document for selected jobs')
 
-    def select_export_csv(self, request, queryset):
+    def export_csv(self, request, queryset):
         return JobCsvWriter(filename='hipeac-jobs.csv', queryset=queryset).response
-    select_export_csv.short_description = '[CSV] Export detailed data for selected jobs'
+    export_csv.short_description = '[CSV] Export detailed data for selected jobs'
+
+    def export_csv_keywords(self, request, queryset):
+        return csv_keywords_analysis(queryset, 'hipeac-jobs--keywords.csv')
+    export_csv_keywords.short_description = '[CSV] Export keywords for selected jobs'
