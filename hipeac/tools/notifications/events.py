@@ -8,6 +8,7 @@ from .generic import Notificator
 
 class RegistrationPendingNotificator(Notificator):
     category = 'registration_pending'
+    discard = True
 
     def deleteOne(self, *, user_id: int, event_id: int) -> None:
         Notification.objects.filter(category=self.category, user_id=user_id, object_id=event_id).delete()
@@ -36,6 +37,7 @@ class RegistrationPendingNotificator(Notificator):
                         result[0],  # user_id
                         event.id,  # object_id == event_id
                         self.to_json({  # data
+                            'discard_id': event.id,
                             'event_id': event.id,
                         }),
                         event.registration_deadline,  # deadline

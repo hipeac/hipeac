@@ -47,3 +47,13 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+    <script>
+        new Vue({
+            el: '#vue'
+        });
+    </script>
+{% endcompress %}
+{% endblock %}

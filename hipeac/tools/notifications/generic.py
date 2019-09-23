@@ -8,6 +8,7 @@ from hipeac.models import Notification
 
 class Notificator:
     category = ''
+    discard = False
 
     def delete(self) -> None:
         with connection.cursor() as cursor:
@@ -26,6 +27,7 @@ class Notificator:
             cursor.executemany(query, data)
 
     def to_json(self, data: dict) -> str:
+        data['discard'] = self.discard
         return json.dumps(data)
 
     def from_json(self, data: str) -> dict:
@@ -40,9 +42,10 @@ class Notificator:
 
 def parse_notification(notification: Notification):
     from .events import RegistrationPendingNotificator
-    from .users import ResearchTopicsPendingNotificator
+    from .users import LinkedInNotificator, ResearchTopicsPendingNotificator
 
     notification_class = {
+        LinkedInNotificator.category: LinkedInNotificator,
         RegistrationPendingNotificator.category: RegistrationPendingNotificator,
         ResearchTopicsPendingNotificator.category: ResearchTopicsPendingNotificator,
     }[notification.category]

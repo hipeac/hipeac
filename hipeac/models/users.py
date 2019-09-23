@@ -1,3 +1,5 @@
+from allauth.socialaccount.providers.linkedin_oauth2.provider import LinkedInOAuth2Provider
+from allauth.socialaccount.signals import social_account_added
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
@@ -166,3 +168,10 @@ def post_save_user(sender, instance, created, **kwargs):
     else:
         instance.profile.updated_at = timezone.now()
         instance.profile.save()
+
+
+@receiver(social_account_added)
+def social_account_added(request, sociallogin, **kwargs):
+    if sociallogin and sociallogin.account.provider == LinkedInOAuth2Provider.id:
+        from hipeac.tools.notifications.users import LinkedInNotificator
+        LinkedInNotificator().deleteOne(user_id=sociallogin.user.id)
