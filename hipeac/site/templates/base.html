@@ -91,7 +91,6 @@
         {% endif %}
     </head>
     <body class="bg-light">
-        <div id="particles"></div>
         {% block main %}{% block content %}{% endblock %}{% endblock %}
         {% block vue_templates %}{% endblock %}
         {% compress js file bootstrap %}
@@ -145,75 +144,6 @@
         {% endif %}
         {% block extra_scripts %}{% endblock %}
         {% block scripts %}{% endblock %}
-        {% compress js file particles %}
-            <script src="{% static 'vendor/particles@2.0.0/particles.min.js' %}"></script>
-            <script>
-                if (!isSmallDevice() && !isIE()) {
-                    particlesJS('particles', {
-                        "particles": {
-                            "number": {
-                                "value": 160,
-                                "density": {
-                                    "enable": true,
-                                    "value_area": 800
-                                }
-                            },
-                            "color": {
-                                "value": "#cccccc"
-                            },
-                            "shape": {
-                                "type": "circle",
-                                "stroke": {
-                                    "width": 0
-                                },
-                                "polygon": {
-                                    "nb_sides": 5
-                                }
-                            },
-                            "opacity": {
-                                "value": 1,
-                                "random": true,
-                                "anim": {
-                                    "enable": false,
-                                    "sync": false
-                                }
-                            },
-                            "size": {
-                                "value": 3,
-                                "random": true,
-                                "anim": {
-                                    "enable": false,
-                                    "sync": false
-                                }
-                            },
-                            "line_linked": {
-                                "enable": true,
-                                "distance": 150,
-                                "color": "#dddddd",
-                                "opacity": 0.5,
-                                "width": 1
-                            },
-                            "move": {
-                                "enable": false
-                            }
-                        },
-                        "interactivity": {
-                            "detect_on": "canvas",
-                            "events": {
-                                "onhover": {
-                                    "enable": false
-                                },
-                                "onclick": {
-                                    "enable": false
-                                },
-                                "resize": true
-                            }
-                        },
-                        "retina_detect": true
-                    });
-                }
-            </script>
-        {% endcompress %}
     </body>
 </html>
 

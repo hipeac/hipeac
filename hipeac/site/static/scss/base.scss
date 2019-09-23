@@ -53,6 +53,10 @@ html, body {
     color: $text-color;
 }
 
+body {
+    background-image: url(../images/particles.png);
+}
+
 .container {
     max-width: 1200px;
 }
@@ -538,7 +542,6 @@ ul.logos {
 @import '_marked.scss';
 @import '_modal.scss';
 @import '_navbar.scss';
-@import '_particles.scss';
 @import '_plotly.scss';
 @import '_sidenav.scss';
 @import '_skeleton.scss';
