@@ -45,7 +45,7 @@ class JobAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     date_hierarchy = 'created_at'
     list_display = ('id', 'title', 'institution', 'employment_type', 'deadline', 'created_at', 'evaluated')
     list_filter = (('evaluation__value', custom_titled_filter('evaluation')),
-                   'employment_type', 'deadline', 'created_at', 'country')
+                   'employment_type', 'deadline', 'created_at', 'institution__type', 'country')
     search_fields = ('title', 'institution__name', 'keywords', 'description')
 
     autocomplete_fields = ('institution', 'project')
