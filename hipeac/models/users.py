@@ -76,7 +76,7 @@ class Profile(ImagesMixin, LinkMixin, models.Model):
 
     is_bouncing = models.BooleanField(default=False)
     is_subscribed = models.BooleanField(default=False)
-    is_public = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=True)
 
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
