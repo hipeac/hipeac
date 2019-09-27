@@ -5,11 +5,13 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db import models
+from django.db.models.signals import post_save
 from django.db.utils import ProgrammingError
+from django.dispatch import receiver
 from django_countries import Countries
 from typing import Dict, List
 
-from hipeac.functions import get_european_countries, get_h2020_associated_countries
+from hipeac.functions import get_european_countries, get_h2020_associated_countries, send_task
 
 
 class HipeacCountries(Countries):
@@ -74,6 +76,12 @@ class Link(models.Model):
 
     class Meta:
         ordering = ['-type']
+
+
+@receiver(post_save, sender=Link)
+def post_save_link(sender, instance, created, **kwargs):
+    if instance.type == Link.DBLP and instance.content_type.model == 'profile':
+        send_task('hipeac.tasks.dblp.extract_publications_for_user', (instance.object_id,))
 
 
 class Metadata(models.Model):
