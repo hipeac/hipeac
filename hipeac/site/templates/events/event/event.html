@@ -88,6 +88,7 @@
 {% block scripts %}
 {% compress js file event %}
     <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
+    <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
     <script>
         var Store = new Vuex.Store({
             state: {
@@ -155,6 +156,9 @@
             template: '#v-attendees',
             computed: _.extend(
                 Vuex.mapState(['user', 'event', 'attendees']), {
+                institutions: function () {
+                    return extractInstitutions(this.attendees);
+                }
             })
         };
 
@@ -306,6 +310,7 @@
             }),
             methods: {
                 updateQuery: function (val) {
+                    console.log(val);
                     this.q = val;
                 },
                 resetFilters: function () {
@@ -316,6 +321,7 @@
             },
             created: function () {
                 EventHub.$on('query-changed', this.updateQuery);
+                EventHub.$on('carousel-query-sent', this.updateQuery);
             }
         };
 
@@ -409,6 +415,9 @@
             props: ['sessionId'],
             computed: _.extend(
                 Vuex.mapState(['user', 'event', 'session']), {
+                institutions: function () {
+                    return extractInstitutions(this.attendees);
+                }
             }),
             methods: {
                 fetchAttendees: function () {

@@ -3,7 +3,7 @@
     <div v-if="user.isRegistered">
         <search-card placeholder="Search attendees by name, affiliation, country..." class="mb-2"></search-card>
         <div class="hipeac-card">
-            <user-viewer :users="attendees"></user-viewer>
+            <user-viewer :users="attendees" :institutions="institutions"></user-viewer>
         </div>
     </div>
 {% endverbatim %}

@@ -94,7 +94,11 @@ var ComponentStore = new Vuex.Store({
         },
         metadataDict: function (state) {
             return _.indexBy(state.metadata, 'id');
-        }
+        },
+        groupedMetadata: function (state) {
+            if (!state.metadata) return null;
+            return _.groupBy(state.metadata, 'type');
+        },
     }
 });
 
@@ -548,145 +552,6 @@ Vue.component('metadata-list', SimpleList.extend({
     ''
 }));
 
-Vue.component('user-viewer', {
-    data: function () {
-        return {
-            q: ''
-        }
-    },
-    props: {
-        eventName: {
-            type: String,
-            default: 'query-changed'
-        },
-        embedSearch: {
-            type: Boolean,
-            default: false
-        },
-        listType: {
-            type: String,
-            default: 'attendees'
-        },
-        users: {
-            type: Array
-        }
-    },
-    template: '' +
-        '<div v-if="users.length" class="row">' +
-            '<div class="col-12 col-md">' +
-                '<div v-if="embedSearch && users.length > 10" class="border-top border-bottom py-2 mb-4">' +
-                    '<search-box :eventName="eventName" placeholder="Search by name, affiliation, country..."></search-box>' +
-                '</div>' +
-                '<catchphrase v-html="overviewText" class="mb-4"></catchphrase>' +
-            '</div>' +
-            '<div class="col-12 col-md">' +
-                '<table class="table table-sm">' +
-                    '<tr v-for="user in sortedUsers" :key="user.id" :user="user" v-show="!filteredIds || filteredIds.indexOf(user.id) >= 0">' +
-                        '<td>' +
-                            '<marked-text :text="user.profile.name" :q="q"></marked-text>' +
-                            '<span v-if="user.profile.institution">' +
-                                ', <institution-icon :type="user.profile.institution.type" class="sm"></institution-icon> ' +
-                                '<small>{{ user.profile.institution.short_name }}</small>' +
-                            '</span>' +
-                            '<div v-show="listType == \'members\' && q != \'\'">' +
-                                '<ul v-if="user.affiliates" class="mt-2">' +
-                                    '<li v-for="aff in user.affiliates" class="text-sm">' +
-                                        '<marked-text :text="aff.profile.name" :q="q"></marked-text>' +
-                                    '</li>' +
-                                '</ul>' +
-                            '</div>' +
-                        '</td>' +
-                        '<td class="sm">' +
-                            '<a v-if="user.href" :href="user.href" target="_blank"><icon name="open_in_new" class="sm"></icon></a>' +
-                        '</td>' +
-                    '</tr>' +
-                '</table>' +
-            '</div>' +
-        '</div>' +
-        '<div v-else class="row">' +
-            '<div class="col-12 col-md">' +
-                '<skeleton-content></skeleton-content>' +
-            '</div>' +
-            '<div class="col-12 col-md">' +
-                '<skeleton-table class="m-0" :rows="10"></skeleton-table>' +
-            '</div>' +
-        '</div>' +
-    '',
-    computed: {
-        sortedUsers: function () {
-            if (!this.users) return [];
-            return this.users.slice().sort(function (a, b) {
-                return sort().text(a.profile.name, b.profile.name);
-            });
-        },
-        filteredIds: function () {
-            if (!this.users) return null;
-            return _.pluck(filterMultiple(this.sortedUsers, this.q), 'id');
-        },
-        filteredUsers: function () {
-            var ids = this.filteredIds;
-            if (!ids) return this.sortedUsers;
-            return this.sortedUsers.filter(function (obj) {
-                return ids.indexOf(obj.id) >= 0;
-            });
-        },
-        counters: function () {
-            var countries = _.without(_.keys(_.groupBy(this.filteredUsers, function (obj) {
-                return (obj.profile.institution && obj.profile.institution.country) ? obj.profile.institution.country.name : '--none--';
-            })), '--none--');
-            var institutions = _.without(_.keys(_.groupBy(this.filteredUsers, function (obj) {
-                return (obj.profile.institution) ? obj.profile.institution.name : '--none--';
-            })), '--none--');
-
-            return {
-                users: this.filteredUsers.length,
-                affiliates: _.reduce(this.filteredUsers, function (memo, obj) {
-                    return memo + ((obj.affiliates) ? obj.affiliates.length : 0);
-                }, 0),
-                institutions: institutions.length,
-                institution: (institutions.length == 1) ? institutions[0] : null,
-                countries: countries.length,
-                country: (countries.length == 1) ? countries[0] : null
-            }
-        },
-        overviewText: function () {
-            if (!this.users || (this.ids && this.ids.length == 0)) {
-                return (this.listType == 'attendees') ? 'No attendees found.' : 'No members found.';
-            }
-
-            var userText = (this.listType == 'attendees') ? 'attendees' : 'members';
-
-            return [
-                '<strong class="text-nowrap">',
-                (this.counters.users == 1)
-                    ? 'One ' + userText.substring(0, userText.length - 1)
-                    : this.counters.users + ' ' + userText + (
-                        (this.listType == 'members' && this.counters.affiliates)
-                            ? ' (' + this.counters.affiliates + ' affiliates)'
-                            : ''
-                        ),
-                '</strong> from <span class="text-nowrap">',
-                (this.counters.institution)
-                    ? this.counters.institution
-                    : this.counters.institutions + ' institutions',
-                '</span> in <span class="text-nowrap">',
-                (this.counters.country)
-                    ? this.counters.country
-                    : this.counters.countries + ' countries',
-                '</span>.'
-            ].join('');
-        }
-    },
-    methods: {
-        updateQuery: function (val) {
-            this.q = val;
-        }
-    },
-    created: function () {
-        EventHub.$on(this.eventName, this.updateQuery);
-    }
-});
-
 Vue.component('filter-label', {
     props: ['text', 'selected'],
     template: '' +
@@ -780,11 +645,17 @@ Vue.component('search-box', {
             }
         }, 250)
     },
+    methods: {
+        updateQuery: function (val) {
+            this.q = val;
+        }
+    },
     created: function () {
         if (this.$route.query.q) {
             this.q = this.$route.query.q;
             EventHub.$emit(this.eventName, this.q);
         }
+        EventHub.$on('carousel-query-sent', this.updateQuery);
     }
 });
 
@@ -990,7 +861,6 @@ Vue.component('open-jobs-row', {
             '</div>' +
             '<div class="col-12 col-lg-10">' +
                 '<job-cards :items="jobs" :ids="ids"></job-cards>' +
-                '<skeleton-cards v-else :number="4"></skeleton-cards>' +
             '</div>' +
         '</div>' +
     '',
@@ -1057,7 +927,6 @@ Vue.component('videos-row', {
             '</div>' +
             '<div class="col-12 col-lg-10">' +
                 '<video-cards :items="videos" :ids="ids"></video-cards>' +
-                '<skeleton-cards v-else :number="4"></skeleton-cards>' +
             '</div>' +
         '</div>' +
     '',

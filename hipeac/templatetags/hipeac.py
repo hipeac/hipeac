@@ -65,7 +65,7 @@ def metadata_output(ids, title, *, output_format: str = '<small>{0}</small><br>'
     metadata_items = get_cached_metadata()
 
     output = []
-    output.append(f'<div class="mb-4"><h5 class="display-sm">{title}</h5><p>')
+    output.append(f'<div class="mb-4"><h5 class="display-sm mb-2">{title}</h5><p>')
     for metadata in [metadata_items[key] for key in keys if key in metadata_items]:
         output.append(output_format.format(*[m(metadata.value) for m in maps]))
     output.append('</p></div>')

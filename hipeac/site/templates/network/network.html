@@ -43,9 +43,13 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src="{% static 'vendor/chart.js@2.8.0/chart.js' %}"></script>
+{% compress js file carousel %}
     <script src="{% static 'vendor/jcarousel@0.3.8/jquery.jcarousel.min.js' %}"></script>
     <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
-{% compress js inline %}
+{% endcompress %}
+{% compress js file network %}
+    <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
     <script>
         var Store = new Vuex.Store({
             state: {
@@ -59,12 +63,13 @@
                     ajax().get($('#urls').data('member-list')).done(function (res) {
                         var institutions = _.indexBy(res.institutions, 'id');
                         var affiliates = _.groupBy(_.map(res.affiliates, function (obj) {
-                            obj.profile.institution = institutions[obj.profile.institution];
+                            obj.profile.institution = institutions[obj.profile.institution] || null;
                             obj.advisor_id = obj.profile.advisor;
                             return obj;
                         }), 'advisor_id');
                         var users = _.map(res.members, function (obj) {
-                            obj.profile.institution = institutions[obj.profile.institution];
+                            obj.profile.institution = institutions[obj.profile.institution] || null;
+                            obj.profile.second_institution = institutions[obj.profile.second_institution] || null;
                             if (_.has(affiliates, obj.id)) {
                                 obj.affiliates = affiliates[obj.id];
                             }
@@ -99,7 +104,12 @@
         };
 
         var MembersView = {
-            template: '#v-members'
+            template: '#v-members',
+            created: function () {
+                $.when(
+                    this.$store.commit('fetchMembers')
+                );
+            }
         };
 
         var MembersMainView = {
@@ -111,12 +121,15 @@
                         return obj.images != null;
                     })), 30);
                 }
-            }),
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchMembers')
-                );
-            }
+            })
+        };
+
+        var MembersStatsView = {
+            template: '#v-members-stats',
+            computed: _.extend(
+                Vuex.mapState(['members', 'institutions']), {
+
+            })
         };
 
         var MembershipView = {
@@ -224,7 +237,7 @@
                     children: [
                         {
                             name: 'members',
-                            path: '',
+                            path: 'list/',
                             pathToRegexpOptions: {strict: true},
                             component: MembersMainView
                         },
@@ -233,6 +246,12 @@
                             path: 'membership/',
                             pathToRegexpOptions: {strict: true},
                             component: MembershipView
+                        },
+                        {
+                            name: 'members-stats',
+                            path: 'stats/',
+                            pathToRegexpOptions: {strict: true},
+                            component: MembersStatsView
                         }
                     ]
                 },

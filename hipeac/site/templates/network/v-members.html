@@ -7,12 +7,16 @@
     <div>
         <ul class="nav nav-tabs justify-content-center">
             <li class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'members'}" exact>
+                <a is="router-link" class="nav-link" :to="{name: 'members'}">
                     <icon name="line_weight" class="mr-1"></icon>Members list</a>
             </li>
             <li class="nav-item">
                 <a is="router-link" class="nav-link" :to="{name: 'membership'}" exact>
                     <icon name="accessibility_new" class="mr-1"></icon>Membership</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" class="nav-link" :to="{name: 'members-stats'}" exact>
+                    <icon name="insert_chart_outlined" class="mr-1"></icon>Stats</a>
             </li>
         </ul>
         <router-view></router-view>
@@ -28,7 +32,7 @@
         </div>
         <search-card placeholder="Search members by name, affiliation, country..." class="mb-2"></search-card>
         <div class="hipeac-card">
-            <user-viewer :users="members" listType="members"></user-viewer>
+            <user-viewer :users="members" :institutions="institutions" :show-affiliates="true"></user-viewer>
         </div>
     </div>
 {% endverbatim %}
@@ -51,6 +55,13 @@
                 <display-sm class="mt-4 mb-3">{{ how_to.header }}</display-sm>
                 <div class="marked">{{ how_to.content | markdown }}</div>
             </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="{{ id }}-stats">
+    <div class="hipeac-card mb-2">
+        <div >
         </div>
     </div>
 </script>

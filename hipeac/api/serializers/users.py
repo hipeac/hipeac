@@ -31,18 +31,26 @@ class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
 class ProfileMiniSerializer(ProfileSerializer):
     name = serializers.CharField(read_only=True)
     institution = InstitutionMiniSerializer(read_only=True)
+    topics = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ('name', 'country', 'institution', 'avatar_url')
+        fields = ('name', 'country', 'institution', 'avatar_url', 'topics')
+
+    def get_topics(self, obj):
+        return [int(t) for t in obj.topics.split(',')] if obj.topics else []
 
 
 class ProfileMembershipSerializer(ProfileSerializer):
     name = serializers.CharField(read_only=True)
+    topics = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ('name', 'institution', 'advisor')
+        fields = ('name', 'institution', 'second_institution', 'advisor', 'topics')
+
+    def get_topics(self, obj):
+        return [int(t) for t in obj.topics.split(',')] if obj.topics else []
 
 
 class ProfileNestedSerializer(ProfileSerializer):

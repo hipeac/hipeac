@@ -57,8 +57,9 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
         affiliates = self.queryset.filter(
             profile__membership_tags__contains='affiliated', profile__membership_revocation_date__isnull=True
         )
-        institution_ids = members.values_list('profile__institution_id', flat=True)
-        institutions = Institution.objects.filter(id__in=institution_ids)
+        institution_ids = list(members.values_list('profile__institution_id', flat=True))
+        second_institution_ids = list(members.values_list('profile__second_institution_id', flat=True))
+        institutions = Institution.objects.filter(id__in=institution_ids+second_institution_ids)
         ctx = {'request': request}
         return Response({
             'institutions': InstitutionNestedSerializer(institutions, many=True, context=ctx).data,

@@ -5,6 +5,10 @@ from django.db.models import Q
 from django_countries.fields import CountryField
 
 
+"""class PublicationEvent(models.Model):
+    pass"""
+
+
 class PublicationConference(models.Model):
     """
     Conferences taken in account for HiPEAC Paper Awards.

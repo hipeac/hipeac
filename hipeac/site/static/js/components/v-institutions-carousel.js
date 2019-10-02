@@ -1,6 +1,10 @@
 Vue.component('institutions-carousel', {
     props: ['institutions'],
     props: {
+        eventName: {
+            type: String,
+            default: 'carousel-query-sent'
+        },
         institutions: {
             type: Array
         },
@@ -14,9 +18,9 @@ Vue.component('institutions-carousel', {
             '<div ref="carousel" class="carousel-logos">' +
                 '<ul>' +
                     '<li v-for="institution in institutions" :key="institution.id">' +
-                        '<router-link :to="{name: targetRoute, query: { q: institution.short_name}}">' +
+                        '<a @click="emitQuery(institution.short_name)" class="pointer">' +
                             '<span :style="{\'background-image\': \'url( \'+ institution.images.md + \')\' }"></span>' +
-                        '</router-link>' +
+                        '</a>' +
                     '</li>' +
                 '</ul>' +
             '</div>' +
@@ -24,6 +28,9 @@ Vue.component('institutions-carousel', {
         '<loading v-else></loading>' +
     '',
     methods: {
+        emitQuery: function (val) {
+            EventHub.$emit(this.eventName, val);
+        },
         initCarousel: function () {
             $(this.$refs.carousel).jcarousel({
                 auto: 0.001,

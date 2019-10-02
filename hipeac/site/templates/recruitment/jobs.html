@@ -49,8 +49,10 @@
 {% endblock %}
 
 {% block scripts %}
+{% compress js file carousel %}
     <script src="{% static 'vendor/jcarousel@0.3.8/jquery.jcarousel.min.js' %}"></script>
     <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
+{% endcompress %}
 {% compress js inline %}
     <script>
         var Store = new Vuex.Store({
@@ -89,7 +91,15 @@
                         return obj.images == null;
                     }));
                 }
-            })
+            }),
+            methods: {
+                filterJobs: function (val) {
+                    this.$router.push({name: 'jobs', query: { q: val}});
+                }
+            },
+            created: function () {
+                EventHub.$on('carousel-query-sent', this.filterJobs);
+            }
         };
 
         var CareerCenterView = {

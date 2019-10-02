@@ -16,7 +16,7 @@
             </div>
             <div class="col-12 col-md-4">
                 <hr class="my-4 d-md-none">
-                {{ profile.topics | metadata_badges:'Topics of interest' }}
+                {{ profile.topics | metadata_badges:'Research topics' }}
                 {{ profile.application_areas | metadata_list:'Application areas' }}
                 {% include 'components/links.html' with title='External links' items=profile.get_ordered_links %}
             </div>

@@ -191,7 +191,8 @@ function mapper() {
         },
         users: function (items) {
             return items.map(function (obj) {
-                institution = obj.profile.institution
+                institution = obj.profile.institution;
+                second_institution = obj.profile.second_institution || null;
                 obj.q = [
                     obj.profile.name,
                     (institution)
@@ -199,17 +200,11 @@ function mapper() {
                         : '',
                     (institution && institution.country)
                         ? institution.country.name
-                        : ''
+                        : '',
+                    (second_institution)
+                        ? second_institution.name
+                        : '',
                 ].join(' ').toLowerCase();
-
-                if (_.has(obj, 'affiliates')) {
-                    _.each(obj.affiliates, function (aff) {
-                        obj.q = [
-                            obj.q,
-                            aff.profile.name.toLowerCase()
-                        ].join(' ');
-                    });
-                }
 
                 return obj;
             });

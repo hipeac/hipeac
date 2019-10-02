@@ -54,6 +54,15 @@ function extractMetadata(items, field) {
     });
 }
 
+function extractInstitutions(users) {
+    if (!users) return [];
+    return _.uniq(users.filter(function (obj) { return obj.profile && obj.profile.institution; }).map(function (obj) {
+        return obj.profile.institution;
+    }), function (obj) {
+        return obj.id;
+    });
+}
+
 function storage() {
     var ls = window.localStorage;
 
