@@ -42,9 +42,10 @@ class Notificator:
 
 def parse_notification(notification: Notification):
     from .events import RegistrationPendingNotificator
-    from .users import LinkedInNotificator, ResearchTopicsPendingNotificator
+    from .users import IndustryMembershipNotificator, LinkedInNotificator, ResearchTopicsPendingNotificator
 
     notification_class = {
+        IndustryMembershipNotificator.category: IndustryMembershipNotificator,
         LinkedInNotificator.category: LinkedInNotificator,
         RegistrationPendingNotificator.category: RegistrationPendingNotificator,
         ResearchTopicsPendingNotificator.category: ResearchTopicsPendingNotificator,

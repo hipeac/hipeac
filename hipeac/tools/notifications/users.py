@@ -11,6 +11,51 @@ from hipeac.models import Notification
 from .generic import Notificator
 
 
+class IndustryMembershipNotificator(Notificator):
+    category = 'industry_membership'
+    discard = True
+
+    def deleteOne(self, *, user_id: int) -> None:
+        Notification.objects.filter(category=self.category, user_id=user_id).delete()
+
+    def process_data(self):
+        self.delete()
+        bulk_notifications = []
+        deadline = timezone.now() + datetime.timedelta(days=1)
+
+        with connection.cursor() as cursor:
+            query = """
+                SELECT u.id AS user_id
+                FROM auth_user AS u
+                INNER JOIN hipeac_profile AS p ON u.id = p.user_id
+                INNER JOIN hipeac_institution AS i ON p.institution_id = i.id
+                WHERE i.type IN ('industry', 'sme')
+                    AND p.membership_tags NOT LIKE '%member%'
+            """
+            cursor.execute(query)
+
+            for result in cursor.fetchall():
+                bulk_notifications.append((
+                    self.category,  # category
+                    result[0],  # user_id
+                    result[0],  # object_id == user_id
+                    self.to_json({  # data
+                        'discard_id': result[0],
+                    }),
+                    deadline,  # deadline
+                ))
+
+        self.insert(bulk_notifications)
+
+    def parse_notification(self, notification: Notification) -> Dict[str, Any]:
+        return {
+            'text': 'HiPEAC is always open to new members from industry. '
+                    'HiPEAC membership is FREE and keeps you informed, supported and connected. '
+                    'Become a Member now!',
+            'path': '/membership/',
+        }
+
+
 class LinkedInNotificator(Notificator):
     category = 'linkedin_account'
     discard = True
