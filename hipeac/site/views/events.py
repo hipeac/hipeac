@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from django.template.defaultfilters import date as date_filter
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views import generic
 
 from hipeac.models import Event, Roadshow, Registration, Coupon, SessionProposal
@@ -39,9 +40,12 @@ class EventDetail(SlugMixin, generic.DetailView):
         return self.object
 
     def dispatch(self, request, *args, **kwargs):
-        redirect_url = self.get_object().redirect_url
-        if redirect_url:
-            return redirect(redirect_url)
+        try:
+            redirect_url = self.get_object().redirect_url
+            if redirect_url:
+                return redirect(redirect_url)
+        except Exception as e:
+            return redirect(reverse_lazy('events'))
         return super().dispatch(request, *args, **kwargs)
 
 
