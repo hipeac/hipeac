@@ -16,14 +16,18 @@ admin.site.unregister(get_user_model())
 
 def send_profile_update_reminders(queryset):
     for instance in queryset:
+        profile = instance.profile
         email = (
             'users.profile.update_reminder',
-            'Update your HiPEAC profile',
+            'Update your HiPEAC profile: affiliation, research interests',
             'HiPEAC <management@hipeac.net>',
-            [instance.user.email],
+            [instance.email],
             {
-                'username': instance.user.username,
-                'user_name': instance.name,
+                'username': instance.username,
+                'user_name': profile.name,
+                'institution': profile.institution.name if profile.institution else '(none)',
+                'second_institution': profile.second_institution.name if profile.second_institution else '(none)',
+                'topics': profile.get_metadata_display('topics') if profile.topics != '' else '(none)',
             }
         )
         send_task('hipeac.tasks.emails.send_from_template', email)
@@ -133,6 +137,7 @@ class UserAdmin(AuthUserAdmin):
         return obj.profile.institution
 
     def send_profile_update_reminder(self, request, queryset):
+        queryset = queryset.prefetch_related('profile__second_institution')
         send_profile_update_reminders(queryset)
         admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
     send_profile_update_reminder.short_description = ('[Mailer] Send profile update reminder')

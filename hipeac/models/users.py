@@ -15,7 +15,7 @@ from hashlib import md5
 
 from hipeac.functions import get_images_path, send_task
 from hipeac.models import Metadata
-from .mixins import ImagesMixin, LinkMixin
+from .mixins import ImagesMixin, LinkMixin, MetadataMixin
 
 
 def validate_membership_tags(value: str):
@@ -42,7 +42,7 @@ class ProfileManager(models.Manager):
         return self.filter(user__is_active=True)
 
 
-class Profile(ImagesMixin, LinkMixin, models.Model):
+class Profile(ImagesMixin, LinkMixin, MetadataMixin, models.Model):
     """
     Extends Django User model with extra profile fields.
     """

@@ -70,6 +70,7 @@ class MetadataMixin:
 
     def get_metadata_display(self, field_name: str, separator: str = ', ') -> str:
         metadata = [str(m) for m in self.get_metadata(field_name)]
+        metadata.sort()
         return separator.join(metadata)
 
 
