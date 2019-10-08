@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.contrib.auth import get_user_model
 from django.db.models import Count
 from django.forms import ModelForm
 from django.urls import reverse
@@ -238,8 +239,11 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     def send_profile_update_reminder(self, request, queryset):
         user_ids = queryset.values_list('user_id', flat=True)
-        profiles = Profile.objects.filter(user_id__in=user_ids)
-        send_profile_update_reminders(profiles)
+        users = get_user_model().objects.filter(id__in=user_ids) \
+                                .select_related('profile') \
+                                .prefetch_related('profile__institution') \
+                                .prefetch_related('profile__second_institution')
+        send_profile_update_reminders(users)
         admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
     send_profile_update_reminder.short_description = ('[Mailer] Send profile update reminder')
 
