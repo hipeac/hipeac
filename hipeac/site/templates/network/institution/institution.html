@@ -82,19 +82,19 @@
                 <div class="col-12 col-lg-10">
                     <div class="hipeac-card">
                         <ul class="logos text-left">
-                        {% if institution.coordinated_projects.count %}
-                            {% for project in institution.coordinated_projects.all %}
+                        {% if institution.coordinated_projects.non_erc.count %}
+                            {% for project in institution.coordinated_projects.non_erc %}
                                 <li>
                                     <a href="{{ project.get_absolute_url }}" class="inherit">
                                         <img src="{{ project.images.sm }}" title="{{ project.acronym }}">
                                     </a>
                                 </li>
                             {% endfor %}
-                            {% if institution.participated_projects.count %}
+                            {% if institution.participated_projects.non_erc.count %}
                                 </ul><hr class="my-4"><ul class="logos text-left">
                             {% endif %}
                         {% endif %}
-                        {% for project in institution.participated_projects.all %}
+                        {% for project in institution.participated_projects.non_erc %}
                             <li>
                                 <a href="{{ project.get_absolute_url }}" class="inherit">
                                     <img src="{{ project.images.sm }}" title="{{ project.acronym }}">

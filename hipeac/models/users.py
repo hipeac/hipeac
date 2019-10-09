@@ -82,9 +82,10 @@ class Profile(ImagesMixin, LinkMixin, MetadataMixin, models.Model):
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='profiles')
     links = GenericRelation('hipeac.Link')
-    objects = ProfileManager()
 
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = ProfileManager()
 
     class Meta:
         indexes = [

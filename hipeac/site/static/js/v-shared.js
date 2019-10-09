@@ -777,7 +777,7 @@ Vue.component('project-cards', SimpleList.extend({
                     '<h6 class="title mb-auto">{{ item.acronym }}: {{ item.name }}</h6>' +
                     '<ul class="list-unstyled text-secondary">' +
                         '<li v-if="item.start_date && item.end_date">' +
-                            '<strong v-if="item.isNew" class="new float-right">New</strong>' +
+                            '<strong v-if="item.isNew" class="bg-new float-right">New</strong>' +
                             '<icon name="today" class="sm"></icon>' +
                             '<span class="deadline">{{ item.start_date | moment }} - {{ item.end_date | moment }}</span>' +
                         '</li>' +
@@ -818,7 +818,7 @@ Vue.component('job-cards', SimpleList.extend({
                         '<li v-if="item.internship" class="text-primary "><icon name="info" class="sm"></icon>' +
                             '<strong>Internship</strong></li>' +
                         '<li>' +
-                            '<strong v-if="item.isNew" class="new float-right">New</strong>' +
+                            '<strong v-if="item.isNew" class="bg-new float-right">New</strong>' +
                             '<icon name="today" class="sm"></icon>' +
                             '<span class="deadline">{{ item.deadline | moment }}</span>' +
                         '</li>' +

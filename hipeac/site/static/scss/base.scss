@@ -145,6 +145,10 @@ a {
     background: $hipeac-yellow !important;
 }
 
+.bg-new {
+    background: $hipeac-light-yellow !important;
+}
+
 .bg-light-yellow {
     background: $lightest-yellow-color !important;
 }
@@ -415,6 +419,8 @@ span.avatar {
 }
 
 .logo-sm {
+    height: 24px;
+
     &.hipeac {
         width: 50px;
     }

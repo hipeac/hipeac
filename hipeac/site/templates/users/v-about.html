@@ -1,25 +1,61 @@
 {% load hipeac %}
+{% load static %}
 
 
 <script type="text/x-template" id="{{ id }}">
-    <div class="hipeac-card">
-        <div class="row">
-            <div class="col-12 col-md-8 pr-md-5">
-                {% if profile.membership %}
-                    <h5 class="catchphrase mb-3">HiPEAC <strong>{{ profile.membership }}</strong>{% if profile.membership_date %} since {{ profile.membership_date | date:'F Y' }}{% endif %}.</h5>
-                {% endif %}
-                {% if profile.bio %}
-                    <div class="marked">
-                        {{ profile.bio | markdown }}
-                    </div>
-                {% endif %}
-            </div>
-            <div class="col-12 col-md-4">
-                <hr class="my-4 d-md-none">
-                {{ profile.topics | metadata_badges:'Research topics' }}
-                {{ profile.application_areas | metadata_list:'Application areas' }}
-                {% include 'components/links.html' with title='External links' items=profile.get_ordered_links %}
+    <div>
+        <div class="hipeac-card">
+            <div class="row">
+                <div class="col-12 col-md-8 pr-md-5">
+                    <p class="text-sm">
+                    {% if profile.institution %}
+                        <a href="{{ profile.institution.get_absolute_url }}" class="inherit">
+                            <institution-icon type="{{ profile.institution.type }}" class="sm mr-2"></institution-icon>{{ profile.institution.name }}</a>
+                    {% endif %}
+                    {% if profile.second_institution %}
+                        <br><a href="{{ profile.second_institution.get_absolute_url }}" class="inherit">
+                            <institution-icon type="{{ profile.second_institution.type }}" class="sm mr-2"></institution-icon>{{ profile.second_institution.name }}</a>
+                    {% endif %}
+                    </p>
+                    {% if profile.membership %}
+                        <h5 class="catchphrase mb-3">HiPEAC <strong>{{ profile.membership }}</strong>{% if profile.membership_date %} since {{ profile.membership_date | date:'F Y' }}{% endif %}.</h5>
+                    {% endif %}
+                    {% if profile.bio %}
+                        <div class="marked">
+                            {{ profile.bio | markdown }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-12 col-md-4">
+                    <hr class="my-4 d-md-none">
+                    {{ profile.topics | metadata_badges:'Research topics' }}
+                    {{ profile.application_areas | metadata_list:'Application areas' }}
+                    {% include 'components/links.html' with title='External links' items=profile.get_ordered_links %}
+                </div>
             </div>
         </div>
+        {% if profile.projects.erc_only.count %}
+            <div class="hipeac-card">
+                <img class="float-right logo-sm ml-3 mb-2" src="{% static 'images/erc.png' %}">
+                <display-sm class="mb-3">ERC Consolidator Grants</display-sm>
+                <table class="table table-sm mb-0">
+                {% for erc in profile.projects.erc_only %}
+                    <tr>
+                        <td class="pl-0">
+                            <span class="mr-1">{{ erc.acronym }} </span>
+                            <small class="text-secondary">{{ erc.name }}</small>
+                        </td>
+                        <td class="text-sm text-right text-secondary align-middle">
+                            {% if erc.is_active %}<strong class="bg-new mr-2">Active</strong>{% endif %}
+                            <span>{{ erc.start_date | date:'N Y' }} - {{ erc.end_date | date:'N Y' }}</span>
+                        </td>
+                        <td class="text-right align-middle pr-0">
+                            <a href="{{ erc.get_absolute_url }}"><i class="material-icons sm">arrow_forward</i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+        {% endif %}
     </div>
 </script>
