@@ -48,7 +48,7 @@
                 <div class="media mb-4">
                     <img :src="session.main_speaker.profile.avatar_url" class="rounded-circle mr-3">
                     <div class="media-body">
-                        <h6 class="mt-0">{{ session.main_speaker.profile.name }}</h6>
+                        <h6 class="mt-0 mb-1">{{ session.main_speaker.profile.name }}</h6>
                         <p v-if="session.main_speaker.profile.institution" class="text-sm">{{ session.main_speaker.profile.institution.name }}<br>{{ session.main_speaker.profile.institution.country.name }}</p>
                     </div>
                 </div>

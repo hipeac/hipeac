@@ -181,6 +181,7 @@ function mapper() {
                 obj.endAt = obj.end_at.substring(0, 5);
                 obj.applicationAreaIds = _.pluck(obj.application_areas, 'id');
                 obj.topicIds = _.pluck(obj.topics, 'id');
+                obj.isKeynote = obj.session_type.value == 'Keynote';
                 obj.q = [
                     getMetadataString(obj),
                     obj.title,

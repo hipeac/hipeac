@@ -277,7 +277,11 @@
                 }
             },
             computed: _.extend(
-                Vuex.mapState(['event']), {
+                Vuex.mapState(['event', 'keynotes']), {
+                keynotesDict: function () {
+                    if (!this.keynotes.length) return {};
+                    return _.indexBy(this.keynotes, 'id');
+                },
                 filteredSessionIds: function () {
                     if (!this.event) return [];
                     var filters = this.filters;
@@ -320,6 +324,7 @@
                 }
             },
             created: function () {
+                this.$store.commit('fetchKeynotes');
                 EventHub.$on('query-changed', this.updateQuery);
                 EventHub.$on('carousel-query-sent', this.updateQuery);
             }
