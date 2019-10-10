@@ -4,6 +4,7 @@ from ._legacy import *
 
 from .project import *
 
+from .awards import *
 from .communication import *
 from .editor import *
 from .events import *

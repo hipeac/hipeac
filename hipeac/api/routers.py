@@ -9,6 +9,10 @@ class Router(DefaultRouter):
 
         self.schema_title = f'HiPEAC API {version}'
 
+        self.register(r'awards/paper-awards', views.PaperAwardViewSet, basename='paper-award')
+        self.register(r'awards/paper-awards/conferences', views.PublicationConferenceViewSet,
+                      basename='publication-conference')
+        self.register(r'awards/tech-transfer', views.TechTransferViewSet, basename='tech-transfer')
         self.register(r'events/events', views.EventViewSet, basename='event')
         self.register(r'events/roadshows', views.RoadshowViewSet, basename='roadshow')
         self.register(r'events/sessions', views.SessionViewSet, basename='session')
@@ -23,9 +27,6 @@ class Router(DefaultRouter):
         self.register(r'network/institutions', views.InstitutionViewSet, basename='institution')
         self.register(r'network/members', views.MemberViewSet, basename='member')
         self.register(r'network/projects', views.ProjectViewSet, basename='project')
-        self.register(r'research/paper-awards', views.PaperAwardViewSet, basename='paper-award')
-        self.register(r'research/paper-awards/conferences', views.PublicationConferenceViewSet,
-                      basename='publication-conference')
         self.register(r'user', views.AuthUserViewSet, basename='auth-user')
         self.register(r'user/registrations', views.RegistrationViewSet, basename='auth-registration')
         self.register(r'users', views.UserViewSet, basename='user')

@@ -1,23 +1,20 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
-from django.utils import timezone
+
+from hipeac.functions import send_task
+from hipeac.site.emails.awards import TechTransferApplicationEmail
 
 
 class TechTransferApplication(models.Model):
     """
     A technology transfer example eligible for a Technology Transfer Award.
     """
-    STATUS_CHOICES = (
-        ('OK', 'Awarded'),
-        ('NO', 'Rejected'),
-        ('UN', 'Pending'),
-    )
-
     call = models.ForeignKey('hipeac.TechTransferCall', related_name='applications', on_delete=models.CASCADE)
     applicant = models.ForeignKey('auth.User', related_name='technology_transfer_award_applications', null=True,
                                   on_delete=models.SET_NULL)
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='UN')
     title = models.CharField(max_length=250)
     description = models.TextField('Description of the technology being transferred')
     partners_description = models.TextField('Description of the academic partners and the company involved')
@@ -26,6 +23,8 @@ class TechTransferApplication(models.Model):
                                   help_text='Team members that will receive an award (certificate).')
 
     team_string = models.TextField('Team (text)', null=True, blank=True)
+
+    awarded = models.BooleanField(default=None, null=True)
     awardee = models.OneToOneField('auth.User', null=True, blank=True, on_delete=models.SET_NULL,
                                    related_name='technology_transfer_financial_award')
     awarded_summary = models.TextField('Summary', null=True, help_text='Summary, if awarded, to show online.')
@@ -51,7 +50,11 @@ class TechTransferApplication(models.Model):
         return self.title
 
     def get_absolute_url(self) -> str:
-        return reverse('research:techtransfer_detail', args=[self.id])
+        return reverse('techtransfer_update', args=[self.id])
 
-    def is_awarded(self) -> bool:
-        return self.status == 'OK'
+
+@receiver(post_save, sender=TechTransferApplication)
+def session_proposal_post_save(sender, instance, created, *args, **kwargs):
+    if created:
+        email = TechTransferApplicationEmail(instance=instance)
+        send_task('hipeac.tasks.emails.send_from_template', email.data)

@@ -4,7 +4,7 @@
 {% load static %}
 
 
-{% block head_title %}The Network - {{ block.super }}{% endblock %}
+{% block head_title %}Awards - {{ block.super }}{% endblock %}
 
 {% block subtitle %}{{ flatpage.title }}{% endblock %}
 
@@ -12,16 +12,20 @@
     <li class="nav-item">
         <a is="router-link" :to="{name: 'paper-awards'}" class="nav-link">Paper Awards</a>
     </li>
+    <li class="nav-item">
+        <a is="router-link" :to="{name: 'tech-transfer'}" class="nav-link">Tech Transfer</a>
+    </li>
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-publication-conference-list="{% url 'v1:publication-conference-list' %}" data-paper-award-list="{% url 'v1:paper-award-list' %}" class="container">
+    <div id="urls" data-publication-conference-list="{% url 'v1:publication-conference-list' %}" data-paper-award-list="{% url 'v1:paper-award-list' %}" data-tech-transfer-call="{% url 'v1:tech-transfer-call' %}" data-tech-transfer-list="{% url 'v1:tech-transfer-list' %}" class="container">
         <div is="router-view"></div>
     </div>
 {% endblock %}
 
 {% block vue_templates %}
     {% include './v-paper-awards.html' with id='v-paper-awards' blck=flatpage.page.tbs.paper_awards %}
+    {% include './v-tech-transfer.html' with id='v-tech-transfer' blck=flatpage.page.tbs.tech_transfer %}
 {% endblock %}
 
 {% block scripts %}
@@ -106,6 +110,70 @@
             }
         };
 
+        var TechTransferView = {
+            template: '#v-tech-transfer',
+            props: ['year'],
+            data: function () {
+                return {
+                    call: undefined,
+                    techTransfers: []
+                };
+            },
+            computed: {
+                years: function () {
+                    if (!this.techTransfers.length) return [];
+                    return _.uniq(_.pluck(this.techTransfers, 'year')).sort().reverse();
+                },
+                selectedTechTransfers: function () {
+                    if (!this.techTransfers.length || !this.year) return [];
+                    var year = this.year;
+                    return _.sortBy(this.techTransfers.filter(function (obj) {
+                        return obj.year == year;
+                    }), 'title');
+                }
+            },
+            methods: {
+                fetchCall: function () {
+                    var self = this;
+                    ajax().get($('#urls').data('tech-transfer-call')).done(function (res) {
+                        if (res.start_date) {
+                            self.call = Object.freeze(res);
+                        } else {
+                            self.call = null;
+                        }
+                    });
+                },
+                fetchTechTransfers: function () {
+                    var self = this;
+                    ajax().get($('#urls').data('tech-transfer-list')).done(function (res) {
+                        self.techTransfers = Object.freeze(res);
+                    });
+                },
+                redirect: function () {
+                    var self = this;
+
+                    if (!this.years.length || this.call === undefined) {
+                        setTimeout(function () { self.redirect(); }, 25);
+                        return;
+                    };
+
+                    this.$router.push({
+                        name: 'tech-transfer',
+                        params: {
+                            year: (_.isObject(this.call)) ? 'call' : +this.years[0],
+                        }
+                    });
+                }
+            },
+            created: function () {
+                this.fetchCall();
+                this.fetchTechTransfers();
+            },
+            mounted: function () {
+                if (!this.year) this.redirect();
+            }
+        };
+
         var Router = new VueRouter({
             linkActiveClass: 'active',
             routes: [
@@ -118,6 +186,13 @@
                     path: '/paper-awards/:year?/',
                     pathToRegexpOptions: {strict: true},
                     component: PaperAwardsView,
+                    props: true
+                },
+                {
+                    name: 'tech-transfer',
+                    path: '/tech-transfer/:year?/',
+                    pathToRegexpOptions: {strict: true},
+                    component: TechTransferView,
                     props: true
                 }
             ]

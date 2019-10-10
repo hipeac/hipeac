@@ -1,6 +1,5 @@
 from captcha.fields import ReCaptchaField
 from crispy_forms.helper import FormHelper
-from django import forms
 from django.conf import settings
 
 from hipeac.forms import SessionProposalForm as BaseSessionProposalForm

@@ -36,6 +36,11 @@ urlpatterns = [
     re_path(r'^network/institutions/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$',
             views.InstitutionDetail.as_view(), name='institution'),
     re_path(r'^network/projects/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ProjectDetail.as_view(), name='project'),
+    # Awards
+    path('awards/', flatpage, {'url': '/awards/'}, name='awards'),
+    path('awards/tech-transfer/create/', views.TechTransferApplicationCreateView.as_view(), name='techtransfer_create'),
+    path('awards/tech-transfer/update/<int:pk>/', views.TechTransferApplicationUpdateView.as_view(),
+         name='techtransfer_update'),
     # Communication
     path('news/', flatpage, {'url': '/news/'}, name='news'),
     path('news/feed/', views.NewsFeed(), name='news_feed'),
@@ -44,8 +49,6 @@ urlpatterns = [
     path('magazine/<int:pk>/', views.MagazineDownload.as_view(), name='magazine_download'),
     path('vision/', flatpage, {'url': '/vision/'}, name='vision'),
     path('vision/<int:year>/', views.VisionDownload.as_view(), name='vision_download'),
-    # Research
-    path('research/', flatpage, {'url': '/research/'}, name='research'),
     # Events
     path('events/', flatpage, {'url': '/events/'}, name='events'),
     path('s/<int:pk>/', never_cache(views.SessionProposalCreate.as_view()), name='session_proposals'),
@@ -76,7 +79,6 @@ urlpatterns = [
     re_path(r'media/private(?P<path>((/\w+?)+/))(?P<filename>[\w.-]+)', views.FirewallView.as_view()),
     # Old redirects and legacy links
     path('jobs/internships/awardees/', views.InternshipAwardees.as_view(), name='_legacy_internships_awardees'),
-    path('research/technology-transfer-awards/', views.TechTransferAwards.as_view(), name='_legacy_tt_awards'),
     re_path(r'^press/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ArticleRedirect.as_view()),
     # Sitemap
     path('sitemap.xml', sitemap_views.index, {'sitemaps': sitemaps}),

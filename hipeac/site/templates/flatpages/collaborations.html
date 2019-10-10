@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}Collaboration Grants - {{ block.super }}{% endblock %}
+
+
+{% block subtitle %}HiPEAC Collaboration Grants{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="display-block mb-5">
+            <h2 class="display display-lg"><span>{{ flatpage.page.tbs.about.header }}</span></h2>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="hipeac-card">
+                    {% if flatpage.page.tbs.easychair_url.content != '#' %}
+                        <a href="{{ flatpage.page.tbs.easychair_url.content }}" target="_blank" class="btn btn-sm btn-block btn-primary text-wrap"><i class="material-icons mr-1">add</i>{{ flatpage.page.tbs.easychair_url.header }}</a>
+                    {% endif %}
+                    <a href="https://www.hipeac.net/media/public/drop-box/HiPEAC-collaboration-grant--application.docx" target="_blank" class="btn btn-sm btn-block btn-outline-secondary text-wrap"><i class="material-icons mr-1">get_app</i>Download application form</a>
+                    <hr class="my-4">
+                    <h6 class="display display-sm text-left m-0 mb-3 transparent">What are Collaboration Grants?</h6>
+                    <div class="marked">{{ flatpage.page.tbs.about.content | markdown }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="hipeac-card text-sm">
+                    <h6 class="display display-sm text-left m-0 mb-3 transparent">{{ flatpage.page.tbs.faq.header }}</h6>
+                    <div class="marked">{{ flatpage.page.tbs.faq.content | markdown }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+    <script>
+        new Vue({
+            el: '#vue'
+        });
+    </script>
+{% endcompress %}
+{% endblock %}

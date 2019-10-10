@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from hipeac.models import Publication, PublicationConference
+from hipeac.models import Publication, PublicationConference, TechTransferCall, TechTransferApplication
 from .generic import CustomChoiceField
 
 
@@ -28,3 +28,23 @@ class PublicationListSerializer(PublicationSerializer):
     class Meta:
         model = Publication
         exclude = ('authors',)
+
+
+class TechTransferCallSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TechTransferCall
+        exclude = ('is_frozen',)
+
+
+class TechTransferApplicationSerializer(serializers.ModelSerializer):
+    call = serializers.StringRelatedField()
+    year = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = TechTransferApplication
+        exclude = ('created_at', 'applicant', 'awardee', 'awarded_from', 'awarded_to',
+                   'description', 'partners_description', 'value', 'team')
+
+    def get_year(self, obj) -> int:
+        return obj.call.year

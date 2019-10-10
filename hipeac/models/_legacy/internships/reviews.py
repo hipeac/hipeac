@@ -10,8 +10,7 @@ class InternshipReview(models.Model):
     comments = models.TextField()
     feedback = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey('auth.User', related_name='internship_reviews', null=True,
-                                   on_delete=models.SET_NULL)
+    created_by = models.ForeignKey('auth.User', related_name='internship_reviews', null=True, on_delete=models.SET_NULL)
 
     def reviewer(self):
         return self.created_by

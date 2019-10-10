@@ -1,0 +1,16 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block body %}
+Dear {{ user_name }},
+
+We have correctly received your Technology Transfer application:
+"{{ application_title }}".
+
+All applications will be screened and ranked by a small HiPEAC internal committee which will not disclose any information to the outside world. The only information that will eventually be disclosed in case of acceptance is the citation of the award and the names of the people involved. This means that if you cannot make these data public within an ongoing or recently completed technology transfer, you cannot get the award.
+
+You can view/update your application here:
+https://www.hipeac.net{{ application_url }}
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}

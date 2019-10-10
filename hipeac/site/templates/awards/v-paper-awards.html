@@ -28,9 +28,9 @@
                             <router-link v-for="year in years.slice(5)" :key="year" :to="{name: 'paper-awards', params: {year: year}}" class="dropdown-item">{{ year }}</router-link>
                         </div>
                     </li>
-                    <li class="nav-item ml-auto">
+                    <!-- <li class="nav-item ml-auto">
                         <a href="" class="nav-link"><icon name="insert_chart_outlined" class="sm text-success"></icon></a>
-                    </li>
+                    </li>-->
                 </ul>
                 <div v-if="selectedPaperAwards" class="hipeac-card after-tabs">
                     <div v-for="(papers, conf) in selectedPaperAwards" :key="conf">
