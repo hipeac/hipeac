@@ -86,7 +86,7 @@ Vue.component('user-viewer', {
             type: Boolean,
             default: false
         },
-        showAffiliates: {
+        isMemberList: {
             type: Boolean,
             default: false
         },
@@ -142,7 +142,7 @@ Vue.component('user-viewer', {
                         '<td v-if="selectedUser == user.id" @click="selectedUser = 0" class="pointer">' +
                             '<icon name="expand_less" class="sm mr-2"></icon>' +
                             '{{ user.profile.name }}' +
-                            '<user-viewer-detail v-if="selectedUser == user.id" :user="user" :show-affiliates="showAffiliates"></user-viewer-detail>' +
+                            '<user-viewer-detail v-if="selectedUser == user.id" :user="user" :show-affiliates="isMemberList"></user-viewer-detail>' +
                         '</td>' +
                         '<td v-else @click="selectedUser = user.id" class="pointer">' +
                             '<icon name="expand_more" class="sm mr-2"></icon>' +
@@ -253,10 +253,10 @@ Vue.component('user-viewer', {
         },
         overviewText: function () {
             if (!this.users || (this.ids && this.ids.length == 0)) {
-                return (this.listType == 'attendees') ? 'No attendees found.' : 'No members found.';
+                return (!this.isMemberList) ? 'No attendees found.' : 'No members found.';
             }
 
-            var userText = (this.listType == 'attendees') ? 'attendees' : 'members';
+            var userText = (!this.isMemberList) ? 'attendees' : 'members';
 
             return [
                 '<strong class="text-nowrap">',
