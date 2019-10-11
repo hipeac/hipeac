@@ -17,7 +17,7 @@ Vue.component('user-viewer-topics', {
             var metadata = this.metadataDict;
             return this.topics.map(function (id) {
                 return metadata[id].value;
-            }).join(', ');
+            }).sort().join(', ');
         }
     })
 });
