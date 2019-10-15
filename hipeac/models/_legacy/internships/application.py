@@ -41,6 +41,7 @@ class InternshipApplication(models.Model):
         Validates the model before saving.
         This rules only apply when creating a new object.
         """
+        """ TODO!
         if not self.pk:
             # 1: A student must be studing in an European institution.
             eu_countries = HipeacCountries()
@@ -67,6 +68,8 @@ class InternshipApplication(models.Model):
             if applications_within_institution > 1:
                 raise ValidationError('Sorry, but a student can only apply to 2 internships within a company in the '
                                       'same call.')
+        """
+        pass
 
     def __str__(self):
         return f'{self.applicant().profile.name} (to {self.internship.institution})'
