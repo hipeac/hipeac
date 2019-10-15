@@ -854,7 +854,7 @@ Vue.component('job-cards', SimpleList.extend({
                             '<span v-if="item.country">{{ item.country.name }}</span>' +
                         '</li>' +
                         '<li><icon name="how_to_reg" class="sm"></icon><metadata-join :items="item.career_levels"></metadata-join></li>' +
-                        '<li><icon name="label" class="sm"></icon><metadata-join :items="item.topics"></metadata-join></li>' +
+                        '<li v-if="item.topics.length"><icon name="label" class="sm"></icon><metadata-join :items="item.topics"></metadata-join></li>' +
                     '</ul>' +
                 '</div>' +
             '</div>' +

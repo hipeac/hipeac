@@ -124,7 +124,7 @@
             data: function () {
                 return {
                     q: '',
-                    sorting: storage().get(LS_JOBS_SORTING, 'deadline'),
+                    sorting: storage().get(LS_JOBS_SORTING, 'deadline') || 'deadline',
                     filters: {
                         internshipsOnly: false,
                         careerLevels: [],

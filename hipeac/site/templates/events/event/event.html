@@ -288,7 +288,6 @@
                     var filteredItems = filterIntersection(filters.topics, this.event.sessions, 'topicIds');
                     filteredItems = filterIntersection(filters.applicationAreas, filteredItems, 'applicationAreaIds');
                     if (filters.sessionTypes.length > 0) {
-                        console.log(filters.sessionTypes);
                         filteredItems = _.filter(filteredItems, function (obj) {
                             return _.contains(filters.sessionTypes, obj.session_type.id);
                         });
@@ -314,7 +313,6 @@
             }),
             methods: {
                 updateQuery: function (val) {
-                    console.log(val);
                     this.q = val;
                 },
                 resetFilters: function () {
@@ -377,8 +375,9 @@
             },
             beforeRouteEnter: function (to, from, next) {
                 next(function (self) {
+                    var ref = (from.name) ? from : {name: 'schedule', params: {}};
                     $(self.$refs['modal']).on('hide.bs.modal', function (e) {
-                        self.$router.push({name: 'schedule', params: {}});
+                        self.$router.push(ref);
                     }).modal('show');
                 });
             },

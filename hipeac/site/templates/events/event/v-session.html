@@ -75,7 +75,7 @@
                         <li v-if="event.rooms[session.room]">
                             <i class="material-icons sm">meeting_room</i> {{ event.rooms[session.room].name }}</li>
                     </ul>
-                    <div v-if="session.links.length" class="mb-4">
+                    <div v-if="session.links && session.links.length" class="mb-4">
                         <display-sm class="mb-1">External links</display-sm>
                         <ul class="list-group list-group-flush list-group-links text-sm">
                             <li class="list-group-item" v-for="link in session.links" :key="link.id">
