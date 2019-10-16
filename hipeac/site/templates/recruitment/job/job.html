@@ -45,6 +45,12 @@
                 <div class="hipeac-card">
                     <div class="row">
                         <div class="col-12 col-md-8 pr-md-5">
+                            <p class="text-sm">
+                            {% if job.institution %}
+                                <a href="{{ job.institution.get_absolute_url }}" class="inherit">
+                                    <i is="institution-icon" type="{{ job.institution.type }}" class="sm mr-2"></i>{{ job.institution.name }}</a>
+                            {% endif %}
+                            </p>
                             <h2 class="display-lg mb-4">{{ job.title }}</h2>
                             <div class="marked">
                                 {{ job.description | markdown }}
