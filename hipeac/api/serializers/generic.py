@@ -33,9 +33,14 @@ class JsonField(serializers.CharField):
 
 
 class LinkSerializer(serializers.ModelSerializer):
+    type_display = serializers.SerializerMethodField()
+
     class Meta:
         model = Link
-        fields = ('type', 'url', 'id')
+        fields = ('id', 'url', 'type', 'type_display')
+
+    def get_type_display(self, obj) -> str:
+        return obj.get_type_display()
 
 
 class MetadataListField(serializers.CharField):

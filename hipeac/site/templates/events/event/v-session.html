@@ -75,6 +75,17 @@
                         <li v-if="event.rooms[session.room]">
                             <i class="material-icons sm">meeting_room</i> {{ event.rooms[session.room].name }}</li>
                     </ul>
+                    <div v-if="session.links.length" class="mb-4">
+                        <display-sm class="mb-1">External links</display-sm>
+                        <ul class="list-group list-group-flush list-group-links text-sm">
+                            <li class="list-group-item" v-for="link in session.links" :key="link.id">
+                                <a :href="link.url" target="_blank" rel="noopener" class="inherit">
+                                    <website-icon :type="link.type"></website-icon>
+                                    <span>{{ link.type_display }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <metadata-badges v-if="session.topics.length" title="Topics" :items="session.topics"></metadata-badges>
                     <metadata-badges v-if="session.application_areas.length" title="Application areas" :items="session.application_areas" color="secondary"></metadata-badges>
                     <div v-if="session.organizers" class="d-none d-md-block mb-4">
