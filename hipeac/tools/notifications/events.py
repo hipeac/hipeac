@@ -1,5 +1,4 @@
 from django.db import connection
-from django.utils.translation import pgettext_lazy, npgettext_lazy
 from typing import Any, Dict
 
 from hipeac.models import Notification, Event
