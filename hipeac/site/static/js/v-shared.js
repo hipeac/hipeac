@@ -1089,6 +1089,7 @@ Vue.component('user-notifications-button', {
 Vue.component('user-notifications', {
     data: function () {
         return {
+            hiddenNs: storage().get('hipeac_hidden_notifications', {}) || {},
             notifications: []
         }
     },
@@ -1103,15 +1104,18 @@ Vue.component('user-notifications', {
                         '<display-sm class="mb-3">Notifications</display-sm>' +
                         '<table class="table mb-0">' +
                             '<tbody>' +
-                                '<tr v-for="noti in notifications" :key="noti.id" @click="goTo(noti.message.path)" class="pointer">' +
-                                    '<td class="sm px-0">' +
+                                '<tr v-for="noti in filteredNotifications" :key="noti.id" class="pointer">' +
+                                    '<td class="sm px-0" @click="goTo(noti.message.path)">' +
                                         '<i class="material-icons text-primary">{{ noti.icon }}</i>' +
                                     '</td>' +
-                                    '<td>' +
+                                    '<td @click="goTo(noti.message.path)">' +
                                         '<marked :text="noti.message.text"></marked>' +
                                     '</td>' +
-                                    '<td class="sm px-0 text-light">' +
-                                        '<i class="material-icons">arrow_forward_ios</i>' +
+                                    '<td class="sm text-secondary" @click="goTo(noti.message.path)">' +
+                                        '<i class="material-icons">navigate_next</i>' +
+                                    '</td>' +
+                                    '<td class="sm px-0 text-secondary">' +
+                                        '<i class="material-icons sm" @click="hideNotification(noti)" v-show="noti.data.discard">cancel</i>' +
                                     '</td>' +
                                 '</tr>' +
                             '</tbody>' +
@@ -1126,6 +1130,15 @@ Vue.component('user-notifications', {
             var w = window.open(href, '_self');
             w.focus();
         },
+        hideNotification: function (noti) {
+            if (!noti.data.discard) return;
+            var clone = _.clone(this.hiddenNs);
+            if (!_.has(clone, noti.category)) clone[noti.category] = [];
+            if (clone[noti.category].indexOf(noti.data.discard_id) == -1) {
+                clone[noti.category].push(noti.data.discard_id);
+            }
+            this.hiddenNs = clone;
+        },
         show: function () {
             $(this.$refs.notificationsModal).modal();
         },
@@ -1139,8 +1152,24 @@ Vue.component('user-notifications', {
             });
         }
     },
+    computed: {
+        filteredNotifications: function () {
+            if (!this.notifications.length) return [];
+            var hiddenNs = this.hiddenNs;
+            return this.notifications.filter(function (obj) {
+                return !_.has(hiddenNs, obj.category) || hiddenNs[obj.category].indexOf(obj.data.discard_id) == -1;
+            });
+        }
+    },
     watch: {
-        'notifications': function (val) {
+        'hiddenNs': {
+            handler: function (val) {
+                console.log(val);
+                storage().set('hipeac_hidden_notifications', val, 90);
+            },
+            deep: true
+        },
+        'filteredNotifications': function (val) {
             EventHub.$emit('update-notifications-count', val.length);
         }
     },
