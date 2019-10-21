@@ -15,12 +15,13 @@ from .mixins import ImagesMixin, LinkMixin, UrlMixin
 
 class ProjectManager(models.Manager):
     ERC_PROGRAMME = 88
+    OTHER = 87
 
     def erc_only(self):
         return self.filter(programme=self.ERC_PROGRAMME).order_by('-start_date')
 
     def non_erc(self):
-        return self.exclude(programme=self.ERC_PROGRAMME).order_by('-start_date')
+        return self.exclude(programme__in=[self.ERC_PROGRAMME, self.OTHER]).order_by('-start_date')
 
 
 class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):

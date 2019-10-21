@@ -74,7 +74,7 @@
             </div>
         </div>
         <div is="open-jobs-row" url="{% url 'v1:institution-jobs' institution.id %}" class="mb-4"></div>
-        {% if institution.coordinated_projects.count or institution.participated_projects.count %}
+        {% if institution.coordinated_projects.non_erc.count or institution.participated_projects.non_erc.count %}
             <div class="row">
                 <div class="col-12 col-lg-2">
                     <h5 class="display-sm mt-4 mb-1">Participated projects</h5><hr>
@@ -82,7 +82,7 @@
                 <div class="col-12 col-lg-10">
                     <div class="hipeac-card">
                         <ul class="logos text-left">
-                        {% if institution.coordinated_projects.non_erc.count %}
+                        {% if institution.coordinated_projects.non_erc %}
                             {% for project in institution.coordinated_projects.non_erc %}
                                 <li>
                                     <a href="{{ project.get_absolute_url }}" class="inherit">
