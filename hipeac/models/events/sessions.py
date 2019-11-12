@@ -50,6 +50,7 @@ class Session(LinkMixin, models.Model):
         if self.id:
             self.keywords = json.dumps(
                 [institution.short_name for institution in self.institutions.all()] +
+                (['has:projects'] if self.projects.count() > 0 else []) +
                 [project.acronym for project in self.projects.all()] +
                 ([self.main_speaker.first_name, self.main_speaker.last_name] if self.main_speaker else [])
             )
