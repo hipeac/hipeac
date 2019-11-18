@@ -16,7 +16,7 @@ Or have a taster with this selection of jobs posted in the last two weeks:
 {% for job in jobs %}
 {% if email_format == 'html' and job.institution.image %}<img src="{{ job.institution.images.sm }}" style="float:right; margin:0 0 20px 20px">{% endif %}{% if email_format == 'html' %}<h4 style="margin:0"><strong>{% else %}**{% endif %}"{{ job.title }}"{% if email_format == 'html' %}</strong>{% else %}**{% endif %} @ {{ job.institution }}, {{ job.country.name }}{% if email_format == 'html' %}</h4>{% endif %}
 
-- https://www.hipeac.net{{ job.get_absolute_url }}
+- https://www.hipeac.net/jobs/{{ job.id }}/
 - Deadline: {{ job.deadline }}
 
 ---------------

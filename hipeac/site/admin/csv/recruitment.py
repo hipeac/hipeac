@@ -3,6 +3,16 @@ import json
 
 from django.http import HttpResponse
 
+from hipeac.models import Job
+from hipeac.tools.csv import ModelCsvWriter
+
+
+class JobCsvWriter(ModelCsvWriter):
+    model = Job
+    custom_fields = ('institution_type',)
+    exclude = ('links', 'evaluation')
+    metadata_fields = ('application_areas', 'career_levels', 'topics')
+
 
 def csv_keywords_analysis(queryset, filename):
     """

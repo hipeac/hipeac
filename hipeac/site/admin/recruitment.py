@@ -5,16 +5,8 @@ from django.urls import path
 from hipeac.forms import ApplicationAreasChoiceField, JobPositionChoiceField, TopicsChoiceField
 from hipeac.models import Job, JobEvaluation, Event
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
-from hipeac.tools.csv import ModelCsvWriter
-from .csv.recruitment import csv_keywords_analysis
+from .csv.recruitment import JobCsvWriter, csv_keywords_analysis
 from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
-
-
-class JobCsvWriter(ModelCsvWriter):
-    model = Job
-    custom_fields = ('institution_type',)
-    exclude = ('links', 'evaluation')
-    metadata_fields = ('application_areas', 'career_levels', 'topics')
 
 
 class JobEvaluationInline(admin.StackedInline):

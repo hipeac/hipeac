@@ -43,7 +43,7 @@ class LinkedInManager:
             endpoint = f'https://api.linkedin.com/v1/companies/{self.COMPANY_ID}/shares?format=json'
             res = requests.post(endpoint, headers=headers, data=json.dumps(payload))
 
-            if res.status_code is not 201:
+            if res.status_code != 201:
                 raise LinkedInTokenExpiredException()
 
         except Exception:
