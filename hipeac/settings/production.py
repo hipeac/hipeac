@@ -7,7 +7,7 @@ DEBUG = False
 
 APP_DOMAIN = 'hipeac.net'
 ALLOWED_HOSTS = (os.environ.get('DJANGO_ALLOWED_HOST', 'www.hipeac.net'),)
-MEDIA_ROOT = '/storage/sites/hipeac/'
+MEDIA_ROOT = '/storage/'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_HSTS_SECONDS = 31536000
