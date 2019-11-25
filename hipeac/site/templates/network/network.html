@@ -13,6 +13,9 @@
         <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
     </li>
     <li class="nav-item">
+        <a is="router-link" :to="{name: 'partners'}" class="nav-link">Partners</a>
+    </li>
+    <li class="nav-item">
         <a is="router-link" :to="{name: 'members'}" class="nav-link">Members</a>
     </li>
     <li class="nav-item">
@@ -25,7 +28,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
+    <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}" data-partner-list="{% url 'v1:partner-list' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
         <div is="router-view"></div>
     </div>
 {% endblock %}
@@ -36,6 +39,7 @@
     {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
     {% include './v-innovation.html' with id='v-innovation' header=flatpage.page.tbs.about_innovation.content benefits=flatpage.page.tbs.innovation_benefits get_involved=flatpage.page.tbs.innovation_get_involved %}
     {% include './v-members.html' with id='v-members' membership=flatpage.page.tbs.membership charter=flatpage.page.tbs.membership_charter how_to=flatpage.page.tbs.membership_how_to %}
+    {% include './v-partners.html' with id='v-partners' %}
     {% include './v-projects.html' with id='v-projects' header=flatpage.page.tbs.about_projects.content benefits=flatpage.page.tbs.projects_benefits get_involved=flatpage.page.tbs.projects_get_involved%}
     {% include './v-projects-list.html' with id='v-projects-list' %}
     {% include './v-researchers.html' with id='v-researchers' header=flatpage.page.tbs.about_researchers.content benefits=flatpage.page.tbs.researchers_benefits get_involved=flatpage.page.tbs.researchers_get_involved %}
@@ -56,6 +60,7 @@
                 institutions: [],
                 members: [],
                 affiliates: [],
+                partners: [],
                 projects: []
             },
             mutations: {
@@ -77,6 +82,11 @@
                         });
                         state.institutions = Object.freeze(_.values(institutions));
                         state.members = Object.freeze(mapper().users(users));
+                    });
+                },
+                fetchPartners: function (state) {
+                    ajax().get($('#urls').data('partner-list')).done(function (res) {
+                        state.partners = Object.freeze(res);
                     });
                 },
                 fetchProjects: function (state) {
@@ -128,12 +138,23 @@
             template: '#v-members-stats',
             computed: _.extend(
                 Vuex.mapState(['members', 'institutions']), {
-
             })
         };
 
         var MembershipView = {
             template: '#v-members-membership'
+        };
+
+        var PartnersView = {
+            template: '#v-partners',
+            computed: _.extend(
+                Vuex.mapState(['partners']), {
+            }),
+            created: function () {
+                $.when(
+                    this.$store.commit('fetchPartners')
+                );
+            }
         };
 
         var ProjectsView = {
@@ -254,6 +275,12 @@
                             component: MembersStatsView
                         }
                     ]
+                },
+                {
+                    name: 'partners',
+                    path: '/partners/',
+                    pathToRegexpOptions: {strict: true},
+                    component: PartnersView
                 },
                 {
                     name: 'projects',

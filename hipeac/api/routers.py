@@ -26,6 +26,7 @@ class Router(DefaultRouter):
         self.register(r'metadata', views.MetadataViewSet, basename='metadata')
         self.register(r'network/institutions', views.InstitutionViewSet, basename='institution')
         self.register(r'network/members', views.MemberViewSet, basename='member')
+        self.register(r'network/partners', views.PartnerViewSet, basename='partner')
         self.register(r'network/projects', views.ProjectViewSet, basename='project')
         self.register(r'user', views.AuthUserViewSet, basename='auth-user')
         self.register(r'user/registrations', views.RegistrationViewSet, basename='auth-registration')

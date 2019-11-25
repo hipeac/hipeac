@@ -1,0 +1,18 @@
+from rest_framework import serializers
+
+from hipeac.models import HipeacPartner
+from .institutions import InstitutionNestedSerializer
+from .users import UserPublicSerializer
+
+
+class HipeacPartnerNestedSerializer(serializers.ModelSerializer):
+    institution = InstitutionNestedSerializer()
+    representative = UserPublicSerializer()
+
+    class Meta:
+        model = HipeacPartner
+        exclude = ()
+
+
+class HipeacPartnerListSerializer(HipeacPartnerNestedSerializer):
+    pass

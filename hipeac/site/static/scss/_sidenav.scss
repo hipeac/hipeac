@@ -79,6 +79,10 @@
     }
 }
 
+.filled-svg svg path.fillit {
+    fill: $text-color !important;
+}
+
 .list-group-links.text-sm {
     svg {
         max-height: 14px;

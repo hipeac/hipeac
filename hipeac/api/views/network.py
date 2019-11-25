@@ -4,9 +4,10 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import Institution, Project
+from hipeac.models import HipeacPartner, Institution, Project
 from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import (
+    HipeacPartnerListSerializer,
     InstitutionNestedSerializer, InstitutionListSerializer, InstitutionSerializer,
     ProjectMiniSerializer, ProjectListSerializer, ProjectSerializer,
     JobNestedSerializer,
@@ -75,6 +76,13 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
             profile__membership_tags__contains='affiliated', profile__membership_revocation_date__isnull=True
         )
         return super().list(request, *args, **kwargs)
+
+
+class PartnerViewSet(ListModelMixin, GenericViewSet):
+    queryset = HipeacPartner.objects.filter(hipeac__visible=True) \
+                                    .prefetch_related('institution', 'representative__profile')
+    pagination_class = None
+    serializer_class = HipeacPartnerListSerializer
 
 
 class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):

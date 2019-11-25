@@ -1,0 +1,28 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+    <div>
+        <div class="hipeac-card" v-for="partner in partners" :key="partner.id">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-3 pr-lg-5">
+                    <display-md class="text-left mt-0 mb-1">{{ partner.institution.name }}</display-md>
+                    <p>{{ partner.institution.country.name }}</p>
+                    <img v-if="partner.institution.images" :src="partner.institution.images.sm" class="logo mt-3">
+                    <hr>
+                    <p class="text-sm"><strong>Tasks:</strong> {{ partner.tasks }}</p>
+                </div>
+                <div class="col-12 col-md-6 col-lg-9 text-sm">
+                    <ul class="float-right list-inline filled-svg">
+                        <li v-for="link in partner.representative.profile.links" :key="link.id" v-if="link.type == 'linkedin'">
+                            <a :href="link.url"><span is="linkedin-icon"></span></a>
+                        </li>
+                    </ul>
+                    <small>Representative</small>
+                    <display-sm class="mb-3">{{ partner.representative.profile.name }}</display-sm>
+                    <img :src="partner.representative.profile.avatar_url" class="rounded-circle ml-4 mb-3 float-right">
+                    <marked :text="partner.representative.profile.bio"></marked>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
