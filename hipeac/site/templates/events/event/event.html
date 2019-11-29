@@ -34,11 +34,6 @@
         <li class="nav-item">
             <a is="router-link" :to="{name: 'jobs'}" class="nav-link">Recruitment</a>
         </li>
-        {% if not event.is_finished %}
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'sponsorship'}" class="nav-link">Sponsorship</a>
-            </li>
-        {% endif %}
     {% endif %}
     {% if user.is_authenticated %}
         <li v-if="user.isRegistered" class="nav-item" v-cloak>
@@ -49,6 +44,12 @@
                 <a is="router-link" :to="{name: 'registration'}" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>
             </li>
         {% endif %}
+    {% endif %}
+    {% if event.type == 'conference' and not event.is_finished %}
+        <li class="nav-item">
+            <a is="router-link" :to="{name: 'industry'}" class="nav-link">
+                <icon name="label_important" class="mr-1"></icon>For industry</a>
+        </li>
     {% endif %}
     {% if event.hashtag %}
         <li class="nav-item">
@@ -68,10 +69,10 @@
 {% block vue_templates %}
     {% include './v-about.html' with id='v-about' event_id=event.id%}
     {% include './v-attendees.html' with id='v-attendees' %}
+    {% include './v-industry.html' with id='v-industry' %}
     {% include './v-jobs.html' with id='v-jobs' hashtag=event.hashtag %}
     {% include './v-registration.html' with id='v-registration' %}
     {% include './v-session.html' with id='v-session' %}
-    {% include './v-sponsorship.html' with id='v-sponsorship' %}
     {% include './v-venue.html' with id='v-venue' %}
 
     {% if event.is_ready %}
@@ -173,6 +174,27 @@
             template: '#v-call-workshops',
             computed: _.extend(
                 Vuex.mapState(['user', 'event']), {
+            })
+        };
+
+        var IndustryView = {
+            template: '#v-industry',
+            computed: _.extend(
+                Vuex.mapState(['event']), {
+            })
+        };
+
+        var IndustryMainView = {
+            template: '#v-industry-main',
+            computed: _.extend(
+                Vuex.mapState(['event']), {
+            })
+        };
+
+        var IndustrySponsorshipView = {
+            template: '#v-industry-sponsorship',
+            computed: _.extend(
+                Vuex.mapState(['event']), {
             })
         };
 
@@ -445,13 +467,6 @@
             }),
         };
 
-        var SponsorshipView = {
-            template: '#v-sponsorship',
-            computed: _.extend(
-                Vuex.mapState(['event']), {
-            })
-        };
-
         var VenueView = {
             template: '#v-venue',
             computed: _.extend(
@@ -485,6 +500,25 @@
                     path: '/call-for-workshops/',
                     pathToRegexpOptions: {strict: true},
                     component: CallWorkshopsView
+                },
+                {
+                    path: '/industry/',
+                    pathToRegexpOptions: {strict: true},
+                    component: IndustryView,
+                    children: [
+                        {
+                            name: 'industry',
+                            path: '',
+                            pathToRegexpOptions: {strict: true},
+                            component: IndustryMainView
+                        },
+                        {
+                            name: 'sponsorship',
+                            path: 'sponsorship/',
+                            pathToRegexpOptions: {strict: true},
+                            component: IndustrySponsorshipView
+                        }
+                    ]
                 },
                 {
                     name: 'jobs',
@@ -563,12 +597,6 @@
                             ]
                         }
                     ]
-                },
-                {
-                    name: 'sponsorship',
-                    path: '/sponsorship/',
-                    pathToRegexpOptions: {strict: true},
-                    component: SponsorshipView
                 },
                 {
                     name: 'venue',

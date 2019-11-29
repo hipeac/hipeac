@@ -4,6 +4,55 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
     <div>
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <a is="router-link" class="nav-link" :to="{name: 'industry'}" exact>
+                    <icon name="map" class="mr-1"></icon>Industry exhibition & session</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" class="nav-link" :to="{name: 'sponsorship'}" exact>
+                    <icon name="check" class="mr-1"></icon>Sponsorship</a>
+            </li>
+        </ul>
+        <router-view></router-view>
+    </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-main">
+{% verbatim %}
+    <div>
+        <div class="hipeac-card">
+            <catchphrase>The HiPEAC conference is an excellent venue for companies large and small to showcase their products and services. Industry participants benefit from a dedicated session and the opportunity to network with key decision makers, experts at the forefront of computing systems research and fellow industry specialists. For anyone looking to locate top-quality candidates, HiPEAC offers our proven recruitment support and a dedicated STEM Student Day, during which advanced computing students visit industry exhibitors.</catchphrase>
+            <hr class="my-4">
+            <p>Larger and more impressive every year, the HiPEAC conference industry exhibition is a great way to promote your company to the computing systems community. The most cost-effective way to participate in the exhibition and the HiPEAC industry session is to sponsor the conference. <strong>From as little as €1,000, you can host a booth and get a full conference pass</strong>, along with promotion prior to and during the event and the chance to present at the industry session.</p>
+            <p>Alternatively, you can book a booth separately for €600. Contact Vicky Wandels for further details: <a href="mailto:Vicky.Wandels@UGent.be">Vicky.Wandels@UGent.be</a></p>
+        </div>
+        <div class="hipeac-card">
+            <a href="/media/public/drop-box/hipeac_2020_sponsorship.pdf" class="btn btn-sm btn-block btn-outline-success" target="_blank"><i class="material-icons mr-1">get_app</i>Download Sponsorship package</a>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card d-flex flex-column align-items-end">
+                    <img src="/media/public/drop-box/industry01.jpg" class="w-100 mt-auto rounded">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+                <div class="hipeac-card d-flex flex-column align-items-end">
+                    <img src="/media/public/drop-box/industry02.jpg" class="w-100 mt-auto rounded">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endverbatim %}
+</script>
+
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}-sponsorship">
+{% verbatim %}
+    <div>
         <div class="hipeac-card">
             <catchphrase>The HiPEAC Conference has been the <strong>largest event in computing systems research organized in Europe</strong> in the last years, with 530+ participants and 65+ companies represented. The conference program and large panel of associated events is a unique opportunity to connect with researchers and engineers from both academia and industry.</catchphrase>
             <hr class="my-4">
