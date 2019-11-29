@@ -1,0 +1,73 @@
+$section-steering-color: $text-color;
+$sidenav-border-color: #dee2e6;
+
+
+.section-steering {
+    .hipeac.navbar {
+        border-bottom: 10px solid $section-steering-color;
+    }
+
+    .hipeac.subheader {
+        background-color: $section-steering-color;
+    }
+
+    .steering-box-ml {
+        margin-left: -1rem;
+    }
+
+    .steering-sidenav {
+        position: static;
+
+        .dropdown-toggle::after {
+            display: none;
+        }
+
+        ul {
+            list-style: none;
+            font-size: smaller;
+            margin-left: -.5rem;
+            padding: 0;
+            line-height: 1.25;
+
+            li {
+                border-top: 1px dashed $sidenav-border-color;
+
+                a {
+                    display: block;
+                    padding: .5rem 10px;
+                    color: $light-text-color;
+
+                    i {
+                        float: right;
+                        display: none;
+                        margin-top: .3rem;
+                        margin-left: 1rem;
+                    }
+
+                    &:hover {
+                        text-decoration: none;
+                        color: $text-color;
+
+                        i {
+                            display: block;
+                        }
+                    }
+
+                    &.active {
+                        background: whitesmoke;
+                        color: $hipeac-blue;
+                        font-weight: 500;
+
+                        i {
+                            display: block;
+                        }
+                    }
+                }
+            }
+
+            &.one-line i {
+                margin-top: -0.2rem;
+            }
+        }
+    }
+}

@@ -705,7 +705,7 @@ Vue.component('search-card', {
         '<div class="hipeac-card py-3">' +
             '<div class="d-flex flex-row justify-content-between">' +
                 '<search-box :placeholder="placeholder"></search-box>' +
-                '<button v-if="showFiltersButton" class="btn btn-sm" @click="showFilters = !showFilters">' +
+                '<button v-if="showFiltersButton" class="btn btn-sm btn-light text-nowrap" @click="showFilters = !showFilters">' +
                     '<span v-if="showFilters"><icon name="keyboard_arrow_up"></icon><span class="d-none d-md-inline ml-1">Hide filters</span></span>' +
                     '<span v-else><icon name="filter_list"></icon><span class="d-none d-md-inline ml-1">Show filters</span></span>' +
                 '</button>' +

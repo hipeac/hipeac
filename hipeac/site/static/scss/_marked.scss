@@ -10,7 +10,7 @@ $max-width: 40%;
         font-size: 0.9rem;
     }
 
-    > p:last-child {
+    > p:last-child, li p:last-child {
         margin-bottom: 0;
     }
 
@@ -20,6 +20,12 @@ $max-width: 40%;
 
     ul ul {
        margin-bottom: 1rem;
+    }
+
+    blockquote {
+        margin-left: 1em;
+        border-left: 2px solid whitesmoke;
+        padding-left: 1.5em;
     }
 
     img {
@@ -41,6 +47,17 @@ $max-width: 40%;
             max-width: 100%;
             width: 100%;
             margin: 1.5rem 0 !important;
+        }
+    }
+}
+
+.marked.with-h {
+    h1, h2, h3, h4 {
+        font-size: 1.5rem;
+        margin: 1.5em 0 1em;
+
+        &:first-child {
+            margin-top: 0;
         }
     }
 }

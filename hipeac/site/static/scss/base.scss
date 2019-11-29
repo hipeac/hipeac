@@ -323,6 +323,11 @@ b, strong, th, .font-weight-bold {
         vertical-align: -15%;
     }
 
+    &.smr {
+        font-size: 1rem;
+        vertical-align: -15%;
+    }
+
     &.md {
         font-size: 1.3rem;
         vertical-align: -15%;
@@ -554,3 +559,5 @@ ul.logos {
 @import '_sidenav.scss';
 @import '_skeleton.scss';
 @import '_tabs.scss';
+
+@import '_steering.scss';
