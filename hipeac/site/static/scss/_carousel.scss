@@ -12,6 +12,7 @@
             cursor: pointer;
             height: 5px;
             background: gainsboro;
+            border: 0;
 
             &.active {
                 background: $hipeac-yellow;
