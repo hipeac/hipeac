@@ -44,6 +44,10 @@ $font-weight-bold: 500;
 
 /* Bootstrap */
 
+html {
+    scroll-padding-top: 120px;
+}
+
 html, body {
     -webkit-font-smoothing: antialiased;
     font-family: Roboto, 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
