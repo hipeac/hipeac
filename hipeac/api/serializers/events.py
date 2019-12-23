@@ -4,12 +4,21 @@ from rest_framework import serializers
 
 from hipeac.functions import truncate_md
 from hipeac.models import (
-    Event, Committee, Registration, Poster, Roadshow, Session, Break, Sponsor, Venue, Room, Project, Institution
+    B2b, Event, Committee, Registration, Poster, Roadshow, Session, Break, Sponsor, Venue, Room, Project, Institution
 )
 from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .users import UserPublicMiniSerializer, UserPublicListSerializer
+
+
+class B2bSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='v1:b2b-detail', read_only=True)
+
+    class Meta:
+        model = B2b
+        exclude = ('updated_at',)
+        lookup_field = 'pk'
 
 
 class CommitteeListSerializer(serializers.ModelSerializer):

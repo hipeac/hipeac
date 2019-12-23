@@ -13,6 +13,7 @@ class Router(DefaultRouter):
         self.register(r'awards/paper-awards/conferences', views.PublicationConferenceViewSet,
                       basename='publication-conference')
         self.register(r'awards/tech-transfer', views.TechTransferViewSet, basename='tech-transfer')
+        self.register(r'events/b2b', views.B2bViewSet, basename='b2b')
         self.register(r'events/events', views.EventViewSet, basename='event')
         self.register(r'events/roadshows', views.RoadshowViewSet, basename='roadshow')
         self.register(r'events/sessions', views.SessionViewSet, basename='session')

@@ -44,9 +44,31 @@ class EventDetail(SlugMixin, generic.DetailView):
             redirect_url = self.get_object().redirect_url
             if redirect_url:
                 return redirect(redirect_url)
-        except Exception as e:
+        except Exception:
             return redirect(reverse_lazy('events'))
         return super().dispatch(request, *args, **kwargs)
+
+
+class EventB2BDetail(SlugMixin, generic.DetailView):
+    """
+    Displays a Event B2B page.
+    If the slug doesn't match we make a 301 Permanent Redirect.
+    """
+    model = Event
+    template_name = 'events/event/b2b.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not hasattr(self, 'object'):
+            self.object = self.get_queryset().get(
+                type="conference",
+                start_date__year=self.kwargs.get('year'),
+                slug=self.kwargs.get('slug')
+            )
+        return self.object
 
 
 class RoadshowDetail(SlugMixin, generic.DetailView):

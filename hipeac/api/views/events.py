@@ -5,10 +5,14 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import Event, Roadshow, Session, Registration
-from ..permissions import HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
+from hipeac.models import B2b, Event, Roadshow, Session, Registration
+from ..permissions import (
+    HasAdminPermissionOrReadOnly, HasRegistrationForEvent,
+    B2bPermission, RegistrationPermission
+)
 from ..serializers import (
     ArticleListSerializer,
+    B2bSerializer,
     CommitteeListSerializer,
     EventListSerializer, EventSerializer,
     JobNestedSerializer,
@@ -17,6 +21,12 @@ from ..serializers import (
     SessionListSerializer, SessionSerializer,
     VideoListSerializer
 )
+
+
+class B2bViewSet(UpdateModelMixin, GenericViewSet):
+    queryset = B2b.objects.all()
+    permission_classes = (B2bPermission,)
+    serializer_class = B2bSerializer
 
 
 class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -44,6 +54,16 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     )
     def articles(self, request, *args, **kwargs):
         self.queryset = self.get_object().articles.prefetch_related('institutions', 'projects')
+        return super().list(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        serializer_class=B2bSerializer,
+    )
+    @never_cache
+    def b2b(self, request, *args, **kwargs):
+        self.queryset = self.get_object().b2b
         return super().list(request, *args, **kwargs)
 
     @action(

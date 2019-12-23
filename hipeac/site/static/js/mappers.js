@@ -27,6 +27,14 @@ function mapper() {
                 return obj;
             });
         },
+        b2bSlots: function (items) {
+            return items.map(function (obj) {
+                obj.niceDate = moment(obj.date).format('dddd, D MMMM');
+                obj.startAt = obj.start_at.substring(0, 5);
+                obj.endAt = obj.end_at.substring(0, 5);
+                return obj;
+            });
+        },
         breaks: function (items) {
             return items.map(function (obj) {
                 obj.icon = {
