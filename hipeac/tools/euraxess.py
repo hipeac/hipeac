@@ -121,10 +121,20 @@ class EuraxessXMLGenerator:
 
             # application-details
 
-            if job.email:
-                email = etree.SubElement(el, 'application-details')
-                etree.SubElement(email, 'how-to-apply').text = 'e-mail'
-                etree.SubElement(email, 'application-email').text = job.email
+            application_website = None
+
+            for link in job.links.all():
+                if link.type == 'website':
+                    application_website = link.url
+
+            if application_website:
+                application_details = etree.SubElement(el, 'application-details')
+                etree.SubElement(application_details, 'how-to-apply').text = 'website'
+                etree.SubElement(application_details, 'application-website').text = application_website
+            elif job.email:
+                application_details = etree.SubElement(el, 'application-details')
+                etree.SubElement(application_details, 'how-to-apply').text = 'e-mail'
+                etree.SubElement(application_details, 'application-email').text = job.email
 
     @property
     def response(self) -> str:
