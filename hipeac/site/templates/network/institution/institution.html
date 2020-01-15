@@ -33,14 +33,13 @@
                             {% endif %}
                             {% if institution.children.count %}
                                 <hr class="my-4">
-                                <h5>Children</h5>
-                                <ul class="list-inline">
+                                <h5 class="display-sm mb-2">Subsidiaries</h5>
+                                <p class="text-sm">
                                 {% for i in institution.children.all %}
-                                    <li class="list-inline-item">
-                                        <a href="{{ i.get_absolute_url }}"> {{ i }}</a>
-                                    </li>
+                                    <a href="{{ i.get_absolute_url }}" class="inherit">
+                                        <institution-icon type="{{ i.type }}" class="sm mr-2"></institution-icon>{{ i.name }}</a><br>
                                 {% endfor %}
-                                </ul>
+                                </p>
                             {% endif %}
                         </div>
                         <div class="col-12 col-md-4">
