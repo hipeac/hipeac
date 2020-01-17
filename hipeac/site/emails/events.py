@@ -49,6 +49,28 @@ class SessionReminderEmail(TemplateEmail):
         }
 
 
+class SessionSpeakersReminderEmail(TemplateEmail):
+    template_key_legacy = 'events.sessions.speakers_reminder'
+    template = '_emails/events/sessions_speakers_reminder.md.html'
+    from_email = 'HiPEAC <management@hipeac.net>'
+
+    def get_subject(self) -> str:
+        return f'[HiPEAC] Please check speakers for "{self.instance.title}" session'
+
+    def get_to_emails(self) -> List[str]:
+        return [admin.user.email for admin in self.instance.acl.all()]
+
+    def get_context_data(self):
+        return {
+            'event_name': self.instance.event.name,
+            'event_city': self.instance.event.city,
+            'event_url': self.instance.event.get_absolute_url(),
+            'session_date': self.date_filter(self.instance.date),
+            'session_title': self.instance.title,
+            'session_type': self.instance.session_type.value,
+        }
+
+
 class NoShowsEmail(TemplateEmail):
     template_key_legacy = 'events.no_shows'
     template = '_emails/events/no_shows.md.html'

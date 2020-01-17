@@ -1,0 +1,16 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block body %}
+Dear organizers,
+
+We would like to remind you that speakers invited to the
+"{{ session_title }}" ({{ session_type }}), to be held in {{ event_city }} on {{ session_date }},
+need to **register** on the [HiPEAC website too](https://www.hipeac.net{{ event_url }}).
+
+**Attendees without a badge will not be allowed to enter the sessions or exhibition.**
+
+Thank you for your collaboration!
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}
