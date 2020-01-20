@@ -71,18 +71,15 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-10">
-                    <div v-if="data.sessions" v-for="(session, idx) in data.sessions" :key="session.id" class="row" :v-hide="filteredSessionIds.indexOf(session.id) < 0">
-                        <div class="col-12" v-if="idx > 0"><hr></div>
-                        <div class="col-3 col-lg-1">
-                            <catchphrase class="mb-0">{{ session.startAt }}</catchphrase>
-                        </div>
-                        <div class="col-9 col-lg-11">
-                            <span class="float-right badge badge-light ml-2">{{ session.session_type.value }}</span>
-                            <small class="text-secondary">
-                                <span class="text-nowrap mr-2">
-                                    <icon name="arrow_forward" class="sm mr-1"></icon>{{ session.endAt }}</span>
-                                <span v-if="event.rooms[session.room]">{{ event.rooms[session.room].name }}</span>
-                            </small><br>
+                    <div v-if="data.sessions" v-for="(session, idx) in data.sessions" :key="session.id" :v-hide="filteredSessionIds.indexOf(session.id) < 0">
+                        <hr v-if="idx > 0">
+                        <div class="col-session">
+                            <span class="float-right badge badges-session ml-3 ml-md-4 mb-2 mb-md-3 mt-1 mt-md-0" :class="session.badgeColor">{{ session.session_type.value }}</span>
+                            <catchphrase class="mb-1 d-inline-block mr-2">
+                                <span>{{ session.startAt }}</span>
+                                <span class="text-secondary text-smr">&nbsp; - &nbsp;{{ session.endAt }} / </span>
+                                <span class="text-secondary text-smr text-nowrap" v-if="event.rooms[session.room]">{{ event.rooms[session.room].name }}</span>
+                            </catchphrase><br>
                             <router-link :to="{name: 'session', params: {sessionId: session.id}}">
                                 <span>{{ session.title }}</span>
                             </router-link>

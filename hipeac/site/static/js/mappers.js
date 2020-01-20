@@ -197,6 +197,12 @@ function mapper() {
                     obj.session_type.value,
                     obj.keywords.join(' ')
                 ].join(' ').toLowerCase();
+                obj.badgeColor = {
+                    'Keynote': 'badge-success',
+                    'Paper Track': 'badge-info',
+                    'Industrial Session': 'badge-primary',
+                    'Social Event': 'badge-warning',
+                }[obj.session_type.value] || 'badge-light';
                 return obj;
             });
         },

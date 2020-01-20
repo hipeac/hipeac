@@ -307,7 +307,12 @@ input[type="hidden"] + fieldset {
 
 .text-sm {
     font-size: small;
-    line-height: 1.5;
+    line-height: 1.4;
+}
+
+.text-smr {
+    font-size: smaller;
+    line-height: 1.4;
 }
 
 .text-wrap {
@@ -546,6 +551,14 @@ ul.logos {
         float: left;
         font-size: 16px;
         margin: 0.2em 0 0 -20px;
+    }
+}
+
+.col-session {
+    padding-left: 4.4rem;
+
+    .catchphrase {
+        margin-left: -4.4rem;
     }
 }
 
