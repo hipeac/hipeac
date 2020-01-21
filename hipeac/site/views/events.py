@@ -199,7 +199,7 @@ class JobsPdfMaker:
         with Pdf() as pdf:
             reg = self.registration
             attended = 'attended' if reg.event.is_finished() else 'will attend'
-            institution = f' —{reg.user.profile.institution}—' if reg.user.profile.institution else ''
+            institution = f' —{reg.user.profile.institution.name}—' if reg.user.profile.institution else ''
 
             pdf.add_text(str(reg.event), 'h4')
             pdf.add_text(f'Receipt (#{reg.id})', 'h1')
