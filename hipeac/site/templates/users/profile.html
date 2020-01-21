@@ -36,6 +36,26 @@
                 <div is="router-view"></div>
             </div>
         </div>
+        {% if profile.user.coordinated_projects.count %}
+            <div class="row">
+                <div class="col-12 col-lg-2">
+                    <h5 class="display-sm mt-4 mb-1">Coordinated projects</h5><hr>
+                </div>
+                <div class="col-12 col-lg-10">
+                    <div class="hipeac-card">
+                        <ul class="logos text-left">
+                        {% for project in profile.user.coordinated_projects.all %}
+                            <li>
+                                <a href="{{ project.get_absolute_url }}" class="inherit">
+                                    <img src="{{ project.images.sm }}" title="{{ project.acronym }}">
+                                </a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         <div is="videos-row" url="{% url 'v1:user-videos' profile.user_id %}"></div>
         {% if internship_applications.count > 0 %}
             <div class="row">

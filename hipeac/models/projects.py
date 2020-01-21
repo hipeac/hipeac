@@ -64,7 +64,7 @@ class Project(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     objects = ProjectManager()
 
     class Meta:
-        ordering = ['acronym']
+        ordering = ['-end_date']
 
     def __str__(self) -> str:
         return self.acronym

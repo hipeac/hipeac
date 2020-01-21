@@ -86,7 +86,7 @@ class PartnerViewSet(ListModelMixin, GenericViewSet):
 
 
 class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Project.objects.all()
+    queryset = Project.objects.order_by('acronym')
     pagination_class = None
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = ProjectSerializer
