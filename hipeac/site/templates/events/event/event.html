@@ -39,7 +39,7 @@
         <li v-if="user.isRegistered" class="nav-item" v-cloak>
             <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
         </li>
-        {% if event.is_open_for_registration %}
+        {% if event.is_open_for_registration or event.is_finished %}
             <li class="nav-item">
                 <a is="router-link" :to="{name: 'registration'}" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>
             </li>
