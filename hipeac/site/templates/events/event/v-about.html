@@ -22,10 +22,13 @@
                     </router-link>
                 </div>
                 <div class="col-6 col-md-3">
-                    <router-link :to="{name: 'schedule'}" class="d-block inherit">
+                    <router-link v-if="event.sessions.length" :to="{name: 'schedule'}" class="d-block inherit">
                         <i class="material-icons lg mb-2">category</i><br>
-                        <strong v-if="event.sessions.length">{{ event.sessions.length }} sessions</strong>
-                        <span v-else>Propose a session</span>
+                        <strong>{{ event.sessions.length }} sessions</strong>
+                    </router-link>
+                    <router-link v-else :to="{name: 'call-sessions'}" class="d-block inherit">
+                        <i class="material-icons lg mb-2">category</i><br>
+                        <span>Propose a session</span>
                         <i class="material-icons sm ml-1">arrow_forward</i>
                     </router-link>
                 </div>

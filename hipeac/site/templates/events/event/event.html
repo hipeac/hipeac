@@ -22,10 +22,14 @@
             <li class="nav-item">
                 <a is="router-link" :to="{name: 'call-papers'}" class="nav-link">Call for papers</a>
             </li>
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'call-sessions'}" class="nav-link">Call for workshops</a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'call-sessions'}" class="nav-link">Call for thematic sessions</a>
+            </li>
         {% endif %}
-        <li class="nav-item">
-            <a is="router-link" :to="{name: 'call-workshops'}" class="nav-link">Call for workshops</a>
-        </li>
     {% endif %}
     <li class="nav-item">
         <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
@@ -80,9 +84,9 @@
     {% else %}
         {% if event.type == 'conference' %}
             {% include './v-call-papers.html' with id='v-call-papers' %}
-            {% include './v-call-workshops.html' with id='v-call-workshops' event=event %}
+            {% include './v-call-workshops.html' with id='v-call-sessions' event=event %}
         {% endif %}
-        {% include './v-call-sessions.html' with id='v-call-workshops' event=event %}
+        {% include './v-call-sessions.html' with id='v-call-sessions' event=event %}
     {% endif %}
 {% endblock %}
 
@@ -170,8 +174,8 @@
             })
         };
 
-        var CallWorkshopsView = {
-            template: '#v-call-workshops',
+        var CallSessionsView = {
+            template: '#v-call-sessions',
             computed: _.extend(
                 Vuex.mapState(['user', 'event']), {
             })
@@ -496,10 +500,10 @@
                     component: CallPapersView
                 },
                 {
-                    name: 'call-workshops',
-                    path: '/call-for-workshops/',
+                    name: 'call-sessions',
+                    path: '/call/',
                     pathToRegexpOptions: {strict: true},
-                    component: CallWorkshopsView
+                    component: CallSessionsView
                 },
                 {
                     path: '/industry/',
