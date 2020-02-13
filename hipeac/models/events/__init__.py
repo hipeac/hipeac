@@ -5,6 +5,8 @@ from .breaks import *
 from .committees import *
 from .events import *
 from .fees import *
+from .open_events import *
+from .open_registrations import *
 from .posters import *
 from .registrations import *
 from .roadshows import *

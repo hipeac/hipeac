@@ -7,6 +7,7 @@ from .communication import *
 from .events import *
 from .institutions import *
 from .notifications import *
+from .open_events import *
 from .partners import *
 from .projects import *
 from .recruitment import *

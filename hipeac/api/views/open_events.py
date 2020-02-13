@@ -1,0 +1,43 @@
+from django.views.decorators.cache import never_cache
+from rest_framework.exceptions import ValidationError
+from rest_framework.decorators import action
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.viewsets import GenericViewSet
+
+from hipeac.models import OpenEvent, OpenRegistration
+from ..serializers import (
+    OpenEventSerializer,
+    OpenRegistrationSerializer
+)
+
+
+class OpenEventViewSet(RetrieveModelMixin, GenericViewSet):
+    queryset = OpenEvent.objects.all()
+    serializer_class = OpenEventSerializer
+    lookup_field = 'code'
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        serializer_class=OpenRegistrationSerializer,
+    )
+    def registrations(self, request, *args, **kwargs):
+        self.queryset = self.get_object().registrations
+        return super().list(request, *args, **kwargs)
+
+
+class OpenRegistrationViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = OpenRegistration.objects.all()
+    serializer_class = OpenRegistrationSerializer
+    lookup_field = 'uuid'
+
+    def create(self, request, *args, **kwargs):
+        try:
+            self.request.data["event"] = OpenEvent.objects.get(code=self.request.query_params.get('event', None)).id
+        except OpenEvent.DoesNotExist:
+            raise ValidationError({'event': ['Event does not exist.']})
+        return super().create(request, *args, **kwargs)
+
+    @never_cache
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)

@@ -3,6 +3,30 @@ from typing import List
 from .generic import TemplateEmail
 
 
+class OpenRegistrationCreatedEmail(TemplateEmail):
+    template_key_legacy = 'events.open_registrations.created'
+    template = '_emails/events/open_registrations_created.md.html'
+    from_email = 'HiPEAC <management@hipeac.net>'
+
+    def get_subject(self) -> str:
+        return f'[HiPEAC] Your registration for {self.instance.event.name}'
+
+    def get_to_emails(self) -> List[str]:
+        return [self.instance.email]
+
+    def get_context_data(self):
+        return {
+            'user_name': f"{self.instance.first_name} {self.instance.last_name}",
+            'event_name': self.instance.event.name,
+            'event_city': self.instance.event.city,
+            'event_url': self.instance.event.custom_url,
+            'registrations_count': self.instance.event.registrations_count,
+            'registration_id': self.instance.uuid,
+            'registration_url': self.instance.get_absolute_url(),
+            'visa_requested': self.instance.visa_requested,
+        }
+
+
 class RegistrationReminderEmail(TemplateEmail):
     template_key_legacy = 'events.registrations.reminder'
     template = '_emails/events/registrations_reminder.md.html'
