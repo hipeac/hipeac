@@ -26,18 +26,10 @@ class OpenRegistration(models.Model):
     country_raw = models.CharField(max_length=250, null=True, blank=True)
     country = CountryField(null=True, blank=True)
 
-    bool_q1 = models.BooleanField(default=False)
-    bool_q2 = models.BooleanField(default=False)
-    bool_q3 = models.BooleanField(default=False)
-    bool_q4 = models.BooleanField(default=False)
-
-    open_q1 = models.TextField(null=True, blank=True)
-    open_q2 = models.TextField(null=True, blank=True)
-    open_q3 = models.TextField(null=True, blank=True)
-    open_q4 = models.TextField(null=True, blank=True)
-
     visa_requested = models.BooleanField(default=False)
     visa_sent = models.BooleanField(default=False)
+
+    fields = models.TextField(default='{}')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
