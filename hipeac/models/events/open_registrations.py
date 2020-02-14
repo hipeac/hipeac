@@ -22,6 +22,7 @@ class OpenRegistration(models.Model):
     affiliation = models.CharField(max_length=250)
     address = models.CharField(max_length=250, null=True, blank=True)
     zip_code = models.CharField(max_length=250, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
     country_raw = models.CharField(max_length=250, null=True, blank=True)
     country = CountryField(null=True, blank=True)
 
