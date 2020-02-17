@@ -10,8 +10,7 @@ class OpenEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OpenEvent
-        exclude = ()
-        lookup_field = 'uuid'
+        exclude = ("id", "secret")
 
 
 class OpenRegistrationSerializer(serializers.ModelSerializer):
@@ -20,4 +19,4 @@ class OpenRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OpenRegistration
-        exclude = ()
+        exclude = ("id",)

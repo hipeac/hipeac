@@ -19,6 +19,8 @@ class OpenEventQuerySet(models.QuerySet):
 
 class OpenEvent(ImagesMixin, LinkMixin, models.Model):
     code = models.UUIDField(default=uuid.uuid4, editable=False)
+    secret = models.UUIDField(default=uuid.uuid4, editable=False)
+
     start_date = models.DateField()
     end_date = models.DateField()
     registration_start_date = models.DateField()
