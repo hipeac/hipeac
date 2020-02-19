@@ -20,11 +20,12 @@ class OpenRegistration(models.Model):
     last_name = models.CharField(max_length=250)
     email = models.EmailField()
     affiliation = models.CharField(max_length=250)
-    address = models.CharField(max_length=250, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
     zip_code = models.CharField(max_length=250, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     country_raw = models.CharField(max_length=250, null=True, blank=True)
     country = CountryField(null=True, blank=True)
+    dietary_requirements = models.CharField(max_length=250, null=True, blank=True)
 
     visa_requested = models.BooleanField(default=False)
     visa_sent = models.BooleanField(default=False)
