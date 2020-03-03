@@ -204,7 +204,7 @@ class JobsPdfMaker:
             pdf.add_text(str(reg.event), 'h4')
             pdf.add_text(f'Receipt (#{reg.id})', 'h1')
             pdf.add_text('To Whom It May Concern,', 'p')
-            pdf.add_text(f'''On behalf of the European Network on High Performance and Embedded Architecture and
+            pdf.add_text(f'''On behalf of the European Network on High-performance Embedded Architecture and
 Compilation (HiPEAC), funded under the {H2020}, I would hereby like to confirm that <strong>{reg.user.profile.name}
 {institution}</strong> {attended} the <strong>{reg.event}</strong> event in {reg.event.country.name}, between
 {date_filter(reg.event.start_date)} and {date_filter(reg.event.end_date)}.''', 'p')
