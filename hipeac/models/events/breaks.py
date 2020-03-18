@@ -11,7 +11,7 @@ class Break(models.Model):
         (LUNCH, 'Lunch break'),
     )
 
-    event = models.ForeignKey('hipeac.Event', related_name='breaks', on_delete='CASCADE')
+    event = models.ForeignKey('hipeac.Event', related_name='breaks', on_delete=models.CASCADE)
     type = models.CharField(max_length=16, choices=TYPE_CHOICES, default=COFFEE)
     date = models.DateField()
     start_at = models.TimeField()

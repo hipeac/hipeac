@@ -478,9 +478,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('sponsorship_type', models.PositiveSmallIntegerField(choices=[(1, 'Gold'), (2, 'Silver'), (3, 'Bronze'), (9, 'Academic')], default=3)),
                 ('amount', models.PositiveSmallIntegerField(default=0)),
-                ('event', models.ForeignKey(on_delete='CASCADE', related_name='sponsors', to='hipeac.Event')),
-                ('institution', models.ForeignKey(blank=True, null=True, on_delete='CASCADE', related_name='sponsored_events', to='hipeac.Institution')),
-                ('project', models.ForeignKey(blank=True, null=True, on_delete='CASCADE', related_name='sponsored_events', to='hipeac.Project')),
+                ('event', models.ForeignKey(on_delete=models.CASCADE, related_name='sponsors', to='hipeac.Event')),
+                ('institution', models.ForeignKey(blank=True, null=True, on_delete=models.CASCADE, related_name='sponsored_events', to='hipeac.Institution')),
+                ('project', models.ForeignKey(blank=True, null=True, on_delete=models.CASCADE, related_name='sponsored_events', to='hipeac.Project')),
             ],
             options={
                 'ordering': ['sponsorship_type', '-amount', 'institution__name'],
@@ -654,7 +654,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='break',
             name='event',
-            field=models.ForeignKey(on_delete='CASCADE', related_name='breaks', to='hipeac.Event'),
+            field=models.ForeignKey(on_delete=models.CASCADE, related_name='breaks', to='hipeac.Event'),
         ),
         migrations.AddField(
             model_name='block',

@@ -7,5 +7,8 @@ from .routers import Router
 
 urlpatterns = [
     re_path(r'^v1/', include((Router('v1').urls, 'api'), namespace='v1')),
-    re_path(r'^', include_docs_urls(title='HiPEAC API')),
+    re_path(r'^', include_docs_urls(
+        title="HiPEAC API",
+        description="Add `?format=csv` to the request URL if you want to download a CSV file.",
+    )),
 ]

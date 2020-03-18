@@ -36,6 +36,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (  # noqa
     'rest_framework.renderers.JSONRenderer',
+    'rest_framework_csv.renderers.CSVRenderer',
     'hipeac.api.renderers.NoFormBrowsableAPIRenderer',
 )
 
