@@ -17,7 +17,9 @@
                     {% verbatim %}
                     <small class="float-right text-light-grey">{{ magazines[0].publication_date | moment }}</small>
                     <display-sm class="mb-3">Latest issue</display-sm>
-                    <issuu-embed :src="magazines[0].issuu_url"></issuu-embed>
+                    <a :href="magazines[0].download_url" @click="sendEvent(magazines[0])" target="_blank">
+                        <img :src="magazines[0].images[0].image" class="rounded">
+                    </a>
                     {% endverbatim %}
                 </div>
                 <skeleton-box v-else></skeleton-box>
