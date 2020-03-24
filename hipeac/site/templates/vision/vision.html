@@ -10,7 +10,7 @@
 
 {% block submenu %}
     <li class="nav-item">
-        <a is="router-link" :to="{name: 'latest'}" class="nav-link" exact>Latest</a>
+        <a is="router-link" :to="{name: 'latest'}" class="nav-link">Latest</a>
     </li>
     <li class="nav-item">
         <a is="router-link" :to="{name: 'archive'}" class="nav-link">Archive</a>
@@ -24,8 +24,8 @@
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-latest.html' with id='v-latest' blck=flatpage.page.tbs.about %}
-    {% include './v-archive.html' with id='v-archive' blck=flatpage.page.tbs.archive %}
+    {% include './v-archive.html' with id='v-archive' %}
+    {% include './v-latest.html' with tbs=flatpage.page.tbs %}
 {% endblock %}
 
 {% block scripts %}
@@ -44,16 +44,6 @@
             }
         });
 
-        var LatestView = {
-            template: '#v-latest',
-            computed: _.extend(
-                Vuex.mapState(['visions']), {
-                vision: function () {
-                    return this.visions[0];
-                }
-            })
-        };
-
         var ArchiveView = {
             template: '#v-archive',
             computed: _.extend(
@@ -64,14 +54,89 @@
             })
         };
 
+        var LatestWrapperView = {
+            template: '#v-latest-wrapper'
+        };
+
+        var LatestView = {
+            template: '#v-latest',
+            computed: _.extend(
+                Vuex.mapState(['visions']), {
+                vision: function () {
+                    return this.visions[0];
+                }
+            })
+        };
+
+        var ForCivilSocietyView = {
+            template: '#v-civil-society'
+        };
+
+        var ForIndustryView = {
+            template: '#v-industry'
+        };
+
+        var ForPolicyMakersView = {
+            template: '#v-policy-makers'
+        };
+
+        var ForStudentsView = {
+            template: '#v-students'
+        };
+
+        var VisionContributionsView = {
+            template: '#v-contributions'
+        };
+
         var Router = new VueRouter({
             linkActiveClass: 'active',
             routes: [
                 {
-                    name: 'latest',
                     path: '/',
+                    redirect: { name: 'latest' }
+                },
+                {
+                    path: '/latest/',
                     pathToRegexpOptions: {strict: true},
-                    component: LatestView
+                    component: LatestWrapperView,
+                    children: [
+                        {
+                            name: 'latest',
+                            path: '',
+                            pathToRegexpOptions: {strict: true},
+                            component: LatestView
+                        },
+                        {
+                            name: 'forCivilSociety',
+                            path: 'civil-society/',
+                            pathToRegexpOptions: {strict: true},
+                            component: ForCivilSocietyView
+                        },
+                        {
+                            name: 'forIndustry',
+                            path: 'industry/',
+                            pathToRegexpOptions: {strict: true},
+                            component: ForIndustryView
+                        },
+                        {
+                            name: 'forPolicyMakers',
+                            path: 'policy-makers/',
+                            pathToRegexpOptions: {strict: true},
+                            component: ForPolicyMakersView
+                        },
+                        {
+                            name: 'forStudents',
+                            path: 'students/',
+                            pathToRegexpOptions: {strict: true},
+                            component: ForStudentsView
+                        },
+                        {
+                            name: 'contributions',
+                            path: 'contributions/',
+                            pathToRegexpOptions: {strict: true},
+                            component: VisionContributionsView
+                        }
+                    ]
                 },
                 {
                     name: 'archive',

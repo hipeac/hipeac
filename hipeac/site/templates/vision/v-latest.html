@@ -1,25 +1,55 @@
 {% load compress %}
+{% load hipeac %}
 
 
-<script type="text/x-template" id="{{ id }}">
+<script type="text/x-template" id="v-latest-wrapper">
+    <div>
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'latest'}" class="nav-link" exact>
+                    <icon name="book" class="mr-1"></icon>Overview</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'forCivilSociety'}" class="nav-link" exact>
+                    <icon name="how_to_reg" class="mr-1"></icon>{{ tbs.for_civil_society.header }}</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'forIndustry'}" class="nav-link" exact>
+                    <icon name="business" class="mr-1"></icon>{{ tbs.for_industry.header }}</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'forStudents'}" class="nav-link" exact>
+                    <icon name="school" class="mr-1"></icon>{{ tbs.for_students.header }}</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'forPolicyMakers'}" class="nav-link" exact>
+                    <icon name="star" class="mr-1"></icon>{{ tbs.for_policy_makers.header }}</a>
+            </li>
+            <li class="nav-item">
+                <a is="router-link" :to="{name: 'contributions'}" class="nav-link" exact>
+                    <icon name="compare_arrows" class="mr-1"></icon>Contributions</a>
+            </li>
+        </ul>
+        <router-view></router-view>
+    </div>
+</script>
+
+<script type="text/x-template" id="v-latest">
     <div v-if="visions">
-        <display-lg>{{ blck.header }}</display-lg>
-        <div class="row">
         {% verbatim %}
-            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
-                <div class="hipeac-card">
+        <div class="hipeac-card">
+            <div class="row">
+                <div class="col-12 col-md-4 pr-md-5">
+                    <h5 class="mb-3">{{ vision.title }}</h5>
+                    <marked class="catchphrase-first mb-4" :text="vision.introduction"></marked>
                     <div v-if="vision.download_url">
                         <a :href="vision.download_url" class="btn btn-sm btn-primary btn-block"><i class="material-icons mr-1">get_app</i>Download the full vision</a>
                         <a v-if="vision.flyer" :href="vision.flyer" target="_blank" class="btn btn-sm btn-outline-secondary btn-block"><i class="material-icons mr-1">vertical_split</i>See the flyer</a>
                         <hr class="my-4">
                     </div>
-                    <h5 class="mb-3">{{ vision.title }}</h5>
-                    <marked class="catchphrase-first" :text="vision.introduction"></marked>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
-                <div class="hipeac-card">
                     <youtube-embed v-if="vision.youtube_url" :url="vision.youtube_url" :hideInfo="true" class="mb-4"></youtube-embed>
+                </div>
+                <div class="col-12 col-md-8">
                     <display-sm class="mb-3">Summary</display-sm>
                     <marked :text="vision.summary"></marked>
                     <div v-if="vision.public_files.length" class="mt-5">
@@ -36,8 +66,8 @@
                     </div>
                 </div>
             </div>
-        {% endverbatim %}
         </div>
+        {% endverbatim %}
     </div>
     <div v-else class="row">
         <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
@@ -45,6 +75,75 @@
         </div>
         <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
             <skeleton-box></skeleton-box>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="v-civil-society">
+    <div class="hipeac-card">
+        <div class="row">
+            <div class="col-12 col-md-4 pr-md-5">
+                <h5 class="mb-3">{{ tbs.for_civil_society.header }}</h5>
+                <catchphrase>From the technology directions which now mediate many aspects of our lives to the impact of technology on interpersonal relations and networks, The HiPEAC vision is a guide for how to appropriately navigate our new digitally facilitated lives.</catchphrase>
+            </div>
+            <div class="col-12 col-md-8">
+                {{ tbs.for_civil_society.content | markdown }}
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="v-industry">
+    <div class="hipeac-card">
+        <div class="row">
+            <div class="col-12 col-md-4 pr-md-5">
+                <h5 class="mb-3">{{ tbs.for_industry.header }}</h5>
+            </div>
+            <div class="col-12 col-md-8">
+                {{ tbs.for_industry.content | markdown }}
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="v-policy-makers">
+    <div class="hipeac-card">
+        <div class="row">
+            <div class="col-12 col-md-4 pr-md-5">
+                <h5 class="mb-3">{{ tbs.for_policy_makers.header }}</h5>
+                <catchphrase>From the technology directions which should be prioritized for investment to the impact of technology on people and the planet, The HiPEAC vision is a guide to help make decisions.</catchphrase>
+            </div>
+            <div class="col-12 col-md-8">
+                {{ tbs.for_policy_makers.content | markdown }}
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="v-students">
+    <div class="hipeac-card">
+        <div class="row">
+            <div class="col-12 col-md-4 pr-md-5">
+                <h5 class="mb-3">{{ tbs.for_students.header }}</h5>
+                <catchphrase>From the technology directions which now complement the classroom model that was traditionally at the core of education to the impact of technology on accessibility, The HiPEAC vision is a guide for how to optimally integrate this technology into the educational sphere.</catchphrase>
+            </div>
+            <div class="col-12 col-md-8">
+                {{ tbs.for_students.content | markdown }}
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="v-contributions">
+    <div class="hipeac-card">
+        <div class="row">
+            <div class="col-12 col-md-4 pr-md-5">
+                <h5 class="mb-3">Contributions to other roadmaps</h5>
+                <catchphrase>{{ tbs.contributions.header }}</catchphrase>
+            </div>
+            <div class="col-12 col-md-8">
+                {{ tbs.contributions.content | markdown }}
+            </div>
         </div>
     </div>
 </script>
