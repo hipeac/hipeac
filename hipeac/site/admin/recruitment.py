@@ -12,7 +12,7 @@ from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
 @admin.register(PhdMobility)
 class PhdMobility(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    list_display = ('id', 'type', 'title', 'student')
+    list_display = ('id', 'type', 'start_date', 'title', 'student')
 
     autocomplete_fields = ('institution',)
     raw_id_fields = ('student', 'job', 'internship')

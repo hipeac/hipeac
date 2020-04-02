@@ -1,5 +1,6 @@
 from django.db import models
 from django_countries.fields import CountryField
+from django.urls import reverse
 
 
 class PhdMobility(models.Model):
@@ -25,16 +26,20 @@ class PhdMobility(models.Model):
     location = models.CharField(max_length=250, help_text='Where will the PhD student be working?')
     country = CountryField()
 
-    job = models.ForeignKey('hipeac.Job', related_name='phd_mobilities', null=True, on_delete=models.SET_NULL)
-    internship = models.ForeignKey('hipeac.Internship', related_name='phd_mobilities', null=True,
+    job = models.ForeignKey('hipeac.Job', related_name='phd_mobilities', null=True, blank=True,
+                            on_delete=models.SET_NULL)
+    internship = models.ForeignKey('hipeac.Internship', related_name='phd_mobilities', null=True, blank=True,
                                    on_delete=models.SET_NULL)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-start_date']
         verbose_name = 'PhD mobility'
         verbose_name_plural = 'PhD mobilities'
 
     def __str__(self):
         return f'{self.title} ({self.student})'
+
+    def get_absolute_url(self) -> str:
+        return reverse('user', args=[self.student.username])
