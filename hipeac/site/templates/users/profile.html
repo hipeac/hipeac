@@ -57,24 +57,24 @@
             </div>
         {% endif %}
         <div is="videos-row" url="{% url 'v1:user-videos' profile.user_id %}"></div>
-        {% if internship_applications.count > 0 %}
+        {% if phd_mobilities.count > 0 %}
             <div class="row">
                 <div class="col-12 col-lg-2">
-                    <h5 class="display-sm mt-4 mb-1">HiPEAC Industrial PhD Internships</h5><hr>
+                    <h5 class="display-sm mt-4 mb-1">HiPEAC PhD mobility</h5><hr>
                 </div>
                 <div class="col-12 col-lg-10">
-                    {% for application in internship_applications %}
+                    {% for mobility in phd_mobilities %}
                     <div class="hipeac-card">
-                        <a href="{{ application.internship.institution.get_absolute_url }}" class="float-right inherit">
-                            <img src="{{ application.internship.institution.images.sm }}" class="logo-sm mb-3 ml-3">
+                        <a href="{{ mobility.institution.get_absolute_url }}" class="float-right inherit">
+                            <img src="{{ mobility.institution.images.sm }}" class="logo-sm mb-3 ml-3">
                         </a>
                         <p>
-                            <span class="label lightest radius">{{ application.available_from|date:'N Y' }} - {{ application.available_to|date:'N Y' }}</span><br>
-                            <strong>{{ application.internship.title }} @ {{ application.internship.institution }}</strong>
+                            <strong class="text-primary">{{ mobility.get_type_display }}</strong> - <span class="label lightest radius">{{ mobility.start_date|date:'N Y' }} - {{ mobility.end_date|date:'N Y' }}</span><br>
+                            <strong>{{ mobility.title }} @ {{ mobility.institution }}</strong>
                         </p>
-                        {% if application.summary %}
+                        {% if mobility.summary %}
                             <div class="marked text-sm">
-                                {{ application.summary | markdown }}
+                                {{ mobility.summary | markdown }}
                             </div>
                         {% endif %}
                     </div>

@@ -18,9 +18,7 @@ class UserProfile(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['internship_applications'] = self.get_object().user \
-                                                 .internship_applications.filter(selected=True) \
-                                                 .select_related('internship__institution')
+        context['phd_mobilities'] = self.get_object().user.phd_mobilities.select_related('institution')
         return context
 
 

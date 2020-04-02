@@ -3,10 +3,19 @@ from django.forms import ModelForm
 from django.urls import path
 
 from hipeac.forms import ApplicationAreasChoiceField, JobPositionChoiceField, TopicsChoiceField
-from hipeac.models import Job, JobEvaluation, Event
+from hipeac.models import PhdMobility, Job, JobEvaluation, Event
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
 from .csv.recruitment import JobCsvWriter, csv_keywords_analysis
 from .generic import HideDeleteActionMixin, LinksInline, custom_titled_filter
+
+
+@admin.register(PhdMobility)
+class PhdMobility(admin.ModelAdmin):
+    date_hierarchy = 'created_at'
+    list_display = ('id', 'type', 'title', 'student')
+
+    autocomplete_fields = ('institution',)
+    raw_id_fields = ('student', 'job', 'internship')
 
 
 class JobEvaluationInline(admin.StackedInline):
