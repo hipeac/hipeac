@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load static %}
+
+
+{% block head_title %}Awardees - {{ block.super }}{% endblock %}
+
+
+{% block subtitle %}
+    {% if mobility_type == 'internship' %}HiPEAC Internships{%endif %}
+    {% if mobility_type == 'collaboration' %}HiPEAC Collaboration Grants{%endif %}
+{% endblock %}
+
+{% block submenu %}
+    {% if mobility_type == 'internship' %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'jobs' %}#/internships/"><i class="material-icons mr-1">arrow_back</i>Back to internships</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-12 col-md-8">
+                <div class="hipeac-card">
+                    <h5>Awardees: public summary</h5>
+                    <table class="table table-sm">
+                    {% for mobility in object_list %}
+                        {% ifchanged mobility.start_date.year %}
+                            </table>
+                            <h6 class="display-sm mb-3">{{ mobility.start_date.year }}</h6>
+                            <table class="table table-sm">
+                        {% endifchanged %}
+                        <tr>
+                            <td><i class="material-icons sm">description</i></td>
+                            <td>{{ mobility.student.profile.name }} <small class="text-secondary">@ {{ mobility.institution }}: "{{ mobility.title }}"</td>
+                            <td>
+                                <a href="{{ mobility.student.get_absolute_url }}">
+                                    <i class="material-icons sm">arrow_forward</i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+    <script>
+        new Vue({
+            el: '#vue'
+        });
+    </script>
+{% endcompress %}
+{% endblock %}

@@ -79,7 +79,8 @@ urlpatterns = [
     # Media
     re_path(r'media/private(?P<path>((/\w+?)+/))(?P<filename>[\w.-]+)', views.FirewallView.as_view()),
     # Old redirects and legacy links
-    path('jobs/internships/awardees/', views.InternshipAwardees.as_view(), name='_legacy_internships_awardees'),
+    path('mobility/collaboration/awardees/', views.CollaborationAwardees.as_view(), name='collaboration_awardees'),
+    path('jobs/internships/awardees/', views.InternshipAwardees.as_view(), name='internship_awardees'),
     re_path(r'^press/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$', views.ArticleRedirect.as_view()),
     # Sitemap
     path('sitemap.xml', sitemap_views.index, {'sitemaps': sitemaps}),

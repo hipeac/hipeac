@@ -7,10 +7,30 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 from typing import List
 
-from hipeac.models import Job, JobEvaluation
+from hipeac.models import Job, JobEvaluation, PhdMobility
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
 from hipeac.tools.euraxess import EuraxessXMLGenerator
 from .mixins import SlugMixin
+
+
+class CollaborationAwardees(generic.ListView):
+    model = PhdMobility
+    template_name = 'recruitment/mobility/awardees.html'
+    mobility_type = 'collaboration'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(type=self.mobility_type) \
+                                     .select_related('student__profile') \
+                                     .order_by('start_date__year', 'student__first_name')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['mobility_type'] = self.mobility_type
+        return context
+
+
+class InternshipAwardees(CollaborationAwardees):
+    mobility_type = 'internship'
 
 
 class JobRedirect(generic.View):
