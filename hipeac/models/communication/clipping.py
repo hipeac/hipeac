@@ -1,8 +1,11 @@
 from django.db import models
 from django.utils import timezone
 
+from .vars import SECTION_CHOICES
+
 
 class Clipping(models.Model):
+    type = models.CharField(max_length=16, null=True, blank=True, choices=SECTION_CHOICES)
     media = models.CharField(max_length=250)
     title = models.CharField(max_length=250)
     url = models.URLField()

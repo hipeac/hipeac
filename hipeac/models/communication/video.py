@@ -2,8 +2,11 @@ from django.contrib.auth import get_user_model
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 
+from .vars import SECTION_CHOICES
+
 
 class Video(models.Model):
+    type = models.CharField(max_length=16, null=True, blank=True, choices=SECTION_CHOICES)
     title = models.CharField(max_length=250)
     publication_date = models.DateField()
     youtube_id = models.CharField(max_length=40, unique=True)

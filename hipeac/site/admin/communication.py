@@ -95,7 +95,7 @@ class VideoAdmin(admin.ModelAdmin):
     raw_id_fields = ('users',)
     fieldsets = (
         (None, {
-            'fields': ('title', 'publication_date', 'youtube_id', 'is_expert'),
+            'fields': ('title', 'publication_date', 'youtube_id', 'is_expert', 'type'),
         }),
         ('RELATIONS', {
             'fields': ('event', 'users', 'projects'),

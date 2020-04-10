@@ -1,9 +1,10 @@
+from rest_framework.decorators import action
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from hipeac.models import Job, JobEvaluation
+from hipeac.models import Job, JobEvaluation, Video
 from ..permissions import HasAdminPermissionOrReadOnly
-from ..serializers import JobNestedSerializer, JobSerializer, JobEvaluationSerializer
+from ..serializers import JobNestedSerializer, JobSerializer, JobEvaluationSerializer, VideoListSerializer
 
 
 class JobViewSet(ModelViewSet):
@@ -19,6 +20,11 @@ class JobViewSet(ModelViewSet):
                                             .defer('description')
         self.pagination_class = None
         self.serializer_class = JobNestedSerializer
+        return super().list(request, *args, **kwargs)
+
+    @action(detail=False, pagination_class=None, serializer_class=VideoListSerializer)
+    def videos(self, request, *args, **kwargs):
+        self.queryset = Video.objects.filter(type="jobs")
         return super().list(request, *args, **kwargs)
 
 

@@ -1,22 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from .vars import SECTION_CHOICES
+
 
 class Quote(models.Model):
-    TYPE_CHOICES = (
-        ('general', 'General'),
-        ('jobs', 'Jobs'),
-        ('internships', 'PhD Internships'),
-        ('industry', 'Industry'),
-        ('innovation', 'Innovation community'),
-        ('csw', 'Computing Systems Week'),
-        ('conference', 'HiPEAC Conference'),
-        ('acaces', 'ACACES'),
-        ('roadshow', 'HiPEAC Roadshow'),
-        ('collaborations', 'Collaboration Grants'),
-    )
-
-    type = models.CharField(max_length=16, choices=TYPE_CHOICES)
+    type = models.CharField(max_length=16, null=True, blank=True, choices=SECTION_CHOICES)
     text = models.TextField()
     author = models.CharField(max_length=250)
     institution = models.ForeignKey('hipeac.Institution', related_name='quotes', null=True, blank=True,
