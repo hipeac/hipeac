@@ -88,6 +88,18 @@
             </div>
             <div class="col-12 col-md-8">
                 {{ tbs.for_civil_society.content | markdown }}
+                <div v-if="visions && vision.public_files.length" class="mt-5">
+                    <display-sm class="mb-3 mt-5">Related files</display-sm>
+                    <table class="table table-sm">
+                        <tr v-for="file in vision.public_files" :key="file.id">
+                            <td class="sm"><i class="material-icons sm">description</i></td>
+                            <td>{% verbatim %}{{ file.description }}{% endverbatim %}</td>
+                            <td class="text-right">
+                                <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -101,6 +113,18 @@
             </div>
             <div class="col-12 col-md-8">
                 {{ tbs.for_industry.content | markdown }}
+                <div v-if="visions && vision.public_files.length" class="mt-5">
+                    <display-sm class="mb-3 mt-5">Related files</display-sm>
+                    <table class="table table-sm">
+                        <tr v-for="file in vision.public_files" :key="file.id">
+                            <td class="sm"><i class="material-icons sm">description</i></td>
+                            <td>{% verbatim %}{{ file.description }}{% endverbatim %}</td>
+                            <td class="text-right">
+                                <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -115,6 +139,25 @@
             </div>
             <div class="col-12 col-md-8">
                 {{ tbs.for_policy_makers.content | markdown }}
+                <div v-if="visions && vision.public_files.length" class="mt-5">
+                    <display-sm class="mb-3 mt-5">Related files</display-sm>
+                    <table class="table table-sm">
+                        <tr v-for="file in vision.public_files" :key="file.id">
+                            <td class="sm"><i class="material-icons sm">description</i></td>
+                            <td>{% verbatim %}{{ file.description }}{% endverbatim %}</td>
+                            <td class="text-right">
+                                <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sm"><i class="material-icons sm">ondemand_video</i></td>
+                            <td>CONNECT University Information Session</td>
+                            <td class="text-right">
+                                <a href="https://webcast.ec.europa.eu/connect-university-hipeac" target="_blank"><i class="material-icons sm">launch</i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -129,6 +172,18 @@
             </div>
             <div class="col-12 col-md-8">
                 {{ tbs.for_students.content | markdown }}
+                <div v-if="visions && vision.public_files.length" class="mt-5">
+                    <display-sm class="mb-3 mt-5">Related files</display-sm>
+                    <table class="table table-sm">
+                        <tr v-for="file in vision.public_files" :key="file.id">
+                            <td class="sm"><i class="material-icons sm">description</i></td>
+                            <td>{% verbatim %}{{ file.description }}{% endverbatim %}</td>
+                            <td class="text-right">
+                                <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

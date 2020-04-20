@@ -69,19 +69,43 @@
         };
 
         var ForCivilSocietyView = {
-            template: '#v-civil-society'
+            template: '#v-civil-society',
+            computed: _.extend(
+                Vuex.mapState(['visions']), {
+                vision: function () {
+                    return this.visions[0];
+                }
+            })
         };
 
         var ForIndustryView = {
-            template: '#v-industry'
+            template: '#v-industry',
+            computed: _.extend(
+                Vuex.mapState(['visions']), {
+                vision: function () {
+                    return this.visions[0];
+                }
+            })
         };
 
         var ForPolicyMakersView = {
-            template: '#v-policy-makers'
+            template: '#v-policy-makers',
+            computed: _.extend(
+                Vuex.mapState(['visions']), {
+                vision: function () {
+                    return this.visions[0];
+                }
+            })
         };
 
         var ForStudentsView = {
-            template: '#v-students'
+            template: '#v-students',
+            computed: _.extend(
+                Vuex.mapState(['visions']), {
+                vision: function () {
+                    return this.visions[0];
+                }
+            })
         };
 
         var VisionContributionsView = {
