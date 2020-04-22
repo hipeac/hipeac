@@ -26,8 +26,8 @@
                     <icon name="star" class="mr-1"></icon>{{ tbs.for_policy_makers.header }}</a>
             </li>
             <li class="nav-item">
-                <a is="router-link" :to="{name: 'contributions'}" class="nav-link" exact>
-                    <icon name="compare_arrows" class="mr-1"></icon>Contributions</a>
+                <a is="router-link" :to="{name: 'impact'}" class="nav-link" exact>
+                    <icon name="directions" class="mr-1"></icon>Impact</a>
             </li>
         </ul>
         <router-view></router-view>
@@ -189,15 +189,17 @@
     </div>
 </script>
 
-<script type="text/x-template" id="v-contributions">
+<script type="text/x-template" id="v-impact">
     <div class="hipeac-card">
         <div class="row">
             <div class="col-12 col-md-4 pr-md-5">
-                <h5 class="mb-3">Contributions to other roadmaps</h5>
+                <h5 class="mb-3">HiPEAC Vision impact</h5>
                 <catchphrase>{{ tbs.contributions.header }}</catchphrase>
             </div>
             <div class="col-12 col-md-8">
                 {{ tbs.contributions.content | markdown }}
+                <hr class="my-4">
+                <a v-if="vision" :href="'https://www.google.com/search?q=%22HiPEAC+Vision+' + vision.year + '%22+-site%3Ahipeac.net+-site%3Atwitter.com'" _target="blank" class="btn btn-sm btn-block btn-outline-secondary text-wrap"><i class="material-icons mr-1">search</i>Find more Vision references in Google</a>
             </div>
         </div>
     </div>

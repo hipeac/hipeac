@@ -63,7 +63,8 @@
             computed: _.extend(
                 Vuex.mapState(['visions']), {
                 vision: function () {
-                    return this.visions[0];
+                    if (this.visions) { return this.visions[0]; }
+                    else { return null; }
                 }
             })
         };
@@ -73,7 +74,8 @@
             computed: _.extend(
                 Vuex.mapState(['visions']), {
                 vision: function () {
-                    return this.visions[0];
+                    if (this.visions) { return this.visions[0]; }
+                    else { return null; }
                 }
             })
         };
@@ -83,7 +85,8 @@
             computed: _.extend(
                 Vuex.mapState(['visions']), {
                 vision: function () {
-                    return this.visions[0];
+                    if (this.visions) { return this.visions[0]; }
+                    else { return null; }
                 }
             })
         };
@@ -93,7 +96,8 @@
             computed: _.extend(
                 Vuex.mapState(['visions']), {
                 vision: function () {
-                    return this.visions[0];
+                    if (this.visions) { return this.visions[0]; }
+                    else { return null; }
                 }
             })
         };
@@ -103,13 +107,21 @@
             computed: _.extend(
                 Vuex.mapState(['visions']), {
                 vision: function () {
-                    return this.visions[0];
+                    if (this.visions) { return this.visions[0]; }
+                    else { return null; }
                 }
             })
         };
 
-        var VisionContributionsView = {
-            template: '#v-contributions'
+        var VisionImpactView = {
+            template: '#v-impact',
+            computed: _.extend(
+                Vuex.mapState(['visions']), {
+                vision: function () {
+                    if (this.visions) { return this.visions[0]; }
+                    else { return null; }
+                }
+            })
         };
 
         var Router = new VueRouter({
@@ -155,10 +167,10 @@
                             component: ForStudentsView
                         },
                         {
-                            name: 'contributions',
-                            path: 'contributions/',
+                            name: 'impact',
+                            path: 'impact/',
                             pathToRegexpOptions: {strict: true},
-                            component: VisionContributionsView
+                            component: VisionImpactView
                         }
                     ]
                 },
