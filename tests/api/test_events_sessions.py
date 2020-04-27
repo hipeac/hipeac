@@ -28,7 +28,7 @@ class TestForAnonymous:
     def test_create(self, api_client):
         pass
 
-    def test_read(self, api_client, db):
+    def test_read(self, api_client):
         assert api_client.get(self.get_detail_url(self.session.id)).status_code == status.HTTP_200_OK
 
     def test_update(self, api_client):

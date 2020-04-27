@@ -47,8 +47,15 @@ class TestForAuthenticated(TestForAnonymous):
         full_data = {
             "username": "hipeac",
             "first_name": "HiPEAC",
-            "last_name": "5",
-            "profile": {"country": "BE", "application_areas": [], "topics": [], "projects": []},
+            "last_name": "6",
+            "profile": {
+                "country": "BE",
+                "application_areas": [],
+                "topics": [],
+                "projects": [],
+                "links": [],
+                "meal_preference": None,
+            },
         }
         assert api_client.patch(self.account_url, {"username": "hipeac"}).status_code == status.HTTP_200_OK
         assert api_client.post(self.account_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED

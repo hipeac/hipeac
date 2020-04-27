@@ -147,8 +147,8 @@ class SessionSerializer(SessionListSerializer):
             "updated_at",
         )
 
-    def get_excerpt(self, obj):
-        return truncate_md(obj.summary, limit=350)
+    def get_excerpt(self, obj) -> str:
+        return truncate_md(obj.summary, limit=350) if obj.summary else ""
 
     def get_projects_info(self, obj):
         return [

@@ -26,3 +26,4 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # https://django-compressor.readthedocs.io/en/stable/settings/
 
 COMPRESS_ENABLED = False
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"

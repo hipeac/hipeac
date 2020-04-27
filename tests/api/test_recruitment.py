@@ -45,10 +45,14 @@ class TestForAnonymous:
 
 class TestForAuthenticated(UserMixin, TestForAnonymous):
     job = None
+    recruiter = None
     test_data = {}
 
     @pytest.fixture(autouse=True)
     def setup_test_data(self, db, now):
+        if not self.recruiter:
+            self.recruiter = baker.make_recipe("hipeac.user")
+
         if not self.test_data:
             employment_type = baker.make_recipe("hipeac.employment_type")
             self.test_data = {
@@ -56,9 +60,9 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
                 "description": "Job description.",
                 "deadline": str(now.add(months=1).date),
                 "employment_type": {"id": employment_type.id},
-                "country": {"code": "BE", "name": "Belgium"},
+                "country": "BE",
                 "email": "recruitment@hipeac.net",
-                "institution": self.user.profile.institution_id,
+                "institution": self.recruiter.profile.institution_id,
                 "project": None,
                 "application_areas": [],
                 "career_levels": [],
@@ -66,17 +70,16 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
                 "links": [],
                 "add_to_euraxess": True,
             }
-        return
 
     def test_create(self, api_client):
-        api_client.force_authenticate(user=self.user)
+        api_client.force_authenticate(user=self.recruiter)
         res = api_client.post(self.list_url, self.test_data)
         assert res.status_code == status.HTTP_201_CREATED
 
 
 class TestForAdministrator(TestForAuthenticated):
     def test_update(self, api_client):
-        api_client.force_authenticate(user=self.user)
+        api_client.force_authenticate(user=self.recruiter)
         self.job = api_client.post(self.list_url, self.test_data).json()
         detail_url = self.get_detail_url(self.job["id"])
         assert api_client.patch(detail_url, {"title": "New title"}).status_code == status.HTTP_200_OK
@@ -84,7 +87,7 @@ class TestForAdministrator(TestForAuthenticated):
         assert api_client.put(detail_url, self.test_data).status_code == status.HTTP_200_OK
 
     def test_delete(self, api_client):
-        api_client.force_authenticate(user=self.user)
+        api_client.force_authenticate(user=self.recruiter)
         self.job = api_client.post(self.list_url, self.test_data).json()
         detail_url = self.get_detail_url(self.job["id"])
         assert api_client.delete(detail_url).status_code == status.HTTP_204_NO_CONTENT

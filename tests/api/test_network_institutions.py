@@ -66,6 +66,7 @@ class TestForAdministrator(TestForAuthenticated):
                 "country": "BE",
                 "application_areas": [],
                 "topics": [],
+                "links": [],
             }
         return
 
