@@ -69,6 +69,7 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
         second_institution_ids = list(members.values_list("profile__second_institution_id", flat=True))
         institutions = Institution.objects.filter(id__in=institution_ids + second_institution_ids)
         ctx = {"request": request}
+
         return Response(
             {
                 "institutions": InstitutionNestedSerializer(institutions, many=True, context=ctx).data,
@@ -76,7 +77,6 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
                 "affiliates": UserPublicMembershipSerializer(affiliates, many=True, context=ctx).data,
             }
         )
-        return super().list(request, *args, **kwargs)
 
     @action(detail=False)
     def affiliates(self, request, *args, **kwargs):

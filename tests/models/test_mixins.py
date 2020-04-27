@@ -15,7 +15,6 @@ class TestLinkMixin:
             Link(content_object=self.obj, type=Link.TWITTER, url="https://twitter.com/hipeac").save()
             Link(content_object=self.obj, type=Link.WEBSITE, url="https://www.hipeac.net/").save()
             Link(content_object=self.obj, type=Link.LINKEDIN, url="https://www.hipeac.net/linkedin").save()
-        return
 
     def test_get_link(self):
         assert self.obj.get_link(Link.LINKEDIN) == "https://www.hipeac.net/linkedin"

@@ -13,10 +13,9 @@ class TestForAnonymous:
     def setup_event(self, db, now):
         if not self.event:
             self.event = baker.make_recipe("hipeac.event")
-        return
 
-    def get_detail_url(self, id: int):
-        return reverse("v1:event-detail", args=[id])
+    def get_detail_url(self, event_id: int):
+        return reverse("v1:event-detail", args=[event_id])
 
     def test_list(self, api_client):
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK

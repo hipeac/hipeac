@@ -18,7 +18,6 @@ class TestForAnonymous:
         if not self.job_active:
             self.job_active = baker.make_recipe("hipeac.job", deadline=now.add(days=1).datetime)
             self.job_not_active = baker.make_recipe("hipeac.job", deadline=now.subtract(days=1).datetime)
-        return
 
     def get_detail_url(self, job_id):
         return reverse("v1:job-detail", args=[job_id])

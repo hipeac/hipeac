@@ -10,4 +10,3 @@ class UserMixin:
     def setup_user(self, db):
         if not self.user:
             self.user = baker.make_recipe("hipeac.user")
-        return

@@ -121,8 +121,8 @@ def truncate(text, limit=300, smart=True):
     if smart:
         words = text.split(" ")[:-1]
         return " ".join(words) + "..."
-    else:
-        return text + "..."
+
+    return f"{text}..."
 
 
 class SpacelessNode(Node):

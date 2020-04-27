@@ -19,7 +19,7 @@ var FormElement = Vue.extend({
             else return this.fields[parts[0]];
         },
         label: function () {
-            if (!this.f) return this.customLabel || '';
+            if (!this.f) return this.customLabel || '';
             return this.customLabel || this.f.label;
         },
         helpText: function () {
@@ -375,7 +375,7 @@ var AucompletePopupElement = FormElement.extend({
             $(this.$refs.modal).modal();
             $(this.$refs.search).focus();
         },
-        updateValue: function (event) {
+        updateValue: function () {
             if (this.many) {
                 this.$emit('input', this.values);
             } else {

@@ -100,12 +100,15 @@ class RegistrationPaymentView(generic.TemplateView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         self.registration = get_object_or_404(Registration, pk=kwargs.get("pk"))
+
         if not request.user.is_superuser and not self.registration.user.id == request.user.id:
             messages.error(request, "You don't have the necessary permissions to view this page.")
             raise PermissionDenied
+
         if not self.registration.is_paid and self.registration.invoice_requested:
             messages.error(request, "You requested an invoice before. Contact us first if you want to pay by card.")
             raise PermissionDenied
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -136,6 +139,7 @@ class RegistrationPaymentView(generic.TemplateView):
             messages.error(request, "Sorry but the coupon you have introduced has already been used.")
         except Exception as e:
             messages.error(request, "Error %s (%s)" % (e.message, type(e).__name__))
+
         return redirect(self.registration.get_payment_url())
 
 
@@ -247,9 +251,11 @@ class SessionProposalView(SuccessMessageMixin, generic.FormView):
         if event.type not in [Event.CONFERENCE, Event.CSW]:
             messages.error(request, "You cannot submit a proposal for this event.")
             raise PermissionDenied
-        elif event.is_finished():
+
+        if event.is_finished():
             messages.error(request, "You cannot submit a proposal for a past event.")
             raise PermissionDenied
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):

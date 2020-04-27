@@ -17,10 +17,9 @@ class TestForAnonymous:
     def setup_project(self, db):
         if not self.project:
             self.project = baker.make_recipe("hipeac.project")
-        return
 
-    def get_detail_url(self, id):
-        return reverse("v1:project-detail", args=[id])
+    def get_detail_url(self, project_id):
+        return reverse("v1:project-detail", args=[project_id])
 
     def test_list(self, api_client):
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK
@@ -61,7 +60,6 @@ class TestForAdministrator(TestForAuthenticated):
             self.user_admin = baker.make_recipe("hipeac.user")
             self.project = baker.make_recipe("hipeac.project")
             Permission(content_object=self.project, user=self.user_admin, level=Permission.ADMIN).save()
-        return
 
     def test_update(self, api_client):
         api_client.force_authenticate(user=self.user_admin)

@@ -15,10 +15,9 @@ class TestForAnonymous:
     def setup_session(self, db):
         if not self.session:
             self.session = baker.make_recipe("hipeac.session")
-        return
 
-    def get_detail_url(self, id: int):
-        return reverse("v1:session-detail", args=[id])
+    def get_detail_url(self, session_id: int):
+        return reverse("v1:session-detail", args=[session_id])
 
     @pytest.mark.skip(reason="HTTP_405_METHOD_NOT_ALLOWED")
     def test_list(self, api_client):
@@ -63,7 +62,6 @@ class TestForAdministrator(TestForAuthenticated):
                 "projects": [],
                 "institutions": [],
             }
-        return
 
     @pytest.fixture(autouse=True)
     def setup_session(self, db):
@@ -71,7 +69,6 @@ class TestForAdministrator(TestForAuthenticated):
             self.user_admin = baker.make_recipe("hipeac.user")
             self.session = baker.make_recipe("hipeac.session")
             Permission(content_object=self.session, user=self.user_admin, level=Permission.ADMIN).save()
-        return
 
     def test_update(self, api_client):
         api_client.force_authenticate(user=self.user_admin)

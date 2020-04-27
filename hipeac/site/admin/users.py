@@ -32,7 +32,6 @@ def send_profile_update_reminders(queryset):
             },
         )
         send_task("hipeac.tasks.emails.send_from_template", email)
-    return
 
 
 class ProfileCsvWriter(ModelCsvWriter):
@@ -93,15 +92,16 @@ class MembershipTypeFilter(admin.SimpleListFilter):
             )
 
         if value:
-            if value == "any":
-                return queryset
-            elif value == "industry":
+            if value == "industry":
                 return queryset.filter(
                     Q(profile__institution__type__in=[Institution.INDUSTRY, Institution.SME])
                     | Q(profile__second_institution__type__in=[Institution.INDUSTRY, Institution.SME])
                 )
-            elif value != "":
+
+            if value != "":
                 return queryset.filter(profile__membership_tags__contains=value)
+
+        return queryset
 
 
 @admin.register(get_user_model())

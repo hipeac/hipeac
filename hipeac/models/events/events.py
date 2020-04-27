@@ -87,7 +87,6 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     travel_info = models.TextField(null=True, blank=True)
 
     registrations_count = models.PositiveIntegerField(default=0)
-
     links = GenericRelation("hipeac.Link")
     venues = models.ManyToManyField("hipeac.Venue", blank=True, related_name="events")
 
@@ -151,9 +150,11 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     def name(self) -> str:
         if self.type == self.ACACES:
             return f"ACACES {self.start_date.year}, {self.city}"
-        elif self.type == self.CONFERENCE:
+
+        if self.type == self.CONFERENCE:
             return f"HiPEAC {self.start_date.year}, {self.city}"
-        elif self.type == self.CSW:
+
+        if self.type == self.CSW:
             season = "Spring" if (self.start_date.month < 8) else "Autumn"
             return f"CSW {season} {self.start_date.year}, {self.city}"
 

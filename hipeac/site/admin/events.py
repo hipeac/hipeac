@@ -151,6 +151,7 @@ class EventAdmin(admin.ModelAdmin):
         if queryset.count() > 1:
             messages.error(request, "Please select only one event.")
             return
+
         ids = queryset.first().registrations.values_list("user_id", flat=True)
         return ProfileCsvWriter(filename="hipeac-jobs.csv", queryset=Profile.objects.filter(user_id__in=ids)).response
 
@@ -172,12 +173,13 @@ class RegistrationIsPaidFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() == "y":
             return queryset.filter(saldo__gte=0)
-        elif self.value() == "c":
+        if self.value() == "c":
             return queryset.filter(saldo__gte=0, coupon__isnull=False)
-        elif self.value() == "n":
+        if self.value() == "n":
             return queryset.filter(saldo__lt=0, invoice_requested=False)
-        elif self.value() == "i":
+        if self.value() == "i":
             return queryset.filter(saldo__lt=0, invoice_requested=True)
+        return queryset
 
 
 @admin.register(Registration)
@@ -368,6 +370,7 @@ class SessionAdmin(admin.ModelAdmin):
         if queryset.count() > 1:
             messages.error(request, "Please select only one session.")
             return
+
         ids = queryset.first().registrations.values_list("user_id", flat=True)
         return ProfileCsvWriter(filename="hipeac-jobs.csv", queryset=Profile.objects.filter(user_id__in=ids)).response
 

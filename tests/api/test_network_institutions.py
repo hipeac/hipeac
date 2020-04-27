@@ -17,10 +17,9 @@ class TestForAnonymous:
     def setup_institution(self, db):
         if not self.institution:
             self.institution = baker.make_recipe("hipeac.institution")
-        return
 
-    def get_detail_url(self, id):
-        return reverse("v1:institution-detail", args=[id])
+    def get_detail_url(self, institution_id):
+        return reverse("v1:institution-detail", args=[institution_id])
 
     def test_list(self, api_client):
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK
@@ -68,7 +67,6 @@ class TestForAdministrator(TestForAuthenticated):
                 "topics": [],
                 "links": [],
             }
-        return
 
     @pytest.fixture(autouse=True)
     def setup_institution(self, db):
@@ -76,7 +74,6 @@ class TestForAdministrator(TestForAuthenticated):
             self.user_admin = baker.make_recipe("hipeac.user")
             self.institution = baker.make_recipe("hipeac.institution")
             Permission(content_object=self.institution, user=self.user_admin, level=Permission.ADMIN).save()
-        return
 
     def test_update(self, api_client):
         api_client.force_authenticate(user=self.user_admin)

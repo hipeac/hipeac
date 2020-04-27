@@ -37,7 +37,6 @@ def send_members_welcome(queryset):
             {"user_name": instance.name, "is_registered": True if instance.user else False},
         )
         send_task("hipeac.tasks.emails.send_from_template", email)
-    return
 
 
 class MembershipRequestForm(ModelForm):

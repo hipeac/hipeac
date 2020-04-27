@@ -19,8 +19,7 @@ class DataSourceView(generic.View):
         if "HTTP_AUTHORIZATION" in request.META:
             if request.META.get("HTTP_AUTHORIZATION") == _basic_auth_str(mailing_list.code, mailing_list.password):
                 return HttpResponse("\n".join(mailing_list.subscribers), content_type="text/plain; charset=utf-8")
-            else:
-                raise PermissionDenied
+            raise PermissionDenied
 
         response = HttpResponse()
         response.status_code = 401

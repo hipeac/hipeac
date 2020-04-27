@@ -384,7 +384,7 @@ Vue.component('youtube-embed', {
     '',
     computed: {
         youtubeId: function () {
-            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
             var match = this.url.match(regExp);
             return (match && match[7].length == 11) ? match[7] : null;
         },

@@ -13,10 +13,9 @@ class TestForAnonymous:
     def setup_roadshow(self, db):
         if not self.roadshow:
             self.roadshow = baker.make_recipe("hipeac.roadshow")
-        return
 
-    def get_detail_url(self, id: int):
-        return reverse("v1:roadshow-detail", args=[id])
+    def get_detail_url(self, roadshow_id: int):
+        return reverse("v1:roadshow-detail", args=[roadshow_id])
 
     def test_list(self, api_client):
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK

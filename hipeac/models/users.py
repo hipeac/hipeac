@@ -142,7 +142,7 @@ class Profile(ImagesMixin, LinkMixin, MetadataMixin, models.Model):
         """
         if self.membership_tags == "":
             self.membership_date = None
-            self.advisor is None
+            self.advisor = None
         else:
             if "member" in self.membership_tags:
                 self.advisor = None

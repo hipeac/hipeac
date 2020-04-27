@@ -34,7 +34,6 @@ class TestForAuthenticated(TestForAnonymous):
     @pytest.fixture(autouse=True)
     def setup_data(self):
         self.user = baker.make_recipe("hipeac.user")
-        return
 
     def test_account_read(self, api_client):
         api_client.force_authenticate(user=self.user)

@@ -1,5 +1,4 @@
 Vue.component('institutions-carousel', {
-    props: ['institutions'],
     props: {
         eventName: {
             type: String,
