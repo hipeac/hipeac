@@ -1,6 +1,6 @@
 import pytest
 
-from model_mommy import mommy
+from model_bakery import baker
 
 from hipeac.models import Link
 
@@ -11,7 +11,7 @@ class TestLinkMixin:
     @pytest.fixture(autouse=True)
     def setup_project(self, db):
         if not self.obj:
-            self.obj = mommy.make_recipe("hipeac.project")
+            self.obj = baker.make_recipe("hipeac.project")
             Link(content_object=self.obj, type=Link.TWITTER, url="https://twitter.com/hipeac").save()
             Link(content_object=self.obj, type=Link.WEBSITE, url="https://www.hipeac.net/").save()
             Link(content_object=self.obj, type=Link.LINKEDIN, url="https://www.hipeac.net/linkedin").save()

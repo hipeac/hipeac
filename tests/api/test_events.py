@@ -1,7 +1,7 @@
 import pytest
 
 from django.urls import reverse
-from model_mommy import mommy
+from model_bakery import baker
 from rest_framework import status
 
 
@@ -13,7 +13,7 @@ class TestForAnonymous:
     @pytest.fixture(autouse=True)
     def setup_event(self, db, now):
         if not self.event:
-            self.event = mommy.make_recipe("hipeac.event")
+            self.event = baker.make_recipe("hipeac.event")
         return
 
     def test_list(self, api_client, db):

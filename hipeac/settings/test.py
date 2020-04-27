@@ -21,3 +21,8 @@ CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
 # https://docs.djangoproject.com/en/1.11/topics/email/
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
+# https://django-compressor.readthedocs.io/en/stable/settings/
+
+COMPRESS_ENABLED = False

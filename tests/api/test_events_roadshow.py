@@ -1,7 +1,7 @@
 import pytest
 
 from django.urls import reverse
-from model_mommy import mommy
+from model_bakery import baker
 from rest_framework import status
 
 
@@ -12,7 +12,7 @@ class TestForAnonymous:
     @pytest.fixture(autouse=True)
     def setup_roadshow(self, db):
         if not self.roadshow:
-            self.roadshow = mommy.make_recipe("hipeac.roadshow")
+            self.roadshow = baker.make_recipe("hipeac.roadshow")
         return
 
     def get_detail_url(self, id: int):

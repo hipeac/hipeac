@@ -1,10 +1,10 @@
 import pytest
 
 from django.urls import reverse
-from model_mommy import mommy
+from model_bakery import baker
 from rest_framework import status
 
-from hipeac.models import Metadata, Permission
+from hipeac.models import Permission
 from .generic import UserMixin
 
 
@@ -14,7 +14,7 @@ class TestForAnonymous:
     @pytest.fixture(autouse=True)
     def setup_session(self, db):
         if not self.session:
-            self.session = mommy.make_recipe("hipeac.session")
+            self.session = baker.make_recipe("hipeac.session")
         return
 
     def get_detail_url(self, id: int):
@@ -54,21 +54,22 @@ class TestForAdministrator(TestForAuthenticated):
     @pytest.fixture(autouse=True)
     def setup_test_data(self, db, now):
         if not self.test_data:
-            session_type = mommy.make_recipe("hipeac.session_type")
+            session_type = baker.make_recipe("hipeac.session_type")
             self.test_data = {
                 "title": "Session title",
                 "session_type": {"id": session_type.id},
                 "application_areas": [],
                 "topics": [],
                 "projects": [],
+                "institutions": [],
             }
         return
 
     @pytest.fixture(autouse=True)
     def setup_session(self, db):
         if not self.session:
-            self.user_admin = mommy.make_recipe("hipeac.user")
-            self.session = mommy.make_recipe("hipeac.session")
+            self.user_admin = baker.make_recipe("hipeac.user")
+            self.session = baker.make_recipe("hipeac.session")
             Permission(content_object=self.session, user=self.user_admin, level=Permission.ADMIN).save()
         return
 

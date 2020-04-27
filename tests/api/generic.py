@@ -1,6 +1,6 @@
 import pytest
 
-from model_mommy import mommy
+from model_bakery import baker
 
 
 class UserMixin:
@@ -9,5 +9,5 @@ class UserMixin:
     @pytest.fixture(autouse=True)
     def setup_user(self, db):
         if not self.user:
-            self.user = mommy.make_recipe("hipeac.user")
+            self.user = baker.make_recipe("hipeac.user")
         return

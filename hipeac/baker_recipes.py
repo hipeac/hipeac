@@ -1,6 +1,6 @@
 import maya
 
-from model_mommy.recipe import Recipe, foreign_key
+from model_bakery.recipe import Recipe, foreign_key
 
 from hipeac.models import Metadata
 
@@ -15,7 +15,7 @@ institution = Recipe("hipeac.Institution")
 
 # projects
 
-project = Recipe("hipeac.Project", start_date=now.date, end_date=now.add(years=2).date,)
+project = Recipe("hipeac.Project", start_date=now.date, end_date=now.add(years=2).date)
 
 
 # events
@@ -28,31 +28,28 @@ event = Recipe(
     start_date=now.add(days=60).date,
     end_date=now.add(days=65).date,
 )
-
-roadshow = Recipe("hipeac.Roadshow", start_date=now.add(days=30).date, end_date=now.add(days=35).date,)
-
-session_type = Recipe("hipeac.Metadata", type=Metadata.SESSION_TYPE,)
-
+roadshow = Recipe("hipeac.Roadshow", start_date=now.add(days=30).date, end_date=now.add(days=35).date)
+session_type = Recipe("hipeac.Metadata", type=Metadata.SESSION_TYPE)
 session = Recipe(
-    "hipeac.Session", session_type=foreign_key(session_type), date=now.add(days=62).date, event=foreign_key(event),
+    "hipeac.Session", session_type=foreign_key(session_type), date=now.add(days=62).date, event=foreign_key(event)
 )
 
 
 # users
 
-user = Recipe("auth.User", is_staff=False,)
-
-member = user.extend(is_member=True,)
+user = Recipe("auth.User", is_staff=False, profile__institution=foreign_key(institution))
+staff = user.extend(is_staff=True)
+member = user.extend(profile__membership_tags="member")
 
 
 # jobs
 
-employment_type = Recipe("hipeac.Metadata", type=Metadata.EMPLOYMENT,)
-
+employment_type = Recipe("hipeac.Metadata", type=Metadata.EMPLOYMENT)
 job = Recipe(
     "hipeac.Job",
     employment_type=foreign_key(employment_type),
     institution=foreign_key(institution),
+    email="recruitment@hipeac.net",
     project=foreign_key(project),
     deadline=now.add(months=1).datetime,
     created_at=now.datetime,

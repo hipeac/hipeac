@@ -3,6 +3,7 @@ HiPEAC.net
 
 [![travis-badge]][travis]
 [![codecov-badge]][codecov]
+[![codefactor-badge]][codefactor]
 [![license-badge]](LICENSE)
 
 The HiPEAC api/website uses [Django][django] and the [Django REST Framework][drf].
@@ -39,8 +40,9 @@ Run Celery
 Style guide
 -----------
 
-Tab size is 4 spaces. Max line length is 120. You should run `black` before committing any change.
+Tab size is 4 spaces. Max line length is 120. You should run `flake8` and `black` before committing any change.
 
+    $ flake8 hipeac
     $ black hipeac
 
 
@@ -48,6 +50,8 @@ Tab size is 4 spaces. Max line length is 120. You should run `black` before comm
 [travis-badge]: https://api.travis-ci.com/hipeac/hipeac.svg?branch=master
 [codecov]: https://codecov.io/gh/hipeac/hipeac
 [codecov-badge]: https://codecov.io/gh/hipeac/hipeac/branch/master/graph/badge.svg
+[codefactor]: https://www.codefactor.io/repository/github/hipeac/hipeac
+[codefactor-badge]: https://www.codefactor.io/repository/github/hipeac/hipeac/badge
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 
 [django]: https://www.djangoproject.com/

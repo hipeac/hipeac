@@ -1,7 +1,7 @@
 import pytest
 
 from django.urls import reverse
-from model_mommy import mommy
+from model_bakery import baker
 from rest_framework import status
 
 from .generic import UserMixin
@@ -16,8 +16,8 @@ class TestForAnonymous:
     @pytest.fixture(autouse=True)
     def setup_job(self, db, now):
         if not self.job_active:
-            self.job_active = mommy.make_recipe("hipeac.job", deadline=now.add(days=1).datetime)
-            self.job_not_active = mommy.make_recipe("hipeac.job", deadline=now.subtract(days=1).datetime)
+            self.job_active = baker.make_recipe("hipeac.job", deadline=now.add(days=1).datetime)
+            self.job_not_active = baker.make_recipe("hipeac.job", deadline=now.subtract(days=1).datetime)
         return
 
     def get_detail_url(self, job_id):
@@ -31,7 +31,7 @@ class TestForAnonymous:
 
     def test_read(self, api_client):
         assert api_client.get(self.get_detail_url(self.job_active.id)).status_code == status.HTTP_200_OK
-        assert api_client.get(self.get_detail_url(self.job_not_active.id)).status_code == status.HTTP_404_NOT_FOUND
+        assert api_client.get(self.get_detail_url(self.job_not_active.id)).status_code == status.HTTP_200_OK
 
     def test_update(self, api_client):
         detail_url = self.get_detail_url(self.job_active.id)
@@ -50,25 +50,27 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
     @pytest.fixture(autouse=True)
     def setup_test_data(self, db, now):
         if not self.test_data:
-            employment_type = mommy.make_recipe("hipeac.employment_type")
+            employment_type = baker.make_recipe("hipeac.employment_type")
             self.test_data = {
                 "title": "Job title",
                 "description": "Job description.",
                 "deadline": str(now.add(months=1).date),
                 "employment_type": {"id": employment_type.id},
-                "country": "BE",
+                "country": {"code": "BE", "name": "Belgium"},
                 "email": "recruitment@hipeac.net",
-                "institution": 1,
+                "institution": self.user.profile.institution_id,
+                "project": None,
                 "application_areas": [],
                 "career_levels": [],
                 "topics": [],
+                "links": [],
+                "add_to_euraxess": True,
             }
         return
 
     def test_create(self, api_client):
         api_client.force_authenticate(user=self.user)
         res = api_client.post(self.list_url, self.test_data)
-        self.job = res.json()
         assert res.status_code == status.HTTP_201_CREATED
 
 

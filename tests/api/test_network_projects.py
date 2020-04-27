@@ -1,7 +1,7 @@
 import pytest
 
 from django.urls import reverse
-from model_mommy import mommy
+from model_bakery import baker
 from rest_framework import status
 
 from hipeac.models import Permission
@@ -16,7 +16,7 @@ class TestForAnonymous:
     @pytest.fixture(autouse=True)
     def setup_project(self, db):
         if not self.project:
-            self.project = mommy.make_recipe("hipeac.project")
+            self.project = baker.make_recipe("hipeac.project")
         return
 
     def get_detail_url(self, id):
@@ -58,8 +58,8 @@ class TestForAdministrator(TestForAuthenticated):
     @pytest.fixture(autouse=True)
     def setup_project(self, db):
         if not self.project:
-            self.user_admin = mommy.make_recipe("hipeac.user")
-            self.project = mommy.make_recipe("hipeac.project")
+            self.user_admin = baker.make_recipe("hipeac.user")
+            self.project = baker.make_recipe("hipeac.project")
             Permission(content_object=self.project, user=self.user_admin, level=Permission.ADMIN).save()
         return
 
