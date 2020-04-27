@@ -4,16 +4,16 @@
 {% block head_title %}Confirm e-mail address - {{ block.super }}{% endblock %}
 
 {% block content %}
-    <h1>Confirm e-mail address</h1>
+  <h1>Confirm e-mail address</h1>
 
-    {% if confirmation %}
-        <p>Please confirm that <a href="mailto:{{ confirmation.email_address.email }}">{{ confirmation.email_address.email }}</a> is an e-mail address for user <strong>{{ confirmation.email_address.user }}</strong>.</p>
+  {% if confirmation %}
+    <p>Please confirm that <a href="mailto:{{ confirmation.email_address.email }}">{{ confirmation.email_address.email }}</a> is an e-mail address for user <strong>{{ confirmation.email_address.user }}</strong>.</p>
 
-        <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
-            {% csrf_token %}
-            <button class="btn btn-primary" type="submit">Confirm</button>
-        </form>
-    {% else %}
-        <p>This e-mail confirmation link expired or is invalid. Please <a href="{% url 'account_email' %}">issue a new e-mail confirmation request</a>.</p>
-    {% endif %}
+    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+      {% csrf_token %}
+      <button class="btn btn-primary" type="submit">Confirm</button>
+    </form>
+  {% else %}
+    <p>This e-mail confirmation link expired or is invalid. Please <a href="{% url 'account_email' %}">issue a new e-mail confirmation request</a>.</p>
+  {% endif %}
 {% endblock %}

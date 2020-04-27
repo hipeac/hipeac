@@ -9,298 +9,298 @@
 {% block subtitle %}{{ flatpage.title }}{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'partners'}" class="nav-link">Partners</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'members'}" class="nav-link">Members</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'projects'}" class="nav-link">Projects</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'researchersBenefits'}" class="nav-link">
-            <i class="material-icons mr-1">info</i>Benefits</a>
-    </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'partners'}" class="nav-link">Partners</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'members'}" class="nav-link">Members</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'projects'}" class="nav-link">Projects</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'researchersBenefits'}" class="nav-link">
+      <i class="material-icons mr-1">info</i>Benefits</a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}" data-partner-list="{% url 'v1:partner-list' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
-        <div is="router-view"></div>
-    </div>
+  <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}" data-partner-list="{% url 'v1:partner-list' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
+    <div is="router-view"></div>
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' tbs=flatpage.page.tbs %}
-    {% include './v-benefits.html' with id='v-benefits' tbs=flatpage.page.tbs %}
-    {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
-    {% include './v-innovation.html' with id='v-innovation' header=flatpage.page.tbs.about_innovation.content benefits=flatpage.page.tbs.innovation_benefits get_involved=flatpage.page.tbs.innovation_get_involved %}
-    {% include './v-members.html' with id='v-members' membership=flatpage.page.tbs.membership charter=flatpage.page.tbs.membership_charter how_to=flatpage.page.tbs.membership_how_to %}
-    {% include './v-partners.html' with id='v-partners' %}
-    {% include './v-projects.html' with id='v-projects' header=flatpage.page.tbs.about_projects.content benefits=flatpage.page.tbs.projects_benefits get_involved=flatpage.page.tbs.projects_get_involved%}
-    {% include './v-projects-list.html' with id='v-projects-list' %}
-    {% include './v-researchers.html' with id='v-researchers' header=flatpage.page.tbs.about_researchers.content benefits=flatpage.page.tbs.researchers_benefits get_involved=flatpage.page.tbs.researchers_get_involved %}
-    {% include './v-students.html' with id='v-students' header=flatpage.page.tbs.about_students.content benefits=flatpage.page.tbs.students_benefits get_involved=flatpage.page.tbs.students_get_involved %}
+  {% include './v-about.html' with id='v-about' tbs=flatpage.page.tbs %}
+  {% include './v-benefits.html' with id='v-benefits' tbs=flatpage.page.tbs %}
+  {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
+  {% include './v-innovation.html' with id='v-innovation' header=flatpage.page.tbs.about_innovation.content benefits=flatpage.page.tbs.innovation_benefits get_involved=flatpage.page.tbs.innovation_get_involved %}
+  {% include './v-members.html' with id='v-members' membership=flatpage.page.tbs.membership charter=flatpage.page.tbs.membership_charter how_to=flatpage.page.tbs.membership_how_to %}
+  {% include './v-partners.html' with id='v-partners' %}
+  {% include './v-projects.html' with id='v-projects' header=flatpage.page.tbs.about_projects.content benefits=flatpage.page.tbs.projects_benefits get_involved=flatpage.page.tbs.projects_get_involved%}
+  {% include './v-projects-list.html' with id='v-projects-list' %}
+  {% include './v-researchers.html' with id='v-researchers' header=flatpage.page.tbs.about_researchers.content benefits=flatpage.page.tbs.researchers_benefits get_involved=flatpage.page.tbs.researchers_get_involved %}
+  {% include './v-students.html' with id='v-students' header=flatpage.page.tbs.about_students.content benefits=flatpage.page.tbs.students_benefits get_involved=flatpage.page.tbs.students_get_involved %}
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'vendor/chart.js@2.8.0/chart.js' %}"></script>
+  <script src="{% static 'vendor/chart.js@2.8.0/chart.js' %}"></script>
 {% compress js file carousel %}
-    <script src="{% static 'vendor/jcarousel@0.3.8/jquery.jcarousel.min.js' %}"></script>
-    <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
+  <script src="{% static 'vendor/jcarousel@0.3.8/jquery.jcarousel.min.js' %}"></script>
+  <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
 {% endcompress %}
 {% compress js file network %}
-    <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
-    <script>
-        var Store = new Vuex.Store({
-            state: {
-                institutions: [],
-                members: [],
-                affiliates: [],
-                partners: [],
-                projects: []
+  <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        institutions: [],
+        members: [],
+        affiliates: [],
+        partners: [],
+        projects: []
+      },
+      mutations: {
+        fetchMembers: function (state) {
+          ajax().get($('#urls').data('member-list')).done(function (res) {
+            var institutions = _.indexBy(res.institutions, 'id');
+            var affiliates = _.groupBy(_.map(res.affiliates, function (obj) {
+              obj.profile.institution = institutions[obj.profile.institution] || null;
+              obj.advisor_id = obj.profile.advisor;
+              return obj;
+            }), 'advisor_id');
+            var users = _.map(res.members, function (obj) {
+              obj.profile.institution = institutions[obj.profile.institution] || null;
+              obj.profile.second_institution = institutions[obj.profile.second_institution] || null;
+              if (_.has(affiliates, obj.id)) {
+                obj.affiliates = affiliates[obj.id];
+              }
+              return obj;
+            });
+            state.institutions = Object.freeze(_.values(institutions));
+            state.members = Object.freeze(mapper().users(users));
+          });
+        },
+        fetchPartners: function (state) {
+          ajax().get($('#urls').data('partner-list')).done(function (res) {
+            state.partners = Object.freeze(res);
+          });
+        },
+        fetchProjects: function (state) {
+          ajax().get($('#urls').data('project-list')).done(function (res) {
+            state.projects = Object.freeze(mapper().projects(res));
+          });
+        }
+      }
+    });
+
+    var AboutView = {
+      template: '#v-about'
+    };
+
+    var BenefitsView = {
+      template: '#v-benefits'
+    };
+
+    var IndustryView = {
+      template: '#v-industry'
+    };
+
+    var InnovationView = {
+      template: '#v-innovation'
+    };
+
+    var MembersView = {
+      template: '#v-members',
+      created: function () {
+        $.when(
+          this.$store.commit('fetchMembers')
+        );
+      }
+    };
+
+    var MembersMainView = {
+      template: '#v-members-main',
+      computed: _.extend(
+        Vuex.mapState(['members', 'institutions']), {
+        randomInstitutions: function () {
+          return _.first(_.shuffle(this.institutions.filter(function (obj) {
+            return obj.images != null;
+          })), 30);
+        }
+      })
+    };
+
+    var MembersStatsView = {
+      template: '#v-members-stats',
+      computed: _.extend(
+        Vuex.mapState(['members', 'institutions']), {
+      })
+    };
+
+    var MembershipView = {
+      template: '#v-members-membership'
+    };
+
+    var PartnersView = {
+      template: '#v-partners',
+      computed: _.extend(
+        Vuex.mapState(['partners']), {
+      }),
+      created: function () {
+        $.when(
+          this.$store.commit('fetchPartners')
+        );
+      }
+    };
+
+    var ProjectsView = {
+      template: '#v-projects'
+    };
+
+    var ProjectsListView = {
+      template: '#v-projects-list',
+      data: function () {
+        return {
+          q: '',
+          filters: {
+            topics: []
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['projects']), {
+        filteredIds: function () {
+          var filteredItems = filterIntersection(this.filters.topics, this.projects, 'topicIds');
+          return _.pluck(filterMultiple(filteredItems, this.q), 'id');
+        },
+        topics: function () {
+          return extractMetadata(this.projects, 'topics');
+        }
+      }),
+      methods: {
+        updateQuery: function (val) {
+          this.q = val;
+        },
+        resetFilters: function () {
+          this.filters.topics = [];
+        }
+      },
+      created: function () {
+        EventHub.$on('query-changed', this.updateQuery);
+        $.when(
+          this.$store.commit('fetchProjects')
+        );
+      }
+    };
+
+    var ResearchersView = {
+      template: '#v-researchers'
+    };
+
+    var StudentsView = {
+      template: '#v-students'
+    };
+
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'about',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          path: '/benefits/',
+          pathToRegexpOptions: {strict: true},
+          component: BenefitsView,
+          children: [
+            {
+              name: 'industryBenefits',
+              path: 'industry/',
+              pathToRegexpOptions: {strict: true},
+              component: IndustryView
             },
-            mutations: {
-                fetchMembers: function (state) {
-                    ajax().get($('#urls').data('member-list')).done(function (res) {
-                        var institutions = _.indexBy(res.institutions, 'id');
-                        var affiliates = _.groupBy(_.map(res.affiliates, function (obj) {
-                            obj.profile.institution = institutions[obj.profile.institution] || null;
-                            obj.advisor_id = obj.profile.advisor;
-                            return obj;
-                        }), 'advisor_id');
-                        var users = _.map(res.members, function (obj) {
-                            obj.profile.institution = institutions[obj.profile.institution] || null;
-                            obj.profile.second_institution = institutions[obj.profile.second_institution] || null;
-                            if (_.has(affiliates, obj.id)) {
-                                obj.affiliates = affiliates[obj.id];
-                            }
-                            return obj;
-                        });
-                        state.institutions = Object.freeze(_.values(institutions));
-                        state.members = Object.freeze(mapper().users(users));
-                    });
-                },
-                fetchPartners: function (state) {
-                    ajax().get($('#urls').data('partner-list')).done(function (res) {
-                        state.partners = Object.freeze(res);
-                    });
-                },
-                fetchProjects: function (state) {
-                    ajax().get($('#urls').data('project-list')).done(function (res) {
-                        state.projects = Object.freeze(mapper().projects(res));
-                    });
-                }
-            }
-        });
-
-        var AboutView = {
-            template: '#v-about'
-        };
-
-        var BenefitsView = {
-            template: '#v-benefits'
-        };
-
-        var IndustryView = {
-            template: '#v-industry'
-        };
-
-        var InnovationView = {
-            template: '#v-innovation'
-        };
-
-        var MembersView = {
-            template: '#v-members',
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchMembers')
-                );
-            }
-        };
-
-        var MembersMainView = {
-            template: '#v-members-main',
-            computed: _.extend(
-                Vuex.mapState(['members', 'institutions']), {
-                randomInstitutions: function () {
-                    return _.first(_.shuffle(this.institutions.filter(function (obj) {
-                        return obj.images != null;
-                    })), 30);
-                }
-            })
-        };
-
-        var MembersStatsView = {
-            template: '#v-members-stats',
-            computed: _.extend(
-                Vuex.mapState(['members', 'institutions']), {
-            })
-        };
-
-        var MembershipView = {
-            template: '#v-members-membership'
-        };
-
-        var PartnersView = {
-            template: '#v-partners',
-            computed: _.extend(
-                Vuex.mapState(['partners']), {
-            }),
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchPartners')
-                );
-            }
-        };
-
-        var ProjectsView = {
-            template: '#v-projects'
-        };
-
-        var ProjectsListView = {
-            template: '#v-projects-list',
-            data: function () {
-                return {
-                    q: '',
-                    filters: {
-                        topics: []
-                    }
-                }
+            {
+              name: 'innovationBenefits',
+              path: 'innovation/',
+              pathToRegexpOptions: {strict: true},
+              component: InnovationView
             },
-            computed: _.extend(
-                Vuex.mapState(['projects']), {
-                filteredIds: function () {
-                    var filteredItems = filterIntersection(this.filters.topics, this.projects, 'topicIds');
-                    return _.pluck(filterMultiple(filteredItems, this.q), 'id');
-                },
-                topics: function () {
-                    return extractMetadata(this.projects, 'topics');
-                }
-            }),
-            methods: {
-                updateQuery: function (val) {
-                    this.q = val;
-                },
-                resetFilters: function () {
-                    this.filters.topics = [];
-                }
+            {
+              name: 'projectsBenefits',
+              path: 'projects/',
+              pathToRegexpOptions: {strict: true},
+              component: ProjectsView
             },
-            created: function () {
-                EventHub.$on('query-changed', this.updateQuery);
-                $.when(
-                    this.$store.commit('fetchProjects')
-                );
+            {
+              name: 'researchersBenefits',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: ResearchersView
+            },
+            {
+              name: 'studentsBenefits',
+              path: 'students/',
+              pathToRegexpOptions: {strict: true},
+              component: StudentsView
             }
-        };
-
-        var ResearchersView = {
-            template: '#v-researchers'
-        };
-
-        var StudentsView = {
-            template: '#v-students'
-        };
-
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'about',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    component: AboutView
-                },
-                {
-                    path: '/benefits/',
-                    pathToRegexpOptions: {strict: true},
-                    component: BenefitsView,
-                    children: [
-                        {
-                            name: 'industryBenefits',
-                            path: 'industry/',
-                            pathToRegexpOptions: {strict: true},
-                            component: IndustryView
-                        },
-                        {
-                            name: 'innovationBenefits',
-                            path: 'innovation/',
-                            pathToRegexpOptions: {strict: true},
-                            component: InnovationView
-                        },
-                        {
-                            name: 'projectsBenefits',
-                            path: 'projects/',
-                            pathToRegexpOptions: {strict: true},
-                            component: ProjectsView
-                        },
-                        {
-                            name: 'researchersBenefits',
-                            path: '',
-                            pathToRegexpOptions: {strict: true},
-                            component: ResearchersView
-                        },
-                        {
-                            name: 'studentsBenefits',
-                            path: 'students/',
-                            pathToRegexpOptions: {strict: true},
-                            component: StudentsView
-                        }
-                    ]
-                },
-                {
-                    path: '/members/',
-                    pathToRegexpOptions: {strict: true},
-                    component: MembersView,
-                    children: [
-                        {
-                            name: 'members',
-                            path: 'list/',
-                            pathToRegexpOptions: {strict: true},
-                            component: MembersMainView
-                        },
-                        {
-                            name: 'membership',
-                            path: 'membership/',
-                            pathToRegexpOptions: {strict: true},
-                            component: MembershipView
-                        },
-                        {
-                            name: 'members-stats',
-                            path: 'stats/',
-                            pathToRegexpOptions: {strict: true},
-                            component: MembersStatsView
-                        }
-                    ]
-                },
-                {
-                    name: 'partners',
-                    path: '/partners/',
-                    pathToRegexpOptions: {strict: true},
-                    component: PartnersView
-                },
-                {
-                    name: 'projects',
-                    path: '/projects/',
-                    pathToRegexpOptions: {strict: true},
-                    component: ProjectsListView
-                }
-            ]
-        });
-
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            beforeCreate: function () {
-                if (this.$route.path.substr(-1) != '/') {
-                    this.$router.push({'path': this.$route.path + '/'});
-                }
+          ]
+        },
+        {
+          path: '/members/',
+          pathToRegexpOptions: {strict: true},
+          component: MembersView,
+          children: [
+            {
+              name: 'members',
+              path: 'list/',
+              pathToRegexpOptions: {strict: true},
+              component: MembersMainView
+            },
+            {
+              name: 'membership',
+              path: 'membership/',
+              pathToRegexpOptions: {strict: true},
+              component: MembershipView
+            },
+            {
+              name: 'members-stats',
+              path: 'stats/',
+              pathToRegexpOptions: {strict: true},
+              component: MembersStatsView
             }
-        });
-    </script>
+          ]
+        },
+        {
+          name: 'partners',
+          path: '/partners/',
+          pathToRegexpOptions: {strict: true},
+          component: PartnersView
+        },
+        {
+          name: 'projects',
+          path: '/projects/',
+          pathToRegexpOptions: {strict: true},
+          component: ProjectsListView
+        }
+      ]
+    });
+
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

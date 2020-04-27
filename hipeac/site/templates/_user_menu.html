@@ -2,37 +2,37 @@
 
 
 {% if not user.is_authenticated %}
-    <a href="{% url 'account_signup' %}" class="btn btn-outline-success mr-2">
-        <i class="material-icons mr-1">add_circle</i>Join</a>
-    <a href="{% url 'account_login' %}?next={{ request.path }}" class="btn btn-outline-primary">Log in</a>
+  <a href="{% url 'account_signup' %}" class="btn btn-outline-success mr-2">
+    <i class="material-icons mr-1">add_circle</i>Join</a>
+  <a href="{% url 'account_login' %}?next={{ request.path }}" class="btn btn-outline-primary">Log in</a>
 {% else %}
-    <div class="dropdown">
-        <a is="user-notifications-button" class="mr-2"></a>
-        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span>{% user_display user %}</span>
-        </button>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-            {% if user.profile.is_public %}
-                <a href="{% url 'user' user.username %}" class="dropdown-item">Your public profile</a>
-                <div class="dropdown-divider"></div>
-            {% endif %}
-            <a href="{% url 'user_profile' %}" class="dropdown-item">Settings</a>
-            {% if user.profile.is_steering_member %}
-                <div class="dropdown-divider"></div>
-                <h6 class="dropdown-header">Steering Committee</h6>
-                <a href="{% url 'steering' %}#/" class="dropdown-item">Dashboard</a>
-                <a href="{% url 'steering' %}#/meetings/" class="dropdown-item">Meetings</a>
-                <a href="{% url 'steering' %}#/action-points/" class="dropdown-item">Action points</a>
-                <a href="{% url 'steering' %}#/membership-requests/" class="dropdown-item">Membership requests</a>
-            {% endif %}
-            <div class="dropdown-divider"></div>
-            <h6 class="dropdown-header">Management</h6>
-            <a href="{% url 'jobs_management' %}" class="dropdown-item">My job posts</a>
-            {% if user.is_staff %}
-                <a href="{% url 'admin:index' %}" class="dropdown-item">Admin area</a>
-            {% endif %}
-            <div class="dropdown-divider"></div>
-            <a href="{% url 'account_logout' %}" class="dropdown-item">Sign out</a>
-        </div>
+  <div class="dropdown">
+    <a is="user-notifications-button" class="mr-2"></a>
+    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span>{% user_display user %}</span>
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+      {% if user.profile.is_public %}
+        <a href="{% url 'user' user.username %}" class="dropdown-item">Your public profile</a>
+        <div class="dropdown-divider"></div>
+      {% endif %}
+      <a href="{% url 'user_profile' %}" class="dropdown-item">Settings</a>
+      {% if user.profile.is_steering_member %}
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header">Steering Committee</h6>
+        <a href="{% url 'steering' %}#/" class="dropdown-item">Dashboard</a>
+        <a href="{% url 'steering' %}#/meetings/" class="dropdown-item">Meetings</a>
+        <a href="{% url 'steering' %}#/action-points/" class="dropdown-item">Action points</a>
+        <a href="{% url 'steering' %}#/membership-requests/" class="dropdown-item">Membership requests</a>
+      {% endif %}
+      <div class="dropdown-divider"></div>
+      <h6 class="dropdown-header">Management</h6>
+      <a href="{% url 'jobs_management' %}" class="dropdown-item">My job posts</a>
+      {% if user.is_staff %}
+        <a href="{% url 'admin:index' %}" class="dropdown-item">Admin area</a>
+      {% endif %}
+      <div class="dropdown-divider"></div>
+      <a href="{% url 'account_logout' %}" class="dropdown-item">Sign out</a>
     </div>
+  </div>
 {% endif %}

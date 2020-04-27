@@ -11,415 +11,415 @@
 {% block subtitle %}Steering Committee{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'dashboard'}" class="nav-link" exact>Dashboard</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'meetingList'}" class="nav-link">Meetings</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'actionPointList'}" class="nav-link">Action points</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'membershipRequestList'}" class="nav-link">Membership requests</a>
-    </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'dashboard'}" class="nav-link" exact>Dashboard</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'meetingList'}" class="nav-link">Meetings</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'actionPointList'}" class="nav-link">Action points</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'membershipRequestList'}" class="nav-link">Membership requests</a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-action-point-list="{% url 'v1:sc-action-point-list' %}" data-meeting-list="{% url 'v1:sc-meeting-list' %}" data-membership-request-list="{% url 'v1:sc-membership-request-list' %}" class="container">
-        <div is="router-view" class="hipeac-card"></div>
-        <!-- <div class="hipeac-card">
-            <div class="row">
-                <div class="col">
-                    <canvas id="membership-canvas"></canvas>
-                </div>
-                <div class="col">
-                </div>
-            </div>
-        </div> -->
-    </div>
+  <div id="urls" data-action-point-list="{% url 'v1:sc-action-point-list' %}" data-meeting-list="{% url 'v1:sc-meeting-list' %}" data-membership-request-list="{% url 'v1:sc-membership-request-list' %}" class="container">
+    <div is="router-view" class="hipeac-card"></div>
+    <!-- <div class="hipeac-card">
+      <div class="row">
+        <div class="col">
+          <canvas id="membership-canvas"></canvas>
+        </div>
+        <div class="col">
+        </div>
+      </div>
+    </div> -->
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-action-point.html' with id='v-action-point' %}
-    {% include './v-dashboard.html' with id='v-dashboard' %}
-    {% include './v-meeting.html' with id='v-meeting' %}
-    {% include './v-membership-request.html' with id='v-membership-request' %}
+  {% include './v-action-point.html' with id='v-action-point' %}
+  {% include './v-dashboard.html' with id='v-dashboard' %}
+  {% include './v-meeting.html' with id='v-meeting' %}
+  {% include './v-membership-request.html' with id='v-membership-request' %}
 {% endblock %}
 
 {% block scripts %}
-    <script src="https://unpkg.com/chart.js@2.9.3/dist/Chart.min.js"></script>
-    <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
-    <!--<script src="https://unpkg.com/vue-chartjs@3.5.0/dist/vue-chartjs.min.js"></script>-->
+  <script src="https://unpkg.com/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+  <!--<script src="https://unpkg.com/vue-chartjs@3.5.0/dist/vue-chartjs.min.js"></script>-->
 {% compress js file steering %}
-    <script>
-        /*var membershipChart = new Chart(document.getElementById('membership-canvas').getContext('2d'), {
-            type: 'line',
-            data: {
-				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-				datasets: [{
-					label: 'My First dataset',
-					backgroundColor: window.chartColors.red,
-					borderColor: window.chartColors.red,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
-					fill: false,
-				}, {
-					label: 'My Second dataset',
-					fill: false,
-					backgroundColor: window.chartColors.blue,
-					borderColor: window.chartColors.blue,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
-				}]
-			},
-            options: {
-				responsive: true,
-				title: {
-					display: true,
-					text: 'Chart.js Line Chart'
-				},
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-				},
-				hover: {
-					mode: 'nearest',
-					intersect: true
-				},
-				scales: {
-					xAxes: [{
-						display: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Month'
-						}
-					}],
-					yAxes: [{
-						display: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Value'
-						}
-					}]
-				}
-			}
-        });
-        membershipChart.update(); */
-
-        // VUE
-
-        var Store = new Vuex.Store({
-            state: {
-                canEditActionPoints: false,
-                actionPoints: [],
-                meetings: [],
-                membershipRequests: []
-            },
-            mutations: {
-                fetchActionPoints: function (state) {
-                    ajax().get($('#urls').data('action-point-list')).done(function (res) {
-                        state.actionPoints = Object.freeze(mapper().actionPoints(res));
-                        if (state.actionPoints.length) {
-                            ajax().head(state.actionPoints[0].url_admin).then(function (res, statusText, request) {
-                                state.canEditActionPoints = (request.status == 200);
-                            });
-                        }
-                    });
-                },
-                fetchMeetings: function (state) {
-                    ajax().get($('#urls').data('meeting-list')).done(function (res) {
-                        state.meetings = Object.freeze(mapper().meetings(res));
-                    });
-                },
-                fetchMembershipRequests: function (state) {
-                    ajax().get($('#urls').data('membership-request-list')).done(function (res) {
-                        state.membershipRequests = Object.freeze(res.sort(function (a, b) {
-                            return sort().text(a.name, b.name);
-                        }));
-                    });
-                }
+  <script>
+    /*var membershipChart = new Chart(document.getElementById('membership-canvas').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'My First dataset',
+          backgroundColor: window.chartColors.red,
+          borderColor: window.chartColors.red,
+          data: [
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor()
+          ],
+          fill: false,
+        }, {
+          label: 'My Second dataset',
+          fill: false,
+          backgroundColor: window.chartColors.blue,
+          borderColor: window.chartColors.blue,
+          data: [
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor(),
+            randomScalingFactor()
+          ],
+        }]
+      },
+      options: {
+        responsive: true,
+        title: {
+          display: true,
+          text: 'Chart.js Line Chart'
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: false,
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Month'
             }
-        });
-
-        var ActionPointsView = {
-            template: '#v-action-point-list',
-            data: function () {
-                return {
-                    filters: {
-                        status: 'all',
-                        owner: 'all'
-                    }
-                };
-            },
-            computed: _.extend(
-                Vuex.mapState(['actionPoints', 'canEditActionPoints']), {
-                    preFilteredActionPoints: function () {
-                        if (!this.actionPoints.length) return [];
-                        var filters = this.filters;
-                        if (filters.status == 'all') return this.actionPoints;
-                        else return this.actionPoints.filter(function (obj) {
-                            return obj.status == filters.status;
-                        });
-                    },
-                    filteredActionPoints: function () {
-                        var filters = this.filters;
-                        return this.preFilteredActionPoints.filter(function (obj) {
-                            return filters.owner == 'all' || obj.users.indexOf(filters.owner) > -1;
-                        });
-                    },
-                    users: function () {
-                        var output = [];
-                        _.each(this.preFilteredActionPoints, function (obj) {
-                            output = output.concat(obj.users);
-                        });
-                        return _.uniq(output).sort();
-                    },
-                    canEdit: function () {
-                        return this.canEditActionPoints;
-                    }
-            }),
-            methods: {
-                changeStatus: function (status) {
-                    this.filters.status = status;
-                    this.filters.owner = 'all';
-                }
-            },
-        };
-
-        var DashboardView = {
-            template: '#v-dashboard',
-            computed: _.extend(
-                Vuex.mapState(['meetings', 'membershipRequests']), {
-                lastMeeting: function () {
-                    if (!this.meetings.length) return null;
-                    return this.meetings[0];
-                }
-            })
-        };
-
-        var MeetingListView = {
-            template: '#v-meeting-list',
-            data: function () {
-                return {
-                    year: null
-                };
-            },
-            computed: _.extend(
-                Vuex.mapState(['meetings']), {
-                years: function () {
-                    if (!this.groupedMeetings) return [];
-                    return _.keys(this.groupedMeetings).reverse();
-                },
-                groupedMeetings: function () {
-                    if (!this.meetings.length) return null;
-                    return _.groupBy(this.meetings, function (obj) {
-                        return moment(obj.start_at).year();
-                    });
-                },
-                filteredMeetings: function () {
-                    if (!this.groupedMeetings) return [];
-                    if (!this.year) {
-                        this.year = _.max(_.keys(this.groupedMeetings));
-                        return this.groupedMeetings[+this.year];
-                    } else {
-                        return this.groupedMeetings[+this.year];
-                    }
-                }
-            }),
-            methods: {
-                redirect: function () {
-                    var self = this;
-
-                    if (!this.filteredMeetings.length) {
-                        setTimeout(function () { self.redirect(); }, 25);
-                        return;
-                    };
-
-                    this.$router.push({
-                        name: 'meetingDetail',
-                        params: {
-                            meetingId: this.filteredMeetings[0].id,
-                        }
-                    });
-                },
-                changeYear: function (year) {
-                    this.year = year;
-                    this.redirect();
-                },
-                updateYear: function(meetingId) {
-                    var self = this;
-
-                    if (!this.meetings.length) {
-                        setTimeout(function () { self.updateYear(meetingId); }, 25);
-                        return;
-                    };
-
-                    this.year = moment(_.findWhere(this.meetings, {id: +meetingId}).start_at).year();
-                }
-            },
-            mounted: function () {
-                if (this.$route.name == 'meetingList') {
-                    this.redirect();
-                }
-
-                if (this.$route.name == 'meetingDetail' && !this.year) {
-                    this.updateYear(this.$route.params.meetingId);
-                }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Value'
             }
-        };
+          }]
+        }
+      }
+    });
+    membershipChart.update(); */
 
-        var MeetingDetailView = {
-            template: '#v-meeting-detail',
-            data: function () {
-                return {
-                    meeting: null
-                };
-            },
-            props: ['meetingId'],
-            computed: _.extend(
-                Vuex.mapState(['meetings']), {
-            }),
-            methods: {
-                fetchMeeting: function () {
-                    var self = this;
-                    ajax().get($('#urls').data('meeting-list') + this.meetingId + '/').done(function (res) {
-                        self.meeting = Object.freeze(mapper().meetings([res])[0]);
-                    });
-                }
-            },
-            watch: {
-                'meetingId': function (val, oldVal) {
-                    if (val) this.fetchMeeting();
-                }
-            },
-            mounted: function () {
-                this.fetchMeeting();
+    // VUE
+
+    var Store = new Vuex.Store({
+      state: {
+        canEditActionPoints: false,
+        actionPoints: [],
+        meetings: [],
+        membershipRequests: []
+      },
+      mutations: {
+        fetchActionPoints: function (state) {
+          ajax().get($('#urls').data('action-point-list')).done(function (res) {
+            state.actionPoints = Object.freeze(mapper().actionPoints(res));
+            if (state.actionPoints.length) {
+              ajax().head(state.actionPoints[0].url_admin).then(function (res, statusText, request) {
+                state.canEditActionPoints = (request.status == 200);
+              });
             }
+          });
+        },
+        fetchMeetings: function (state) {
+          ajax().get($('#urls').data('meeting-list')).done(function (res) {
+            state.meetings = Object.freeze(mapper().meetings(res));
+          });
+        },
+        fetchMembershipRequests: function (state) {
+          ajax().get($('#urls').data('membership-request-list')).done(function (res) {
+            state.membershipRequests = Object.freeze(res.sort(function (a, b) {
+              return sort().text(a.name, b.name);
+            }));
+          });
+        }
+      }
+    });
+
+    var ActionPointsView = {
+      template: '#v-action-point-list',
+      data: function () {
+        return {
+          filters: {
+            status: 'all',
+            owner: 'all'
+          }
         };
+      },
+      computed: _.extend(
+        Vuex.mapState(['actionPoints', 'canEditActionPoints']), {
+          preFilteredActionPoints: function () {
+            if (!this.actionPoints.length) return [];
+            var filters = this.filters;
+            if (filters.status == 'all') return this.actionPoints;
+            else return this.actionPoints.filter(function (obj) {
+              return obj.status == filters.status;
+            });
+          },
+          filteredActionPoints: function () {
+            var filters = this.filters;
+            return this.preFilteredActionPoints.filter(function (obj) {
+              return filters.owner == 'all' || obj.users.indexOf(filters.owner) > -1;
+            });
+          },
+          users: function () {
+            var output = [];
+            _.each(this.preFilteredActionPoints, function (obj) {
+              output = output.concat(obj.users);
+            });
+            return _.uniq(output).sort();
+          },
+          canEdit: function () {
+            return this.canEditActionPoints;
+          }
+      }),
+      methods: {
+        changeStatus: function (status) {
+          this.filters.status = status;
+          this.filters.owner = 'all';
+        }
+      },
+    };
 
-        var MembershipRequestListView = {
-            template: '#v-membership-request-list',
-            computed: _.extend(
-                Vuex.mapState(['membershipRequests']), {
-            }),
-            methods: {
-                redirect: function () {
-                    var self = this;
+    var DashboardView = {
+      template: '#v-dashboard',
+      computed: _.extend(
+        Vuex.mapState(['meetings', 'membershipRequests']), {
+        lastMeeting: function () {
+          if (!this.meetings.length) return null;
+          return this.meetings[0];
+        }
+      })
+    };
 
-                    if (!this.membershipRequests.length) {
-                        setTimeout(function () { self.redirect(); }, 25);
-                        return;
-                    };
+    var MeetingListView = {
+      template: '#v-meeting-list',
+      data: function () {
+        return {
+          year: null
+        };
+      },
+      computed: _.extend(
+        Vuex.mapState(['meetings']), {
+        years: function () {
+          if (!this.groupedMeetings) return [];
+          return _.keys(this.groupedMeetings).reverse();
+        },
+        groupedMeetings: function () {
+          if (!this.meetings.length) return null;
+          return _.groupBy(this.meetings, function (obj) {
+            return moment(obj.start_at).year();
+          });
+        },
+        filteredMeetings: function () {
+          if (!this.groupedMeetings) return [];
+          if (!this.year) {
+            this.year = _.max(_.keys(this.groupedMeetings));
+            return this.groupedMeetings[+this.year];
+          } else {
+            return this.groupedMeetings[+this.year];
+          }
+        }
+      }),
+      methods: {
+        redirect: function () {
+          var self = this;
 
-                    this.$router.push({
-                        name: 'membershipRequestDetail',
-                        params: {
-                            requestId: this.membershipRequests[0].id,
-                        }
-                    });
-                }
-            },
-            mounted: function () {
-                if (this.$route.name == 'membershipRequestList') {
-                    this.redirect();
-                }
+          if (!this.filteredMeetings.length) {
+            setTimeout(function () { self.redirect(); }, 25);
+            return;
+          };
+
+          this.$router.push({
+            name: 'meetingDetail',
+            params: {
+              meetingId: this.filteredMeetings[0].id,
             }
+          });
+        },
+        changeYear: function (year) {
+          this.year = year;
+          this.redirect();
+        },
+        updateYear: function(meetingId) {
+          var self = this;
+
+          if (!this.meetings.length) {
+            setTimeout(function () { self.updateYear(meetingId); }, 25);
+            return;
+          };
+
+          this.year = moment(_.findWhere(this.meetings, {id: +meetingId}).start_at).year();
+        }
+      },
+      mounted: function () {
+        if (this.$route.name == 'meetingList') {
+          this.redirect();
+        }
+
+        if (this.$route.name == 'meetingDetail' && !this.year) {
+          this.updateYear(this.$route.params.meetingId);
+        }
+      }
+    };
+
+    var MeetingDetailView = {
+      template: '#v-meeting-detail',
+      data: function () {
+        return {
+          meeting: null
         };
+      },
+      props: ['meetingId'],
+      computed: _.extend(
+        Vuex.mapState(['meetings']), {
+      }),
+      methods: {
+        fetchMeeting: function () {
+          var self = this;
+          ajax().get($('#urls').data('meeting-list') + this.meetingId + '/').done(function (res) {
+            self.meeting = Object.freeze(mapper().meetings([res])[0]);
+          });
+        }
+      },
+      watch: {
+        'meetingId': function (val, oldVal) {
+          if (val) this.fetchMeeting();
+        }
+      },
+      mounted: function () {
+        this.fetchMeeting();
+      }
+    };
 
-        var MembershipRequestDetailView = {
-            template: '#v-membership-request-detail',
-            props: ['requestId'],
-            computed: _.extend(
-                Vuex.mapState(['membershipRequests']), {
-                request: function () {
-                    if (!this.membershipRequests.length) return null;
-                    return _.findWhere(this.membershipRequests, {
-                        'id': +this.requestId
-                    }) || null;
-                }
-            })
-        };
+    var MembershipRequestListView = {
+      template: '#v-membership-request-list',
+      computed: _.extend(
+        Vuex.mapState(['membershipRequests']), {
+      }),
+      methods: {
+        redirect: function () {
+          var self = this;
 
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'actionPointList',
-                    path: '/action-points/',
-                    pathToRegexpOptions: {strict: true},
-                    component: ActionPointsView
-                },
-                {
-                    name: 'dashboard',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    component: DashboardView
-                },
-                {
-                    name: 'meetingList',
-                    path: '/meetings/',
-                    pathToRegexpOptions: {strict: true},
-                    component: MeetingListView,
-                    children: [
-                        {
-                            name: 'meetingDetail',
-                            path: ':meetingId/',
-                            pathToRegexpOptions: {strict: true},
-                            component: MeetingDetailView,
-                            props: true
-                        }
-                    ]
-                },
-                {
-                    name: 'membershipRequestList',
-                    path: '/membership-requests/',
-                    pathToRegexpOptions: {strict: true},
-                    component: MembershipRequestListView,
-                    children: [
-                        {
-                            name: 'membershipRequestDetail',
-                            path: ':requestId/',
-                            pathToRegexpOptions: {strict: true},
-                            component: MembershipRequestDetailView,
-                            props: true
-                        }
-                    ]
-                }
-            ]
-        });
+          if (!this.membershipRequests.length) {
+            setTimeout(function () { self.redirect(); }, 25);
+            return;
+          };
 
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            beforeCreate: function () {
-                if (this.$route.path.substr(-1) != '/') {
-                    this.$router.push({'path': this.$route.path + '/'});
-                }
-            },
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchActionPoints'),
-                    this.$store.commit('fetchMeetings'),
-                    this.$store.commit('fetchMembershipRequests')
-                );
+          this.$router.push({
+            name: 'membershipRequestDetail',
+            params: {
+              requestId: this.membershipRequests[0].id,
             }
-        });
-    </script>
+          });
+        }
+      },
+      mounted: function () {
+        if (this.$route.name == 'membershipRequestList') {
+          this.redirect();
+        }
+      }
+    };
+
+    var MembershipRequestDetailView = {
+      template: '#v-membership-request-detail',
+      props: ['requestId'],
+      computed: _.extend(
+        Vuex.mapState(['membershipRequests']), {
+        request: function () {
+          if (!this.membershipRequests.length) return null;
+          return _.findWhere(this.membershipRequests, {
+            'id': +this.requestId
+          }) || null;
+        }
+      })
+    };
+
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'actionPointList',
+          path: '/action-points/',
+          pathToRegexpOptions: {strict: true},
+          component: ActionPointsView
+        },
+        {
+          name: 'dashboard',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: DashboardView
+        },
+        {
+          name: 'meetingList',
+          path: '/meetings/',
+          pathToRegexpOptions: {strict: true},
+          component: MeetingListView,
+          children: [
+            {
+              name: 'meetingDetail',
+              path: ':meetingId/',
+              pathToRegexpOptions: {strict: true},
+              component: MeetingDetailView,
+              props: true
+            }
+          ]
+        },
+        {
+          name: 'membershipRequestList',
+          path: '/membership-requests/',
+          pathToRegexpOptions: {strict: true},
+          component: MembershipRequestListView,
+          children: [
+            {
+              name: 'membershipRequestDetail',
+              path: ':requestId/',
+              pathToRegexpOptions: {strict: true},
+              component: MembershipRequestDetailView,
+              props: true
+            }
+          ]
+        }
+      ]
+    });
+
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      },
+      created: function () {
+        $.when(
+          this.$store.commit('fetchActionPoints'),
+          this.$store.commit('fetchMeetings'),
+          this.$store.commit('fetchMembershipRequests')
+        );
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

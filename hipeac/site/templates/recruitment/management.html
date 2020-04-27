@@ -10,99 +10,100 @@
 {% block subtitle %}My job posts{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'jobs' %}"><i class="material-icons mr-1">arrow_back</i>Back to Jobs portal</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
-    </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'jobs' %}"><i class="material-icons mr-1">arrow_back</i>Back to Jobs portal</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}">
+      <i class="material-icons mr-1">add</i>Add new</a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-3 col-lg-2 d-flex align-items-stretch">
-                <h5 class="display-sm mt-4 mb-1">Manage your jobs</h5>
-                <hr>
-            </div>
-            <div class="col-12 col-md-9 col-lg-10 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    {% if jobs %}
-                        <table class="table table-sm">
-                            <thead class="text-sm">
-                                <tr>
-                                    <th class="sm">Status</th>
-                                    <th>Type</th>
-                                    <th>Deadline</th>
-                                    <th>Job position</th>
-                                    <th>Institution</th>
-                                    <th class="sm"><i class="material-icons sm">edit</i></th>
-                                    <th class="sm"><i class="material-icons sm">star</i></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for job in jobs %}
-                                <tr>
-                                    <td>
-                                        <small>
-                                        {% if job.is_closed %}
-                                            <i class="material-icons sm text-danger">closed</i>
-                                        {% else %}
-                                            <i class="material-icons sm text-success">check_circle</i>
-                                        {% endif %}
-                                        </small>
-                                    </td>
-                                    <td class="text-sm"><span class="badge badge-secondary">{{ job.employment_type.value }}</span></td>
-                                    <td class="text-sm">{{ job.deadline }}</td>
-                                    <td class="text-sm">{{ job }}</td>
-                                    <td class="text-sm">{{ job.institution.short_name }}</td>
-                                    <td><a href="{{ job.get_editor_url }}" class="text-sm">Edit</a></td>
-                                    <td>
-                                        <a href="#" data-toggle="modal" data-target="#evaluationModal{{ job.id }}" class="text-sm">Evaluate</a>
-                                        <div class="modal" id="evaluationModal{{ job.id }}" tabindex="-1" role="dialog">
-                                            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body marked">
-                                                        <h4>#{{ job.id }}: {{ job }}</h4>
-                                                        <p>Has the position been filled?</p>
-                                                        <ul class="m-0">
-                                                            <li><a href="{% url 'job_evaluation' job.id 1 %}">Yes, via the HiPEAC Jobs portal!</a></li>
-                                                            <li><a href="{% url 'job_evaluation' job.id 2 %}">Yes</a>, thanks!</li>
-                                                            <li><a href="{% url 'job_evaluation' job.id 0 %}">No</a>, please close the offer</li>
-                                                            <li><a href="{{ job.get_editor_url }}">Not yet, please extend the deadline</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-3 col-lg-2 d-flex align-items-stretch">
+        <h5 class="display-sm mt-4 mb-1">Manage your jobs</h5>
+        <hr>
+      </div>
+      <div class="col-12 col-md-9 col-lg-10 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          {% if jobs %}
+            <table class="table table-sm">
+              <thead class="text-sm">
+                <tr>
+                  <th class="sm">Status</th>
+                  <th>Type</th>
+                  <th>Deadline</th>
+                  <th>Job position</th>
+                  <th>Institution</th>
+                  <th class="sm"><i class="material-icons sm">edit</i></th>
+                  <th class="sm"><i class="material-icons sm">star</i></th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for job in jobs %}
+                <tr>
+                  <td>
+                    <small>
+                    {% if job.is_closed %}
+                      <i class="material-icons sm text-danger">closed</i>
                     {% else %}
-                        <h5 class="catchphrase mb-4 text-secondary">No jobs posted</h5>
+                      <i class="material-icons sm text-success">check_circle</i>
                     {% endif %}
-                </div>
-            </div>
+                    </small>
+                  </td>
+                  <td class="text-sm"><span class="badge badge-secondary">{{ job.employment_type.value }}</span></td>
+                  <td class="text-sm">{{ job.deadline }}</td>
+                  <td class="text-sm">{{ job }}</td>
+                  <td class="text-sm">{{ job.institution.short_name }}</td>
+                  <td><a href="{{ job.get_editor_url }}" class="text-sm">Edit</a></td>
+                  <td>
+                    <a href="#" data-toggle="modal" data-target="#evaluationModal{{ job.id }}" class="text-sm">Evaluate</a>
+                    <div class="modal" id="evaluationModal{{ job.id }}" tabindex="-1" role="dialog">
+                      <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body marked">
+                            <h4>#{{ job.id }}: {{ job }}</h4>
+                            <p>Has the position been filled?</p>
+                            <ul class="m-0">
+                              <li><a href="{% url 'job_evaluation' job.id 1 %}">Yes, via the HiPEAC Jobs portal!</a></li>
+                              <li><a href="{% url 'job_evaluation' job.id 2 %}">Yes</a>, thanks!</li>
+                              <li><a href="{% url 'job_evaluation' job.id 0 %}">No</a>, please close the offer</li>
+                              <li><a href="{{ job.get_editor_url }}">Not yet, please extend the deadline</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <h5 class="catchphrase mb-4 text-secondary">No jobs posted</h5>
+          {% endif %}
         </div>
-        {% if user.profile.institution %}
-            <div is="open-jobs-row" title="Current jobs in your primary institution" url="{% url 'v1:institution-jobs' user.profile.institution.id %}"></div>
-        {% endif %}
+      </div>
     </div>
+    {% if user.profile.institution %}
+      <div is="open-jobs-row" title="Current jobs in your primary institution" url="{% url 'v1:institution-jobs' user.profile.institution.id %}"></div>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    <script>
-        new Vue({
-            el: '#vue'
-        });
-    </script>
+  <script>
+    new Vue({
+      el: '#vue'
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

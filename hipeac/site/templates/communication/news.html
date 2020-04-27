@@ -9,123 +9,123 @@
 {% block subtitle %}{{ flatpage.title }}{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'news'}" class="nav-link" exact>News</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'magazine'}" class="nav-link">Magazine</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'blog'}" class="nav-link">Blog</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="https://twitter.com/hipeac" target="_blank"><span is="twitter-icon"></span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="https://www.hipeac.net/youtube/" target="_blank"><span is="youtube-icon"></span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'news_feed' %}" target="_blank"><i class="material-icons">&#xE0E5;</i></a>
-    </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'news'}" class="nav-link" exact>News</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'magazine'}" class="nav-link">Magazine</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'blog'}" class="nav-link">Blog</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://twitter.com/hipeac" target="_blank"><span is="twitter-icon"></span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.hipeac.net/youtube/" target="_blank"><span is="youtube-icon"></span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'news_feed' %}" target="_blank"><i class="material-icons">&#xE0E5;</i></a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div id="urls" class="container" data-magazine-list="{% url 'v1:magazine-list' %}">
-        <router-view></router-view>
-    </div>
+  <div id="urls" class="container" data-magazine-list="{% url 'v1:magazine-list' %}">
+    <router-view></router-view>
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-blog.html' with id='v-blog' %}
-    {% include './v-magazine.html' with id='v-magazine' blck=flatpage.page.tbs.magazine %}
-    {% include './v-news.html' with id='v-news' blck=flatpage.page.tbs.magazine %}
+  {% include './v-blog.html' with id='v-blog' %}
+  {% include './v-magazine.html' with id='v-magazine' blck=flatpage.page.tbs.magazine %}
+  {% include './v-news.html' with id='v-news' blck=flatpage.page.tbs.magazine %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    <script>
-        var Store = new Vuex.Store({
-            state: {
-                articles: [],
-                magazines: []
-            },
-            mutations: {
-                fetchMagazines: function (state) {
-                    ajax().get($('#urls').data('magazine-list')).done(function (res) {
-                        state.magazines = Object.freeze(res);
-                    });
-                }
-            }
-        });
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        articles: [],
+        magazines: []
+      },
+      mutations: {
+        fetchMagazines: function (state) {
+          ajax().get($('#urls').data('magazine-list')).done(function (res) {
+            state.magazines = Object.freeze(res);
+          });
+        }
+      }
+    });
 
-        var BlogView = {
-            template: '#v-blog'
-        };
+    var BlogView = {
+      template: '#v-blog'
+    };
 
-        var MagazineView = {
-            template: '#v-magazine',
-            computed: _.extend(
-                Vuex.mapState(['magazines']), {
-            }),
-            methods: {
-                sendEvent: function (magazine) {
-                    // see: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/Tracking_Protection
-                    if (window.ga && ga.loaded) {
-                        ga('send', {
-                            hitType: 'event',
-                            eventCategory: 'newsletter',
-                            eventAction: 'download',
-                            eventLabel: magazine.id + magazine.download_url
-                        });
-                    }
-                }
-            },
-            created: function () {
-                this.$store.commit('fetchMagazines');
-            }
-        };
+    var MagazineView = {
+      template: '#v-magazine',
+      computed: _.extend(
+        Vuex.mapState(['magazines']), {
+      }),
+      methods: {
+        sendEvent: function (magazine) {
+          // see: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/Tracking_Protection
+          if (window.ga && ga.loaded) {
+            ga('send', {
+              hitType: 'event',
+              eventCategory: 'newsletter',
+              eventAction: 'download',
+              eventLabel: magazine.id + magazine.download_url
+            });
+          }
+        }
+      },
+      created: function () {
+        this.$store.commit('fetchMagazines');
+      }
+    };
 
-        var NewsView = {
-            template: '#v-news'
-        };
+    var NewsView = {
+      template: '#v-news'
+    };
 
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'blog',
-                    path: '/blog/',
-                    pathToRegexpOptions: {strict: true},
-                    component: BlogView
-                },
-                {
-                    name: 'magazine',
-                    path: '/magazine/',
-                    pathToRegexpOptions: {strict: true},
-                    component: MagazineView
-                },
-                {
-                    name: 'news',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    component: NewsView
-                }
-            ]
-        });
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'blog',
+          path: '/blog/',
+          pathToRegexpOptions: {strict: true},
+          component: BlogView
+        },
+        {
+          name: 'magazine',
+          path: '/magazine/',
+          pathToRegexpOptions: {strict: true},
+          component: MagazineView
+        },
+        {
+          name: 'news',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: NewsView
+        }
+      ]
+    });
 
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            beforeCreate: function () {
-                if (this.$route.path.substr(-1) != '/') {
-                    this.$router.push({'path': this.$route.path + '/'});
-                }
-            }
-        });
-    </script>
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

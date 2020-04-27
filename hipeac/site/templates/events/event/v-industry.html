@@ -3,129 +3,126 @@
 
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div>
-        <ul class="nav nav-tabs justify-content-center">
-            <li class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'industry'}" exact>
-                    <icon name="map" class="mr-1"></icon>Industry exhibition & session</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'sponsorship'}" exact>
-                    <icon name="check" class="mr-1"></icon>Sponsorship</a>
-            </li>
-        </ul>
-        <router-view></router-view>
-    </div>
+  <div>
+    <ul class="nav nav-tabs justify-content-center">
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'industry'}" exact>
+          <icon name="map" class="mr-1"></icon>Industry exhibition & session</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'sponsorship'}" exact>
+          <icon name="check" class="mr-1"></icon>Sponsorship</a>
+      </li>
+    </ul>
+    <router-view></router-view>
+  </div>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
-    <div>
-        <div class="hipeac-card">
-            <catchphrase>The HiPEAC conference is an excellent venue for companies large and small to showcase their products and services. Industry participants benefit from a dedicated session and the opportunity to network with key decision makers, experts at the forefront of computing systems research and fellow industry specialists. For anyone looking to locate top-quality candidates, HiPEAC offers our proven recruitment support and a dedicated STEM Student Day, during which advanced computing students visit industry exhibitors.</catchphrase>
-            <hr class="my-4">
-            <p>Larger and more impressive every year, the HiPEAC conference industry exhibition is a great way to promote your company to the computing systems community. The most cost-effective way to participate in the exhibition and the HiPEAC industry session is to sponsor the conference. <strong>From as little as €1,000, you can host a booth and get a full conference pass</strong>, along with promotion prior to and during the event and the chance to present at the industry session.</p>
-            <p>Alternatively, you can book a booth separately for €600. Contact Vicky Wandels for further details: <a href="mailto:Vicky.Wandels@UGent.be">Vicky.Wandels@UGent.be</a></p>
-        </div>
-        <div class="hipeac-card">
-            <a href="/media/public/drop-box/hipeac_2020_sponsorship.pdf" class="btn btn-sm btn-block btn-outline-success" target="_blank"><i class="material-icons mr-1">get_app</i>Download Sponsorship package</a>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6 d-flex align-items-stretch">
-                <div class="hipeac-card d-flex flex-column align-items-end">
-                    <img src="/media/public/drop-box/industry01.jpg" class="w-100 mt-auto rounded">
-                </div>
-            </div>
-            <div class="col-12 col-md-6 d-flex align-items-stretch">
-                <div class="hipeac-card d-flex flex-column align-items-end">
-                    <img src="/media/public/drop-box/industry02.jpg" class="w-100 mt-auto rounded">
-                </div>
-            </div>
-        </div>
+  <div>
+    <div class="hipeac-card">
+      <catchphrase>The HiPEAC conference is an excellent venue for companies large and small to showcase their products and services. Industry participants benefit from a dedicated session and the opportunity to network with key decision makers, experts at the forefront of computing systems research and fellow industry specialists. For anyone looking to locate top-quality candidates, HiPEAC offers our proven recruitment support and a dedicated STEM Student Day, during which advanced computing students visit industry exhibitors.</catchphrase>
+      <hr class="my-4">
+      <p>Larger and more impressive every year, the HiPEAC conference industry exhibition is a great way to promote your company to the computing systems community. The most cost-effective way to participate in the exhibition and the HiPEAC industry session is to sponsor the conference. <strong>From as little as €1,000, you can host a booth and get a full conference pass</strong>, along with promotion prior to and during the event and the chance to present at the industry session.</p>
+      <p>Alternatively, you can book a booth separately for €600. Contact Vicky Wandels for further details: <a href="mailto:Vicky.Wandels@UGent.be">Vicky.Wandels@UGent.be</a></p>
     </div>
+    <div class="hipeac-card">
+      <a href="/media/public/drop-box/hipeac_2020_sponsorship.pdf" class="btn btn-sm btn-block btn-outline-success" target="_blank"><i class="material-icons mr-1">get_app</i>Download Sponsorship package</a>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card d-flex flex-column align-items-end">
+          <img src="/media/public/drop-box/industry01.jpg" class="w-100 mt-auto rounded">
+        </div>
+      </div>
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card d-flex flex-column align-items-end">
+          <img src="/media/public/drop-box/industry02.jpg" class="w-100 mt-auto rounded">
+        </div>
+      </div>
+    </div>
+  </div>
 {% endverbatim %}
 </script>
 
-{% load static %}
-
-
 <script type="text/x-template" id="{{ id }}-sponsorship">
 {% verbatim %}
-    <div>
-        <div class="hipeac-card">
-            <catchphrase>The HiPEAC Conference has been the <strong>largest event in computing systems research organized in Europe</strong> in the last years, with 530+ participants and 65+ companies represented. The conference program and large panel of associated events is a unique opportunity to connect with researchers and engineers from both academia and industry.</catchphrase>
-            <hr class="my-4">
-            <display-sm class="mb-3">Common package offered to all sponsors</display-sm>
-            <ul>
-                <li>Acknowledgment during the opening and closing presentations, and during the social event.</li>
-                <li>Free mini-booth at the industry exhibition. A mini-booth is composed of a table, 2-3 chairs and poster panels. The HiPEAC industry exhibit takes place in the cocktail lunch and coffee break area. An ideal configuration to network with prospective interns, employees, partners, and clients. The majority of the HiPEAC member companies are present at the exhibition.</li>
-            </ul>
-            <p>At your preference, you may choose to target your donation on subsidizing student attendance, or on the participation of women in engineering and minorities. We will be happy to talk about ways to increase the visibility of your company or to discuss recruitment possibilities at the conference.</p>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <display-md class="m-0">Gold sponsors</display-md>
-                    <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 4 000</h6>
-                    <div class="marked">
-                        <ul>
-                            <li>Listed in the first group on the website, printed material, banner, on-site screens, etc.</li>
-                            <li>A/V equipment included in the booth setup (on request)</li>
-                            <li>Invitation to speak at the industry session (Tuesday, 15-20mn talk)</li>
-                            <li>Three free registrations for technical and non-technical (e.g., recruiters) personnel</li>
-                            <li>Eligible as a co-sponsor of student activities: travel grants, prizes, student poster session (Monday), best student presentation</li>
-                            <li><strong>Custom options available only to gold sponsors:</strong>
-                                <ul>
-                                    <li>Complementary donation to support the involvement of women in engineering and minorities</li>
-                                    <li>Sponsor student activities: travel grants, gifts for best student presentation, poster award, etc.</li>
-                                    <li>Video/slide-show during lunch and coffee breaks (subject to availability and cost)</li>
-                                    <li>Sponsor the reception at the student poster session (Monday), starting at €7000</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6">
-                <div class="hipeac-card">
-                    <display-md class="m-0">Silver sponsors</display-md>
-                    <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 2 000</h6>
-                    <div class="marked">
-                        <ul>
-                            <li>Listed in the second group on the website, printed material, banner, on-site screens, etc.</li>
-                            <li>A/V equipment included in the booth setup (on request)</li>
-                            <li>Invitation to speak at the industry session (Tuesday, 15-20mn talk)</li>
-                            <li>Two free registrations for technical and non-technical (e.g., recruiters) personnel</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="hipeac-card">
-                    <display-md class="m-0">Bronze sponsors</display-md>
-                    <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 1 000</h6>
-                    <div class="marked">
-                        <ul>
-                            <li>Name and logo on the website, printed material, banner, on-site screens, etc.</li>
-                            <li>Ability to speak at the industry session, if time allows, first come first served (10mn talk)</li>
-                            <li>One free registration</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div v-if="event && event.sponsors.length" class="hipeac-card">
-            <display-sm class="mb-3">Sponsors</display-sm>
-            <ul class="logos">
-                <li v-for="sponsor in event.sponsors" :key="sponsor.id">
-                    <a v-if="sponsor.institution" :href="sponsor.institution.href">
-                        <img :src="sponsor.institution.images.sm">
-                    </a>
-                    <a v-if="sponsor.project" :href="sponsor.project.href">
-                        <img :src="sponsor.project.images.sm">
-                    </a>
-                </li>
-            </ul>
-        </div>
+  <div>
+    <div class="hipeac-card">
+      <catchphrase>The HiPEAC Conference has been the <strong>largest event in computing systems research organized in Europe</strong> in the last years, with 530+ participants and 65+ companies represented. The conference program and large panel of associated events is a unique opportunity to connect with researchers and engineers from both academia and industry.</catchphrase>
+      <hr class="my-4">
+      <display-sm class="mb-3">Common package offered to all sponsors</display-sm>
+      <ul>
+        <li>Acknowledgment during the opening and closing presentations, and during the social event.</li>
+        <li>Free mini-booth at the industry exhibition. A mini-booth is composed of a table, 2-3 chairs and poster panels. The HiPEAC industry exhibit takes place in the cocktail lunch and coffee break area. An ideal configuration to network with prospective interns, employees, partners, and clients. The majority of the HiPEAC member companies are present at the exhibition.</li>
+      </ul>
+      <p>At your preference, you may choose to target your donation on subsidizing student attendance, or on the participation of women in engineering and minorities. We will be happy to talk about ways to increase the visibility of your company or to discuss recruitment possibilities at the conference.</p>
     </div>
+    <div class="row">
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <display-md class="m-0">Gold sponsors</display-md>
+          <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 4 000</h6>
+          <div class="marked">
+            <ul>
+              <li>Listed in the first group on the website, printed material, banner, on-site screens, etc.</li>
+              <li>A/V equipment included in the booth setup (on request)</li>
+              <li>Invitation to speak at the industry session (Tuesday, 15-20mn talk)</li>
+              <li>Three free registrations for technical and non-technical (e.g., recruiters) personnel</li>
+              <li>Eligible as a co-sponsor of student activities: travel grants, prizes, student poster session (Monday), best student presentation</li>
+              <li><strong>Custom options available only to gold sponsors:</strong>
+                <ul>
+                  <li>Complementary donation to support the involvement of women in engineering and minorities</li>
+                  <li>Sponsor student activities: travel grants, gifts for best student presentation, poster award, etc.</li>
+                  <li>Video/slide-show during lunch and coffee breaks (subject to availability and cost)</li>
+                  <li>Sponsor the reception at the student poster session (Monday), starting at €7000</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="hipeac-card">
+          <display-md class="m-0">Silver sponsors</display-md>
+          <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 2 000</h6>
+          <div class="marked">
+            <ul>
+              <li>Listed in the second group on the website, printed material, banner, on-site screens, etc.</li>
+              <li>A/V equipment included in the booth setup (on request)</li>
+              <li>Invitation to speak at the industry session (Tuesday, 15-20mn talk)</li>
+              <li>Two free registrations for technical and non-technical (e.g., recruiters) personnel</li>
+            </ul>
+          </div>
+        </div>
+        <div class="hipeac-card">
+          <display-md class="m-0">Bronze sponsors</display-md>
+          <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 1 000</h6>
+          <div class="marked">
+            <ul>
+              <li>Name and logo on the website, printed material, banner, on-site screens, etc.</li>
+              <li>Ability to speak at the industry session, if time allows, first come first served (10mn talk)</li>
+              <li>One free registration</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="event && event.sponsors.length" class="hipeac-card">
+      <display-sm class="mb-3">Sponsors</display-sm>
+      <ul class="logos">
+        <li v-for="sponsor in event.sponsors" :key="sponsor.id">
+          <a v-if="sponsor.institution" :href="sponsor.institution.href">
+            <img :src="sponsor.institution.images.sm">
+          </a>
+          <a v-if="sponsor.project" :href="sponsor.project.href">
+            <img :src="sponsor.project.images.sm">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 {% endverbatim %}
 </script>

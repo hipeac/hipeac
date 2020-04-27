@@ -1,20 +1,20 @@
 {% extends 'layout_simple.html' %}
 
 {% block content %}
-    <h1>Oops, a server error</h1>
-    <p>Assuming computers just do what you tell them... we probably made a mistake somewhere.</p>
-    <p>We will start working on a fix asap.</p>
-    {% if sentry_event_id %}
-        <p class="text-sm text-danger">
-            <span>Error reference:</span><br>
-            <strong>{{ sentry_event_id }}</strong>
-        </p>
-    {% endif %}
-    <hr>
-    <p class="mb-0 text-sm">
-        <a href="/" class="text-secondary">
-            <i class="material-icons sm mr-2">arrow_back</i>
-            <span>Back to hipeac.net</span>
-        </a>
+  <h1>Oops, a server error</h1>
+  <p>Assuming computers just do what you tell them... we probably made a mistake somewhere.</p>
+  <p>We will start working on a fix asap.</p>
+  {% if sentry_event_id %}
+    <p class="text-sm text-danger">
+      <span>Error reference:</span><br>
+      <strong>{{ sentry_event_id }}</strong>
     </p>
+  {% endif %}
+  <hr>
+  <p class="mb-0 text-sm">
+    <a href="/" class="text-secondary">
+      <i class="material-icons sm mr-2">arrow_back</i>
+      <span>Back to hipeac.net</span>
+    </a>
+  </p>
 {% endblock %}

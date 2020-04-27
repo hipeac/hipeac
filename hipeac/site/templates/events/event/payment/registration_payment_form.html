@@ -5,50 +5,50 @@
 
 
 {% block content %}
-    <p class="text-sm">
-        <strong>Registration ID:</strong> {{ registration.id }} ({{ user.username }})<br>
-    </p>
-    <h4 class="header">{{ registration.event }} payment</h4>
-    {% if registration.is_paid %}
-        <p>Your registration is fully paid.</p>
-        {% if registration.paid > 0 %}
-            <p><a target="_blank" href="{{ registration.get_receipt_url }}" class="btn btn-outline-secondary">
-            <i class="material-icons mr-2">get_app</i>Download receipt</a></p>
-        {% endif %}
+  <p class="text-sm">
+    <strong>Registration ID:</strong> {{ registration.id }} ({{ user.username }})<br>
+  </p>
+  <h4 class="header">{{ registration.event }} payment</h4>
+  {% if registration.is_paid %}
+    <p>Your registration is fully paid.</p>
+    {% if registration.paid > 0 %}
+      <p><a target="_blank" href="{{ registration.get_receipt_url }}" class="btn btn-outline-secondary">
+      <i class="material-icons mr-2">get_app</i>Download receipt</a></p>
+    {% endif %}
+  {% else %}
+    <p class="text-danger">You still have to pay <strong>{{ registration.remaining_fee|euro }}</strong> for your "{{ registration.event }}" registration.</p>
+    {% if registration.paid > 0 %}
+      <p>You have already paid <strong>{{ registration.paid | euro }}</strong>.</p>
+    {% endif %}
+    {% if registration.coupon %}
+      <p>You've used a coupon:<br>
+        <strong>{{ registration.coupon.code }}</strong> &nbsp;<span class="radius secondary label">{{ registration.coupon.value | euro }}</span>
+      </p>
     {% else %}
-        <p class="text-danger">You still have to pay <strong>{{ registration.remaining_fee|euro }}</strong> for your "{{ registration.event }}" registration.</p>
-        {% if registration.paid > 0 %}
-            <p>You have already paid <strong>{{ registration.paid | euro }}</strong>.</p>
-        {% endif %}
-        {% if registration.coupon %}
-            <p>You've used a coupon:<br>
-                <strong>{{ registration.coupon.code }}</strong> &nbsp;<span class="radius secondary label">{{ registration.coupon.value | euro }}</span>
-            </p>
-        {% else %}
-            <p>If you received a coupon, please apply the coupon code to update your balance before proceeding to pay.</p>
-            <form method="post" action="">
-                {% csrf_token %}
-                <input type="text" name="coupon" class="form-control">
-                <input class="btn btn-outline-secondary btn-block mt-2" type="submit" value="Update balance with my coupon">
-            </form>
-        {% endif %}
-        <hr>
-        <p>Pay <strong>{{ registration.remaining_fee | euro }}</strong> using our secure server. Once the payment is made you will be able to download a receipt <strong>&mdash;no invoice&mdash;</strong>:</p>
-        <img src="{% static 'images/ingenico.svg' %}" class="float-right w-25 mt-2">
-        <form method="post" action="{{ ogone_url }}">
-            {% for key, value in ogone_parameters.items %}
-                <input type="hidden" name="{{ key }}" value="{{ value }}">
-            {% endfor %}
-            <button class="btn btn-primary" type="submit">
-                <i class="material-icons mr-2">lock</i><span>Pay</span>
-            </button>
-        </form>
+      <p>If you received a coupon, please apply the coupon code to update your balance before proceeding to pay.</p>
+      <form method="post" action="">
+        {% csrf_token %}
+        <input type="text" name="coupon" class="form-control">
+        <input class="btn btn-outline-secondary btn-block mt-2" type="submit" value="Update balance with my coupon">
+      </form>
     {% endif %}
     <hr>
-    <p class="mb-0">
-        <a href="{{ registration.get_absolute_url }}">
-            <i class="material-icons sm mr-1">arrow_back</i>
-            <small>Back to registration</small>
-        </a>
-    </p>
+    <p>Pay <strong>{{ registration.remaining_fee | euro }}</strong> using our secure server. Once the payment is made you will be able to download a receipt <strong>&mdash;no invoice&mdash;</strong>:</p>
+    <img src="{% static 'images/ingenico.svg' %}" class="float-right w-25 mt-2">
+    <form method="post" action="{{ ogone_url }}">
+      {% for key, value in ogone_parameters.items %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endfor %}
+      <button class="btn btn-primary" type="submit">
+        <i class="material-icons mr-2">lock</i><span>Pay</span>
+      </button>
+    </form>
+  {% endif %}
+  <hr>
+  <p class="mb-0">
+    <a href="{{ registration.get_absolute_url }}">
+      <i class="material-icons sm mr-1">arrow_back</i>
+      <small>Back to registration</small>
+    </a>
+  </p>
 {% endblock %}

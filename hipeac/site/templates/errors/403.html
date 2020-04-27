@@ -1,24 +1,24 @@
 {% extends 'layout_simple.html' %}
 
 {% block content %}
-    {% if user.is_authenticated %}
-        <h1>403 Forbidden</h1>
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-    {% else %}
-        <h1>Log in to access</h1>
-        <p>To access this page/file, please log in or create a free HiPEAC user account <a href="{% url 'account_signup' %}">here.</a></p>
-        <p>We won't use your data for marketing purposes or anything untoward — check out our privacy policy <a href="/privacy-policy/">here</a>.</p>
-        <h2 class="display display-md text-left">HiPEAC is a network of 2,000 experts in computing systems, funded by the European Commission. Interested in free membership? Find out more <a href="{% url 'network' %}#/benefits/">here</a>.</h2>
+  {% if user.is_authenticated %}
+    <h1>403 Forbidden</h1>
+    {% if messages %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
     {% endif %}
-    <hr>
-    <p class="mb-0 text-sm">
-        <a href="mailto:webmaster@hipeac.net" class="text-secondary">
-            <i class="material-icons sm mr-2">email</i>
-            <span>Contact us if you think that this message does not apply to you</span>
-        </a>
-    </p>
+  {% else %}
+    <h1>Log in to access</h1>
+    <p>To access this page/file, please log in or create a free HiPEAC user account <a href="{% url 'account_signup' %}">here.</a></p>
+    <p>We won't use your data for marketing purposes or anything untoward — check out our privacy policy <a href="/privacy-policy/">here</a>.</p>
+    <h2 class="display display-md text-left">HiPEAC is a network of 2,000 experts in computing systems, funded by the European Commission. Interested in free membership? Find out more <a href="{% url 'network' %}#/benefits/">here</a>.</h2>
+  {% endif %}
+  <hr>
+  <p class="mb-0 text-sm">
+    <a href="mailto:webmaster@hipeac.net" class="text-secondary">
+      <i class="material-icons sm mr-2">email</i>
+      <span>Contact us if you think that this message does not apply to you</span>
+    </a>
+  </p>
 {% endblock %}

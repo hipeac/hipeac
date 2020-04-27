@@ -1,32 +1,32 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div v-if="event" class="row">
-        <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
-            <div class="hipeac-card">
-                <display-sm class="mb-3">Venues</display-sm>
-                <div v-for="venue in event.venues" class="mb-5">
-                    <h5 class="text-light-weight mb-3">{{ venue.name }}</h5>
-                    <marked v-if="venue.description" :text="venue.description" class="text-sm"></marked>
-                </div>
-            </div>
+  <div v-if="event" class="row">
+    <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+      <div class="hipeac-card">
+        <display-sm class="mb-3">Venues</display-sm>
+        <div v-for="venue in event.venues" class="mb-5">
+          <h5 class="text-light-weight mb-3">{{ venue.name }}</h5>
+          <marked v-if="venue.description" :text="venue.description" class="text-sm"></marked>
         </div>
-        <div v-if="event.travel_info" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
-            <div class="hipeac-card">
-                <display-sm class="mb-3">Travel information</display-sm>
-                <marked v-if="event.travel_info" :text="event.travel_info"></marked>
-                <div v-if="event.google_mid" class="mt-auto w-100">
-                    <hr class="my-4">
-                    <p class="m-0 text-sm"><i class="material-icons sm">info</i> Check the <strong>side panel in the map below</strong> for more information about the venues and the hotels in the area.</p>
-                </div>
-            </div>
-        </div>
-        <div v-if="event.google_mid" class="col-12">
-            <div class="hipeac-card">
-                <div class="iframe-container rounded">
-                    <iframe :src="'https://www.google.com/maps/d/embed?scrollwheel=fale&mid=' + event.google_mid + '&z=13'" frameborder="0" class="google-embedded-map"></iframe>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div v-if="event.travel_info" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+      <div class="hipeac-card">
+        <display-sm class="mb-3">Travel information</display-sm>
+        <marked v-if="event.travel_info" :text="event.travel_info"></marked>
+        <div v-if="event.google_mid" class="mt-auto w-100">
+          <hr class="my-4">
+          <p class="m-0 text-sm"><i class="material-icons sm">info</i> Check the <strong>side panel in the map below</strong> for more information about the venues and the hotels in the area.</p>
+        </div>
+      </div>
+    </div>
+    <div v-if="event.google_mid" class="col-12">
+      <div class="hipeac-card">
+        <div class="iframe-container rounded">
+          <iframe :src="'https://www.google.com/maps/d/embed?scrollwheel=fale&mid=' + event.google_mid + '&z=13'" frameborder="0" class="google-embedded-map"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endverbatim %}
 </script>

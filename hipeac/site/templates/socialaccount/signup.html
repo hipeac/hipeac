@@ -4,15 +4,15 @@
 
 
 {% block content %}
-    <h4 class="header">Sign up</h4>
-    <p class="content">You are about to use your <strong>{{ account.get_provider.name }}</strong> account to login to {{ site.name }}. As a final step, please complete the following form:</p>
+  <h4 class="header">Sign up</h4>
+  <p class="content">You are about to use your <strong>{{ account.get_provider.name }}</strong> account to login to {{ site.name }}. As a final step, please complete the following form:</p>
 
-    <form method="post" action="{% url 'socialaccount_signup' %}" class="signup" id="signup_form">
-        {% csrf_token %}
-        {{ form | crispy }}
-        {% if redirect_field_value %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
-        {% endif %}
-        <button type="submit" class="btn btn-primary mt-2">Sign up</button>
-    </form>
+  <form method="post" action="{% url 'socialaccount_signup' %}" class="signup" id="signup_form">
+    {% csrf_token %}
+    {{ form | crispy }}
+    {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+    {% endif %}
+    <button type="submit" class="btn btn-primary mt-2">Sign up</button>
+  </form>
 {% endblock %}

@@ -10,50 +10,50 @@
 {% block subtitle %}HiPEAC Internships{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'jobs' %}#/internships/"><i class="material-icons mr-1">arrow_back</i>Back to internships</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
-    </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'jobs' %}#/internships/"><i class="material-icons mr-1">arrow_back</i>Back to internships</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-12 col-md-8">
-                <div class="hipeac-card">
-                    <h5>Internship awardees: public summary</h5>
-                    <table class="table table-sm">
-                    {% for application in object_list %}
-                        {% ifchanged application.internship.call %}
-                            </table>
-                            <h6 class="display-sm mb-3">{{ application.internship.call }}</h6>
-                            <table class="table table-sm">
-                        {% endifchanged %}
-                        <tr>
-                            <td><i class="material-icons sm">description</i></td>
-                            <td>{{ application.created_by.profile.name }} <small class="text-secondary">@ {{ application.internship.institution }}: "{{ application.internship.title }}"</td>
-                            <td>
-                                <a href="{{ application.created_by.profile.get_absolute_url }}">
-                                    <i class="material-icons sm">arrow_forward</i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </table>
-                </div>
-            </div>
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col-12 col-md-8">
+        <div class="hipeac-card">
+          <h5>Internship awardees: public summary</h5>
+          <table class="table table-sm">
+          {% for application in object_list %}
+            {% ifchanged application.internship.call %}
+              </table>
+              <h6 class="display-sm mb-3">{{ application.internship.call }}</h6>
+              <table class="table table-sm">
+            {% endifchanged %}
+            <tr>
+              <td><i class="material-icons sm">description</i></td>
+              <td>{{ application.created_by.profile.name }} <small class="text-secondary">@ {{ application.internship.institution }}: "{{ application.internship.title }}"</td>
+              <td>
+                <a href="{{ application.created_by.profile.get_absolute_url }}">
+                  <i class="material-icons sm">arrow_forward</i>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+          </table>
         </div>
+      </div>
     </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    <script>
-        new Vue({
-            el: '#vue'
-        });
-    </script>
+  <script>
+    new Vue({
+      el: '#vue'
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

@@ -1,11 +1,11 @@
 {% extends 'email.'|add:email_format %}
 
 {% block logo %}
-    {% if event_url == 'https://oval.hipeac.net/2020/' %}
-        <img src="https://www.hipeac.net/media/public/drop-box/oval2020--logos.png">
-    {% else %}
-        <img src="http://xwpn2.mjt.lu/tplimg/xwpn2/b/ivli/1jh.png">
-    {% endif %}
+  {% if event_url == 'https://oval.hipeac.net/2020/' %}
+    <img src="https://www.hipeac.net/media/public/drop-box/oval2020--logos.png">
+  {% else %}
+    <img src="http://xwpn2.mjt.lu/tplimg/xwpn2/b/ivli/1jh.png">
+  {% endif %}
 {% endblock %}
 
 {% block header %}You are now registered for {{ event_name }}.{% endblock %}

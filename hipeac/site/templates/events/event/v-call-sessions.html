@@ -3,32 +3,32 @@
 
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div v-if="event">
-        <div class="row">
-            <div class="col-12 col-md-6 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <a href="{% endverbatim %}{% url 'session_proposals' event.id %}{% verbatim %}" target="_blank" class="btn btn-sm btn-block btn-primary"><i class="material-icons mr-1">send</i>Submit your proposal</a>
-                    <hr class="my-4">
-                    <catchphrase>As part of the research coordination program, HiPEAC includes a new instrument, called Thematic Sessions. A Thematic Session replaces the clusters and task forces in HiPEAC2; it is self-organized and more reactive. In HiPEAC, <strong>any partner or member can propose a Thematic Session</strong>, on condition that it is related to the <a href="{% endverbatim %}{% url 'vision' %}{% verbatim %}">HiPEAC Vision</a>.</catchphrase>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <p>Thematic Sessions are organized as meetings during the HiPEAC Computing Systems Weeks. To that end, we will issue periodic calls for Thematic Sessions that will be included in next CSW. Proposers will be in charge of its program (for example, outcome of current collaborations and interactions, presentations of the EU projects, a keynote presentation, invited presentations, a panel, ...).</p>
-                    <p>The normal duration of a Thematic Session meeting is one or two slots of 90 min. The HiPEAC network is calling for high-quality sessions, i.e. sessions worth attending. All session will be automatically evaluated via a survey. The HiPEAC network can cover some of the costs involved in organizing the event (e.g. the costs of a keynote speaker).</p>
-                    <p>Thematic Sessions are for dissemination of research results and for networking. It is an ideal way to promote your research area in the HiPEAC community, to share your own research results, and to build a network of researchers from which you can form a consortium for a future project proposal. By organizing a Thematic Session, you help the HiPEAC network to work on the challenges of the HiPEAC roadmap. As a Thematic Session organizer you will also be invited to contribute to the next version of the HiPEAC Vision, and hence to help steering the research in Europe.</p>
-                    <p>Volunteering to organize a Thematic Session is an opportunity to contribute to the HiPEAC community.</p>
-                    <hr>
-                    <p>If you are planning to submit a proposal, please have in mind that you will need the following information:</p>
-                    <ul>
-                        <li>Thematic Session topic</li>
-                        <li>Motivation and objectives</li>
-                        <li>Tentative program of the meeting</li>
-                        <li>Expected HiPEAC financial support</li>
-                    </ul>
-                </div>
-            </div>
+  <div v-if="event">
+    <div class="row">
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <a href="{% endverbatim %}{% url 'session_proposals' event.id %}{% verbatim %}" target="_blank" class="btn btn-sm btn-block btn-primary"><i class="material-icons mr-1">send</i>Submit your proposal</a>
+          <hr class="my-4">
+          <catchphrase>As part of the research coordination program, HiPEAC includes a new instrument, called Thematic Sessions. A Thematic Session replaces the clusters and task forces in HiPEAC2; it is self-organized and more reactive. In HiPEAC, <strong>any partner or member can propose a Thematic Session</strong>, on condition that it is related to the <a href="{% endverbatim %}{% url 'vision' %}{% verbatim %}">HiPEAC Vision</a>.</catchphrase>
         </div>
+      </div>
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <p>Thematic Sessions are organized as meetings during the HiPEAC Computing Systems Weeks. To that end, we will issue periodic calls for Thematic Sessions that will be included in next CSW. Proposers will be in charge of its program (for example, outcome of current collaborations and interactions, presentations of the EU projects, a keynote presentation, invited presentations, a panel, ...).</p>
+          <p>The normal duration of a Thematic Session meeting is one or two slots of 90 min. The HiPEAC network is calling for high-quality sessions, i.e. sessions worth attending. All session will be automatically evaluated via a survey. The HiPEAC network can cover some of the costs involved in organizing the event (e.g. the costs of a keynote speaker).</p>
+          <p>Thematic Sessions are for dissemination of research results and for networking. It is an ideal way to promote your research area in the HiPEAC community, to share your own research results, and to build a network of researchers from which you can form a consortium for a future project proposal. By organizing a Thematic Session, you help the HiPEAC network to work on the challenges of the HiPEAC roadmap. As a Thematic Session organizer you will also be invited to contribute to the next version of the HiPEAC Vision, and hence to help steering the research in Europe.</p>
+          <p>Volunteering to organize a Thematic Session is an opportunity to contribute to the HiPEAC community.</p>
+          <hr>
+          <p>If you are planning to submit a proposal, please have in mind that you will need the following information:</p>
+          <ul>
+            <li>Thematic Session topic</li>
+            <li>Motivation and objectives</li>
+            <li>Tentative program of the meeting</li>
+            <li>Expected HiPEAC financial support</li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 </script>
 {% endverbatim %}

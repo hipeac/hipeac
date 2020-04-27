@@ -1,12 +1,12 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div>
-        <search-card placeholder="Search publications by year, title..." :showFiltersButton="false" class="mb-2"></search-card>
-        <div class="hipeac-card">
-            <small v-if="publications" class="text-light-grey float-right">{{ publications.length }} papers</small>
-            <display-sm class="mb-3">Publications in DBLP</display-sm>
-            <papers-table :items="publications" :filterIds="true" :ids="filteredIds" :showConference="true"></papers-table>
-        </div>
+  <div>
+    <search-card placeholder="Search publications by year, title..." :showFiltersButton="false" class="mb-2"></search-card>
+    <div class="hipeac-card">
+      <small v-if="publications" class="text-light-grey float-right">{{ publications.length }} papers</small>
+      <display-sm class="mb-3">Publications in DBLP</display-sm>
+      <papers-table :items="publications" :filterIds="true" :ids="filteredIds" :showConference="true"></papers-table>
     </div>
+  </div>
 {% endverbatim %}
 </script>

@@ -1,33 +1,32 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div v-if="user" class="hipeac-card">
-
-        <div>
-            <div v-if="ui.status == 'waiting'" class="text-secondary">
-                <i class="material-icons sm mr-2">&#xE876;</i>
-                <small>Last updated: {{ user.updated_at | moment('lll') }}</small>
-            </div>
-            <div v-else-if="ui.status == 'saving'" class="text-warning">
-                <i class="material-icons sm mr-2">&#xE161;</i>
-                <small>Saving data...</small>
-            </div>
-            <div v-else-if="ui.status == 'saved'" class="text-success">
-                <i class="material-icons sm mr-2">&#xE877;</i>
-                <small><strong>Saved!</strong></small>
-            </div>
-            <div v-else-if="ui.status == 'error'" class="text-danger">
-                <i class="material-icons sm mr-2">&#xE14B;</i>
-                <small><strong>Error: {{ ui.error }}</strong></small>
-            </div>
-        </div>
-        <hr>
-
-        <h5>{{ user.first_name }} {{ user.last_name }}</h5>
-        <strong v-if="user.profile.institution">{{ user.profile.institution.name }}</strong>
-        <img :src="user.profile.avatar_url" class="float-right ml-3 mb-2 rounded-circle">
-        <marked :text="user.profile.bio" class="text-sm mb-4"></marked>
-        <metadata-badges title="Areas of expertise" :items="user.profile.topics" color="secondary"></metadata-badges>
-        <metadata-badges title="Application areas" :items="user.profile.application_areas" color="secondary"></metadata-badges>
+  <div v-if="user" class="hipeac-card">
+    <div>
+      <div v-if="ui.status == 'waiting'" class="text-secondary">
+        <i class="material-icons sm mr-2">&#xE876;</i>
+        <small>Last updated: {{ user.updated_at | moment('lll') }}</small>
+      </div>
+      <div v-else-if="ui.status == 'saving'" class="text-warning">
+        <i class="material-icons sm mr-2">&#xE161;</i>
+        <small>Saving data...</small>
+      </div>
+      <div v-else-if="ui.status == 'saved'" class="text-success">
+        <i class="material-icons sm mr-2">&#xE877;</i>
+        <small><strong>Saved!</strong></small>
+      </div>
+      <div v-else-if="ui.status == 'error'" class="text-danger">
+        <i class="material-icons sm mr-2">&#xE14B;</i>
+        <small><strong>Error: {{ ui.error }}</strong></small>
+      </div>
     </div>
+    <hr>
+
+    <h5>{{ user.first_name }} {{ user.last_name }}</h5>
+    <strong v-if="user.profile.institution">{{ user.profile.institution.name }}</strong>
+    <img :src="user.profile.avatar_url" class="float-right ml-3 mb-2 rounded-circle">
+    <marked :text="user.profile.bio" class="text-sm mb-4"></marked>
+    <metadata-badges title="Areas of expertise" :items="user.profile.topics" color="secondary"></metadata-badges>
+    <metadata-badges title="Application areas" :items="user.profile.application_areas" color="secondary"></metadata-badges>
+  </div>
 {% endverbatim %}
 </script>

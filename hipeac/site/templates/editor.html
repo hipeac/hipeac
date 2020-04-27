@@ -5,208 +5,208 @@
 
 
 {% block main %}
-    <div id="vue">
-        <div class="hipeac subheader sticky-top mb-3 mb-md-4">
-            {% verbatim %}
-            <div v-cloak v-if="obj">
-                <div v-if="ui.status == 'waiting'" class="alert alert-header alert-light">
-                    <i class="material-icons sm mr-2">&#xE876;</i>
-                    <small>Last updated: {{ obj.updated_at | moment('lll') }}</small>
-                </div>
-                <div v-else-if="ui.status == 'saving'" class="alert alert-header bg-yellow">
-                    <i class="material-icons sm mr-2">&#xE161;</i>
-                    <small>Saving data...</small>
-                </div>
-                <div v-else-if="ui.status == 'saved'" class="alert alert-header alert-light text-success">
-                    <i class="material-icons sm mr-2">&#xE877;</i>
-                    <small><strong>Saved!</strong></small>
-                </div>
-                <div v-else-if="ui.status == 'error'" class="alert alert-header alert-danger">
-                    <i class="material-icons sm mr-2">&#xE14B;</i>
-                    <small><strong>Error: {{ ui.error }}</strong></small>
-                </div>
-            </div>
-            {% endverbatim %}
-            <div class="d-md-flex justify-content-md-between align-items-md-end px-4">
-                <h3 class="title my-1">
-                    {% block subtitle %}HiPEAC Content editor{% endblock %}
-                </h3>
-                <ul class="nav nav-tabs">
-                    {% block extra_tabs %}{% endblock %}
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active">Editor</a>
-                    </li>
-                    <li v-cloak v-if="obj && obj.href" class="nav-item">
-                        <a :href="obj.href" class="nav-link">View on hipeac.net</a>
-                    </li>
-                </ul>
-            </div>
+  <div id="vue">
+    <div class="hipeac subheader sticky-top mb-3 mb-md-4">
+      {% verbatim %}
+      <div v-cloak v-if="obj">
+        <div v-if="ui.status == 'waiting'" class="alert alert-header alert-light">
+          <i class="material-icons sm mr-2">&#xE876;</i>
+          <small>Last updated: {{ obj.updated_at | moment('lll') }}</small>
         </div>
-        <div id="urls" data-base="{{ base_url }}" data-obj-id="{{ obj_id | default:"0" }}" class="container-fluid">
-            <div class="row d-flex align-content-stretch">
-                <div class="col-12 col-lg-6 scrollable">
-                    <router-view></router-view>
-                </div>
-                <div v-cloak v-if="obj" class="col-12 col-lg-6 d-none d-md-block scrollable">
-                    <div class="hipeac-card bg-light-yellow">
-                        <router-view name="preview"></router-view>
-                    </div>
-                </div>
-            </div>
+        <div v-else-if="ui.status == 'saving'" class="alert alert-header bg-yellow">
+          <i class="material-icons sm mr-2">&#xE161;</i>
+          <small>Saving data...</small>
         </div>
+        <div v-else-if="ui.status == 'saved'" class="alert alert-header alert-light text-success">
+          <i class="material-icons sm mr-2">&#xE877;</i>
+          <small><strong>Saved!</strong></small>
+        </div>
+        <div v-else-if="ui.status == 'error'" class="alert alert-header alert-danger">
+          <i class="material-icons sm mr-2">&#xE14B;</i>
+          <small><strong>Error: {{ ui.error }}</strong></small>
+        </div>
+      </div>
+      {% endverbatim %}
+      <div class="d-md-flex justify-content-md-between align-items-md-end px-4">
+        <h3 class="title my-1">
+          {% block subtitle %}HiPEAC Content editor{% endblock %}
+        </h3>
+        <ul class="nav nav-tabs">
+          {% block extra_tabs %}{% endblock %}
+          <li class="nav-item">
+            <a href="#" class="nav-link active">Editor</a>
+          </li>
+          <li v-cloak v-if="obj && obj.href" class="nav-item">
+            <a :href="obj.href" class="nav-link">View on hipeac.net</a>
+          </li>
+        </ul>
+      </div>
     </div>
+    <div id="urls" data-base="{{ base_url }}" data-obj-id="{{ obj_id | default:"0" }}" class="container-fluid">
+      <div class="row d-flex align-content-stretch">
+        <div class="col-12 col-lg-6 scrollable">
+          <router-view></router-view>
+        </div>
+        <div v-cloak v-if="obj" class="col-12 col-lg-6 d-none d-md-block scrollable">
+          <div class="hipeac-card bg-light-yellow">
+            <router-view name="preview"></router-view>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block extra_scripts %}
-    {% compress js file editor_extras %}
-        <script src="{% static 'js/v-forms.js' %}"></script>
-        <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
-    {% endcompress %}
+  {% compress js file editor_extras %}
+    <script src="{% static 'js/v-forms.js' %}"></script>
+    <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
+  {% endcompress %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    {% block obj %}
-        <script>
-            var OBJ = {};
-        </script>
-    {% endblock %}
+  {% block obj %}
+    <script>
+      var OBJ = {};
+    </script>
+  {% endblock %}
 {% endcompress %}
 {% compress js file editor %}
-    <script>
-        var Store = new Vuex.Store({
-            state: {
-                ui: {
-                    status: 'waiting',
-                    error: null
-                },
-                objId: +$('#urls').data('obj-id'),
-                obj: null
-            },
-            getters: {
-                isNew: function (state) {
-                    return state.objId == 0;
-                }
-            },
-            mutations: {
-                createObject: function (state) {
-                    if (state.objId > 0) return;
-                    var self = this;
-                    var url = $('#urls').data('base');
-                    self.commit('startSaving');
-                    ajax().post(url, state.obj).done(function (res) {
-                        state.objId = res.id;
-                        state.obj = res;
-                        self.commit('endSaving');
-                    }).fail(function (err) {
-                        self.commit('logError', err);
-                    });;
-                },
-                fetchObject: function (state) {
-                    if (state.objId == 0) {
-                        state.obj = OBJ;
-                        return;
-                    }
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        ui: {
+          status: 'waiting',
+          error: null
+        },
+        objId: +$('#urls').data('obj-id'),
+        obj: null
+      },
+      getters: {
+        isNew: function (state) {
+          return state.objId == 0;
+        }
+      },
+      mutations: {
+        createObject: function (state) {
+          if (state.objId > 0) return;
+          var self = this;
+          var url = $('#urls').data('base');
+          self.commit('startSaving');
+          ajax().post(url, state.obj).done(function (res) {
+            state.objId = res.id;
+            state.obj = res;
+            self.commit('endSaving');
+          }).fail(function (err) {
+            self.commit('logError', err);
+          });;
+        },
+        fetchObject: function (state) {
+          if (state.objId == 0) {
+            state.obj = OBJ;
+            return;
+          }
 
-                    var url = $('#urls').data('base') + state.objId + '/';
-                    ajax().get(url).done(function (res) {
-                        state.obj = res;
-                    });
-                },
-                fetchOptions: function (state) {
-                    if (state.objId == 0) var url = $('#urls').data('base');
-                    else var url = $('#urls').data('base') + state.objId + '/';
-                    ajax().options(url).done(function (res) {
-                        ComponentStore.commit('setOptions', res);
-                    });
-                },
-                startSaving: function (state) {
-                    state.ui.status = 'saving';
-                },
-                endSaving: function (state, obj) {
-                    if (obj) {
-                        state.obj.updated_at = obj.updated_at;
-                        state.obj.href = obj.href;
-                    }
-                    setTimeout(function () {
-                        state.ui.status = 'saved';
-                        setTimeout(function () { state.ui.status = 'waiting'; }, 2000);
-                    }, 1000);
-                },
-                logError: function (state, err) {
-                    state.ui.error = err.responseJSON;
-                    state.ui.status = 'error';
-                    setTimeout(function () {
-                        state.ui.status = 'waiting';
-                    }, 15000);
-                }
-            }
-        });
+          var url = $('#urls').data('base') + state.objId + '/';
+          ajax().get(url).done(function (res) {
+            state.obj = res;
+          });
+        },
+        fetchOptions: function (state) {
+          if (state.objId == 0) var url = $('#urls').data('base');
+          else var url = $('#urls').data('base') + state.objId + '/';
+          ajax().options(url).done(function (res) {
+            ComponentStore.commit('setOptions', res);
+          });
+        },
+        startSaving: function (state) {
+          state.ui.status = 'saving';
+        },
+        endSaving: function (state, obj) {
+          if (obj) {
+            state.obj.updated_at = obj.updated_at;
+            state.obj.href = obj.href;
+          }
+          setTimeout(function () {
+            state.ui.status = 'saved';
+            setTimeout(function () { state.ui.status = 'waiting'; }, 2000);
+          }, 1000);
+        },
+        logError: function (state, err) {
+          state.ui.error = err.responseJSON;
+          state.ui.status = 'error';
+          setTimeout(function () {
+            state.ui.status = 'waiting';
+          }, 15000);
+        }
+      }
+    });
 
-        var EditorView = {
-            template: '#v-editor',
-            computed: _.extend(
-                Vuex.mapState(['obj']),
-                Vuex.mapGetters(['isNew']), {
-            }),
-            methods: {
-                createObj: function (e) {
-                    this.$store.commit('createObject');
-                },
-                updateObj: function (e) {
-                    if (this.isNew) return;
+    var EditorView = {
+      template: '#v-editor',
+      computed: _.extend(
+        Vuex.mapState(['obj']),
+        Vuex.mapGetters(['isNew']), {
+      }),
+      methods: {
+        createObj: function (e) {
+          this.$store.commit('createObject');
+        },
+        updateObj: function (e) {
+          if (this.isNew) return;
 
-                    var store = this.$store;
-                    store.commit('startSaving');
-                    ajax().put(this.obj.url, this.obj).done(function (res) {
-                        store.commit('endSaving', res);
-                    }).fail(function (err) {
-                        store.commit('logError', err);
-                    });
-                }
-            },
-            created: function () {
-                EventHub.$on('form-updated', this.updateObj);
-            }
-        };
+          var store = this.$store;
+          store.commit('startSaving');
+          ajax().put(this.obj.url, this.obj).done(function (res) {
+            store.commit('endSaving', res);
+          }).fail(function (err) {
+            store.commit('logError', err);
+          });
+        }
+      },
+      created: function () {
+        EventHub.$on('form-updated', this.updateObj);
+      }
+    };
 
-        var PreviewView = {
-            template: '#v-preview',
-            computed: _.extend(
-                Vuex.mapState(['obj']), {
-            })
-        };
+    var PreviewView = {
+      template: '#v-preview',
+      computed: _.extend(
+        Vuex.mapState(['obj']), {
+      })
+    };
 
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'editor',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    components: {
-                        default: EditorView,
-                        preview: PreviewView
-                    }
-                }
-            ]
-        });
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'editor',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          components: {
+            default: EditorView,
+            preview: PreviewView
+          }
+        }
+      ]
+    });
 
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            computed: _.extend(
-                Vuex.mapState(['obj', 'ui']),
-                Vuex.mapGetters(['isNew']), {
-            }),
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchOptions'),
-                    this.$store.commit('fetchObject')
-                );
-            }
-        });
-    </script>
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      computed: _.extend(
+        Vuex.mapState(['obj', 'ui']),
+        Vuex.mapGetters(['isNew']), {
+      }),
+      created: function () {
+        $.when(
+          this.$store.commit('fetchOptions'),
+          this.$store.commit('fetchObject')
+        );
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

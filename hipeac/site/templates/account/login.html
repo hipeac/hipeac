@@ -8,35 +8,35 @@
 {% block head_title %}Log in - {{ block.super }}{% endblock %}
 
 {% block content %}
-    <h4 class="header">Log in</h4>
+  <h4 class="header">Log in</h4>
 
-    {% get_providers as socialaccount_providers %}
-    {% if socialaccount_providers %}
-        <p class="content">Please sign in with one of your existing third party accounts.</p>
-        <ul class="socialaccounts text-center pl-4">
-            {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-        </ul>
-        <hr>
-        {% include "socialaccount/snippets/login_extra.html" %}
-        <p>Or, <a href="{{ signup_url }}">sign up</a> for a {{ site.name }} account and sign in below:</p>
-    {% else %}
-        <p class="content">If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.</p>
-    {% endif %}
-
-    <form method="post" action="{% url 'account_login' %}{% if next %}?next={{ next }}{% endif %}">
-        {% csrf_token %}
-        {{ form | crispy }}
-        {% if redirect_field_value %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
-        <button type="submit" class="btn btn-primary mt-3">Log in</button>
-    </form>
-
+  {% get_providers as socialaccount_providers %}
+  {% if socialaccount_providers %}
+    <p class="content">Please sign in with one of your existing third party accounts.</p>
+    <ul class="socialaccounts text-center pl-4">
+      {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    </ul>
     <hr>
-    <p class="mb-0">
-        <a href="{% url 'account_reset_password' %}">
-            <i class="material-icons sm mr-2">help_outline</i>
-            <small>Forgot your password?</small>
-        </a>
-    </p>
+    {% include "socialaccount/snippets/login_extra.html" %}
+    <p>Or, <a href="{{ signup_url }}">sign up</a> for a {{ site.name }} account and sign in below:</p>
+  {% else %}
+    <p class="content">If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.</p>
+  {% endif %}
+
+  <form method="post" action="{% url 'account_login' %}{% if next %}?next={{ next }}{% endif %}">
+    {% csrf_token %}
+    {{ form | crispy }}
+    {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <button type="submit" class="btn btn-primary mt-3">Log in</button>
+  </form>
+
+  <hr>
+  <p class="mb-0">
+    <a href="{% url 'account_reset_password' %}">
+      <i class="material-icons sm mr-2">help_outline</i>
+      <small>Forgot your password?</small>
+    </a>
+  </p>
 {% endblock %}

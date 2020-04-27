@@ -2,41 +2,41 @@
 
 
 <script type="text/x-template" id="{{ id }}">
-    <div>
-        <display-lg>{{ blck.header }}</display-lg>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <a href="mailto:communication@hipeac.net" target="_blank" class="btn btn-sm btn-primary btn-block"><i class="material-icons mr-1">create</i>Want to contribute?</a>
-                    <hr class="my-4">
-                    <div class="marked catchphrase-first">{{ blck.content | markdown }}</div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
-                <div class="hipeac-card" v-if="magazines.length">
-                    {% verbatim %}
-                    <small class="float-right text-light-grey">{{ magazines[0].publication_date | moment }}</small>
-                    <display-sm class="mb-3">Latest issue</display-sm>
-                    <a :href="magazines[0].download_url" @click="sendEvent(magazines[0])" target="_blank">
-                        <img :src="magazines[0].images[0].image" class="rounded">
-                    </a>
-                    {% endverbatim %}
-                </div>
-                <skeleton-box v-else></skeleton-box>
-            </div>
+  <div>
+    <display-lg>{{ blck.header }}</display-lg>
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <a href="mailto:communication@hipeac.net" target="_blank" class="btn btn-sm btn-primary btn-block"><i class="material-icons mr-1">create</i>Want to contribute?</a>
+          <hr class="my-4">
+          <div class="marked catchphrase-first">{{ blck.content | markdown }}</div>
         </div>
-        <div class="row" v-if="magazines.length">
-            <div class="col-12 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <div class="row compact-gutter">
-                        <div v-for="magazine in magazines" :key="magazine.id" class="col col-6 col-md-3 col-lg-2">
-                            <a :href="magazine.download_url" @click="sendEvent(magazine)" target="_blank">
-                                <img :src="magazine.images[0].image" class="rounded w-100">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+        <div class="hipeac-card" v-if="magazines.length">
+          {% verbatim %}
+          <small class="float-right text-light-grey">{{ magazines[0].publication_date | moment }}</small>
+          <display-sm class="mb-3">Latest issue</display-sm>
+          <a :href="magazines[0].download_url" @click="sendEvent(magazines[0])" target="_blank">
+            <img :src="magazines[0].images[0].image" class="rounded">
+          </a>
+          {% endverbatim %}
         </div>
+        <skeleton-box v-else></skeleton-box>
+      </div>
     </div>
+    <div class="row" v-if="magazines.length">
+      <div class="col-12 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <div class="row compact-gutter">
+            <div v-for="magazine in magazines" :key="magazine.id" class="col col-6 col-md-3 col-lg-2">
+              <a :href="magazine.download_url" @click="sendEvent(magazine)" target="_blank">
+                <img :src="magazine.images[0].image" class="rounded w-100">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </script>

@@ -1,20 +1,20 @@
 <script type="text/x-template" id="{{ id }}">
-    <div>
-        <div class="row">
-            <div class="col-12">
-                <div class="hipeac-card">
-                    <div class="row">
-                        <div class="col-12 col-md-6 d-flex align-items-stretch">
-                            <catchphrase>Delegates from the sponsoring organisations whose current job vacancies are <strong>shown below will be at #{{ hashtag }}</strong>. This is your opportunity to meet and talk with research groups and companies looking for skilled and specialist researchers like you.</catchphrase>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex align-items-stretch">
-                            <p class="m-0">This event will give all delegates multiple opportunities for networking in the form of evening receptions, exhibition sessions and lunch and coffee breaks. Registered delegates can also see the names and contact details of all other delegates on the 'Attendees' tab. The HiPEAC Jobs service will be present throughout the event to share details of all the vacancies currently advertised though the network and to help put recruiters and researchers in touch.</p>
-                        </div>
-                    </div>
-                </div>
+  <div>
+    <div class="row">
+      <div class="col-12">
+        <div class="hipeac-card">
+          <div class="row">
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+              <catchphrase>Delegates from the sponsoring organisations whose current job vacancies are <strong>shown below will be at #{{ hashtag }}</strong>. This is your opportunity to meet and talk with research groups and companies looking for skilled and specialist researchers like you.</catchphrase>
             </div>
+            <div class="col-12 col-md-6 d-flex align-items-stretch">
+              <p class="m-0">This event will give all delegates multiple opportunities for networking in the form of evening receptions, exhibition sessions and lunch and coffee breaks. Registered delegates can also see the names and contact details of all other delegates on the 'Attendees' tab. The HiPEAC Jobs service will be present throughout the event to share details of all the vacancies currently advertised though the network and to help put recruiters and researchers in touch.</p>
+            </div>
+          </div>
         </div>
-        <job-cards v-if="jobs.length" :items="jobs" :ids="ids"></job-cards>
-        <skeleton-cards v-else></skeleton-cards>
+      </div>
     </div>
+    <job-cards v-if="jobs.length" :items="jobs" :ids="ids"></job-cards>
+    <skeleton-cards v-else></skeleton-cards>
+  </div>
 </script>

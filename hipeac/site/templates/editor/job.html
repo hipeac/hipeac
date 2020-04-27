@@ -6,119 +6,119 @@
 {% block subtitle %}
 <span id="extraData" data-email="{{ user.email }}"></span>
 {% verbatim %}
-    <span v-cloak>
-        <small v-if="isNew">Add new position</small>
-        <small v-else>Position <span v-if="obj">#{{ obj.id }} / {{ obj.title }}</span></small>
-    </span>
+  <span v-cloak>
+    <small v-if="isNew">Add new position</small>
+    <small v-else>Position <span v-if="obj">#{{ obj.id }} / {{ obj.title }}</span></small>
+  </span>
 {% endverbatim %}
 {% endblock %}
 
 {% block extra_tabs %}
-    <li v-cloak v-if="isNew" class="nav-item">
-        <a href="{% url 'jobs' %}" class="nav-link"><i class="material-icons mr-1">arrow_back</i>Back to jobs portal</a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'jobs_management' %}" class="nav-link"><i class="material-icons mr-1">list</i>My job posts</a>
-    </li>
+  <li v-cloak v-if="isNew" class="nav-item">
+    <a href="{% url 'jobs' %}" class="nav-link"><i class="material-icons mr-1">arrow_back</i>Back to jobs portal</a>
+  </li>
+  <li class="nav-item">
+    <a href="{% url 'jobs_management' %}" class="nav-link"><i class="material-icons mr-1">list</i>My job posts</a>
+  </li>
 {% endblock %}
 
 {% block obj %}
-    <script>
-        var OBJ = {
-            id: null,
-            title: '',
-            institution: null,
-            project: null,
-            positions: 1,
-            email: $('#extraData').data('email'),
-            employment_type: {
-                id: 16,
-                value: 'Full-time'
-            },
-            country: {
-                code: 'BE',
-                name: 'Belgium'
-            },
-            application_areas: [],
-            topics: [],
-            links: [{
-                type: 'website',
-                url: ''
-            }],
-            deadline: moment().add(60, 'days').format('YYYY-MM-DD'),
-            add_to_euraxess: true
-        };
-    </script>
+  <script>
+    var OBJ = {
+      id: null,
+      title: '',
+      institution: null,
+      project: null,
+      positions: 1,
+      email: $('#extraData').data('email'),
+      employment_type: {
+        id: 16,
+        value: 'Full-time'
+      },
+      country: {
+        code: 'BE',
+        name: 'Belgium'
+      },
+      application_areas: [],
+      topics: [],
+      links: [{
+        type: 'website',
+        url: ''
+      }],
+      deadline: moment().add(60, 'days').format('YYYY-MM-DD'),
+      add_to_euraxess: true
+    };
+  </script>
 {% endblock %}
 
 {% block vue_templates %}
 {% verbatim %}
-    <script type="text/x-template" id="v-editor">
-        <div v-if="obj" class="hipeac-card">
-            <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
-            <display-sm>Please add a detailed description of the job offer and fill in the Career level section of the form to target specific HiPEAC users. The job will be automatically shared on HiPEAC's Twitter and LinkedIn accounts.</display-sm>
-            <form class="mt-4">
-                <autocomplete-popup v-model="obj.institution" type="institution" field="institution"></autocomplete-popup>
-                <autocomplete-popup v-model="obj.project" type="project" field="project"></autocomplete-popup>
-                <custom-input v-model.trim="obj.title" type="text" field="title"></custom-input>
-                <div class="form-row">
-                    <div class="col-12 col-md-6">
-                        <metadata-select v-model="obj.employment_type" type="employment_type" field="employment_type"></metadata-select>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <custom-input v-model.trim="obj.positions" type="number" field="positions" :default="1"></custom-input>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-12 col-md-6">
-                        <custom-input v-model.trim="obj.location" type="text" field="location"></custom-input>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <country-select v-model="obj.country" select-property="code" field="country" :force="true"></country-select>
-                    </div>
-                </div>
-                <metadata-checkboxes v-model="obj.career_levels" type="job_position" field="career_levels"></metadata-checkboxes>
-                <div class="form-row">
-                    <div class="col-12 col-md-6">
-                        <date-input v-model.trim="obj.deadline" field="deadline"></date-input>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <custom-input v-model.trim="obj.email" type="email" field="email"></custom-input>
-                    </div>
-                </div>
-                <markdown-textarea v-model.trim="obj.description" field="description" help="Preferably, do not include a contact email directly in the description; use the `Contact email` field instead."></markdown-textarea>
-                <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
-                <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
-                <link-fieldset v-model="obj.links" field="links" help="Please include the link to the website for the candidates to apply. One or more external sources related to this job application can be added (e.g. LinkedIn). If no link is provided applications will be forwarded directly to the contact e-mail."></link-fieldset>
-            </form>
-            <hr class="my-4">
-            <p class="float-right socialaccounts ml-4 mb-2">{% endverbatim %}<img src="{% static 'images/euraxess.png' %}">{% verbatim %}</p>
-            <div class="form-check text-sm">
-                <label class="form-check-label pointer"><checkbox-input v-model="obj.add_to_euraxess"></checkbox-input><strong>Add this job to EURAXESS. </strong> Backed by the European Union, member states and associated countries, <a href="https://euraxess.ec.europa.eu/" taregt="_blank">EURAXESS</a> supports researcher mobility and career development, while enhancing scientific collaboration between Europe and the world.</label>
-            </div>
-            <hr class="my-4">
-            <button v-if="isNew" @click="createObj" class="btn btn-success btn-block">
-                <icon name="save" class="sm mr-1"></icon>Add new position</button>
-            <automatic-updates v-else></automatic-updates>
+  <script type="text/x-template" id="v-editor">
+    <div v-if="obj" class="hipeac-card">
+      <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
+      <display-sm>Please add a detailed description of the job offer and fill in the Career level section of the form to target specific HiPEAC users. The job will be automatically shared on HiPEAC's Twitter and LinkedIn accounts.</display-sm>
+      <form class="mt-4">
+        <autocomplete-popup v-model="obj.institution" type="institution" field="institution"></autocomplete-popup>
+        <autocomplete-popup v-model="obj.project" type="project" field="project"></autocomplete-popup>
+        <custom-input v-model.trim="obj.title" type="text" field="title"></custom-input>
+        <div class="form-row">
+          <div class="col-12 col-md-6">
+            <metadata-select v-model="obj.employment_type" type="employment_type" field="employment_type"></metadata-select>
+          </div>
+          <div class="col-12 col-md-6">
+            <custom-input v-model.trim="obj.positions" type="number" field="positions" :default="1"></custom-input>
+          </div>
         </div>
-    </script>
-    <script type="text/x-template" id="v-preview">
-        <div v-if="obj" class="row">
-            <div class="col-12">
-                <button class="btn btn-sm btn-outline-primary mb-4 mr-2" disabled>Type: {{ obj.employment_type.value }}</button>
-                <button class="btn btn-sm btn-outline-danger mb-4" disabled>Deadline: {{ obj.deadline | moment }}</button>
-                <h2 class="display-lg mb-4">{{ obj.title }}</h2>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
-                    </div>
-                </div>
-                <marked :text="obj.description"></marked>
-            </div>
+        <div class="form-row">
+          <div class="col-12 col-md-6">
+            <custom-input v-model.trim="obj.location" type="text" field="location"></custom-input>
+          </div>
+          <div class="col-12 col-md-6">
+            <country-select v-model="obj.country" select-property="code" field="country" :force="true"></country-select>
+          </div>
         </div>
-    </script>
+        <metadata-checkboxes v-model="obj.career_levels" type="job_position" field="career_levels"></metadata-checkboxes>
+        <div class="form-row">
+          <div class="col-12 col-md-6">
+            <date-input v-model.trim="obj.deadline" field="deadline"></date-input>
+          </div>
+          <div class="col-12 col-md-6">
+            <custom-input v-model.trim="obj.email" type="email" field="email"></custom-input>
+          </div>
+        </div>
+        <markdown-textarea v-model.trim="obj.description" field="description" help="Preferably, do not include a contact email directly in the description; use the `Contact email` field instead."></markdown-textarea>
+        <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
+        <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
+        <link-fieldset v-model="obj.links" field="links" help="Please include the link to the website for the candidates to apply. One or more external sources related to this job application can be added (e.g. LinkedIn). If no link is provided applications will be forwarded directly to the contact e-mail."></link-fieldset>
+      </form>
+      <hr class="my-4">
+      <p class="float-right socialaccounts ml-4 mb-2">{% endverbatim %}<img src="{% static 'images/euraxess.png' %}">{% verbatim %}</p>
+      <div class="form-check text-sm">
+        <label class="form-check-label pointer"><checkbox-input v-model="obj.add_to_euraxess"></checkbox-input><strong>Add this job to EURAXESS. </strong> Backed by the European Union, member states and associated countries, <a href="https://euraxess.ec.europa.eu/" taregt="_blank">EURAXESS</a> supports researcher mobility and career development, while enhancing scientific collaboration between Europe and the world.</label>
+      </div>
+      <hr class="my-4">
+      <button v-if="isNew" @click="createObj" class="btn btn-success btn-block">
+        <icon name="save" class="sm mr-1"></icon>Add new position</button>
+      <automatic-updates v-else></automatic-updates>
+    </div>
+  </script>
+  <script type="text/x-template" id="v-preview">
+    <div v-if="obj" class="row">
+      <div class="col-12">
+        <button class="btn btn-sm btn-outline-primary mb-4 mr-2" disabled>Type: {{ obj.employment_type.value }}</button>
+        <button class="btn btn-sm btn-outline-danger mb-4" disabled>Deadline: {{ obj.deadline | moment }}</button>
+        <h2 class="display-lg mb-4">{{ obj.title }}</h2>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
+          </div>
+          <div class="col-12 col-md-6">
+            <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
+          </div>
+        </div>
+        <marked :text="obj.description"></marked>
+      </div>
+    </div>
+  </script>
 {% endverbatim %}
 {% endblock %}

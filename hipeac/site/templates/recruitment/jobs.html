@@ -9,224 +9,224 @@
 {% block subtitle %}{{ flatpage.title }}{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'about'}" class="nav-link">About</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'jobs'}" class="nav-link" exact>Open positions</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'careerCenter'}" class="nav-link">Career center</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'internships'}" class="nav-link">Internship programme</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="https://twitter.com/hipeacjobs" target="_blank"><span is="twitter-icon"></span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'jobs_feed' %}" target="_blank"><i class="material-icons">rss_feed</i></a>
-    </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'about'}" class="nav-link">About</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'jobs'}" class="nav-link" exact>Open positions</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'careerCenter'}" class="nav-link">Career center</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'internships'}" class="nav-link">Internship programme</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://twitter.com/hipeacjobs" target="_blank"><span is="twitter-icon"></span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'jobs_feed' %}" target="_blank"><i class="material-icons">rss_feed</i></a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-job-list="{% url 'v1:job-list' %}" data-magazine-list="{% url 'v1:magazine-list' %}" class="container">
-        <div is="router-view"></div>
-    </div>
+  <div id="urls" data-job-list="{% url 'v1:job-list' %}" data-magazine-list="{% url 'v1:magazine-list' %}" class="container">
+    <div is="router-view"></div>
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' display=flatpage.content blck=flatpage.page.tbs.about recruiters=flatpage.page.tbs.about_recruiters students=flatpage.page.tbs.about_students %}
-    {% include './v-career-center.html' with id='v-career-center' blck=flatpage.page.tbs.career_center acaces=flatpage.page.tbs.career_center_acaces csw=flatpage.page.tbs.career_center_csw magazine=flatpage.page.tbs.career_center_magazine other=flatpage.page.tbs.career_center_other stem=flatpage.page.tbs.career_center_stem wall=flatpage.page.tbs.career_center_wall %}
-    {% include './v-internships.html' with id='v-internships' blck=flatpage.page.tbs.internships recruiters=flatpage.page.tbs.internships_recruiters students=flatpage.page.tbs.internships_students %}
-    {% include './v-jobs.html' with id='v-jobs' %}
+  {% include './v-about.html' with id='v-about' display=flatpage.content blck=flatpage.page.tbs.about recruiters=flatpage.page.tbs.about_recruiters students=flatpage.page.tbs.about_students %}
+  {% include './v-career-center.html' with id='v-career-center' blck=flatpage.page.tbs.career_center acaces=flatpage.page.tbs.career_center_acaces csw=flatpage.page.tbs.career_center_csw magazine=flatpage.page.tbs.career_center_magazine other=flatpage.page.tbs.career_center_other stem=flatpage.page.tbs.career_center_stem wall=flatpage.page.tbs.career_center_wall %}
+  {% include './v-internships.html' with id='v-internships' blck=flatpage.page.tbs.internships recruiters=flatpage.page.tbs.internships_recruiters students=flatpage.page.tbs.internships_students %}
+  {% include './v-jobs.html' with id='v-jobs' %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js file carousel %}
-    <script src="{% static 'vendor/jcarousel@0.3.8/jquery.jcarousel.min.js' %}"></script>
-    <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
+  <script src="{% static 'vendor/jcarousel@0.3.8/jquery.jcarousel.min.js' %}"></script>
+  <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
 {% endcompress %}
 {% compress js inline %}
-    <script>
-        var Store = new Vuex.Store({
-            state: {
-                jobs: [],
-                magazines: [],
-            },
-            mutations: {
-                fetchJobs: function (state) {
-                    ajax().get($('#urls').data('job-list')).done(function (res) {
-                        state.jobs = Object.freeze(mapper().jobs(res));
-                    });
-                },
-                fetchMagazines: function (state) {
-                    ajax().get($('#urls').data('magazine-list')).done(function (res) {
-                        state.magazines = Object.freeze(res);
-                    });
-                }
-            }
-        });
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        jobs: [],
+        magazines: [],
+      },
+      mutations: {
+        fetchJobs: function (state) {
+          ajax().get($('#urls').data('job-list')).done(function (res) {
+            state.jobs = Object.freeze(mapper().jobs(res));
+          });
+        },
+        fetchMagazines: function (state) {
+          ajax().get($('#urls').data('magazine-list')).done(function (res) {
+            state.magazines = Object.freeze(res);
+          });
+        }
+      }
+    });
 
-        var AboutView = {
-            template: '#v-about',
-            computed: _.extend(
-                Vuex.mapState(['jobs']), {
-                institutions: function () {
-                    if (!this.jobs) return [];
+    var AboutView = {
+      template: '#v-about',
+      computed: _.extend(
+        Vuex.mapState(['jobs']), {
+        institutions: function () {
+          if (!this.jobs) return [];
 
-                    var institutions = _.uniq(_.filter(_.pluck(this.jobs, 'institution'), function (obj) {
-                        return obj;
-                    }), function (obj) {
-                        return obj.id;
-                    });
+          var institutions = _.uniq(_.filter(_.pluck(this.jobs, 'institution'), function (obj) {
+            return obj;
+          }), function (obj) {
+            return obj.id;
+          });
 
-                    return _.shuffle(_.reject(institutions, function (obj) {
-                        return obj.images == null;
-                    }));
-                }
-            }),
-            methods: {
-                filterJobs: function (val) {
-                    this.$router.push({name: 'jobs', query: { q: val}});
-                }
-            },
-            created: function () {
-                EventHub.$on('carousel-query-sent', this.filterJobs);
-            }
-        };
+          return _.shuffle(_.reject(institutions, function (obj) {
+            return obj.images == null;
+          }));
+        }
+      }),
+      methods: {
+        filterJobs: function (val) {
+          this.$router.push({name: 'jobs', query: { q: val}});
+        }
+      },
+      created: function () {
+        EventHub.$on('carousel-query-sent', this.filterJobs);
+      }
+    };
 
-        var CareerCenterView = {
-            template: '#v-career-center',
-            computed: _.extend(
-                Vuex.mapState(['magazines']), {
-                latestMagazines: function () {
-                    return _.first(this.magazines, 8);
-                }
-            }),
-            created: function () {
-                this.$store.commit('fetchMagazines');
-            }
-        };
+    var CareerCenterView = {
+      template: '#v-career-center',
+      computed: _.extend(
+        Vuex.mapState(['magazines']), {
+        latestMagazines: function () {
+          return _.first(this.magazines, 8);
+        }
+      }),
+      created: function () {
+        this.$store.commit('fetchMagazines');
+      }
+    };
 
-        var InternshipsView = {
-            template: '#v-internships'
-        };
+    var InternshipsView = {
+      template: '#v-internships'
+    };
 
-        var JobsView = {
-            template: '#v-jobs',
-            data: function () {
-                return {
-                    q: '',
-                    sorting: storage().get(LS_JOBS_SORTING, 'deadline') || 'deadline',
-                    filters: {
-                        internshipsOnly: false,
-                        careerLevels: [],
-                        topics: []
-                    }
-                }
-            },
-            computed: _.extend(
-                Vuex.mapState(['jobs']), {
-                sortedJobs: function () {
-                    var sorting = this.sorting;
-                    if (sorting == 'created_at') return _.sortBy(this.jobs, sorting).reverse();
-                    else return this.jobs;
-                },
-                filteredIds: function () {
-                    var filters = this.filters;
-                    var filteredItems = filterIntersection(filters.topics, this.sortedJobs, 'topicIds');
-                    filteredItems = filterIntersection(filters.careerLevels, filteredItems, 'careerLevelIds');
+    var JobsView = {
+      template: '#v-jobs',
+      data: function () {
+        return {
+          q: '',
+          sorting: storage().get(LS_JOBS_SORTING, 'deadline') || 'deadline',
+          filters: {
+            internshipsOnly: false,
+            careerLevels: [],
+            topics: []
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['jobs']), {
+        sortedJobs: function () {
+          var sorting = this.sorting;
+          if (sorting == 'created_at') return _.sortBy(this.jobs, sorting).reverse();
+          else return this.jobs;
+        },
+        filteredIds: function () {
+          var filters = this.filters;
+          var filteredItems = filterIntersection(filters.topics, this.sortedJobs, 'topicIds');
+          filteredItems = filterIntersection(filters.careerLevels, filteredItems, 'careerLevelIds');
 
-                    if (filters.internshipsOnly) {
-                        filteredItems = filteredItems.filter(function (obj) {
-                            return obj.internship;
-                        });
-                    }
+          if (filters.internshipsOnly) {
+            filteredItems = filteredItems.filter(function (obj) {
+              return obj.internship;
+            });
+          }
 
-                    return _.pluck(filterMultiple(filteredItems, this.q), 'id');
-                },
-                careerLevels: function () {
-                    return extractMetadata(this.jobs, 'career_levels');
-                },
-                topics: function () {
-                    return extractMetadata(this.jobs, 'topics');
-                }
-            }),
-            methods: {
-                updateQuery: function (val) {
-                    this.q = val;
-                },
-                resetFilters: function () {
-                    this.filters.internshipsOnly = false;
-                    this.filters.careerLevels = [];
-                    this.filters.topics = [];
-                }
-            },
-            watch: {
-                'sorting': function (val, oldVal) {
-                    storage().set(LS_JOBS_SORTING, val, 90);
-                }
-            },
-            created: function () {
-                EventHub.$on('query-changed', this.updateQuery);
-            }
-        };
+          return _.pluck(filterMultiple(filteredItems, this.q), 'id');
+        },
+        careerLevels: function () {
+          return extractMetadata(this.jobs, 'career_levels');
+        },
+        topics: function () {
+          return extractMetadata(this.jobs, 'topics');
+        }
+      }),
+      methods: {
+        updateQuery: function (val) {
+          this.q = val;
+        },
+        resetFilters: function () {
+          this.filters.internshipsOnly = false;
+          this.filters.careerLevels = [];
+          this.filters.topics = [];
+        }
+      },
+      watch: {
+        'sorting': function (val, oldVal) {
+          storage().set(LS_JOBS_SORTING, val, 90);
+        }
+      },
+      created: function () {
+        EventHub.$on('query-changed', this.updateQuery);
+      }
+    };
 
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'about',
-                    path: '/recruitment/',
-                    pathToRegexpOptions: {strict: true},
-                    component: AboutView
-                },
-                {
-                    name: 'careerCenter',
-                    path: '/career-center/',
-                    pathToRegexpOptions: {strict: true},
-                    component: CareerCenterView
-                },
-                {
-                    name: 'internships',
-                    path: '/internships/',
-                    pathToRegexpOptions: {strict: true},
-                    component: InternshipsView
-                },
-                {
-                    name: 'jobs',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    component: JobsView
-                }
-            ],
-            scrollBehavior: function () {
-                return {x: 0, y: 0};
-            }
-        });
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'about',
+          path: '/recruitment/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'careerCenter',
+          path: '/career-center/',
+          pathToRegexpOptions: {strict: true},
+          component: CareerCenterView
+        },
+        {
+          name: 'internships',
+          path: '/internships/',
+          pathToRegexpOptions: {strict: true},
+          component: InternshipsView
+        },
+        {
+          name: 'jobs',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: JobsView
+        }
+      ],
+      scrollBehavior: function () {
+        return {x: 0, y: 0};
+      }
+    });
 
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            beforeCreate: function () {
-                if (this.$route.path.substr(-1) != '/') {
-                    this.$router.push({'path': this.$route.path + '/'});
-                }
-            },
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchJobs')
-                );
-            }
-        });
-    </script>
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      },
+      created: function () {
+        $.when(
+          this.$store.commit('fetchJobs')
+        );
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

@@ -6,20 +6,20 @@
 {% block head_title %}Sign up - {{ block.super }}{% endblock %}
 
 {% block content %}
-    <h4 class="header">Sign up</h4>
-    <form id="signup_form" method="post" action="{% url 'account_signup' %}">
-        {% csrf_token %}
-        {{ form | crispy }}
-        {% if redirect_field_value %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
-        {% endif %}
-        <button type="submit" class="btn btn-primary mt-2">Sign up</button>
-    </form>
-    <hr>
-    <p class="mb-0">
-        <a href="{{ login_url }}">
-            <i class="material-icons sm mr-1">vpn_key</i>
-            <small>Have an account? Log in</small>
-        </a>
-    </p>
+  <h4 class="header">Sign up</h4>
+  <form id="signup_form" method="post" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    {{ form | crispy }}
+    {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+    {% endif %}
+    <button type="submit" class="btn btn-primary mt-2">Sign up</button>
+  </form>
+  <hr>
+  <p class="mb-0">
+    <a href="{{ login_url }}">
+      <i class="material-icons sm mr-1">vpn_key</i>
+      <small>Have an account? Log in</small>
+    </a>
+  </p>
 {% endblock %}

@@ -10,683 +10,683 @@
 {% block subtitle %}{{ event }}{% endblock %}
 
 {% block submenu %}
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
+  </li>
+  {% if event.is_ready %}
     <li class="nav-item">
-        <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
+      <a is="router-link" :to="{name: 'schedule'}" class="nav-link">Schedule</a>
     </li>
-    {% if event.is_ready %}
-        <li class="nav-item">
-            <a is="router-link" :to="{name: 'schedule'}" class="nav-link">Schedule</a>
-        </li>
-    {% else %}
-        {% if event.type == 'conference' %}
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'call-papers'}" class="nav-link">Call for papers</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'call-sessions'}" class="nav-link">Call for workshops</a>
-            </li>
-        {% else %}
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'call-sessions'}" class="nav-link">Call for thematic sessions</a>
-            </li>
-        {% endif %}
-    {% endif %}
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
-    </li>
+  {% else %}
     {% if event.type == 'conference' %}
-        <li class="nav-item">
-            <a is="router-link" :to="{name: 'jobs'}" class="nav-link">Recruitment</a>
-        </li>
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'call-papers'}" class="nav-link">Call for papers</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'call-sessions'}" class="nav-link">Call for workshops</a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'call-sessions'}" class="nav-link">Call for thematic sessions</a>
+      </li>
     {% endif %}
-    {% if user.is_authenticated %}
-        <li v-if="user.isRegistered" class="nav-item" v-cloak>
-            <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
-        </li>
-        {% if event.is_open_for_registration or event.is_finished %}
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'registration'}" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>
-            </li>
-        {% endif %}
+  {% endif %}
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
+  </li>
+  {% if event.type == 'conference' %}
+    <li class="nav-item">
+      <a is="router-link" :to="{name: 'jobs'}" class="nav-link">Recruitment</a>
+    </li>
+  {% endif %}
+  {% if user.is_authenticated %}
+    <li v-if="user.isRegistered" class="nav-item" v-cloak>
+      <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
+    </li>
+    {% if event.is_open_for_registration or event.is_finished %}
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'registration'}" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>
+      </li>
     {% endif %}
-    {% if event.type == 'conference' and not event.is_finished %}
-        <li class="nav-item">
-            <a is="router-link" :to="{name: 'industry'}" class="nav-link">
-                <icon name="label_important" class="mr-1"></icon>For industry</a>
-        </li>
-    {% endif %}
-    {% if event.hashtag %}
-        <li class="nav-item">
-            <a href="https://twitter.com/search?q=%23{{ event.hashtag }}" class="nav-link" target="_blank">
-                <span is="twitter-icon" v-tooltip="'#{{ event.hashtag }}'"></span>
-            </a>
-        </li>
-    {% endif %}
+  {% endif %}
+  {% if event.type == 'conference' and not event.is_finished %}
+    <li class="nav-item">
+      <a is="router-link" :to="{name: 'industry'}" class="nav-link">
+        <icon name="label_important" class="mr-1"></icon>For industry</a>
+    </li>
+  {% endif %}
+  {% if event.hashtag %}
+    <li class="nav-item">
+      <a href="https://twitter.com/search?q=%23{{ event.hashtag }}" class="nav-link" target="_blank">
+        <span is="twitter-icon" v-tooltip="'#{{ event.hashtag }}'"></span>
+      </a>
+    </li>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" class="container">
-        <div is="router-view"></div>
-    </div>
+  <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-articles-url="{% url 'v1:event-articles' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" class="container">
+    <div is="router-view"></div>
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' event_id=event.id%}
-    {% include './v-attendees.html' with id='v-attendees' %}
-    {% include './v-industry.html' with id='v-industry' %}
-    {% include './v-jobs.html' with id='v-jobs' hashtag=event.hashtag %}
-    {% include './v-registration.html' with id='v-registration' %}
-    {% include './v-session.html' with id='v-session' %}
-    {% include './v-venue.html' with id='v-venue' %}
+  {% include './v-about.html' with id='v-about' event_id=event.id%}
+  {% include './v-attendees.html' with id='v-attendees' %}
+  {% include './v-industry.html' with id='v-industry' %}
+  {% include './v-jobs.html' with id='v-jobs' hashtag=event.hashtag %}
+  {% include './v-registration.html' with id='v-registration' %}
+  {% include './v-session.html' with id='v-session' %}
+  {% include './v-venue.html' with id='v-venue' %}
 
-    {% if event.is_ready %}
-        {% include './v-schedule.html' with id='v-schedule' %}
-    {% else %}
-        {% if event.type == 'conference' %}
-            {% include './v-call-papers.html' with id='v-call-papers' %}
-            {% include './v-call-workshops.html' with id='v-call-sessions' event=event %}
-        {% endif %}
-        {% include './v-call-sessions.html' with id='v-call-sessions' event=event %}
+  {% if event.is_ready %}
+    {% include './v-schedule.html' with id='v-schedule' %}
+  {% else %}
+    {% if event.type == 'conference' %}
+      {% include './v-call-papers.html' with id='v-call-papers' %}
+      {% include './v-call-workshops.html' with id='v-call-sessions' event=event %}
     {% endif %}
+    {% include './v-call-sessions.html' with id='v-call-sessions' event=event %}
+  {% endif %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js file event %}
-    <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
-    <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
-    <script>
-        var Store = new Vuex.Store({
-            state: {
-                user: {
-                    isAuthenticated: USER_IS_AUTHENTICATED,
-                    isRegistered: false
-                },
-                event: null,
-                committees: [],
-                jobs: [],
-                attendees: [],
-                session: null,
-                keynotes: [],
-                papers: [],
-                posters: []
-            },
-            mutations: {
-                fetchCommittees: function (state) {
-                    ajax().get($('#urls').data('committees-url')).done(function (res) {
-                        state.committees = Object.freeze(res);
-                    });
-                },
-                fetchEvent: function (state) {
-                    ajax().get($('#urls').data('event-url')).done(function (res) {
-                        state.event = Object.freeze(mapper().events([res])[0]);
-                    });
-                },
-                fetchJobs: function (state) {
-                    ajax().get($('#urls').data('jobs-url')).done(function (res) {
-                        state.jobs = Object.freeze(mapper().jobs(res));
-                    });
-                },
-                fetchRegistrations: function (state) {
-                    if (!USER_IS_AUTHENTICATED) return;
-                    ajax().get($('#urls').data('registrations-url')).done(function (res) {
-                        state.user.isRegistered = true;
-                        state.attendees = Object.freeze(mapper().users(res.map(function (obj) {
-                            return obj.user;
-                        })));
-                    });
-                },
-                fetchKeynotes: function (state) {
-                    ajax().get($('#urls').data('sessions-url'), {session_type: 69}).done(function (res) {
-                        state.keynotes = Object.freeze(mapper().sessions(res));
-                    });
-                },
-                fetchPapers: function (state) {
-                    ajax().get($('#urls').data('sessions-url'), {session_type: 71}).done(function (res) {
-                        state.papers = Object.freeze(mapper().sessions(res));
-                    });
-                },
-                fetchPosters: function (state) {
-                    ajax().get($('#urls').data('sessions-url'), {session_type: 73}).done(function (res) {
-                        state.posters = Object.freeze(mapper().sessions(res));
-                    });
-                },
-                updateSession: function (state, data) {
-                    state.session = Object.freeze(data);
-                }
-            }
-        });
-
-        var AboutView = {
-            template: '#v-about',
-            computed: _.extend(
-                Vuex.mapState(['user', 'event', 'articles', 'committees']), {
-            })
-        };
-
-        var AttendeesView = {
-            template: '#v-attendees',
-            computed: _.extend(
-                Vuex.mapState(['user', 'event', 'attendees']), {
-                institutions: function () {
-                    return extractInstitutions(this.attendees);
-                }
-            })
-        };
-
-        var CallPapersView = {
-            template: '#v-call-papers',
-            computed: _.extend(
-                Vuex.mapState(['user', 'event']), {
-            })
-        };
-
-        var CallSessionsView = {
-            template: '#v-call-sessions',
-            computed: _.extend(
-                Vuex.mapState(['user', 'event']), {
-            })
-        };
-
-        var IndustryView = {
-            template: '#v-industry',
-            computed: _.extend(
-                Vuex.mapState(['event']), {
-            })
-        };
-
-        var IndustryMainView = {
-            template: '#v-industry-main',
-            computed: _.extend(
-                Vuex.mapState(['event']), {
-            })
-        };
-
-        var IndustrySponsorshipView = {
-            template: '#v-industry-sponsorship',
-            computed: _.extend(
-                Vuex.mapState(['event']), {
-            })
-        };
-
-        var JobsView = {
-            template: '#v-jobs',
-            computed: _.extend(
-                Vuex.mapState(['jobs']), {
-                ids: function () {
-                    return _.pluck(this.jobs, 'id');
-                }
-            })
-        };
-
-        var RegistrationView = {
-            template: '#v-registration',
-            data: function () {
-                return {
-                    endpoint: $('#urls').data('registration-url'),
-                    registrationIsNew: false,
-                    registration: null
-                };
-            },
-            computed: _.extend(
-                Vuex.mapState(['user', 'event']), {
-                emptySessions: function () {
-                    if (!this.registration) return true;
-                    return this.registration.sessions.length == 0;
-                }
-            }),
-            methods: {
-                fetchRegistration: function () {
-                    var self = this;
-
-                    if (!this.event) {
-                        setTimeout(function () { self.fetchRegistration(); }, 25);
-                        return;
-                    };
-
-                    ajax().get(this.endpoint, {event_id: this.event.id}).done(function (res) {
-                        if (res.results.length == 1) {
-                            self.registrationIsNew = false;
-                            self.registration = mapper().registrations(res.results)[0];
-                        } else {
-                            self.registrationIsNew = true;
-                            self.registration = {
-                                event: self.event.id,
-                                sessions: [],
-                                posters: []
-                            };
-                        }
-                    });
-                },
-                save: function () {
-                    var self = this;
-                    EventHub.$emit('loading', true);
-                    if (this.registrationIsNew) {
-                        ajax().post(this.endpoint, this.registration).done(function (res) {
-                            self.registration = mapper().registrations([res])[0];
-                            self.registrationIsNew = false;
-                            EventHub.$emit('loading', false);
-                        });
-                    } else {
-                        ajax().put(this.registration.url, this.registration).done(function (res) {
-                            self.registration = mapper().registrations([res])[0];
-                            EventHub.$emit('loading', false);
-                        });
-                    }
-                },
-                addPoster: function () {
-                    this.registration.posters.push({
-                        'title': '(not set)',
-                        'authors': '',
-                        'type': 'student',
-                    });
-                },
-                removePoster: function (poster) {
-                    this.registration.posters = _.without(this.registration.posters, poster);
-                }
-            },
-            mounted: function () {
-                this.fetchRegistration();
-            }
-        };
-
-        var ScheduleView = {
-            template: '#v-schedule',
-            computed: _.extend(
-                Vuex.mapState(['event']), {
-            })
-        };
-
-        var ScheduleMainView = {
-            template: '#v-schedule-main',
-            data: function () {
-                return {
-                    q: '',
-                    filters: {
-                        applicationAreas: [],
-                        topics: [],
-                        sessionTypes: []
-                    }
-                }
-            },
-            computed: _.extend(
-                Vuex.mapState(['event', 'keynotes']), {
-                keynotesDict: function () {
-                    if (!this.keynotes.length) return {};
-                    return _.indexBy(this.keynotes, 'id');
-                },
-                filteredSessionIds: function () {
-                    if (!this.event) return [];
-                    var filters = this.filters;
-                    var filteredItems = filterIntersection(filters.topics, this.event.sessions, 'topicIds');
-                    filteredItems = filterIntersection(filters.applicationAreas, filteredItems, 'applicationAreaIds');
-                    if (filters.sessionTypes.length > 0) {
-                        filteredItems = _.filter(filteredItems, function (obj) {
-                            return _.contains(filters.sessionTypes, obj.session_type.id);
-                        });
-                    }
-                    return _.pluck(filterMultiple(filteredItems, this.q), 'id');
-                },
-                applicationAreas: function () {
-                    if (!this.event) return [];
-                    return extractMetadata(this.event.sessions, 'application_areas');
-                },
-                sessionTypes: function () {
-                    if (!this.event) return [];
-                    return _.toArray(
-                        _.indexBy(_.pluck(this.event.sessions, 'session_type'), 'id')
-                    ).sort(function (a, b) {
-                        return sort().int(a.position, b.position);
-                    });
-                },
-                topics: function () {
-                    if (!this.event) return [];
-                    return extractMetadata(this.event.sessions, 'topics');
-                }
-            }),
-            methods: {
-                updateQuery: function (val) {
-                    this.q = val;
-                },
-                resetFilters: function () {
-                    this.filters.applicationAreas = [];
-                    this.filters.topics = [];
-                    this.filters.sessionTypes = [];
-                }
-            },
-            created: function () {
-                this.$store.commit('fetchKeynotes');
-                EventHub.$on('query-changed', this.updateQuery);
-                EventHub.$on('carousel-query-sent', this.updateQuery);
-            }
-        };
-
-        var ScheduleKeynotesView = {
-            template: '#v-schedule-keynotes',
-            computed: _.extend(
-                Vuex.mapState(['event', 'keynotes']), {
-            }),
-            created: function () {
-                this.$store.commit('fetchKeynotes');
-            }
-        };
-
-        var SchedulePapersView = {
-            template: '#v-schedule-papers',
-            computed: _.extend(
-                Vuex.mapState(['event', 'papers']), {
-            }),
-            created: function () {
-                this.$store.commit('fetchPapers');
-            }
-        };
-
-        var SchedulePostersView = {
-            template: '#v-schedule-posters',
-            computed: _.extend(
-                Vuex.mapState(['event', 'posters']), {
-            }),
-            created: function () {
-                this.$store.commit('fetchPosters');
-            }
-        };
-
-        var SessionModalView = {
-            template: '#v-session',
-            data: function () {
-                return {
-                    active: true,
-                };
-            },
-            props: ['sessionId'],
-            computed: _.extend(
-                Vuex.mapState(['user', 'event', 'session']), {
-            }),
-            methods: {
-                fetchSession: function () {
-                    var self = this;
-                    if (this.event) {
-                        self.$store.commit('updateSession', _.findWhere(this.event.sessions, {id: this.sessionId}));
-                    }
-                    api().getSession(this.sessionId).done(function (res) {
-                        self.$store.commit('updateSession', mapper().sessions([res])[0]);
-                    });
-                },
-                closeModal: function () {
-                    $(this.$refs['modal']).modal('hide');
-                }
-            },
-            beforeRouteEnter: function (to, from, next) {
-                next(function (self) {
-                    var ref = (from.name) ? from : {name: 'schedule', params: {}};
-                    $(self.$refs['modal']).on('hide.bs.modal', function (e) {
-                        self.$router.push(ref);
-                    }).modal('show');
-                });
-            },
-            beforeRouteLeave: function (to, from, next) {
-                next();
-                var store = this.$store;
-                var modal = $(this.$refs['modal']);
-                setTimeout(function () {
-                    if (modal.hasClass('show')) modal.modal('hide');
-                    store.commit('updateSession', null);
-                }, 50);
-            },
-            mounted: function () {
-                this.fetchSession();
-            }
-        };
-
-        var SessionMainView = {
-            template: '#v-session-main',
-            computed: _.extend(
-                Vuex.mapState(['event', 'session']), {
-            }),
-        };
-
-        var SessionBioView = {
-            template: '#v-session-bio',
-            computed: _.extend(
-                Vuex.mapState(['event', 'session']), {
-            }),
-        };
-
-        var SessionProgramView = {
-            template: '#v-session-program',
-            computed: _.extend(
-                Vuex.mapState(['event', 'session']), {
-            }),
-        };
-
-        var SessionAttendeesView = {
-            template: '#v-session-attendees',
-            data: function () {
-                return {
-                    attendees: []
-                }
-            },
-            props: ['sessionId'],
-            computed: _.extend(
-                Vuex.mapState(['user', 'event', 'session']), {
-                institutions: function () {
-                    return extractInstitutions(this.attendees);
-                }
-            }),
-            methods: {
-                fetchAttendees: function () {
-                    var self = this;
-                    api().getSessionAttendees(this.sessionId).done(function (res) {
-                        self.attendees = Object.freeze(mapper().users(res.map(function (obj) {
-                            return obj.user;
-                        })));
-                    });
-                }
-            },
-            created: function () {
-                this.fetchAttendees();
-            }
-        };
-
-        var SessionDownloadsView = {
-            template: '#v-session-downloads',
-            computed: _.extend(
-                Vuex.mapState(['event', 'session']), {
-            }),
-        };
-
-        var VenueView = {
-            template: '#v-venue',
-            computed: _.extend(
-                Vuex.mapState(['event']), {
-            })
-        };
-
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'about',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    component: AboutView
-                },
-                {
-                    name: 'attendees',
-                    path: '/attendees/',
-                    pathToRegexpOptions: {strict: true},
-                    component: AttendeesView
-                },
-                {
-                    name: 'call-papers',
-                    path: '/call-for-papers/',
-                    pathToRegexpOptions: {strict: true},
-                    component: CallPapersView
-                },
-                {
-                    name: 'call-sessions',
-                    path: '/call/',
-                    pathToRegexpOptions: {strict: true},
-                    component: CallSessionsView
-                },
-                {
-                    path: '/industry/',
-                    pathToRegexpOptions: {strict: true},
-                    component: IndustryView,
-                    children: [
-                        {
-                            name: 'industry',
-                            path: '',
-                            pathToRegexpOptions: {strict: true},
-                            component: IndustryMainView
-                        },
-                        {
-                            name: 'sponsorship',
-                            path: 'sponsorship/',
-                            pathToRegexpOptions: {strict: true},
-                            component: IndustrySponsorshipView
-                        }
-                    ]
-                },
-                {
-                    name: 'jobs',
-                    path: '/recruitment/',
-                    pathToRegexpOptions: {strict: true},
-                    component: JobsView
-                },
-                {
-                    name: 'registration',
-                    path: '/registration/',
-                    pathToRegexpOptions: {strict: true},
-                    component: RegistrationView
-                },
-                {
-                    path: '/schedule/',
-                    pathToRegexpOptions: {strict: true},
-                    component: ScheduleView,
-                    children: [
-                        {
-                            name: 'schedule',
-                            path: '',
-                            pathToRegexpOptions: {strict: true},
-                            component: ScheduleMainView
-                        },
-                        {
-                            name: 'keynotes',
-                            path: 'keynotes/',
-                            pathToRegexpOptions: {strict: true},
-                            component: ScheduleKeynotesView
-                        },
-                        {
-                            name: 'papers',
-                            path: 'paper-track/',
-                            pathToRegexpOptions: {strict: true},
-                            component: SchedulePapersView
-                        },
-                        {
-                            name: 'posters',
-                            path: 'posters/',
-                            pathToRegexpOptions: {strict: true},
-                            component: SchedulePostersView
-                        },
-                        {
-                            path: 'sessions/:sessionId/',
-                            pathToRegexpOptions: {strict: true},
-                            components: {
-                                default: ScheduleMainView,
-                                modal: SessionModalView
-                            },
-                            props: {
-                                default: true,
-                                modal: true
-                            },
-                            children: [
-                                {
-                                    name: 'session',
-                                    path: '',
-                                    pathToRegexpOptions: {strict: true},
-                                    component: SessionMainView,
-                                    props: true
-                                },
-                                {
-                                    name: 'sessionBio',
-                                    path: 'bio/',
-                                    pathToRegexpOptions: {strict: true},
-                                    component: SessionBioView
-                                },
-                                {
-                                    name: 'sessionProgram',
-                                    path: 'program/',
-                                    pathToRegexpOptions: {strict: true},
-                                    component: SessionProgramView
-                                },
-                                {
-                                    name: 'sessionAttendees',
-                                    path: 'attendees/',
-                                    pathToRegexpOptions: {strict: true},
-                                    component: SessionAttendeesView,
-                                    props: true
-                                },
-                                {
-                                    name: 'sessionDownloads',
-                                    path: 'downloads/',
-                                    pathToRegexpOptions: {strict: true},
-                                    component: SessionDownloadsView,
-                                    props: true
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    name: 'venue',
-                    path: '/venue/',
-                    pathToRegexpOptions: {strict: true},
-                    component: VenueView
-                }
-            ]
-        });
-
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            computed: _.extend(
-                Vuex.mapState(['user', 'event', 'jobs']), {
-            }),
-            beforeCreate: function () {
-                if (this.$route.path.substr(-1) != '/') {
-                    this.$router.push({'path': this.$route.path + '/'});
-                }
-            },
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchEvent'),
-                    this.$store.commit('fetchCommittees'),
-                    this.$store.commit('fetchRegistrations'),
-                    this.$store.commit('fetchJobs')
-                );
-            }
-        });
-    </script>
-{% endcompress %}
-    <script type="application/ld+json">{% spaceless_json %}
-        {
-            "@context": "http://schema.org",
-            "@type": "Event",
-            "name": "{{ event }}",
-            "description": "{{ event.presentation | truncate }}",
-            "url": "{{ request.build_absolute_uri }}",
-            "startDate": "{{ event.start_date | date:'c' }}",
-            "endDate": "{{ event.end_date | date:'c' }}",
-            {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
-            "location": {
-                "@type": "Place",
-                "address": {
-                    "@type": "PostalAddress",
-                    "addressLocality": "{{ event.city }}",
-                    "addressCountry": "{{ event.country.code }}"
-                }
-            }
+  <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
+  <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        user: {
+          isAuthenticated: USER_IS_AUTHENTICATED,
+          isRegistered: false
+        },
+        event: null,
+        committees: [],
+        jobs: [],
+        attendees: [],
+        session: null,
+        keynotes: [],
+        papers: [],
+        posters: []
+      },
+      mutations: {
+        fetchCommittees: function (state) {
+          ajax().get($('#urls').data('committees-url')).done(function (res) {
+            state.committees = Object.freeze(res);
+          });
+        },
+        fetchEvent: function (state) {
+          ajax().get($('#urls').data('event-url')).done(function (res) {
+            state.event = Object.freeze(mapper().events([res])[0]);
+          });
+        },
+        fetchJobs: function (state) {
+          ajax().get($('#urls').data('jobs-url')).done(function (res) {
+            state.jobs = Object.freeze(mapper().jobs(res));
+          });
+        },
+        fetchRegistrations: function (state) {
+          if (!USER_IS_AUTHENTICATED) return;
+          ajax().get($('#urls').data('registrations-url')).done(function (res) {
+            state.user.isRegistered = true;
+            state.attendees = Object.freeze(mapper().users(res.map(function (obj) {
+              return obj.user;
+            })));
+          });
+        },
+        fetchKeynotes: function (state) {
+          ajax().get($('#urls').data('sessions-url'), {session_type: 69}).done(function (res) {
+            state.keynotes = Object.freeze(mapper().sessions(res));
+          });
+        },
+        fetchPapers: function (state) {
+          ajax().get($('#urls').data('sessions-url'), {session_type: 71}).done(function (res) {
+            state.papers = Object.freeze(mapper().sessions(res));
+          });
+        },
+        fetchPosters: function (state) {
+          ajax().get($('#urls').data('sessions-url'), {session_type: 73}).done(function (res) {
+            state.posters = Object.freeze(mapper().sessions(res));
+          });
+        },
+        updateSession: function (state, data) {
+          state.session = Object.freeze(data);
         }
-    {% endspaceless_json %}</script>
+      }
+    });
+
+    var AboutView = {
+      template: '#v-about',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'articles', 'committees']), {
+      })
+    };
+
+    var AttendeesView = {
+      template: '#v-attendees',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'attendees']), {
+        institutions: function () {
+          return extractInstitutions(this.attendees);
+        }
+      })
+    };
+
+    var CallPapersView = {
+      template: '#v-call-papers',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      })
+    };
+
+    var CallSessionsView = {
+      template: '#v-call-sessions',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      })
+    };
+
+    var IndustryView = {
+      template: '#v-industry',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var IndustryMainView = {
+      template: '#v-industry-main',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var IndustrySponsorshipView = {
+      template: '#v-industry-sponsorship',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var JobsView = {
+      template: '#v-jobs',
+      computed: _.extend(
+        Vuex.mapState(['jobs']), {
+        ids: function () {
+          return _.pluck(this.jobs, 'id');
+        }
+      })
+    };
+
+    var RegistrationView = {
+      template: '#v-registration',
+      data: function () {
+        return {
+          endpoint: $('#urls').data('registration-url'),
+          registrationIsNew: false,
+          registration: null
+        };
+      },
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+        emptySessions: function () {
+          if (!this.registration) return true;
+          return this.registration.sessions.length == 0;
+        }
+      }),
+      methods: {
+        fetchRegistration: function () {
+          var self = this;
+
+          if (!this.event) {
+            setTimeout(function () { self.fetchRegistration(); }, 25);
+            return;
+          };
+
+          ajax().get(this.endpoint, {event_id: this.event.id}).done(function (res) {
+            if (res.results.length == 1) {
+              self.registrationIsNew = false;
+              self.registration = mapper().registrations(res.results)[0];
+            } else {
+              self.registrationIsNew = true;
+              self.registration = {
+                event: self.event.id,
+                sessions: [],
+                posters: []
+              };
+            }
+          });
+        },
+        save: function () {
+          var self = this;
+          EventHub.$emit('loading', true);
+          if (this.registrationIsNew) {
+            ajax().post(this.endpoint, this.registration).done(function (res) {
+              self.registration = mapper().registrations([res])[0];
+              self.registrationIsNew = false;
+              EventHub.$emit('loading', false);
+            });
+          } else {
+            ajax().put(this.registration.url, this.registration).done(function (res) {
+              self.registration = mapper().registrations([res])[0];
+              EventHub.$emit('loading', false);
+            });
+          }
+        },
+        addPoster: function () {
+          this.registration.posters.push({
+            'title': '(not set)',
+            'authors': '',
+            'type': 'student',
+          });
+        },
+        removePoster: function (poster) {
+          this.registration.posters = _.without(this.registration.posters, poster);
+        }
+      },
+      mounted: function () {
+        this.fetchRegistration();
+      }
+    };
+
+    var ScheduleView = {
+      template: '#v-schedule',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var ScheduleMainView = {
+      template: '#v-schedule-main',
+      data: function () {
+        return {
+          q: '',
+          filters: {
+            applicationAreas: [],
+            topics: [],
+            sessionTypes: []
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['event', 'keynotes']), {
+        keynotesDict: function () {
+          if (!this.keynotes.length) return {};
+          return _.indexBy(this.keynotes, 'id');
+        },
+        filteredSessionIds: function () {
+          if (!this.event) return [];
+          var filters = this.filters;
+          var filteredItems = filterIntersection(filters.topics, this.event.sessions, 'topicIds');
+          filteredItems = filterIntersection(filters.applicationAreas, filteredItems, 'applicationAreaIds');
+          if (filters.sessionTypes.length > 0) {
+            filteredItems = _.filter(filteredItems, function (obj) {
+              return _.contains(filters.sessionTypes, obj.session_type.id);
+            });
+          }
+          return _.pluck(filterMultiple(filteredItems, this.q), 'id');
+        },
+        applicationAreas: function () {
+          if (!this.event) return [];
+          return extractMetadata(this.event.sessions, 'application_areas');
+        },
+        sessionTypes: function () {
+          if (!this.event) return [];
+          return _.toArray(
+            _.indexBy(_.pluck(this.event.sessions, 'session_type'), 'id')
+          ).sort(function (a, b) {
+            return sort().int(a.position, b.position);
+          });
+        },
+        topics: function () {
+          if (!this.event) return [];
+          return extractMetadata(this.event.sessions, 'topics');
+        }
+      }),
+      methods: {
+        updateQuery: function (val) {
+          this.q = val;
+        },
+        resetFilters: function () {
+          this.filters.applicationAreas = [];
+          this.filters.topics = [];
+          this.filters.sessionTypes = [];
+        }
+      },
+      created: function () {
+        this.$store.commit('fetchKeynotes');
+        EventHub.$on('query-changed', this.updateQuery);
+        EventHub.$on('carousel-query-sent', this.updateQuery);
+      }
+    };
+
+    var ScheduleKeynotesView = {
+      template: '#v-schedule-keynotes',
+      computed: _.extend(
+        Vuex.mapState(['event', 'keynotes']), {
+      }),
+      created: function () {
+        this.$store.commit('fetchKeynotes');
+      }
+    };
+
+    var SchedulePapersView = {
+      template: '#v-schedule-papers',
+      computed: _.extend(
+        Vuex.mapState(['event', 'papers']), {
+      }),
+      created: function () {
+        this.$store.commit('fetchPapers');
+      }
+    };
+
+    var SchedulePostersView = {
+      template: '#v-schedule-posters',
+      computed: _.extend(
+        Vuex.mapState(['event', 'posters']), {
+      }),
+      created: function () {
+        this.$store.commit('fetchPosters');
+      }
+    };
+
+    var SessionModalView = {
+      template: '#v-session',
+      data: function () {
+        return {
+          active: true,
+        };
+      },
+      props: ['sessionId'],
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'session']), {
+      }),
+      methods: {
+        fetchSession: function () {
+          var self = this;
+          if (this.event) {
+            self.$store.commit('updateSession', _.findWhere(this.event.sessions, {id: this.sessionId}));
+          }
+          api().getSession(this.sessionId).done(function (res) {
+            self.$store.commit('updateSession', mapper().sessions([res])[0]);
+          });
+        },
+        closeModal: function () {
+          $(this.$refs['modal']).modal('hide');
+        }
+      },
+      beforeRouteEnter: function (to, from, next) {
+        next(function (self) {
+          var ref = (from.name) ? from : {name: 'schedule', params: {}};
+          $(self.$refs['modal']).on('hide.bs.modal', function (e) {
+            self.$router.push(ref);
+          }).modal('show');
+        });
+      },
+      beforeRouteLeave: function (to, from, next) {
+        next();
+        var store = this.$store;
+        var modal = $(this.$refs['modal']);
+        setTimeout(function () {
+          if (modal.hasClass('show')) modal.modal('hide');
+          store.commit('updateSession', null);
+        }, 50);
+      },
+      mounted: function () {
+        this.fetchSession();
+      }
+    };
+
+    var SessionMainView = {
+      template: '#v-session-main',
+      computed: _.extend(
+        Vuex.mapState(['event', 'session']), {
+      }),
+    };
+
+    var SessionBioView = {
+      template: '#v-session-bio',
+      computed: _.extend(
+        Vuex.mapState(['event', 'session']), {
+      }),
+    };
+
+    var SessionProgramView = {
+      template: '#v-session-program',
+      computed: _.extend(
+        Vuex.mapState(['event', 'session']), {
+      }),
+    };
+
+    var SessionAttendeesView = {
+      template: '#v-session-attendees',
+      data: function () {
+        return {
+          attendees: []
+        }
+      },
+      props: ['sessionId'],
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'session']), {
+        institutions: function () {
+          return extractInstitutions(this.attendees);
+        }
+      }),
+      methods: {
+        fetchAttendees: function () {
+          var self = this;
+          api().getSessionAttendees(this.sessionId).done(function (res) {
+            self.attendees = Object.freeze(mapper().users(res.map(function (obj) {
+              return obj.user;
+            })));
+          });
+        }
+      },
+      created: function () {
+        this.fetchAttendees();
+      }
+    };
+
+    var SessionDownloadsView = {
+      template: '#v-session-downloads',
+      computed: _.extend(
+        Vuex.mapState(['event', 'session']), {
+      }),
+    };
+
+    var VenueView = {
+      template: '#v-venue',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'about',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'attendees',
+          path: '/attendees/',
+          pathToRegexpOptions: {strict: true},
+          component: AttendeesView
+        },
+        {
+          name: 'call-papers',
+          path: '/call-for-papers/',
+          pathToRegexpOptions: {strict: true},
+          component: CallPapersView
+        },
+        {
+          name: 'call-sessions',
+          path: '/call/',
+          pathToRegexpOptions: {strict: true},
+          component: CallSessionsView
+        },
+        {
+          path: '/industry/',
+          pathToRegexpOptions: {strict: true},
+          component: IndustryView,
+          children: [
+            {
+              name: 'industry',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: IndustryMainView
+            },
+            {
+              name: 'sponsorship',
+              path: 'sponsorship/',
+              pathToRegexpOptions: {strict: true},
+              component: IndustrySponsorshipView
+            }
+          ]
+        },
+        {
+          name: 'jobs',
+          path: '/recruitment/',
+          pathToRegexpOptions: {strict: true},
+          component: JobsView
+        },
+        {
+          name: 'registration',
+          path: '/registration/',
+          pathToRegexpOptions: {strict: true},
+          component: RegistrationView
+        },
+        {
+          path: '/schedule/',
+          pathToRegexpOptions: {strict: true},
+          component: ScheduleView,
+          children: [
+            {
+              name: 'schedule',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: ScheduleMainView
+            },
+            {
+              name: 'keynotes',
+              path: 'keynotes/',
+              pathToRegexpOptions: {strict: true},
+              component: ScheduleKeynotesView
+            },
+            {
+              name: 'papers',
+              path: 'paper-track/',
+              pathToRegexpOptions: {strict: true},
+              component: SchedulePapersView
+            },
+            {
+              name: 'posters',
+              path: 'posters/',
+              pathToRegexpOptions: {strict: true},
+              component: SchedulePostersView
+            },
+            {
+              path: 'sessions/:sessionId/',
+              pathToRegexpOptions: {strict: true},
+              components: {
+                default: ScheduleMainView,
+                modal: SessionModalView
+              },
+              props: {
+                default: true,
+                modal: true
+              },
+              children: [
+                {
+                  name: 'session',
+                  path: '',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionMainView,
+                  props: true
+                },
+                {
+                  name: 'sessionBio',
+                  path: 'bio/',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionBioView
+                },
+                {
+                  name: 'sessionProgram',
+                  path: 'program/',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionProgramView
+                },
+                {
+                  name: 'sessionAttendees',
+                  path: 'attendees/',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionAttendeesView,
+                  props: true
+                },
+                {
+                  name: 'sessionDownloads',
+                  path: 'downloads/',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionDownloadsView,
+                  props: true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'venue',
+          path: '/venue/',
+          pathToRegexpOptions: {strict: true},
+          component: VenueView
+        }
+      ]
+    });
+
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'jobs']), {
+      }),
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      },
+      created: function () {
+        $.when(
+          this.$store.commit('fetchEvent'),
+          this.$store.commit('fetchCommittees'),
+          this.$store.commit('fetchRegistrations'),
+          this.$store.commit('fetchJobs')
+        );
+      }
+    });
+  </script>
+{% endcompress %}
+  <script type="application/ld+json">{% spaceless_json %}
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": "{{ event }}",
+      "description": "{{ event.presentation | truncate }}",
+      "url": "{{ request.build_absolute_uri }}",
+      "startDate": "{{ event.start_date | date:'c' }}",
+      "endDate": "{{ event.end_date | date:'c' }}",
+      {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
+      "location": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "{{ event.city }}",
+          "addressCountry": "{{ event.country.code }}"
+        }
+      }
+    }
+  {% endspaceless_json %}</script>
 {% endblock %}

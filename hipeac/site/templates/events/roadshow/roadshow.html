@@ -7,57 +7,57 @@
 {% block head_title %}{{ roadshow }} - {{ block.super }}{% endblock %}
 
 {% block subtitle %}
-    <span>HiPEAC Roadshow</span>
+  <span>HiPEAC Roadshow</span>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-2 pt-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-2 pt-4">
+      </div>
+      <div class="col-12 col-md-10">
+        <div class="hipeac-card">
+          <div class="row">
+            <div class="col-12 col-md-8 pr-md-5">
+              <small class="display display-sm">{{ roadshow.start_date }}</small>
+              <h2 class="display-lg mt-3 mb-4">{{ roadshow.name }}</h2>
+              <div class="marked">
+                {{ roadshow.description | markdown }}
+              </div>
             </div>
-            <div class="col-12 col-md-10">
-                <div class="hipeac-card">
-                    <div class="row">
-                        <div class="col-12 col-md-8 pr-md-5">
-                            <small class="display display-sm">{{ roadshow.start_date }}</small>
-                            <h2 class="display-lg mt-3 mb-4">{{ roadshow.name }}</h2>
-                            <div class="marked">
-                                {{ roadshow.description | markdown }}
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            {% include 'components/links.html' with title='More information' items=roadshow.get_ordered_links %}
-                        </div>
-                    </div>
-                </div>
+            <div class="col-12 col-md-4">
+              {% include 'components/links.html' with title='More information' items=roadshow.get_ordered_links %}
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    <script>
-        new Vue({
-            el: '#vue'
-        });
-    </script>
+  <script>
+    new Vue({
+      el: '#vue'
+    });
+  </script>
 {% endcompress %}
-    <script type="application/ld+json">{% spaceless_json %}
-        {
-            "@context": "http://schema.org",
-            "@type": "Event",
-            "name": "{{ roadshow.name }}",
-            "url": "{{ request.build_absolute_uri }}",
-            "startDate": "{{ roadshow.start_date | date:'c' }}",
-            "endDate": "{{ roadshow.end_date | date:'c' }}",
-            "location": {
-                "@type": "Place",
-                "address": {
-                    "@type": "PostalAddress",
-                    "addressCountry": "{{ roadshow.country.code }}"
-                }
-            }
+  <script type="application/ld+json">{% spaceless_json %}
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": "{{ roadshow.name }}",
+      "url": "{{ request.build_absolute_uri }}",
+      "startDate": "{{ roadshow.start_date | date:'c' }}",
+      "endDate": "{{ roadshow.end_date | date:'c' }}",
+      "location": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "{{ roadshow.country.code }}"
         }
-    {% endspaceless_json %}</script>
+      }
+    }
+  {% endspaceless_json %}</script>
 {% endblock %}

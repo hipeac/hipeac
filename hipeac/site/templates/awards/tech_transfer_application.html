@@ -9,42 +9,42 @@
 {% block subtitle %}HiPEAC Awards{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'awards' %}#/tech-transfer/"><i class="material-icons mr-1">arrow_back</i>Back to Tech Transfer awards</a>
-    </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'awards' %}#/tech-transfer/"><i class="material-icons mr-1">arrow_back</i>Back to Tech Transfer awards</a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-lg-8">
-                <div class="hipeac-card">
-                    <p class="mb-4">Please fill in all the information relative to your Technology Transfer experience and submit it for review. You will receive a confirmation email with a link in case you want to update the application later on (until {{ call.end_date|date:'N j' }}).</p>
-                    {% if form.errors %}
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <div class="alert alert-danger">
-                                    <strong>{{ error | escape }}</strong>
-                                </div>
-                            {% endfor %}
-                        {% endfor %}
-                        {% for error in form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                <strong>{{ error | escape }}</strong>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ form | crispy }}
-                        {% if object %}
-                            <button type="submit" class="btn btn-outline-success mt-3">Update</button>
-                        {% else %}
-                            <button type="submit" class="btn btn-outline-success mt-3">Submit</button>
-                        {% endif %}
-                    </form>
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col-lg-8">
+        <div class="hipeac-card">
+          <p class="mb-4">Please fill in all the information relative to your Technology Transfer experience and submit it for review. You will receive a confirmation email with a link in case you want to update the application later on (until {{ call.end_date|date:'N j' }}).</p>
+          {% if form.errors %}
+            {% for field in form %}
+              {% for error in field.errors %}
+                <div class="alert alert-danger">
+                  <strong>{{ error | escape }}</strong>
                 </div>
-            </div>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <div class="alert alert-danger">
+                <strong>{{ error | escape }}</strong>
+              </div>
+            {% endfor %}
+          {% endif %}
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form | crispy }}
+            {% if object %}
+              <button type="submit" class="btn btn-outline-success mt-3">Update</button>
+            {% else %}
+              <button type="submit" class="btn btn-outline-success mt-3">Submit</button>
+            {% endif %}
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 {% endblock %}

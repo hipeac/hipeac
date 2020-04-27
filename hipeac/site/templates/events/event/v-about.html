@@ -3,98 +3,98 @@
 
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div v-if="event">
-        <img v-if="event.images" :src="event.images.lg" class="border border-bottom-0 rounded-top w-100">
-        <div class="hipeac-card rounded-0 rounded-bottom">
-            <div class="row text-center text-sm text-secondary">
-                <div class="col-6 col-md-3 mb-3 mb-md-0">
-                    <router-link :to="{name: 'schedule'}" class="d-block inherit">
-                        <i class="material-icons lg mb-2">today</i><br>
-                        <strong>{{ event.datesStr }}</strong>
-                        <i class="material-icons sm ml-1">arrow_forward</i>
-                    </router-link>
-                </div>
-                <div class="col-6 col-md-3 mb-3 mb-md-0">
-                    <router-link :to="{name: 'venue'}" class="d-block inherit">
-                        <i class="material-icons lg mb-2">location_on</i><br>
-                        <strong>{{ event.city }}, {{ event.country.name }}</strong>
-                        <i class="material-icons sm ml-1">arrow_forward</i>
-                    </router-link>
-                </div>
-                <div class="col-6 col-md-3">
-                    <router-link v-if="event.sessions.length" :to="{name: 'schedule'}" class="d-block inherit">
-                        <i class="material-icons lg mb-2">category</i><br>
-                        <strong>{{ event.sessions.length }} sessions</strong>
-                    </router-link>
-                    <router-link v-else :to="{name: 'call-sessions'}" class="d-block inherit">
-                        <i class="material-icons lg mb-2">category</i><br>
-                        <span>Propose a session</span>
-                        <i class="material-icons sm ml-1">arrow_forward</i>
-                    </router-link>
-                </div>
-                <div v-if="event.registrations_count" class="col-6 col-md-3">
-                    <router-link v-if="user.isRegistered" :to="{name: 'attendees'}" class="d-block inherit">
-                        <i class="material-icons lg mb-2">people</i><br>
-                        <strong>
-                            <span>{{ event.registrations_round }}</span>
-                            <span v-if="event.registrations_round < event.registrations_count">+</span>
-                            <span> attendees</span>
-                        </strong>
-                        <i class="material-icons sm ml-1">arrow_forward</i>
-                    </router-link>
-                    <router-link v-else :to="{name: 'registration'}" class="d-block text-success no-underline">
-                        <i class="material-icons lg mb-2">edit</i><br>
-                        <strong>REGISTER</strong>
-                    </router-link>
-                </div>
-                <div v-else class="col"></div>
-            </div>
-            <div v-if="event.presentation">
-                <hr class="my-4">
-                <marked :text="event.presentation" class="catchphrase-first text-center"></marked>
-            </div>
+  <div v-if="event">
+    <img v-if="event.images" :src="event.images.lg" class="border border-bottom-0 rounded-top w-100">
+    <div class="hipeac-card rounded-0 rounded-bottom">
+      <div class="row text-center text-sm text-secondary">
+        <div class="col-6 col-md-3 mb-3 mb-md-0">
+          <router-link :to="{name: 'schedule'}" class="d-block inherit">
+            <i class="material-icons lg mb-2">today</i><br>
+            <strong>{{ event.datesStr }}</strong>
+            <i class="material-icons sm ml-1">arrow_forward</i>
+          </router-link>
         </div>
-        <div v-if="event && event.sponsors.length" class="hipeac-card">
-            <ul class="logos">
-                <li v-for="sponsor in event.sponsors" :key="sponsor.id">
-                    <a v-if="sponsor.institution" :href="sponsor.institution.href">
-                        <img :src="sponsor.institution.images.sm">
-                    </a>
-                    <a v-if="sponsor.project" :href="sponsor.project.href">
-                        <img :src="sponsor.project.images.sm">
-                    </a>
-                </li>
-            </ul>
+        <div class="col-6 col-md-3 mb-3 mb-md-0">
+          <router-link :to="{name: 'venue'}" class="d-block inherit">
+            <i class="material-icons lg mb-2">location_on</i><br>
+            <strong>{{ event.city }}, {{ event.country.name }}</strong>
+            <i class="material-icons sm ml-1">arrow_forward</i>
+          </router-link>
         </div>
-        <div class="row">
-            <div class="col-12 col-md-12 col-lg-6">
-                <article-card v-if="event" title="Event news" :eventId="event.id" :max="10" :show-more="false"></article-card>
-                <div class="hipeac-card" v-if="user.isRegistered && event.links.google_photos">
-                    {% endverbatim %}
-                        <img src="{% static 'images/google-photos.svg' %}" class="float-right logo-photos ml-3">
-                    {% verbatim %}
-                    <catchphrase class="mb-0">Share your pictures from this event <a :href="event.links.google_photos">here</a>!</catchphrase>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="hipeac-card text-sm" v-if="committees.length">
-                    <display-sm class="mb-3">Committees</display-sm>
-                    <hr>
-                    <div class="row">
-                        <div v-for="committee in committees" class="col-12 col-md-6">
-                            <strong>{{ committee.name }}</strong>
-                            <ul class="list-unstyled">
-                                <li v-for="user in committee.members">
-                                    <span>{{ user.profile.name }}</span>
-                                    <em v-if="user.profile.institution">, {{ user.profile.institution.short_name }}</em>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-6 col-md-3">
+          <router-link v-if="event.sessions.length" :to="{name: 'schedule'}" class="d-block inherit">
+            <i class="material-icons lg mb-2">category</i><br>
+            <strong>{{ event.sessions.length }} sessions</strong>
+          </router-link>
+          <router-link v-else :to="{name: 'call-sessions'}" class="d-block inherit">
+            <i class="material-icons lg mb-2">category</i><br>
+            <span>Propose a session</span>
+            <i class="material-icons sm ml-1">arrow_forward</i>
+          </router-link>
         </div>
-        <div is="videos-row" url="{% endverbatim %}{% url 'v1:event-videos' event_id %}{% verbatim %}"></div>
+        <div v-if="event.registrations_count" class="col-6 col-md-3">
+          <router-link v-if="user.isRegistered" :to="{name: 'attendees'}" class="d-block inherit">
+            <i class="material-icons lg mb-2">people</i><br>
+            <strong>
+              <span>{{ event.registrations_round }}</span>
+              <span v-if="event.registrations_round < event.registrations_count">+</span>
+              <span> attendees</span>
+            </strong>
+            <i class="material-icons sm ml-1">arrow_forward</i>
+          </router-link>
+          <router-link v-else :to="{name: 'registration'}" class="d-block text-success no-underline">
+            <i class="material-icons lg mb-2">edit</i><br>
+            <strong>REGISTER</strong>
+          </router-link>
+        </div>
+        <div v-else class="col"></div>
+      </div>
+      <div v-if="event.presentation">
+        <hr class="my-4">
+        <marked :text="event.presentation" class="catchphrase-first text-center"></marked>
+      </div>
     </div>
+    <div v-if="event && event.sponsors.length" class="hipeac-card">
+      <ul class="logos">
+        <li v-for="sponsor in event.sponsors" :key="sponsor.id">
+          <a v-if="sponsor.institution" :href="sponsor.institution.href">
+            <img :src="sponsor.institution.images.sm">
+          </a>
+          <a v-if="sponsor.project" :href="sponsor.project.href">
+            <img :src="sponsor.project.images.sm">
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-12 col-lg-6">
+        <article-card v-if="event" title="Event news" :eventId="event.id" :max="10" :show-more="false"></article-card>
+        <div class="hipeac-card" v-if="user.isRegistered && event.links.google_photos">
+          {% endverbatim %}
+            <img src="{% static 'images/google-photos.svg' %}" class="float-right logo-photos ml-3">
+          {% verbatim %}
+          <catchphrase class="mb-0">Share your pictures from this event <a :href="event.links.google_photos">here</a>!</catchphrase>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-6">
+        <div class="hipeac-card text-sm" v-if="committees.length">
+          <display-sm class="mb-3">Committees</display-sm>
+          <hr>
+          <div class="row">
+            <div v-for="committee in committees" class="col-12 col-md-6">
+              <strong>{{ committee.name }}</strong>
+              <ul class="list-unstyled">
+                <li v-for="user in committee.members">
+                  <span>{{ user.profile.name }}</span>
+                  <em v-if="user.profile.institution">, {{ user.profile.institution.short_name }}</em>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div is="videos-row" url="{% endverbatim %}{% url 'v1:event-videos' event_id %}{% verbatim %}"></div>
+  </div>
 {% endverbatim %}
 </script>

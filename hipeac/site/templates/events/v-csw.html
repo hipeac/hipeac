@@ -2,21 +2,21 @@
 
 
 <script type="text/x-template" id="{{ id }}">
-    <div>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <catchphrase class="mb-4">{{ blck.header }}</catchphrase>
-                    <div class="marked">{{ blck.content | markdown }}</div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
-                <loading v-if="!groupedEvents"></loading>
-                <div v-else class="hipeac-card">
-                    <event-list :items="groupedEvents.csw"></event-list>
-                </div>
-            </div>
+  <div>
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <catchphrase class="mb-4">{{ blck.header }}</catchphrase>
+          <div class="marked">{{ blck.content | markdown }}</div>
         </div>
-        <quotes-carousel-row types="csw"></quotes-carousel-row>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+        <loading v-if="!groupedEvents"></loading>
+        <div v-else class="hipeac-card">
+          <event-list :items="groupedEvents.csw"></event-list>
+        </div>
+      </div>
     </div>
+    <quotes-carousel-row types="csw"></quotes-carousel-row>
+  </div>
 </script>

@@ -9,61 +9,61 @@
 {% block subtitle %}{{ article.get_type_display }}{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a class="nav-link" href="{{ article.get_parent_url }}"><i class="material-icons mr-1">arrow_back</i>Back</a>
-    </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ article.get_parent_url }}"><i class="material-icons mr-1">arrow_back</i>Back</a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-2 pt-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-2 pt-4">
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="hipeac-card">
+          <div class="row">
+            <div class="col-12">
+              <small class="display-sm">{{ article.publication_date }}</small>
+              <h2 class="display-lg mt-3 mb-4">{{ article.title }}</h2>
+              <div class="marked catchphrase mb-4">{{ article.excerpt | markdown }}</div>
+              <div class="marked">
+                {{ article.content | markdown }}
+              </div>
             </div>
-            <div class="col-12 col-md-8">
-                <div class="hipeac-card">
-                    <div class="row">
-                        <div class="col-12">
-                            <small class="display-sm">{{ article.publication_date }}</small>
-                            <h2 class="display-lg mt-3 mb-4">{{ article.title }}</h2>
-                            <div class="marked catchphrase mb-4">{{ article.excerpt | markdown }}</div>
-                            <div class="marked">
-                                {{ article.content | markdown }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    <script>
-        new Vue({
-            el: '#vue'
-        });
-    </script>
+  <script>
+    new Vue({
+      el: '#vue'
+    });
+  </script>
 {% endcompress %}
 {% endblock %}
 
 {% block structured_data %}
-    <meta name="twitter:site" content="@hipeac">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" property="og:title" content="{{ article.title }}">
-    <meta name="twitter:description" property="og:description" content="{{ article.excerpt | truncate }}">
-    <meta property="og:type" content="website">
-    {% if article.website %}
-        <meta property="og:see_also" content="{{ article.website }}">
-    {% endif %}
-    <script type="application/ld+json">{% spaceless_json %}
-        {
-            "@context": "http://schema.org",
-            "@type": "Article",
-            "title": "{{ article.title }}",
-            "description": "{{ article.excerpt | truncate }}",
-            "dateCreated": "{{ article.release_date | date:'c' }}",
-            "url": "{{ request.build_absolute_uri }}"
-        }
-    {% endspaceless_json %}</script>
+  <meta name="twitter:site" content="@hipeac">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" property="og:title" content="{{ article.title }}">
+  <meta name="twitter:description" property="og:description" content="{{ article.excerpt | truncate }}">
+  <meta property="og:type" content="website">
+  {% if article.website %}
+    <meta property="og:see_also" content="{{ article.website }}">
+  {% endif %}
+  <script type="application/ld+json">{% spaceless_json %}
+    {
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "title": "{{ article.title }}",
+      "description": "{{ article.excerpt | truncate }}",
+      "dateCreated": "{{ article.release_date | date:'c' }}",
+      "url": "{{ request.build_absolute_uri }}"
+    }
+  {% endspaceless_json %}</script>
 {% endblock %}

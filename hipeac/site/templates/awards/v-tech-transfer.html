@@ -2,61 +2,61 @@
 
 
 <script type="text/x-template" id="{{ id }}">
-    <div>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="hipeac-card">
-                    <catchphrase class="mb-4">{{ blck.header }}</catchphrase>
-                    <div class="marked">{{ blck.content | markdown }}</div>
-            {% verbatim %}
-                </div>
-            </div>
-            <div v-if="years" class="col-12 col-md-6 col-lg-8">
-                <ul class="nav nav-tabs d-flex w-100">
-                    <li v-if="call" class="nav-item">
-                        <router-link :to="{name: 'tech-transfer', params: {year: 'call'}}" class="nav-link">
-                            <strong>Current call</strong>
-                        </router-link>
-                    </li>
-                    <li v-for="year in years.slice(0, 5)" :key="year" class="nav-item">
-                        <router-link :to="{name: 'tech-transfer', params: {year: year}}" class="nav-link">{{ year }}</router-link>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link text-primary dropdown-toggle text-nowrap pointer" id="yearsMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span>Previous years</span>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="yearsMenuButton">
-                            <router-link v-for="year in years.slice(5)" :key="year" :to="{name: 'tech-transfer', params: {year: year}}" class="dropdown-item">{{ year }}</router-link>
-                        </div>
-                    </li>
-                    <!-- <li class="nav-item ml-auto">
-                        <a href="" class="nav-link"><icon name="insert_chart_outlined" class="sm text-success"></icon></a>
-                    </li>-->
-                </ul>
-                <div v-if="call" v-show="year == 'call'"class="hipeac-card after-tabs">
-                    <catchphrase class="mb-3">Deadline: {{ call.end_date | moment }}</catchphrase>
-                    {% endverbatim %}
-                        <p><a href="{% url 'techtransfer_create' %}" class="btn btn-success">Submit your application</a></p>
-                    {% verbatim %}
-                    <p class="text-secondary">An application has to be formally linked to HiPEAC (via a member, affiliated member or affiliated PhD student who has to be the key person in the technology transfer).</p>
-                </div>
-                <div v-if="selectedTechTransfers.length" class="hipeac-card after-tabs">
-                    <small class="text-light-grey float-right">{{ selectedTechTransfers.length }} tech transfers</small>
-                    <display-sm class="mb-3">{{ selectedTechTransfers[0].call }}</display-sm>
-                    <table class="table table-sm">
-                        <tr v-for="item in selectedTechTransfers" :key="item.id">
-                            <td><icon name="compare_arrows" class="sm"></icon></td>
-                            <td>{{ item.title }} <small class="text-secondary">{{ item.team_string }}</small></td>
-                            <td class="text-right align-middle pr-0">
-                                <a v-if="item.awarded_summary" href="#" target="_blank">
-                                    <i class="material-icons sm">flip_to_front</i>
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            {% endverbatim %}
-            </div>
+  <div>
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="hipeac-card">
+          <catchphrase class="mb-4">{{ blck.header }}</catchphrase>
+          <div class="marked">{{ blck.content | markdown }}</div>
+      {% verbatim %}
         </div>
+      </div>
+      <div v-if="years" class="col-12 col-md-6 col-lg-8">
+        <ul class="nav nav-tabs d-flex w-100">
+          <li v-if="call" class="nav-item">
+            <router-link :to="{name: 'tech-transfer', params: {year: 'call'}}" class="nav-link">
+              <strong>Current call</strong>
+            </router-link>
+          </li>
+          <li v-for="year in years.slice(0, 5)" :key="year" class="nav-item">
+            <router-link :to="{name: 'tech-transfer', params: {year: year}}" class="nav-link">{{ year }}</router-link>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link text-primary dropdown-toggle text-nowrap pointer" id="yearsMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span>Previous years</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="yearsMenuButton">
+              <router-link v-for="year in years.slice(5)" :key="year" :to="{name: 'tech-transfer', params: {year: year}}" class="dropdown-item">{{ year }}</router-link>
+            </div>
+          </li>
+          <!-- <li class="nav-item ml-auto">
+            <a href="" class="nav-link"><icon name="insert_chart_outlined" class="sm text-success"></icon></a>
+          </li>-->
+        </ul>
+        <div v-if="call" v-show="year == 'call'"class="hipeac-card after-tabs">
+          <catchphrase class="mb-3">Deadline: {{ call.end_date | moment }}</catchphrase>
+          {% endverbatim %}
+            <p><a href="{% url 'techtransfer_create' %}" class="btn btn-success">Submit your application</a></p>
+          {% verbatim %}
+          <p class="text-secondary">An application has to be formally linked to HiPEAC (via a member, affiliated member or affiliated PhD student who has to be the key person in the technology transfer).</p>
+        </div>
+        <div v-if="selectedTechTransfers.length" class="hipeac-card after-tabs">
+          <small class="text-light-grey float-right">{{ selectedTechTransfers.length }} tech transfers</small>
+          <display-sm class="mb-3">{{ selectedTechTransfers[0].call }}</display-sm>
+          <table class="table table-sm">
+            <tr v-for="item in selectedTechTransfers" :key="item.id">
+              <td><icon name="compare_arrows" class="sm"></icon></td>
+              <td>{{ item.title }} <small class="text-secondary">{{ item.team_string }}</small></td>
+              <td class="text-right align-middle pr-0">
+                <a v-if="item.awarded_summary" href="#" target="_blank">
+                  <i class="material-icons sm">flip_to_front</i>
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      {% endverbatim %}
+      </div>
     </div>
+  </div>
 </script>

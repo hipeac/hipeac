@@ -4,64 +4,63 @@
 
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div>
-        <ul class="nav nav-tabs justify-content-center">
-            <li class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'members'}">
-                    <icon name="line_weight" class="mr-1"></icon>Members list</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'membership'}" exact>
-                    <icon name="accessibility_new" class="mr-1"></icon>Membership</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'members-stats'}" exact>
-                    <icon name="insert_chart_outlined" class="mr-1"></icon>Stats</a>
-            </li>
-        </ul>
-        <router-view></router-view>
-    </div>
+  <div>
+    <ul class="nav nav-tabs justify-content-center">
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'members'}">
+          <icon name="line_weight" class="mr-1"></icon>Members list</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'membership'}" exact>
+          <icon name="accessibility_new" class="mr-1"></icon>Membership</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'members-stats'}" exact>
+          <icon name="insert_chart_outlined" class="mr-1"></icon>Stats</a>
+      </li>
+    </ul>
+    <router-view></router-view>
+  </div>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
-    <div>
-        <div class="hipeac-card mb-2">
-            <institutions-carousel :institutions="randomInstitutions" targetRoute="members"></institutions-carousel>
-        </div>
-        <search-card placeholder="Search members by name, affiliation, country..." class="mb-2"></search-card>
-        <div class="hipeac-card">
-            <user-viewer :users="members" :institutions="institutions" :is-member-list="true"></user-viewer>
-        </div>
+  <div>
+    <div class="hipeac-card mb-2">
+      <institutions-carousel :institutions="randomInstitutions" targetRoute="members"></institutions-carousel>
     </div>
+    <search-card placeholder="Search members by name, affiliation, country..." class="mb-2"></search-card>
+    <div class="hipeac-card">
+      <user-viewer :users="members" :institutions="institutions" :is-member-list="true"></user-viewer>
+    </div>
+  </div>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="{{ id }}-membership">
-    <div class="row">
-        <div class="col-12 col-md-4 d-flex align-items-stretch">
-            <div class="hipeac-card">
-                <a href="mailto:membership@hipeac.net" class="btn btn-sm btn-block btn-primary">{{ membership.header }}</a>
-                <hr class="my-4">
-                <div class="marked catchphrase-first">{{ membership.content | markdown }}</div>
-                <img src="{% static 'images/membership-small.jpg' %}" class="my-4 w-100">
-            </div>
-        </div>
-        <div class="col-12 col-md-8 d-flex align-items-stretch">
-            <div class="hipeac-card">
-                <display-sm class="mb-3">{{ charter.header }}</display-sm>
-                <div class="marked">{{ charter.content | markdown }}</div>
-                <display-sm class="mt-4 mb-3">{{ how_to.header }}</display-sm>
-                <div class="marked">{{ how_to.content | markdown }}</div>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-12 col-md-4 d-flex align-items-stretch">
+      <div class="hipeac-card">
+        <a href="mailto:membership@hipeac.net" class="btn btn-sm btn-block btn-primary">{{ membership.header }}</a>
+        <hr class="my-4">
+        <div class="marked catchphrase-first">{{ membership.content | markdown }}</div>
+        <img src="{% static 'images/membership-small.jpg' %}" class="my-4 w-100">
+      </div>
     </div>
+    <div class="col-12 col-md-8 d-flex align-items-stretch">
+      <div class="hipeac-card">
+        <display-sm class="mb-3">{{ charter.header }}</display-sm>
+        <div class="marked">{{ charter.content | markdown }}</div>
+        <display-sm class="mt-4 mb-3">{{ how_to.header }}</display-sm>
+        <div class="marked">{{ how_to.content | markdown }}</div>
+      </div>
+    </div>
+  </div>
 </script>
 
 <script type="text/x-template" id="{{ id }}-stats">
-    <div class="hipeac-card mb-2">
-        <div >
-        </div>
-    </div>
+  <div class="hipeac-card mb-2">
+    <div></div>
+  </div>
 </script>

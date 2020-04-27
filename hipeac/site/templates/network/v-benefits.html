@@ -3,29 +3,29 @@
 
 
 <script type="text/x-template" id="{{ id }}">
-    <div>
-        <ul class="nav nav-tabs justify-content-center">
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'researchersBenefits'}" class="nav-link" exact>
-                    <icon name="memory" class="mr-1"></icon>{{ tbs.about_researchers.header }}</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'industryBenefits'}" class="nav-link" exact>
-                    <icon name="business" class="mr-1"></icon>{{ tbs.about_industry.header }}</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'projectsBenefits'}" class="nav-link" exact>
-                    <icon name="device_hub" class="mr-1"></icon>{{ tbs.about_projects.header }}</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'studentsBenefits'}" class="nav-link" exact>
-                    <icon name="school" class="mr-1"></icon>{{ tbs.about_students.header }}</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" :to="{name: 'innovationBenefits'}" class="nav-link" exact>
-                    <icon name="wb_incandescent" class="mr-1"></icon>{{ tbs.about_innovation.header }}</a>
-            </li>
-        </ul>
-        <router-view></router-view>
-    </div>
+  <div>
+    <ul class="nav nav-tabs justify-content-center">
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'researchersBenefits'}" class="nav-link" exact>
+          <icon name="memory" class="mr-1"></icon>{{ tbs.about_researchers.header }}</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'industryBenefits'}" class="nav-link" exact>
+          <icon name="business" class="mr-1"></icon>{{ tbs.about_industry.header }}</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'projectsBenefits'}" class="nav-link" exact>
+          <icon name="device_hub" class="mr-1"></icon>{{ tbs.about_projects.header }}</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'studentsBenefits'}" class="nav-link" exact>
+          <icon name="school" class="mr-1"></icon>{{ tbs.about_students.header }}</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'innovationBenefits'}" class="nav-link" exact>
+          <icon name="wb_incandescent" class="mr-1"></icon>{{ tbs.about_innovation.header }}</a>
+      </li>
+    </ul>
+    <router-view></router-view>
+  </div>
 </script>

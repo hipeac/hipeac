@@ -6,95 +6,95 @@
 
 
 {% block main %}
-    <div id="vue" class="{% block custom_section_class %}{% endblock %}">
-        {% if user.is_authenticated %}<div is="user-notifications"></div>{% endif %}
-        <nav class="hipeac navbar sticky-top navbar-expand-lg navbar-light">
-            <div class="container d-flex">
-                <a href="{% url 'homepage' %}" class="order-lg-1 navbar-brand my-3 my-lg-0 mr-auto mr-lg-3">
-                    <img src="{% static 'images/hipeac.svg' %}">
-                </a>
-                <div class="order-lg-3 mr-0">{% include '_user_menu.html' %}</div>
-                <button class="d-block d-lg-none navbar-custom-toggler btn btn-outline-secondary ml-2" data-toggle="collapse" data-target="#navigation">
-                    <i class="material-icons">&#xE5D2;</i>
-                </button>
-                <div class="order-lg-2 mr-auto collapse navbar-collapse" id="navigation">
-                    <ul class="navbar-nav">
-                        <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link {% active request 'homepage' %}" href="{% url 'homepage' %}">
-                                <i class="material-icons sm">&#xE88A;</i>
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link {% active request 'network,user,institution,project' %}" href="{% url 'network' %}">The Network</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% active request 'events,acaces,conference,csw,roadshow' %}" href="{% url 'events' %}">Events</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% active request 'jobs,job' %}" href="{% url 'jobs' %}">Jobs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% active request 'vision' %}" href="{% url 'vision' %}">Vision</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% active request 'awards' %}" href="{% url 'awards' %}">Awards</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% active request 'news,article' %}" href="{% url 'news' %}">News</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% active request 'press' %}" href="{% url 'press' %}">Press room</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div class="hipeac subheader mb-3 mb-md-5">
-            <div class="container d-md-flex justify-content-md-between align-items-md-end">
-                <h3 class="title">{% block subtitle %}{% endblock %}</h3>
-                <ul class="nav nav-tabs">{% block submenu %}{% endblock %}</ul>
-            </div>
+  <div id="vue" class="{% block custom_section_class %}{% endblock %}">
+    {% if user.is_authenticated %}<div is="user-notifications"></div>{% endif %}
+    <nav class="hipeac navbar sticky-top navbar-expand-lg navbar-light">
+      <div class="container d-flex">
+        <a href="{% url 'homepage' %}" class="order-lg-1 navbar-brand my-3 my-lg-0 mr-auto mr-lg-3">
+          <img src="{% static 'images/hipeac.svg' %}">
+        </a>
+        <div class="order-lg-3 mr-0">{% include '_user_menu.html' %}</div>
+        <button class="d-block d-lg-none navbar-custom-toggler btn btn-outline-secondary ml-2" data-toggle="collapse" data-target="#navigation">
+          <i class="material-icons">&#xE5D2;</i>
+        </button>
+        <div class="order-lg-2 mr-auto collapse navbar-collapse" id="navigation">
+          <ul class="navbar-nav">
+            <li class="nav-item d-none d-lg-block">
+              <a class="nav-link {% active request 'homepage' %}" href="{% url 'homepage' %}">
+                <i class="material-icons sm">&#xE88A;</i>
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link {% active request 'network,user,institution,project' %}" href="{% url 'network' %}">The Network</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% active request 'events,acaces,conference,csw,roadshow' %}" href="{% url 'events' %}">Events</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% active request 'jobs,job' %}" href="{% url 'jobs' %}">Jobs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% active request 'vision' %}" href="{% url 'vision' %}">Vision</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% active request 'awards' %}" href="{% url 'awards' %}">Awards</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% active request 'news,article' %}" href="{% url 'news' %}">News</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% active request 'press' %}" href="{% url 'press' %}">Press room</a>
+            </li>
+          </ul>
         </div>
-        {% if messages %}
-            <div class="container">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        <span>{{ message }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% block content_wrapper %}
-            {% block content %}{% endblock %}
-        {% endblock %}
-        <div class="container my-5">
-            <div class="row">
-                <div class="col-12">
-                    <hr class="my-5">
-                </div>
-                <div class="col-12">
-                    <img class="float-right flag-sm ml-3" src="{% static 'images/eu-flag.svg' %}">
-                    <p class="text-sm mb-1">
-                        <strong>&copy; 2004-{% now 'Y' %} HiPEAC, </strong>
-                        <strong>European Network on High-performance Embedded Architecture and Compilation</strong><br>
-                        <span class="color-lightest-text">The HiPEAC project has received funding from the European Union’s Horizon2020 research and innovation programme under grant agreement number 871174.</span>
-                    </p>
-                    <ul class="list-inline">
-                        <li class="list-inline-item m-0">
-                            <a href="/api/" target="_blank">
-                                <i class="material-icons sm mr-1">code</i>
-                                <small>Public API</small>
-                            </a>
-                        </li>
-                        <li class="list-inline-item mx-3">|</li>
-                        <li class="list-inline-item mr-3"><a href="/privacy-policy/"><small>Privacy policy</small></a></li>
-                        <li class="list-inline-item"><a href="/disclaimer/"><small>Disclaimer</small></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+      </div>
+    </nav>
+    <div class="hipeac subheader mb-3 mb-md-5">
+      <div class="container d-md-flex justify-content-md-between align-items-md-end">
+        <h3 class="title">{% block subtitle %}{% endblock %}</h3>
+        <ul class="nav nav-tabs">{% block submenu %}{% endblock %}</ul>
+      </div>
     </div>
+    {% if messages %}
+      <div class="container">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <span>{{ message }}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content_wrapper %}
+      {% block content %}{% endblock %}
+    {% endblock %}
+    <div class="container my-5">
+      <div class="row">
+        <div class="col-12">
+          <hr class="my-5">
+        </div>
+        <div class="col-12">
+          <img class="float-right flag-sm ml-3" src="{% static 'images/eu-flag.svg' %}">
+          <p class="text-sm mb-1">
+            <strong>&copy; 2004-{% now 'Y' %} HiPEAC, </strong>
+            <strong>European Network on High-performance Embedded Architecture and Compilation</strong><br>
+            <span class="color-lightest-text">The HiPEAC project has received funding from the European Union’s Horizon2020 research and innovation programme under grant agreement number 871174.</span>
+          </p>
+          <ul class="list-inline">
+            <li class="list-inline-item m-0">
+              <a href="/api/" target="_blank">
+                <i class="material-icons sm mr-1">code</i>
+                <small>Public API</small>
+              </a>
+            </li>
+            <li class="list-inline-item mx-3">|</li>
+            <li class="list-inline-item mr-3"><a href="/privacy-policy/"><small>Privacy policy</small></a></li>
+            <li class="list-inline-item"><a href="/disclaimer/"><small>Disclaimer</small></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

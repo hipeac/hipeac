@@ -3,49 +3,49 @@
 
 {% block subtitle %}
 {% verbatim %}
-    <small>Project</small><span v-cloak v-if="obj"> / {{ obj.acronym }}</span>
+  <small>Project</small><span v-cloak v-if="obj"> / {{ obj.acronym }}</span>
 {% endverbatim %}
 {% endblock %}
 
 {% block vue_templates %}
 {% verbatim %}
-    <script type="text/x-template" id="v-editor">
-        <div v-if="obj" class="hipeac-card">
-            <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
-            <display-sm>Use this for to update project's general information.</display-sm>
-            <form class="mt-4">
-                <custom-input v-model.trim="obj.acronym" type="text" field="acronym"></custom-input>
-                <custom-input v-model.trim="obj.name" type="text" field="name"></custom-input>
-                <markdown-textarea v-model.trim="obj.description" field="description"></markdown-textarea>
-                <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
-                <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
-                <display-sm class="my-4">Consortium</display-sm>
-                <autocomplete-popup v-model="obj.coordinating_institution" type="institution" field="coordinating_institution" :required="true"></autocomplete-popup>
-                <autocomplete-popup v-model="obj.partners" type="institution" field="partners" :required="true"></autocomplete-popup>
-                <link-fieldset v-model="obj.links" field="links" help="One or more external sources related to this project."></link-fieldset>
-            </form>
-            <hr class="my-4">
-            <p class="float-right socialaccounts ml-4 mb-2">{% endverbatim %}{% include 'socialaccount/snippets/_logos.html' with provider='YouTube' %}</p>
-            <p class="text-sm"><a href="communication@hipeac.net?subject=HiPEAC expert videos"" target="_blank"><i class="material-icons sm mr-1">email</i> <strong>Contact us</strong></a> if you have YouTube videos related to this project that you would like to share with the HiPEAC community. All videos appear on the project profile and we sometimes add them to the <a href="{% url 'press' %}{% verbatim %}#/videos/" target="_blank">HiPEAC experts page</a> too!</p>
-            <hr class="my-4">
-            <automatic-updates></automatic-updates>
+  <script type="text/x-template" id="v-editor">
+    <div v-if="obj" class="hipeac-card">
+      <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
+      <display-sm>Use this for to update project's general information.</display-sm>
+      <form class="mt-4">
+        <custom-input v-model.trim="obj.acronym" type="text" field="acronym"></custom-input>
+        <custom-input v-model.trim="obj.name" type="text" field="name"></custom-input>
+        <markdown-textarea v-model.trim="obj.description" field="description"></markdown-textarea>
+        <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
+        <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
+        <display-sm class="my-4">Consortium</display-sm>
+        <autocomplete-popup v-model="obj.coordinating_institution" type="institution" field="coordinating_institution" :required="true"></autocomplete-popup>
+        <autocomplete-popup v-model="obj.partners" type="institution" field="partners" :required="true"></autocomplete-popup>
+        <link-fieldset v-model="obj.links" field="links" help="One or more external sources related to this project."></link-fieldset>
+      </form>
+      <hr class="my-4">
+      <p class="float-right socialaccounts ml-4 mb-2">{% endverbatim %}{% include 'socialaccount/snippets/_logos.html' with provider='YouTube' %}</p>
+      <p class="text-sm"><a href="communication@hipeac.net?subject=HiPEAC expert videos"" target="_blank"><i class="material-icons sm mr-1">email</i> <strong>Contact us</strong></a> if you have YouTube videos related to this project that you would like to share with the HiPEAC community. All videos appear on the project profile and we sometimes add them to the <a href="{% url 'press' %}{% verbatim %}#/videos/" target="_blank">HiPEAC experts page</a> too!</p>
+      <hr class="my-4">
+      <automatic-updates></automatic-updates>
+    </div>
+  </script>
+  <script type="text/x-template" id="v-preview">
+    <div v-if="obj" class="row">
+      <div class="col-12">
+        <h2 class="display-lg mb-4">{{ obj.acronym }}: {{ obj.name }}</h2>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
+          </div>
+          <div class="col-12 col-md-6">
+            <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
+          </div>
         </div>
-    </script>
-    <script type="text/x-template" id="v-preview">
-        <div v-if="obj" class="row">
-            <div class="col-12">
-                <h2 class="display-lg mb-4">{{ obj.acronym }}: {{ obj.name }}</h2>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
-                    </div>
-                </div>
-                <marked :text="obj.description"></marked>
-            </div>
-        </div>
-    </script>
+        <marked :text="obj.description"></marked>
+      </div>
+    </div>
+  </script>
 {% endverbatim %}
 {% endblock %}

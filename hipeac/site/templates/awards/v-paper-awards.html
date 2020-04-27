@@ -2,45 +2,45 @@
 
 
 <script type="text/x-template" id="{{ id }}">
-    <div>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="hipeac-card">
-                    <catchphrase class="mb-4">{{ blck.header }}</catchphrase>
-                    <div class="marked">{{ blck.content | markdown }}<ul>
-            {% verbatim %}
-                            <li v-for="conf in confs" :key="conf.value">
-                                <strong>{{ conf.value }}</strong>, {{ conf.display }}</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div v-if="years" class="col-12 col-md-6 col-lg-8">
-                <ul class="nav nav-tabs d-flex w-100">
-                    <li v-for="year in years.slice(0, 5)" class="nav-item">
-                        <router-link :to="{name: 'paper-awards', params: {year: year}}" :key="year" class="nav-link">{{ year }}</router-link>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link text-primary dropdown-toggle text-nowrap pointer" id="yearsMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span>Previous years</span>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="yearsMenuButton">
-                            <router-link v-for="year in years.slice(5)" :key="year" :to="{name: 'paper-awards', params: {year: year}}" class="dropdown-item">{{ year }}</router-link>
-                        </div>
-                    </li>
-                    <!-- <li class="nav-item ml-auto">
-                        <a href="" class="nav-link"><icon name="insert_chart_outlined" class="sm text-success"></icon></a>
-                    </li>-->
-                </ul>
-                <div v-if="selectedPaperAwards" class="hipeac-card after-tabs">
-                    <div v-for="(papers, conf) in selectedPaperAwards" :key="conf">
-                        <small class="text-light-grey float-right">{{ papers.length }} papers</small>
-                        <display-sm class="mb-3">{{ conf }}</display-sm>
-                        <papers-table :items="papers"></papers-table>
-                    </div>
-                </div>
-            {% endverbatim %}
-            </div>
+  <div>
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="hipeac-card">
+          <catchphrase class="mb-4">{{ blck.header }}</catchphrase>
+          <div class="marked">{{ blck.content | markdown }}<ul>
+      {% verbatim %}
+              <li v-for="conf in confs" :key="conf.value">
+                <strong>{{ conf.value }}</strong>, {{ conf.display }}</li>
+            </ul>
+          </div>
         </div>
+      </div>
+      <div v-if="years" class="col-12 col-md-6 col-lg-8">
+        <ul class="nav nav-tabs d-flex w-100">
+          <li v-for="year in years.slice(0, 5)" class="nav-item">
+            <router-link :to="{name: 'paper-awards', params: {year: year}}" :key="year" class="nav-link">{{ year }}</router-link>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link text-primary dropdown-toggle text-nowrap pointer" id="yearsMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span>Previous years</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="yearsMenuButton">
+              <router-link v-for="year in years.slice(5)" :key="year" :to="{name: 'paper-awards', params: {year: year}}" class="dropdown-item">{{ year }}</router-link>
+            </div>
+          </li>
+          <!-- <li class="nav-item ml-auto">
+            <a href="" class="nav-link"><icon name="insert_chart_outlined" class="sm text-success"></icon></a>
+          </li>-->
+        </ul>
+        <div v-if="selectedPaperAwards" class="hipeac-card after-tabs">
+          <div v-for="(papers, conf) in selectedPaperAwards" :key="conf">
+            <small class="text-light-grey float-right">{{ papers.length }} papers</small>
+            <display-sm class="mb-3">{{ conf }}</display-sm>
+            <papers-table :items="papers"></papers-table>
+          </div>
+        </div>
+      {% endverbatim %}
+      </div>
     </div>
+  </div>
 </script>

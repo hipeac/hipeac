@@ -3,59 +3,59 @@
 
 {% block subtitle %}
 {% verbatim %}
-    <small>Institution</small><span v-cloak v-if="obj"> / {{ obj.name }}</span>
+  <small>Institution</small><span v-cloak v-if="obj"> / {{ obj.name }}</span>
 {% endverbatim %}
 {% endblock %}
 
 {% block vue_templates %}
 {% verbatim %}
-    <script type="text/x-template" id="v-editor">
-        <div v-if="obj" class="hipeac-card">
-            <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
-            <display-sm>Use this for to update institutions's general information.</display-sm>
-            <form class="mt-4">
-                <custom-input v-model.trim="obj.name" type="text" field="name" help="If the institution has a local and English name, use the English one here."></custom-input>
-                <div class="form-row">
-                    <div class="col-12 col-md-4">
-                        <custom-input v-model.trim="obj.short_name" type="text" field="short_name"></custom-input>
-                    </div>
-                    <div class="col-12 col-md-8">
-                        <custom-input v-model.trim="obj.local_name" type="text" field="local_name"></custom-input>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-12 col-md-6">
-                        <custom-input v-model.trim="obj.location" type="text" field="location"></custom-input>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <country-select v-model="obj.country" select-property="code" field="country"></country-select>
-                    </div>
-                </div>
-                <autocomplete-popup v-model="obj.parent" type="institution" field="parent"></autocomplete-popup>
-                <markdown-textarea v-model.trim="obj.description" field="description"></markdown-textarea>
-                <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
-                <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
-                <link-fieldset v-model="obj.links" field="links" help="One or more external websites."></link-fieldset>
-            </form>
-            <hr class="my-4">
-            <automatic-updates></automatic-updates>
+  <script type="text/x-template" id="v-editor">
+    <div v-if="obj" class="hipeac-card">
+      <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
+      <display-sm>Use this for to update institutions's general information.</display-sm>
+      <form class="mt-4">
+        <custom-input v-model.trim="obj.name" type="text" field="name" help="If the institution has a local and English name, use the English one here."></custom-input>
+        <div class="form-row">
+          <div class="col-12 col-md-4">
+            <custom-input v-model.trim="obj.short_name" type="text" field="short_name"></custom-input>
+          </div>
+          <div class="col-12 col-md-8">
+            <custom-input v-model.trim="obj.local_name" type="text" field="local_name"></custom-input>
+          </div>
         </div>
-    </script>
-    <script type="text/x-template" id="v-preview">
-        <div v-if="obj" class="row">
-            <div class="col-12">
-                <h2 class="display-lg mb-4">{{ obj.name }}</h2>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
-                    </div>
-                </div>
-                <marked :text="obj.description"></marked>
-            </div>
+        <div class="form-row">
+          <div class="col-12 col-md-6">
+            <custom-input v-model.trim="obj.location" type="text" field="location"></custom-input>
+          </div>
+          <div class="col-12 col-md-6">
+            <country-select v-model="obj.country" select-property="code" field="country"></country-select>
+          </div>
         </div>
-    </script>
+        <autocomplete-popup v-model="obj.parent" type="institution" field="parent"></autocomplete-popup>
+        <markdown-textarea v-model.trim="obj.description" field="description"></markdown-textarea>
+        <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
+        <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
+        <link-fieldset v-model="obj.links" field="links" help="One or more external websites."></link-fieldset>
+      </form>
+      <hr class="my-4">
+      <automatic-updates></automatic-updates>
+    </div>
+  </script>
+  <script type="text/x-template" id="v-preview">
+    <div v-if="obj" class="row">
+      <div class="col-12">
+        <h2 class="display-lg mb-4">{{ obj.name }}</h2>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
+          </div>
+          <div class="col-12 col-md-6">
+            <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
+          </div>
+        </div>
+        <marked :text="obj.description"></marked>
+      </div>
+    </div>
+  </script>
 {% endverbatim %}
 {% endblock %}

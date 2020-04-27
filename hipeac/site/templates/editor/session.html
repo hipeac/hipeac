@@ -3,56 +3,56 @@
 
 {% block subtitle %}
 {% verbatim %}
-    <small v-cloak>Session <span v-if="obj">#{{ obj.id }} / {{ obj.title }}</span></small>
+  <small v-cloak>Session <span v-if="obj">#{{ obj.id }} / {{ obj.title }}</span></small>
 {% endverbatim %}
 {% endblock %}
 
 {% block vue_templates %}
 {% verbatim %}
-    <script type="text/x-template" id="v-editor">
-        <div v-if="obj" class="hipeac-card">
-            <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
-            <display-sm>Please update the session's information. <a href="mailto:webmaster@hipeac.net">Contact us</a> if you would like to give access to this form to other organizers.</display-sm>
-            <form class="mt-4">
-                <custom-input v-model.trim="obj.title" type="text" field="title"></custom-input>
-                <markdown-textarea v-model.trim="obj.summary" field="summary" :rows="5"></markdown-textarea>
-                <markdown-textarea v-model.trim="obj.program" field="program"></markdown-textarea>
-                <markdown-textarea v-model.trim="obj.organizers" field="organizers" :rows="3"></markdown-textarea>
-                <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
-                <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
-                <autocomplete-popup v-model="obj.institutions" type="institution" field="institutions" customLabel="Institutions involved" :hideRequired="true"></autocomplete-popup>
-                <autocomplete-popup v-model="obj.projects" type="project" field="projects" customLabel="EU projects involved" :hideRequired="true"></autocomplete-popup>
-                <link-fieldset v-model="obj.links" field="links"></link-fieldset>
-            </form>
-            <hr class="my-4">
-            <automatic-updates></automatic-updates>
+  <script type="text/x-template" id="v-editor">
+    <div v-if="obj" class="hipeac-card">
+      <hipeac-logo class="hipeac logo-sm ml-3 mb-3 float-right"></hipeac-logo>
+      <display-sm>Please update the session's information. <a href="mailto:webmaster@hipeac.net">Contact us</a> if you would like to give access to this form to other organizers.</display-sm>
+      <form class="mt-4">
+        <custom-input v-model.trim="obj.title" type="text" field="title"></custom-input>
+        <markdown-textarea v-model.trim="obj.summary" field="summary" :rows="5"></markdown-textarea>
+        <markdown-textarea v-model.trim="obj.program" field="program"></markdown-textarea>
+        <markdown-textarea v-model.trim="obj.organizers" field="organizers" :rows="3"></markdown-textarea>
+        <metadata-checkboxes v-model="obj.topics" type="topic" field="topics" sorting="value"></metadata-checkboxes>
+        <metadata-checkboxes v-model="obj.application_areas" type="application_area" field="application_areas" sorting="value"></metadata-checkboxes>
+        <autocomplete-popup v-model="obj.institutions" type="institution" field="institutions" customLabel="Institutions involved" :hideRequired="true"></autocomplete-popup>
+        <autocomplete-popup v-model="obj.projects" type="project" field="projects" customLabel="EU projects involved" :hideRequired="true"></autocomplete-popup>
+        <link-fieldset v-model="obj.links" field="links"></link-fieldset>
+      </form>
+      <hr class="my-4">
+      <automatic-updates></automatic-updates>
+    </div>
+  </script>
+  <script type="text/x-template" id="v-preview">
+    <div v-if="obj" class="row">
+      <div class="col-12">
+        <h2 class="display-lg mb-4">{{ obj.title }}</h2>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
+          </div>
+          <div class="col-12 col-md-6">
+            <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
+          </div>
         </div>
-    </script>
-    <script type="text/x-template" id="v-preview">
-        <div v-if="obj" class="row">
-            <div class="col-12">
-                <h2 class="display-lg mb-4">{{ obj.title }}</h2>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <metadata-badges title="Topics" :items="obj.topics" color="secondary"></metadata-badges>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <metadata-badges title="Application areas" :items="obj.application_areas" color="secondary"></metadata-badges>
-                    </div>
-                </div>
-                <marked :text="obj.summary"></marked>
-                <div v-if="obj.program">
-                    <hr>
-                    <h5 class="display-sm mb-3">Program</h5>
-                    <marked :text="obj.program"></marked>
-                </div>
-                <div v-if="obj.organizers">
-                    <hr>
-                    <h5 class="display-sm mb-3">Organizers</h5>
-                    <marked :text="obj.organizers"></marked>
-                </div>
-            </div>
+        <marked :text="obj.summary"></marked>
+        <div v-if="obj.program">
+          <hr>
+          <h5 class="display-sm mb-3">Program</h5>
+          <marked :text="obj.program"></marked>
         </div>
-    </script>
+        <div v-if="obj.organizers">
+          <hr>
+          <h5 class="display-sm mb-3">Organizers</h5>
+          <marked :text="obj.organizers"></marked>
+        </div>
+      </div>
+    </div>
+  </script>
 {% endverbatim %}
 {% endblock %}

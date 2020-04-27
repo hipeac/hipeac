@@ -1,11 +1,11 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div v-if="user">
-        <metadata-checkboxes v-model="user.profile.topics" type="topic" field="profile.topics" sorting="value"></metadata-checkboxes>
-        <metadata-checkboxes v-model="user.profile.application_areas" type="application_area" field="profile.application_areas" sorting="value"></metadata-checkboxes>
-        <autocomplete-popup v-model="user.profile.projects" type="project" field="profile.projects" help="European research projects you've been involved in." :required="true"></autocomplete-popup>
-        <hr class="my-4">
-        <automatic-updates></automatic-updates>
-    </div>
+  <div v-if="user">
+    <metadata-checkboxes v-model="user.profile.topics" type="topic" field="profile.topics" sorting="value"></metadata-checkboxes>
+    <metadata-checkboxes v-model="user.profile.application_areas" type="application_area" field="profile.application_areas" sorting="value"></metadata-checkboxes>
+    <autocomplete-popup v-model="user.profile.projects" type="project" field="profile.projects" help="European research projects you've been involved in." :required="true"></autocomplete-popup>
+    <hr class="my-4">
+    <automatic-updates></automatic-updates>
+  </div>
 {% endverbatim %}
 </script>

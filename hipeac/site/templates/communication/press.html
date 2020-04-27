@@ -9,166 +9,166 @@
 {% block subtitle %}Press room{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'press-releases'}" class="nav-link" exact>Press releases</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'clippings'}" class="nav-link">Clippings</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'videos'}" class="nav-link">Expert videos</a>
-    </li>
-    <!--<li class="nav-item">
-        <a is="router-link" :to="{name: 'branding'}" class="nav-link">Branding and identity</a>
-    </li>-->
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'press-releases'}" class="nav-link" exact>Press releases</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'clippings'}" class="nav-link">Clippings</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'videos'}" class="nav-link">Expert videos</a>
+  </li>
+  <!--<li class="nav-item">
+    <a is="router-link" :to="{name: 'branding'}" class="nav-link">Branding and identity</a>
+  </li>-->
 {% endblock %}
 
 {% block content %}
-    <div id="urls" class="container" data-video-list="{% url 'v1:video-list' %}">
-        <router-view></router-view>
-    </div>
+  <div id="urls" class="container" data-video-list="{% url 'v1:video-list' %}">
+    <router-view></router-view>
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-branding.html' with id='v-branding' blck=flatpage.page.tbs.branding %}
-    {% include './v-clippings.html' with id='v-clippings' %}
-    {% include './v-press-releases.html' with id='v-press-releases' %}
-    {% include './v-videos.html' with id='v-videos' %}
+  {% include './v-branding.html' with id='v-branding' blck=flatpage.page.tbs.branding %}
+  {% include './v-clippings.html' with id='v-clippings' %}
+  {% include './v-press-releases.html' with id='v-press-releases' %}
+  {% include './v-videos.html' with id='v-videos' %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    <script>
-        var Store = new Vuex.Store({
-            state: {
-                clippings: null,
-                videos: null
-            },
-            mutations: {
-                fetchClippings: function (state) {
-                    if (!state.clippings) {
-                        api().getClippings().then(function (res) {
-                            state.clippings = Object.freeze(mapper().clippings(res));
-                        });
-                    }
-                },
-                fetchVideos: function (state) {
-                    ajax().get($('#urls').data('video-list')).then(function (res) {
-                        state.videos = Object.freeze(mapper().videos(res));
-                    });
-                }
-            }
-        });
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        clippings: null,
+        videos: null
+      },
+      mutations: {
+        fetchClippings: function (state) {
+          if (!state.clippings) {
+            api().getClippings().then(function (res) {
+              state.clippings = Object.freeze(mapper().clippings(res));
+            });
+          }
+        },
+        fetchVideos: function (state) {
+          ajax().get($('#urls').data('video-list')).then(function (res) {
+            state.videos = Object.freeze(mapper().videos(res));
+          });
+        }
+      }
+    });
 
-        Vue.component('clippings-card', SimpleItemCard.extend({
-            props: {
-                externalLinks: {
-                    type: Boolean,
-                    default: true
-                }
-            },
-            store: Store,
-            computed: _.extend(
-                Vuex.mapState(['clippings']), {
-                items: function () {
-                    return this.clippings;
-                },
-                visibleItems: function () {
-                    if (!this.clippings) return false;
-                    return _.first(this.clippings, this.max);
-                }
-            }),
-            created: function () {
-                this.$store.commit('fetchClippings');
-            }
-        }));
+    Vue.component('clippings-card', SimpleItemCard.extend({
+      props: {
+        externalLinks: {
+          type: Boolean,
+          default: true
+        }
+      },
+      store: Store,
+      computed: _.extend(
+        Vuex.mapState(['clippings']), {
+        items: function () {
+          return this.clippings;
+        },
+        visibleItems: function () {
+          if (!this.clippings) return false;
+          return _.first(this.clippings, this.max);
+        }
+      }),
+      created: function () {
+        this.$store.commit('fetchClippings');
+      }
+    }));
 
-        var BrandingView = {
-            template: '#v-branding'
-        };
+    var BrandingView = {
+      template: '#v-branding'
+    };
 
-        var ClippingsView = {
-            template: '#v-clippings'
-        };
+    var ClippingsView = {
+      template: '#v-clippings'
+    };
 
-        var PressReleasesView = {
-            template: '#v-press-releases'
-        };
+    var PressReleasesView = {
+      template: '#v-press-releases'
+    };
 
-        var VideosView = {
-            template: '#v-videos',
-            data: function () {
-                return {
-                    q: '',
-                    filters: {
-                        topics: []
-                    }
-                }
-            },
-            computed: _.extend(
-                Vuex.mapState(['videos']), {
-                filteredIds: function () {
-                    var filteredItems = filterIntersection(this.filters.topics, this.videos, 'topicIds');
-                    return _.pluck(filterMultiple(filteredItems, this.q), 'id');
-                },
-                topics: function () {
-                    return extractMetadata(this.videos, 'topics');
-                }
-            }),
-            methods: {
-                updateQuery: function (val) {
-                    this.q = val;
-                },
-                resetFilters: function () {
-                    this.filters.topics = [];
-                }
-            },
-            created: function () {
-                EventHub.$on('query-changed', this.updateQuery);
-                this.$store.commit('fetchVideos');
-            }
-        };
+    var VideosView = {
+      template: '#v-videos',
+      data: function () {
+        return {
+          q: '',
+          filters: {
+            topics: []
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['videos']), {
+        filteredIds: function () {
+          var filteredItems = filterIntersection(this.filters.topics, this.videos, 'topicIds');
+          return _.pluck(filterMultiple(filteredItems, this.q), 'id');
+        },
+        topics: function () {
+          return extractMetadata(this.videos, 'topics');
+        }
+      }),
+      methods: {
+        updateQuery: function (val) {
+          this.q = val;
+        },
+        resetFilters: function () {
+          this.filters.topics = [];
+        }
+      },
+      created: function () {
+        EventHub.$on('query-changed', this.updateQuery);
+        this.$store.commit('fetchVideos');
+      }
+    };
 
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'branding',
-                    path: '/branding/',
-                    pathToRegexpOptions: {strict: true},
-                    component: BrandingView
-                },
-                {
-                    name: 'clippings',
-                    path: '/clippings/',
-                    pathToRegexpOptions: {strict: true},
-                    component: ClippingsView
-                },
-                {
-                    name: 'press-releases',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    component: PressReleasesView
-                },
-                {
-                    name: 'videos',
-                    path: '/videos/',
-                    pathToRegexpOptions: {strict: true},
-                    component: VideosView
-                },
-            ]
-        });
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'branding',
+          path: '/branding/',
+          pathToRegexpOptions: {strict: true},
+          component: BrandingView
+        },
+        {
+          name: 'clippings',
+          path: '/clippings/',
+          pathToRegexpOptions: {strict: true},
+          component: ClippingsView
+        },
+        {
+          name: 'press-releases',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: PressReleasesView
+        },
+        {
+          name: 'videos',
+          path: '/videos/',
+          pathToRegexpOptions: {strict: true},
+          component: VideosView
+        },
+      ]
+    });
 
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            beforeCreate: function () {
-                if (this.$route.path.substr(-1) != '/') {
-                    this.$router.push({'path': this.$route.path + '/'});
-                }
-            }
-        });
-    </script>
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

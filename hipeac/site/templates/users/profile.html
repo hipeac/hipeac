@@ -9,168 +9,168 @@
 {% block subtitle %}{{ profile.name }}{% endblock %}
 
 {% block submenu %}
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
+  </li>
+  <li class="nav-item" v-if="publications && publications.length">
+    <a is="router-link" :to="{name: 'publications'}" class="nav-link">Publications</a>
+  </li>
+  {% if user.is_authenticated and user.id == profile.user_id %}
     <li class="nav-item">
-        <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
+      <a href="{% url 'user_profile' %}" class="nav-link"><i class="material-icons mr-1">edit</i>Edit</a>
     </li>
-    <li class="nav-item" v-if="publications && publications.length">
-        <a is="router-link" :to="{name: 'publications'}" class="nav-link">Publications</a>
-    </li>
-    {% if user.is_authenticated and user.id == profile.user_id %}
-        <li class="nav-item">
-            <a href="{% url 'user_profile' %}" class="nav-link"><i class="material-icons mr-1">edit</i>Edit</a>
-        </li>
-    {% endif %}
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-publications="{% url 'v1:user-publications' profile.user_id %}" class="container">
-        <div class="row">
-            <div class="col-12 col-md-2 d-none d-md-block">
-                {% if profile.institution.images %}
-                    <a href="{{ profile.institution.get_absolute_url }}" class="d-block mt-md-4 mb-5">
-                        <img src="{{ profile.institution.images.md }}" title="{{ profile.institution.short_name }}" class="max-90">
-                    </a>
-                {% endif %}
-            </div>
-            <div class="col-12 col-md-10">
-                <div is="router-view"></div>
-            </div>
-        </div>
-        {% if profile.user.coordinated_projects.count %}
-            <div class="row">
-                <div class="col-12 col-lg-2">
-                    <h5 class="display-sm mt-4 mb-1">Coordinated projects</h5><hr>
-                </div>
-                <div class="col-12 col-lg-10">
-                    <div class="hipeac-card">
-                        <ul class="logos text-left">
-                        {% for project in profile.user.coordinated_projects.all %}
-                            <li>
-                                <a href="{{ project.get_absolute_url }}" class="inherit">
-                                    <img src="{{ project.images.sm }}" title="{{ project.acronym }}">
-                                </a>
-                            </li>
-                        {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
+  <div id="urls" data-publications="{% url 'v1:user-publications' profile.user_id %}" class="container">
+    <div class="row">
+      <div class="col-12 col-md-2 d-none d-md-block">
+        {% if profile.institution.images %}
+          <a href="{{ profile.institution.get_absolute_url }}" class="d-block mt-md-4 mb-5">
+            <img src="{{ profile.institution.images.md }}" title="{{ profile.institution.short_name }}" class="max-90">
+          </a>
         {% endif %}
-        <div is="videos-row" url="{% url 'v1:user-videos' profile.user_id %}"></div>
-        {% if phd_mobilities.count > 0 %}
-            <div class="row">
-                <div class="col-12 col-lg-2">
-                    <h5 class="display-sm mt-4 mb-1">HiPEAC PhD mobility</h5><hr>
-                </div>
-                <div class="col-12 col-lg-10">
-                    {% for mobility in phd_mobilities %}
-                    <div class="hipeac-card">
-                        <a href="{{ mobility.institution.get_absolute_url }}" class="float-right inherit">
-                            <img src="{{ mobility.institution.images.sm }}" class="logo-sm mb-3 ml-3">
-                        </a>
-                        <p>
-                            <strong class="text-primary">{{ mobility.get_type_display }}</strong> - <span class="label lightest radius">{{ mobility.start_date|date:'N Y' }} - {{ mobility.end_date|date:'N Y' }}</span><br>
-                            <strong>{{ mobility.title }} @ {{ mobility.institution }}</strong>
-                        </p>
-                        {% if mobility.summary %}
-                            <div class="marked text-sm">
-                                {{ mobility.summary | markdown }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
+      </div>
+      <div class="col-12 col-md-10">
+        <div is="router-view"></div>
+      </div>
     </div>
+    {% if profile.user.coordinated_projects.count %}
+      <div class="row">
+        <div class="col-12 col-lg-2">
+          <h5 class="display-sm mt-4 mb-1">Coordinated projects</h5><hr>
+        </div>
+        <div class="col-12 col-lg-10">
+          <div class="hipeac-card">
+            <ul class="logos text-left">
+            {% for project in profile.user.coordinated_projects.all %}
+              <li>
+                <a href="{{ project.get_absolute_url }}" class="inherit">
+                  <img src="{{ project.images.sm }}" title="{{ project.acronym }}">
+                </a>
+              </li>
+            {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    <div is="videos-row" url="{% url 'v1:user-videos' profile.user_id %}"></div>
+    {% if phd_mobilities.count > 0 %}
+      <div class="row">
+        <div class="col-12 col-lg-2">
+          <h5 class="display-sm mt-4 mb-1">HiPEAC PhD mobility</h5><hr>
+        </div>
+        <div class="col-12 col-lg-10">
+          {% for mobility in phd_mobilities %}
+          <div class="hipeac-card">
+            <a href="{{ mobility.institution.get_absolute_url }}" class="float-right inherit">
+              <img src="{{ mobility.institution.images.sm }}" class="logo-sm mb-3 ml-3">
+            </a>
+            <p>
+              <strong class="text-primary">{{ mobility.get_type_display }}</strong> - <span class="label lightest radius">{{ mobility.start_date|date:'N Y' }} - {{ mobility.end_date|date:'N Y' }}</span><br>
+              <strong>{{ mobility.title }} @ {{ mobility.institution }}</strong>
+            </p>
+            {% if mobility.summary %}
+              <div class="marked text-sm">
+                {{ mobility.summary | markdown }}
+              </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-about.html' with id='v-about' profile=profile %}
-    {% include './v-publications.html' with id='v-publications' %}
+  {% include './v-about.html' with id='v-about' profile=profile %}
+  {% include './v-publications.html' with id='v-publications' %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    <script>
-        var Store = new Vuex.Store({
-            state: {
-                publications: null
-            },
-            mutations: {
-                fetchPublications: function (state) {
-                    ajax().get($('#urls').data('publications')).done(function (res) {
-                        state.publications = mapper().publications(res);
-                    });
-                }
-            }
-        });
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        publications: null
+      },
+      mutations: {
+        fetchPublications: function (state) {
+          ajax().get($('#urls').data('publications')).done(function (res) {
+            state.publications = mapper().publications(res);
+          });
+        }
+      }
+    });
 
-        var AboutView = {
-            template: '#v-about'
-        };
+    var AboutView = {
+      template: '#v-about'
+    };
 
-        var PublicationsView = {
-            template: '#v-publications',
-            data: function () {
-                return {
-                    q: ''
-                }
-            },
-            computed: _.extend(
-                Vuex.mapState(['publications']), {
-                filteredIds: function () {
-                    if (!this.publications) return [];
-                    return _.pluck(filterMultiple(this.publications, this.q), 'id');
-                }
-            }),
-            methods: {
-                updateQuery: function (val) {
-                    this.q = val;
-                }
-            },
-            created: function () {
-                EventHub.$on('query-changed', this.updateQuery);
-            }
-        };
+    var PublicationsView = {
+      template: '#v-publications',
+      data: function () {
+        return {
+          q: ''
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['publications']), {
+        filteredIds: function () {
+          if (!this.publications) return [];
+          return _.pluck(filterMultiple(this.publications, this.q), 'id');
+        }
+      }),
+      methods: {
+        updateQuery: function (val) {
+          this.q = val;
+        }
+      },
+      created: function () {
+        EventHub.$on('query-changed', this.updateQuery);
+      }
+    };
 
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'about',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    component: AboutView
-                },
-                {
-                    name: 'publications',
-                    path: '/publications/',
-                    pathToRegexpOptions: {strict: true},
-                    component: PublicationsView
-                }
-            ]
-        });
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'about',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'publications',
+          path: '/publications/',
+          pathToRegexpOptions: {strict: true},
+          component: PublicationsView
+        }
+      ]
+    });
 
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            computed: _.extend(
-                Vuex.mapState(['publications']), {
-            }),
-            beforeCreate: function () {
-                if (this.$route.path.substr(-1) != '/') {
-                    this.$router.push({'path': this.$route.path + '/'});
-                }
-            },
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchPublications')
-                );
-            }
-        });
-    </script>
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      computed: _.extend(
+        Vuex.mapState(['publications']), {
+      }),
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      },
+      created: function () {
+        $.when(
+          this.$store.commit('fetchPublications')
+        );
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}
 

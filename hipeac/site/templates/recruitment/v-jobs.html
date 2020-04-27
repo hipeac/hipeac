@@ -1,57 +1,57 @@
 <script type="text/x-template" id="{{ id }}">
-    <div>
-        <display-lg> Find your ideal computing job in Europe. <span v-if="jobs.length">There are currently <strong v-html="jobs.length"></strong> open positions!</span></display-lg>
-        <search-card placeholder="Search open positions by title, company, country, topic or keywords..." :showFiltersButton="topics.length > 0" class="mb-2">
-            <filters-clear :onClick="resetFilters"></filters-clear>
-            <div>
-                <h6 class="d-inline display-sm mr-2">Sort by</h6>
-                <div class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input type="radio" value="deadline" v-model="sorting" class="form-check-input">
-                        <span>Deadline</span>
-                    </label>
-                </div>
-                <div class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input type="radio" value="created_at" v-model="sorting" class="form-check-input">
-                        <span>Publication date</span>
-                    </label>
-                </div>
-                <h6 class="d-inline display-sm ml-3 mr-2">Type</h6>
-                <div class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input type="radio" :value="false" v-model="filters.internshipsOnly" class="form-check-input">
-                        <span>All</span>
-                    </label>
-                </div>
-                <div class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input type="radio" :value="true" v-model="filters.internshipsOnly" class="form-check-input">
-                        <span>Internships only</span>
-                    </label>
-                </div>
-            </div>
-            <div v-if="careerLevels">
-                <h6 class="d-inline display-sm mr-2">Career levels</h6>
-                <div v-for="level in careerLevels" :key="level.id" class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input v-model="filters.careerLevels" :value="level.id" type="checkbox" class="form-check-input">
-                        <span v-html="level.value"></span>
-                    </label>
-                </div>
-            </div>
-            <div v-if="topics">
-                <h6 class="d-inline display-sm mr-2">Core skills</h6>
-                <div v-for="topic in topics" :key="topic.id" class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input v-model="filters.topics" :value="topic.id" type="checkbox" class="form-check-input">
-                        <span v-html="topic.value"></span>
-                    </label>
-                </div>
-            </div>
-        </search-card>
-        <search-results v-if="filteredIds.length < sortedJobs.length" :count="filteredIds.length"></search-results>
-        <job-cards v-if="jobs.length" :items="sortedJobs" :ids="filteredIds"></job-cards>
-        <skeleton-cards v-else></skeleton-cards>
-    </div>
+  <div>
+    <display-lg> Find your ideal computing job in Europe. <span v-if="jobs.length">There are currently <strong v-html="jobs.length"></strong> open positions!</span></display-lg>
+    <search-card placeholder="Search open positions by title, company, country, topic or keywords..." :showFiltersButton="topics.length > 0" class="mb-2">
+      <filters-clear :onClick="resetFilters"></filters-clear>
+      <div>
+        <h6 class="d-inline display-sm mr-2">Sort by</h6>
+        <div class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input type="radio" value="deadline" v-model="sorting" class="form-check-input">
+            <span>Deadline</span>
+          </label>
+        </div>
+        <div class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input type="radio" value="created_at" v-model="sorting" class="form-check-input">
+            <span>Publication date</span>
+          </label>
+        </div>
+        <h6 class="d-inline display-sm ml-3 mr-2">Type</h6>
+        <div class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input type="radio" :value="false" v-model="filters.internshipsOnly" class="form-check-input">
+            <span>All</span>
+          </label>
+        </div>
+        <div class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input type="radio" :value="true" v-model="filters.internshipsOnly" class="form-check-input">
+            <span>Internships only</span>
+          </label>
+        </div>
+      </div>
+      <div v-if="careerLevels">
+        <h6 class="d-inline display-sm mr-2">Career levels</h6>
+        <div v-for="level in careerLevels" :key="level.id" class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input v-model="filters.careerLevels" :value="level.id" type="checkbox" class="form-check-input">
+            <span v-html="level.value"></span>
+          </label>
+        </div>
+      </div>
+      <div v-if="topics">
+        <h6 class="d-inline display-sm mr-2">Core skills</h6>
+        <div v-for="topic in topics" :key="topic.id" class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input v-model="filters.topics" :value="topic.id" type="checkbox" class="form-check-input">
+            <span v-html="topic.value"></span>
+          </label>
+        </div>
+      </div>
+    </search-card>
+    <search-results v-if="filteredIds.length < sortedJobs.length" :count="filteredIds.length"></search-results>
+    <job-cards v-if="jobs.length" :items="sortedJobs" :ids="filteredIds"></job-cards>
+    <skeleton-cards v-else></skeleton-cards>
+  </div>
 </script>

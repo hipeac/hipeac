@@ -1,157 +1,157 @@
 <script type="text/x-template" id="{{ id }}">
 {% verbatim %}
-    <div v-if="event && event.sessions.length">
-        <ul class="nav nav-tabs justify-content-center">
-            <li class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'schedule'}" exact>
-                    <icon name="category" class="mr-1"></icon>All sessions</a>
-            </li>
-            <li class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'keynotes'}" exact>
-                    <icon name="stars" class="mr-1"></icon>Keynotes</a>
-            </li>
-            <li v-if="event.type == 'conference'" class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'papers'}" exact>
-                    <icon name="bookmark" class="mr-1"></icon>Paper Track</a>
-            </li>
-            <li v-if="event.type == 'conference'" class="nav-item">
-                <a is="router-link" class="nav-link" :to="{name: 'posters'}" exact>
-                    <icon name="amp_stories" class="mr-1"></icon>Poster exhibition</a>
-            </li>
-        </ul>
-        <router-view></router-view>
-        <router-view name="modal"></router-view>
-    </div>
+  <div v-if="event && event.sessions.length">
+    <ul class="nav nav-tabs justify-content-center">
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'schedule'}" exact>
+          <icon name="category" class="mr-1"></icon>All sessions</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'keynotes'}" exact>
+          <icon name="stars" class="mr-1"></icon>Keynotes</a>
+      </li>
+      <li v-if="event.type == 'conference'" class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'papers'}" exact>
+          <icon name="bookmark" class="mr-1"></icon>Paper Track</a>
+      </li>
+      <li v-if="event.type == 'conference'" class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'posters'}" exact>
+          <icon name="amp_stories" class="mr-1"></icon>Poster exhibition</a>
+      </li>
+    </ul>
+    <router-view></router-view>
+    <router-view name="modal"></router-view>
+  </div>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
-    <div v-if="event && event.sessions.length">
-        <search-card placeholder="Search by type, title, main speaker, project, topics..." :showFiltersButton="topics.length > 0" class="mb-2">
-            <filters-clear :onClick="resetFilters"></filters-clear>
-            <div v-if="sessionTypes">
-                <h6 class="d-inline display-sm mr-2">Session types</h6>
-                <div v-for="st in sessionTypes" :key="st.id" class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input v-model="filters.sessionTypes" :value="st.id" type="checkbox" class="form-check-input">
-                        <span v-html="st.value"></span>
-                    </label>
-                </div>
-            </div>
-            <div v-if="applicationAreas">
-                <h6 class="d-inline display-sm mr-2">Application areas</h6>
-                <div v-for="level in applicationAreas" :key="level.id" class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input v-model="filters.applicationAreas" :value="level.id" type="checkbox" class="form-check-input">
-                        <span v-html="level.value"></span>
-                    </label>
-                </div>
-            </div>
-            <div v-if="topics">
-                <h6 class="d-inline display-sm mr-2">Topics</h6>
-                <div v-for="topic in topics" :key="topic.id" class="form-check form-check-inline mr-2">
-                    <label class="form-check-label pointer">
-                        <input v-model="filters.topics" :value="topic.id" type="checkbox" class="form-check-input">
-                        <span v-html="topic.value"></span>
-                    </label>
-                </div>
-            </div>
-        </search-card>
-        <div v-for="(data, date) in event.schedule" class="hipeac-card mb-2">
-            <div class="row">
-                <div class="col-12 col-md-2">
-                    <display-md class="mt-0 mb-3 text-left">{{ date | moment('dddd') }}<br>{{ date | moment }}</display-md>
-                    <div v-if="data.breaks">
-                        <ul class="list-unstyled text-secondary">
-                            <li v-for="bre in data.breaks" :key="bre.id" class="text-sm">
-                                <icon :name="bre.icon" class="sm mr-1"></icon>
-                                <span>{{ bre.startAt }}</span>
-                                <icon name="arrow_forward" class="sm mx-1"></icon>
-                                <span>{{ bre.endAt }}</span>
-                                <span v-if="bre.notes" class="ml-3">{{ bre.notes }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-12 col-md-10">
-                    <div v-if="data.sessions" v-for="(session, idx) in data.sessions" :key="session.id" :v-hide="filteredSessionIds.indexOf(session.id) < 0">
-                        <hr v-if="idx > 0">
-                        <div class="col-session">
-                            <span class="float-right badge badges-session ml-3 ml-md-4 mb-2 mb-md-3 mt-1 mt-md-0" :class="session.badgeColor">{{ session.session_type.value }}</span>
-                            <catchphrase class="mb-1 d-inline-block mr-2">
-                                <span>{{ session.startAt }}</span>
-                                <span class="text-secondary text-smr">&nbsp; - &nbsp;{{ session.endAt }} / </span>
-                                <span class="text-secondary text-smr text-nowrap" v-if="event.rooms[session.room]">{{ event.rooms[session.room].name }}</span>
-                            </catchphrase><br>
-                            <router-link :to="{name: 'session', params: {sessionId: session.id}}">
-                                <span>{{ session.title }}</span>
-                            </router-link>
-                            <div v-if="session.isKeynote && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" class="media mt-2">
-                                <img :src="keynotesDict[session.id].main_speaker.profile.avatar_url" class="rounded-circle avatar md mr-3">
-                                <div class="media-body">
-                                    <h6 class="mt-0 mb-1">{{ keynotesDict[session.id].main_speaker.profile.name }}</h6>
-                                    <p v-if="keynotesDict[session.id].main_speaker.profile.institution" class="text-sm">{{ keynotesDict[session.id].main_speaker.profile.institution.name }}<br>{{ keynotesDict[session.id].main_speaker.profile.institution.country.name }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div v-if="event && event.sessions.length">
+    <search-card placeholder="Search by type, title, main speaker, project, topics..." :showFiltersButton="topics.length > 0" class="mb-2">
+      <filters-clear :onClick="resetFilters"></filters-clear>
+      <div v-if="sessionTypes">
+        <h6 class="d-inline display-sm mr-2">Session types</h6>
+        <div v-for="st in sessionTypes" :key="st.id" class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input v-model="filters.sessionTypes" :value="st.id" type="checkbox" class="form-check-input">
+            <span v-html="st.value"></span>
+          </label>
         </div>
+      </div>
+      <div v-if="applicationAreas">
+        <h6 class="d-inline display-sm mr-2">Application areas</h6>
+        <div v-for="level in applicationAreas" :key="level.id" class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input v-model="filters.applicationAreas" :value="level.id" type="checkbox" class="form-check-input">
+            <span v-html="level.value"></span>
+          </label>
+        </div>
+      </div>
+      <div v-if="topics">
+        <h6 class="d-inline display-sm mr-2">Topics</h6>
+        <div v-for="topic in topics" :key="topic.id" class="form-check form-check-inline mr-2">
+          <label class="form-check-label pointer">
+            <input v-model="filters.topics" :value="topic.id" type="checkbox" class="form-check-input">
+            <span v-html="topic.value"></span>
+          </label>
+        </div>
+      </div>
+    </search-card>
+    <div v-for="(data, date) in event.schedule" class="hipeac-card mb-2">
+      <div class="row">
+        <div class="col-12 col-md-2">
+          <display-md class="mt-0 mb-3 text-left">{{ date | moment('dddd') }}<br>{{ date | moment }}</display-md>
+          <div v-if="data.breaks">
+            <ul class="list-unstyled text-secondary">
+              <li v-for="bre in data.breaks" :key="bre.id" class="text-sm">
+                <icon :name="bre.icon" class="sm mr-1"></icon>
+                <span>{{ bre.startAt }}</span>
+                <icon name="arrow_forward" class="sm mx-1"></icon>
+                <span>{{ bre.endAt }}</span>
+                <span v-if="bre.notes" class="ml-3">{{ bre.notes }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-12 col-md-10">
+          <div v-if="data.sessions" v-for="(session, idx) in data.sessions" :key="session.id" :v-hide="filteredSessionIds.indexOf(session.id) < 0">
+            <hr v-if="idx > 0">
+            <div class="col-session">
+              <span class="float-right badge badges-session ml-3 ml-md-4 mb-2 mb-md-3 mt-1 mt-md-0" :class="session.badgeColor">{{ session.session_type.value }}</span>
+              <catchphrase class="mb-1 d-inline-block mr-2">
+                <span>{{ session.startAt }}</span>
+                <span class="text-secondary text-smr">&nbsp; - &nbsp;{{ session.endAt }} / </span>
+                <span class="text-secondary text-smr text-nowrap" v-if="event.rooms[session.room]">{{ event.rooms[session.room].name }}</span>
+              </catchphrase><br>
+              <router-link :to="{name: 'session', params: {sessionId: session.id}}">
+                <span>{{ session.title }}</span>
+              </router-link>
+              <div v-if="session.isKeynote && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" class="media mt-2">
+                <img :src="keynotesDict[session.id].main_speaker.profile.avatar_url" class="rounded-circle avatar md mr-3">
+                <div class="media-body">
+                  <h6 class="mt-0 mb-1">{{ keynotesDict[session.id].main_speaker.profile.name }}</h6>
+                  <p v-if="keynotesDict[session.id].main_speaker.profile.institution" class="text-sm">{{ keynotesDict[session.id].main_speaker.profile.institution.name }}<br>{{ keynotesDict[session.id].main_speaker.profile.institution.country.name }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="{{ id }}-keynotes">
 {% verbatim %}
-    <div v-if="event" class="hipeac-card">
-        <div class="row">
-            <div v-for="keynote in keynotes" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
-                <p><strong>{{ keynote.date | moment('dddd, MMM Do') }}</strong> / <span class="text-nowrap">{{ keynote.startAt }} - {{ keynote.endAt }}</span></p>
-                <div v-if="keynote.main_speaker && keynote.main_speaker.profile">
-                    <img :src="keynote.main_speaker.profile.avatar_url" class="rounded-circle float-right ml-3 mb-3">
-                    <h6 class="text-light-weight">{{ keynote.main_speaker.profile.name }}</h6>
-                </div>
-                <h5 class="text-light-weight mb-auto">{{ keynote.title }}</h5>
-                <marked :text="keynote.excerpt" class="mt-3"></marked>
-                <router-link :to="{name: 'session', params: {sessionId: keynote.id}}">
-                    <span class="text-sm"><icon name="add" class="sm mr-1"></icon>More info</span>
-                </router-link>
-            </div>
+  <div v-if="event" class="hipeac-card">
+    <div class="row">
+      <div v-for="keynote in keynotes" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
+        <p><strong>{{ keynote.date | moment('dddd, MMM Do') }}</strong> / <span class="text-nowrap">{{ keynote.startAt }} - {{ keynote.endAt }}</span></p>
+        <div v-if="keynote.main_speaker && keynote.main_speaker.profile">
+          <img :src="keynote.main_speaker.profile.avatar_url" class="rounded-circle float-right ml-3 mb-3">
+          <h6 class="text-light-weight">{{ keynote.main_speaker.profile.name }}</h6>
         </div>
+        <h5 class="text-light-weight mb-auto">{{ keynote.title }}</h5>
+        <marked :text="keynote.excerpt" class="mt-3"></marked>
+        <router-link :to="{name: 'session', params: {sessionId: keynote.id}}">
+          <span class="text-sm"><icon name="add" class="sm mr-1"></icon>More info</span>
+        </router-link>
+      </div>
     </div>
+  </div>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="{{ id }}-papers">
 {% verbatim %}
-    <div v-if="event" class="hipeac-card">
-        <div v-for="papers in papers">
-            <display-sm>{{ papers.date | moment }}: {{ papers.title }}</display-sm>
-            <marked :text="papers.summary"></marked>
-        </div>
+  <div v-if="event" class="hipeac-card">
+    <div v-for="papers in papers">
+      <display-sm>{{ papers.date | moment }}: {{ papers.title }}</display-sm>
+      <marked :text="papers.summary"></marked>
     </div>
+  </div>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="{{ id }}-posters">
 {% verbatim %}
-    <div v-if="event && posters.length" class="hipeac-card">
-        <div class="text-center">
-            <catchphrase>HiPEAC offers attendees the chance to display a poster highlighting their work in {{ posters.length }} different poster sessions. To participate in the poster session, simply select the relevant tick box on your registration form.</catchphrase>
-        </div>
-        <hr class="my-4">
-        <div class="row">
-            <div v-for="posterSession in posters" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
-                <p><strong>{{ posterSession.date | moment('dddd, MMM Do') }}</strong> / <span class="text-nowrap">{{ posterSession.startAt }} - {{ posterSession.endAt }}</span></p>
-                <h5 class="text-light-weight mb-auto">{{ posterSession.title }}</h5>
-                <marked :text="posterSession.excerpt" class="mt-3"></marked>
-                <router-link :to="{name: 'session', params: {sessionId: posterSession.id}}">
-                    <span class="text-sm"><icon name="add" class="sm mr-1"></icon>More info</span>
-                </router-link>
-            </div>
-        </div>
+  <div v-if="event && posters.length" class="hipeac-card">
+    <div class="text-center">
+      <catchphrase>HiPEAC offers attendees the chance to display a poster highlighting their work in {{ posters.length }} different poster sessions. To participate in the poster session, simply select the relevant tick box on your registration form.</catchphrase>
     </div>
+    <hr class="my-4">
+    <div class="row">
+      <div v-for="posterSession in posters" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
+        <p><strong>{{ posterSession.date | moment('dddd, MMM Do') }}</strong> / <span class="text-nowrap">{{ posterSession.startAt }} - {{ posterSession.endAt }}</span></p>
+        <h5 class="text-light-weight mb-auto">{{ posterSession.title }}</h5>
+        <marked :text="posterSession.excerpt" class="mt-3"></marked>
+        <router-link :to="{name: 'session', params: {sessionId: posterSession.id}}">
+          <span class="text-sm"><icon name="add" class="sm mr-1"></icon>More info</span>
+        </router-link>
+      </div>
+    </div>
+  </div>
 {% endverbatim %}
 </script>

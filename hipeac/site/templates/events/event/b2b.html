@@ -10,119 +10,119 @@
 {% block subtitle %}B2B @ {{ event }}{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a class="nav-link" href="{{ event.get_absolute_url }}"><i class="material-icons mr-1">arrow_back</i>Back to conference</a>
-    </li>
-    <li class="nav-item">
-        <a is="router-link" :to="{name: 'slots'}" class="nav-link" exact>Reserve a slot</a>
-    </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ event.get_absolute_url }}"><i class="material-icons mr-1">arrow_back</i>Back to conference</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'slots'}" class="nav-link" exact>Reserve a slot</a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-b2b-url="{% url 'v1:event-b2b' event.id %}" class="container">
-        <div is="router-view"></div>
-    </div>
+  <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-b2b-url="{% url 'v1:event-b2b' event.id %}" class="container">
+    <div is="router-view"></div>
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-    {% include './v-b2b-slots.html' with id='v-slots' %}
+  {% include './v-b2b-slots.html' with id='v-slots' %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js file event_b2b %}
-    <script>
-        var Store = new Vuex.Store({
-            state: {
-                user: {
-                    isAuthenticated: USER_IS_AUTHENTICATED,
-                    isRegistered: false
-                },
-                event: null,
-                slots: [],
-                userSlots: []
-            },
-            mutations: {
-                fetchEvent: function (state) {
-                    ajax().get($('#urls').data('event-url')).done(function (res) {
-                        state.event = Object.freeze(mapper().events([res])[0]);
-                    });
-                },
-                fetchSlots: function (state) {
-                    var self = this;
-                    ajax().get($('#urls').data('b2b-url')).done(function (res) {
-                        state.userSlots = Object.freeze(_.where(res, {reserved_by: USER_ID}));
-                        state.slots = Object.freeze(mapper().b2bSlots(res));
-                    });
-                }
-            }
-        });
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        user: {
+          isAuthenticated: USER_IS_AUTHENTICATED,
+          isRegistered: false
+        },
+        event: null,
+        slots: [],
+        userSlots: []
+      },
+      mutations: {
+        fetchEvent: function (state) {
+          ajax().get($('#urls').data('event-url')).done(function (res) {
+            state.event = Object.freeze(mapper().events([res])[0]);
+          });
+        },
+        fetchSlots: function (state) {
+          var self = this;
+          ajax().get($('#urls').data('b2b-url')).done(function (res) {
+            state.userSlots = Object.freeze(_.where(res, {reserved_by: USER_ID}));
+            state.slots = Object.freeze(mapper().b2bSlots(res));
+          });
+        }
+      }
+    });
 
-        var SlotsView = {
-            template: '#v-slots',
-            computed: _.extend(
-                Vuex.mapState(['event', 'slots', 'userSlots']), {
-                userSlotIds: function () {
-                    return _.pluck(this.userSlots, 'id');
-                },
-                niceDates: function () {
-                    if (!this.slots.length) return '';
+    var SlotsView = {
+      template: '#v-slots',
+      computed: _.extend(
+        Vuex.mapState(['event', 'slots', 'userSlots']), {
+        userSlotIds: function () {
+          return _.pluck(this.userSlots, 'id');
+        },
+        niceDates: function () {
+          if (!this.slots.length) return '';
 
-                    var format = 'dddd, D MMMM';
-                    var dates = _.uniq(_.pluck(this.slots, 'date'));
-                    var initialDates = _.initial(dates).map(function (obj) {
-                        return moment(obj).format(format);
-                    });
-                    var lastDate = _.last(dates);
-                    return (initialDates.length)
-                        ? initialDates.join(', ') + ' or ' + moment(lastDate).format(format)
-                        : moment(lastDate).format(format);
-                }
-            }),
-            methods: {
-                free: function (slot) {
-                    this.reserve(slot, null);
-                },
-                reserve: function (slot, userId) {
-                    var store = this.$store;
-                    slot.reserved_by = (userId === null) ? userId : USER_ID;
-                    ajax().put(slot.url, slot).then(function (res) {
-                        store.commit('fetchSlots');
-                    });
-                }
-            }
-        };
+          var format = 'dddd, D MMMM';
+          var dates = _.uniq(_.pluck(this.slots, 'date'));
+          var initialDates = _.initial(dates).map(function (obj) {
+            return moment(obj).format(format);
+          });
+          var lastDate = _.last(dates);
+          return (initialDates.length)
+            ? initialDates.join(', ') + ' or ' + moment(lastDate).format(format)
+            : moment(lastDate).format(format);
+        }
+      }),
+      methods: {
+        free: function (slot) {
+          this.reserve(slot, null);
+        },
+        reserve: function (slot, userId) {
+          var store = this.$store;
+          slot.reserved_by = (userId === null) ? userId : USER_ID;
+          ajax().put(slot.url, slot).then(function (res) {
+            store.commit('fetchSlots');
+          });
+        }
+      }
+    };
 
-        var Router = new VueRouter({
-            linkActiveClass: 'active',
-            routes: [
-                {
-                    name: 'slots',
-                    path: '/',
-                    pathToRegexpOptions: {strict: true},
-                    component: SlotsView
-                }
-            ]
-        });
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'slots',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: SlotsView
+        }
+      ]
+    });
 
-        new Vue({
-            el: '#vue',
-            store: Store,
-            router: Router,
-            computed: _.extend(
-                Vuex.mapState(['user', 'event']), {
-            }),
-            beforeCreate: function () {
-                if (this.$route.path.substr(-1) != '/') {
-                    this.$router.push({'path': this.$route.path + '/'});
-                }
-            },
-            created: function () {
-                $.when(
-                    this.$store.commit('fetchEvent'),
-                    this.$store.commit('fetchSlots')
-                );
-            }
-        });
-    </script>
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      }),
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      },
+      created: function () {
+        $.when(
+          this.$store.commit('fetchEvent'),
+          this.$store.commit('fetchSlots')
+        );
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}

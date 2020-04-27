@@ -7,149 +7,149 @@
 {% block subtitle %}Welcome to HiPEAC!{% endblock %}
 
 {% block submenu %}
-    <li class="nav-item">
-        <a href="{% url 'events' %}" class="nav-link" exact>Join an event <i class="material-icons sm">arrow_forward</i></a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'network' %}#/members/membership/" class="nav-link">Become a member <i class="material-icons sm">arrow_forward</i></a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'jobs' %}" class="nav-link">Find your next job <i class="material-icons sm">arrow_forward</i></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="https://twitter.com/hipeac" target="_blank"><span is="twitter-icon"></span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="https://www.hipeac.net/youtube/" target="_blank"><span is="youtube-icon"></span></a>
-    </li>
+  <li class="nav-item">
+    <a href="{% url 'events' %}" class="nav-link" exact>Join an event <i class="material-icons sm">arrow_forward</i></a>
+  </li>
+  <li class="nav-item">
+    <a href="{% url 'network' %}#/members/membership/" class="nav-link">Become a member <i class="material-icons sm">arrow_forward</i></a>
+  </li>
+  <li class="nav-item">
+    <a href="{% url 'jobs' %}" class="nav-link">Find your next job <i class="material-icons sm">arrow_forward</i></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://twitter.com/hipeac" target="_blank"><span is="twitter-icon"></span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.hipeac.net/linkedin/" target="_blank"><span is="linkedin-icon"></span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.hipeac.net/youtube/" target="_blank"><span is="youtube-icon"></span></a>
+  </li>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="display-block mb-5">
-            <h2 class="display display-lg"><span>HiPEAC is a European network of almost 2,000 world-class computing systems researchers, industry representatives and students.</span></h2>
-        </div>
-        <div class="alert alert-warning text-center" role="alert" style="font-size: inherit">
-            Due to the COVID-19 pandemic, the <strong>Spring CSW in Tampere has been postponed</strong> to Autumn.
-            There will be no Spring CSW in 2020.<br>
-            We will update the dates once we have more details about the event.
-            Be safe out there.
-        </div>
-        {% verbatim %}
-        <div v-if="upcomingEvent" v-cloak>
-            <div class="hipeac-card rounded-0 rounded-top mb-0">
-                <a :href="upcomingEvent.href" class="btn btn-lg btn-outline-primary btn-block">Join us <span class="d-none d-md-inline-block">in {{ upcomingEvent.city }}</span> for #{{ upcomingEvent.hashtag }}!  <i class="material-icons">arrow_forward</i></a>
-            </div>
-            <a :href="upcomingEvent.href"><img v-if="upcomingEvent.images" :src="upcomingEvent.images.lg" class="border border-top-0 rounded-bottom w-100" style="margin-bottom:30px"></a>
-        </div>
-        {% endverbatim %}
-        <div class="row text-center text-sm">
-            <div class="col-12">
-                <div class="hipeac-card">
-                    <h5 class="catchphrase mb-3">HiPEAC provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.</h5>
-                    <div class="row">
-                        <div class="col">
-                            <a href="{% url 'network' %}#/benefits/" class="btn btn-light btn-block mt-1">
-                                <span>For researchers <i class="material-icons sm">arrow_forward</i></span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a href="{% url 'network' %}#/benefits/industry/" class="btn btn-light btn-block mt-1">
-                                <span>For industry <i class="material-icons sm">arrow_forward</i></span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a href="{% url 'network' %}#/benefits/projects/" class="btn btn-light btn-block mt-1">
-                                <span>For projects <i class="material-icons sm">arrow_forward</i></span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a href="{% url 'network' %}#/benefits/students/" class="btn btn-light btn-block mt-1">
-                                <span>For students <i class="material-icons sm">arrow_forward</i></span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <a href="{% url 'network' %}#/benefits/innovation/" class="btn btn-light btn-block mt-1">
-                                <span>For innovators <i class="material-icons sm">arrow_forward</i></span>
-                            </a>
-                        </div>
-                    </div>
-                    <hr class="my-4">
-                    <div class="row">
-                        <div class="col">
-                            <a href="/collaboration-grants/" class="btn btn-lg btn-outline-secondary btn-block">HiPEAC Collaboration Grants call <i class="material-icons">arrow_forward</i></a>
-                        </div>
-                        <div class="col">
-                            <a href="/jobs/#/internships/" class="btn btn-lg btn-outline-secondary btn-block">HiPEAC Internships Programme <i class="material-icons">arrow_forward</i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-12 col-lg-4 d-flex align-items-stretch">
-                <div class="hipeac-card">
-                    <div is="event-list" :items="events" :min="10" :max="15"></div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-5 d-flex align-items-stretch">
-                <div is="article-card" title="Latest news" :max="10" :show-more="true"></div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3 d-flex align-items-stretch">
-                <div class="hipeac-card p-3">
-                    <a class="twitter-timeline" data-height="900" data-dnt="true" href="https://twitter.com/hipeac"></a>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="display-block mb-5">
+      <h2 class="display display-lg"><span>HiPEAC is a European network of almost 2,000 world-class computing systems researchers, industry representatives and students.</span></h2>
     </div>
+    <div class="alert alert-warning text-center" role="alert" style="font-size: inherit">
+      Due to the COVID-19 pandemic, the <strong>Spring CSW in Tampere has been postponed</strong> to Autumn.
+      There will be no Spring CSW in 2020.<br>
+      We will update the dates once we have more details about the event.
+      Be safe out there.
+    </div>
+    {% verbatim %}
+    <div v-if="upcomingEvent" v-cloak>
+      <div class="hipeac-card rounded-0 rounded-top mb-0">
+        <a :href="upcomingEvent.href" class="btn btn-lg btn-outline-primary btn-block">Join us <span class="d-none d-md-inline-block">in {{ upcomingEvent.city }}</span> for #{{ upcomingEvent.hashtag }}!  <i class="material-icons">arrow_forward</i></a>
+      </div>
+      <a :href="upcomingEvent.href"><img v-if="upcomingEvent.images" :src="upcomingEvent.images.lg" class="border border-top-0 rounded-bottom w-100" style="margin-bottom:30px"></a>
+    </div>
+    {% endverbatim %}
+    <div class="row text-center text-sm">
+      <div class="col-12">
+        <div class="hipeac-card">
+          <h5 class="catchphrase mb-3">HiPEAC provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.</h5>
+          <div class="row">
+            <div class="col">
+              <a href="{% url 'network' %}#/benefits/" class="btn btn-light btn-block mt-1">
+                <span>For researchers <i class="material-icons sm">arrow_forward</i></span>
+              </a>
+            </div>
+            <div class="col">
+              <a href="{% url 'network' %}#/benefits/industry/" class="btn btn-light btn-block mt-1">
+                <span>For industry <i class="material-icons sm">arrow_forward</i></span>
+              </a>
+            </div>
+            <div class="col">
+              <a href="{% url 'network' %}#/benefits/projects/" class="btn btn-light btn-block mt-1">
+                <span>For projects <i class="material-icons sm">arrow_forward</i></span>
+              </a>
+            </div>
+            <div class="col">
+              <a href="{% url 'network' %}#/benefits/students/" class="btn btn-light btn-block mt-1">
+                <span>For students <i class="material-icons sm">arrow_forward</i></span>
+              </a>
+            </div>
+            <div class="col">
+              <a href="{% url 'network' %}#/benefits/innovation/" class="btn btn-light btn-block mt-1">
+                <span>For innovators <i class="material-icons sm">arrow_forward</i></span>
+              </a>
+            </div>
+          </div>
+          <hr class="my-4">
+          <div class="row">
+            <div class="col">
+              <a href="/collaboration-grants/" class="btn btn-lg btn-outline-secondary btn-block">HiPEAC Collaboration Grants call <i class="material-icons">arrow_forward</i></a>
+            </div>
+            <div class="col">
+              <a href="/jobs/#/internships/" class="btn btn-lg btn-outline-secondary btn-block">HiPEAC Internships Programme <i class="material-icons">arrow_forward</i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-12 col-lg-4 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <div is="event-list" :items="events" :min="10" :max="15"></div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-5 d-flex align-items-stretch">
+        <div is="article-card" title="Latest news" :max="10" :show-more="true"></div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3 d-flex align-items-stretch">
+        <div class="hipeac-card p-3">
+          <a class="twitter-timeline" data-height="900" data-dnt="true" href="https://twitter.com/hipeac"></a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block scripts %}
 {% compress js inline %}
-    <script>
-        new Vue({
-            el: '#vue',
-            data: function () {
-                return {
-                    events: null,
-                    upcomingEvent: null
-                };
-            },
-            methods: {
-                fetchEvents: function () {
-                    var self = this;
-                    api().getEvents().done(function (res) {
-                        self.events = Object.freeze(mapper().events(res));
-                        upcomingEvents = self.events.slice().filter(function (obj) {
-                            return obj.past == false;
-                        });
-                        if (upcomingEvents.length > 0) {
-                            self.upcomingEvent = upcomingEvents.reverse()[0];
-                        }
-                    });
-                }
-            },
-            created: function () {
-                $.when(
-                    this.fetchEvents()
-                );
+  <script>
+    new Vue({
+      el: '#vue',
+      data: function () {
+        return {
+          events: null,
+          upcomingEvent: null
+        };
+      },
+      methods: {
+        fetchEvents: function () {
+          var self = this;
+          api().getEvents().done(function (res) {
+            self.events = Object.freeze(mapper().events(res));
+            upcomingEvents = self.events.slice().filter(function (obj) {
+              return obj.past == false;
+            });
+            if (upcomingEvents.length > 0) {
+              self.upcomingEvent = upcomingEvents.reverse()[0];
             }
-        });
-    </script>
+          });
+        }
+      },
+      created: function () {
+        $.when(
+          this.fetchEvents()
+        );
+      }
+    });
+  </script>
 {% endcompress %}
 {% endblock %}
 
 {% block head_scripts %}
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 {% endblock %}
 
 {% block structured_data %}
-    <meta name="twitter:site" content="@hipeac">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" property="og:title" content="HiPEAC">
-    <meta name="twitter:description" property="og:description" content="HiPEAC is a European network of almost 2,000 world-class computing systems researchers, industry representatives and students. It provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.">
-    <meta property="og:type" content="website">
+  <meta name="twitter:site" content="@hipeac">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" property="og:title" content="HiPEAC">
+  <meta name="twitter:description" property="og:description" content="HiPEAC is a European network of almost 2,000 world-class computing systems researchers, industry representatives and students. It provides a platform for cross-disciplinary research collaboration, promotes the transformation of research results into products and services, and is an incubator for the next generation of world-class computer scientists.">
+  <meta property="og:type" content="website">
 {% endblock %}
