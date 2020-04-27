@@ -1,8 +1,16 @@
-The HiPEAC api/website uses [Django][1] and the [Django REST Framework][2].
+HiPEAC.net
+==========
 
-### Application dependencies
+[![travis-badge]][travis]
+[![codecov-badge]][codecov]
+[![license-badge]](LICENSE)
 
-The application uses [Pipenv][3] to manage Python packages. While in development, you will need to install
+The HiPEAC api/website uses [Django][django] and the [Django REST Framework][drf].
+
+Application dependencies
+------------------------
+
+The application uses [Pipenv][pipenv] to manage Python packages. While in development, you will need to install
 all dependencies (includes packages like `debug_toolbar`):
 
     $ pipenv install --dev
@@ -12,25 +20,36 @@ Update dependencies (and manually update `requirements.txt`):
 
     $ pipenv update --dev && pipenv lock -r
 
-### Running the server
+Running the server
+------------------
 
+    $ python manage.py migrate 
     $ python manage.py runserver
 
-### Running tests
+Running tests
+-------------
 
     $ pytest --cov=hipeac --cov-report=term
 
-### Run Celery
+Run Celery
+----------
 
     $ celery worker -B -A hipeac
 
-### Style guide
+Style guide
+-----------
 
-Unless otherwise specified, follow [Django Coding Style][4]. Tab size is 4 **spaces**.
-Maximum line length is 120. All changes should include tests and pass `flake8`.
+Tab size is 4 spaces. Max line length is 120. You should run `black` before committing any change.
+
+    $ black hipeac
 
 
-[1]: https://www.djangoproject.com/
-[2]: https://www.django-rest-framework.org/
-[3]: https://docs.pipenv.org/#install-pipenv-today
-[4]: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/
+[travis]: https://travis-ci.com/hipeac/hipeac?branch=master
+[travis-badge]: https://api.travis-ci.com/hipeac/hipeac.svg?branch=master
+[codecov]: https://codecov.io/gh/hipeac/hipeac
+[codecov-badge]: https://codecov.io/gh/hipeac/hipeac/branch/master/graph/badge.svg
+[license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+
+[django]: https://www.djangoproject.com/
+[drf]: https://www.django-rest-framework.org/
+[pipenv]: https://docs.pipenv.org/#install-pipenv-today
