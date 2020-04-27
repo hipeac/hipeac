@@ -9,23 +9,32 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('hipeac', '0022_privatefile'),
+        ("hipeac", "0022_privatefile"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='jobevaluation',
-            name='job',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='evaluation', to='hipeac.Job'),
+            model_name="jobevaluation",
+            name="job",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, related_name="evaluation", to="hipeac.Job"
+            ),
         ),
         migrations.AddField(
-            model_name='jobevaluation',
-            name='selected_user',
-            field=models.ForeignKey(blank=True, help_text='Internal use only.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='selected_jobs', to=settings.AUTH_USER_MODEL),
+            model_name="jobevaluation",
+            name="selected_user",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Internal use only.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="selected_jobs",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='jobevaluation',
-            name='selected_candidate',
+            model_name="jobevaluation",
+            name="selected_candidate",
             field=models.CharField(blank=True, max_length=250, null=True),
         ),
     ]

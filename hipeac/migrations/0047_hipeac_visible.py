@@ -6,13 +6,9 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0046_hipeac_hipeacpartner'),
+        ("hipeac", "0046_hipeac_hipeacpartner"),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='hipeac',
-            name='visible',
-            field=models.BooleanField(default=False),
-        ),
+        migrations.AddField(model_name="hipeac", name="visible", field=models.BooleanField(default=False),),
     ]

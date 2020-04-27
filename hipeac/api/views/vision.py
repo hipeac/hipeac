@@ -6,6 +6,6 @@ from ..serializers import VisionListSerializer
 
 
 class VisionViewSet(ListModelMixin, GenericViewSet):
-    queryset = Vision.objects.published().prefetch_related('images', 'links')
+    queryset = Vision.objects.published().prefetch_related("images", "links")
     pagination_class = None
     serializer_class = VisionListSerializer

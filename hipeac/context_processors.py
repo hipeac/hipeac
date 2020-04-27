@@ -6,6 +6,4 @@ def app(request):
 
 
 def sentry(request):
-    return {
-        'GIT_REV': os.environ.get('GIT_REV', None)
-    }
+    return {"GIT_REV": os.environ.get("GIT_REV", None)}

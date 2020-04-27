@@ -10,17 +10,16 @@ class ActionPointListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActionPoint
-        exclude = ('description', 'owners')
+        exclude = ("description", "owners")
 
     def get_users(self, obj):
         return [u.profile.name for u in obj.owners.all()]
 
 
 class MeetingListSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Meeting
-        exclude = ('description',)
+        exclude = ("description",)
 
 
 class MeetingSerializer(serializers.ModelSerializer):

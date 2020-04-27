@@ -7,13 +7,15 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0006_auto_20181206_1659'),
+        ("hipeac", "0006_auto_20181206_1659"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='job',
-            name='institution',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='jobs', to='hipeac.Institution'),
+            model_name="job",
+            name="institution",
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.SET_NULL, related_name="jobs", to="hipeac.Institution"
+            ),
         ),
     ]

@@ -9,17 +9,19 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('hipeac', '0047_hipeac_visible'),
+        ("hipeac", "0047_hipeac_visible"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='hipeacpartner',
-            name='representatives',
-        ),
+        migrations.RemoveField(model_name="hipeacpartner", name="representatives",),
         migrations.AddField(
-            model_name='hipeacpartner',
-            name='representative',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='as_representative', to=settings.AUTH_USER_MODEL),
+            model_name="hipeacpartner",
+            name="representative",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="as_representative",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

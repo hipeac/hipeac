@@ -6,21 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0012_registration_manual_extra_fees'),
+        ("hipeac", "0012_registration_manual_extra_fees"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='session',
-            options={'ordering': ['date', 'start_at', 'room__position', 'end_at']},
+            name="session", options={"ordering": ["date", "start_at", "room__position", "end_at"]},
         ),
-        migrations.RemoveField(
-            model_name='video',
-            name='project',
-        ),
+        migrations.RemoveField(model_name="video", name="project",),
         migrations.AddField(
-            model_name='video',
-            name='projects',
-            field=models.ManyToManyField(blank=True, related_name='videos', to='hipeac.Project'),
+            model_name="video",
+            name="projects",
+            field=models.ManyToManyField(blank=True, related_name="videos", to="hipeac.Project"),
         ),
     ]

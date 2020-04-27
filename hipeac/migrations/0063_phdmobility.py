@@ -10,31 +10,69 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('hipeac', '0062_auto_20200219_1603'),
+        ("hipeac", "0062_auto_20200219_1603"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PhdMobility',
+            name="PhdMobility",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('internship', 'Internship'), ('collaboration', 'Collaboration Grant')], default='internship', max_length=16)),
-                ('title', models.CharField(max_length=250)),
-                ('summary', models.TextField()),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
-                ('location', models.CharField(help_text='Where will the PhD student be working?', max_length=250)),
-                ('country', django_countries.fields.CountryField(max_length=2)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('institution', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='phd_mobilities', to='hipeac.Institution')),
-                ('internship', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='phd_mobilities', to='hipeac.Internship')),
-                ('job', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='phd_mobilities', to='hipeac.Job')),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='phd_mobilities', to=settings.AUTH_USER_MODEL)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[("internship", "Internship"), ("collaboration", "Collaboration Grant")],
+                        default="internship",
+                        max_length=16,
+                    ),
+                ),
+                ("title", models.CharField(max_length=250)),
+                ("summary", models.TextField()),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
+                ("location", models.CharField(help_text="Where will the PhD student be working?", max_length=250)),
+                ("country", django_countries.fields.CountryField(max_length=2)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "institution",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="phd_mobilities",
+                        to="hipeac.Institution",
+                    ),
+                ),
+                (
+                    "internship",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="phd_mobilities",
+                        to="hipeac.Internship",
+                    ),
+                ),
+                (
+                    "job",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="phd_mobilities",
+                        to="hipeac.Job",
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="phd_mobilities",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'PhD mobility',
-                'verbose_name_plural': 'PhD mobilities',
-                'ordering': ['-created_at'],
+                "verbose_name": "PhD mobility",
+                "verbose_name_plural": "PhD mobilities",
+                "ordering": ["-created_at"],
             },
         ),
     ]

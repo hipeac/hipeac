@@ -6,13 +6,9 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0039_job_show_in_euraxess'),
+        ("hipeac", "0039_job_show_in_euraxess"),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='job',
-            name='add_to_euraxess',
-            field=models.BooleanField(default=True),
-        ),
+        migrations.AlterField(model_name="job", name="add_to_euraxess", field=models.BooleanField(default=True),),
     ]

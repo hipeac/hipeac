@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0030_sessionproposal'),
+        ("hipeac", "0030_sessionproposal"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='is_ready',
-            field=models.BooleanField(default=False, help_text='Is programme ready?'),
+            model_name="event",
+            name="is_ready",
+            field=models.BooleanField(default=False, help_text="Is programme ready?"),
         ),
     ]

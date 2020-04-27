@@ -6,16 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0054_auto_20191223_1213'),
+        ("hipeac", "0054_auto_20191223_1213"),
     ]
 
     operations = [
+        migrations.AlterModelOptions(name="project", options={"ordering": ["-end_date"]},),
         migrations.AlterModelOptions(
-            name='project',
-            options={'ordering': ['-end_date']},
-        ),
-        migrations.AlterModelOptions(
-            name='session',
-            options={'ordering': ['date', 'session_type__position', 'start_at', 'room__position', 'end_at']},
+            name="session",
+            options={"ordering": ["date", "session_type__position", "start_at", "room__position", "end_at"]},
         ),
     ]

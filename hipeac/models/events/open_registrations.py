@@ -13,8 +13,9 @@ class OpenRegistration(models.Model):
     """
     A session proposal for a conference.
     """
+
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    event = models.ForeignKey('hipeac.OpenEvent', on_delete=models.CASCADE, related_name='registrations')
+    event = models.ForeignKey("hipeac.OpenEvent", on_delete=models.CASCADE, related_name="registrations")
 
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
@@ -30,7 +31,7 @@ class OpenRegistration(models.Model):
     visa_requested = models.BooleanField(default=False)
     visa_sent = models.BooleanField(default=False)
 
-    fields = models.TextField(default='{}')
+    fields = models.TextField(default="{}")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -47,4 +48,4 @@ def open_registration_post_save(sender, instance, created, *args, **kwargs):
         event.save()
 
         email = OpenRegistrationCreatedEmail(instance=instance)
-        send_task('hipeac.tasks.emails.send_from_template', email.data)
+        send_task("hipeac.tasks.emails.send_from_template", email.data)

@@ -7,13 +7,11 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0060_auto_20200214_2031'),
+        ("hipeac", "0060_auto_20200214_2031"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='openevent',
-            name='secret',
-            field=models.UUIDField(default=uuid.uuid4, editable=False),
+            model_name="openevent", name="secret", field=models.UUIDField(default=uuid.uuid4, editable=False),
         ),
     ]

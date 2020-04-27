@@ -9,21 +9,21 @@ from hipeac.tools.csv import ModelCsvWriter
 
 class JobCsvWriter(ModelCsvWriter):
     model = Job
-    custom_fields = ('institution_type',)
-    exclude = ('links', 'evaluation')
-    metadata_fields = ('application_areas', 'career_levels', 'topics')
+    custom_fields = ("institution_type",)
+    exclude = ("links", "evaluation")
+    metadata_fields = ("application_areas", "career_levels", "topics")
 
 
 def csv_keywords_analysis(queryset, filename):
     """
     Given a Jobs queryset, it returns a CSV response with the distribution of keywords.
     """
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="' + filename + '"'
     writer = csv.writer(response)
 
     # Don't use "ID" in uppercase as starting characters for a CSV! Excel don't like.
-    columns = ['keyword', 'hits']
+    columns = ["keyword", "hits"]
     keywords = {}
 
     writer.writerow(columns)

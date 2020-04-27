@@ -1,44 +1,48 @@
 import csv
 
 from datetime import date
-from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 from django.db import connection
 from django.http import HttpResponse
 
-from hipeac.functions import get_new_member_states
-from hipeac.models._legacy.collaborations import Application as CollabApplication
-from hipeac.models import Profile, Session
+from hipeac.models import Profile
 
 
 def csv_users_activity(queryset, filename):
     """
     Given a User queryset, it returns a CSV response.
     """
-    session_ct = ContentType.objects.get_for_model(Session)
     year = date.today().year
     years = range(year - 3, year + 1)
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="' + filename + '"'
     writer = csv.writer(response)
 
     # Don't use "ID" in uppercase as starting characters for a CSV! Excel don't like.
-    columns = ['id', 'Full name', 'Membership date', 'Membership tags', 'Email', 'Affiliation', 'Institution type',
-               'Institution country', 'Affiliates']
+    columns = [
+        "id",
+        "Full name",
+        "Membership date",
+        "Membership tags",
+        "Email",
+        "Affiliation",
+        "Institution type",
+        "Institution country",
+        "Affiliates",
+    ]
 
     for year in years:
         year_str = str(year)
-        columns.append(year_str + ' Publications')
-        columns.append(year_str + ' Paper Awards')
-        columns.append(year_str + ' Conference attendance')
-        columns.append(year_str + ' CSW attendance')
-        columns.append(year_str + ' Organized activities')
-        columns.append(year_str + ' Posted jobs')
-        columns.append(year_str + ' Magazine contributions')
+        columns.append(year_str + " Publications")
+        columns.append(year_str + " Paper Awards")
+        columns.append(year_str + " Conference attendance")
+        columns.append(year_str + " CSW attendance")
+        columns.append(year_str + " Organized activities")
+        columns.append(year_str + " Posted jobs")
+        columns.append(year_str + " Magazine contributions")
 
     writer.writerow(columns)
 
-    for user in queryset.select_related('profile'):
+    for user in queryset.select_related("profile"):
         affiliates = 0
 
         if not user.profile.is_member():
@@ -82,9 +86,9 @@ def csv_users_activity(queryset, filename):
             cursor.execute(query, [user.id, user.id, years[0], years[-1]])
 
             for row in cursor.fetchall():
-                if row[0] == 'conference':
+                if row[0] == "conference":
                     conferences[row[1]] = row[2]
-                if row[0] == 'csw':
+                if row[0] == "csw":
                     csws[row[1]] = row[2]
 
         # Publications
@@ -184,8 +188,17 @@ def csv_users_activity(queryset, filename):
 
         institution_country = user.profile.institution.country.name if user.profile.institution else None
         institution_type = user.profile.institution.type if user.profile.institution else None
-        user_data = [user.id, user.profile.name, user.profile.membership_date, user.profile.membership_tags, user.email,
-                     user.profile.institution, institution_type, institution_country, affiliates]
+        user_data = [
+            user.id,
+            user.profile.name,
+            user.profile.membership_date,
+            user.profile.membership_tags,
+            user.email,
+            user.profile.institution,
+            institution_type,
+            institution_country,
+            affiliates,
+        ]
 
         for year in years:
             user_data.append(publications[year])

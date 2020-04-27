@@ -8,13 +8,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0004_auto_20181204_1113'),
+        ("hipeac", "0004_auto_20181204_1113"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='registration',
-            name='user',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='registrations', to=settings.AUTH_USER_MODEL),
+            model_name="registration",
+            name="user",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="registrations",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

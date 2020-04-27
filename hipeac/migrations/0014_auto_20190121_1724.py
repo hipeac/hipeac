@@ -6,13 +6,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0013_auto_20190121_1650'),
+        ("hipeac", "0013_auto_20190121_1650"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='video',
-            name='youtube_id',
-            field=models.CharField(max_length=40, unique=True),
+            model_name="video", name="youtube_id", field=models.CharField(max_length=40, unique=True),
         ),
     ]

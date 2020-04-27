@@ -6,13 +6,9 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0023_auto_20190214_1116'),
+        ("hipeac", "0023_auto_20190214_1116"),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='event',
-            name='presentation',
-            field=models.TextField(blank=True, null=True),
-        ),
+        migrations.AddField(model_name="event", name="presentation", field=models.TextField(blank=True, null=True),),
     ]

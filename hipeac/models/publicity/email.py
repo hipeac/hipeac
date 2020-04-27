@@ -16,4 +16,4 @@ class PublicityEmail(models.Model):
     keywords = models.TextField(null=True, blank=True, editable=False)
 
     class Meta:
-        db_table = 'hipeac_publicity_email'
+        db_table = "hipeac_publicity_email"

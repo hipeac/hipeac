@@ -6,18 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0061_openevent_secret'),
+        ("hipeac", "0061_openevent_secret"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='openregistration',
-            name='dietary_requirements',
+            model_name="openregistration",
+            name="dietary_requirements",
             field=models.CharField(blank=True, max_length=250, null=True),
         ),
         migrations.AlterField(
-            model_name='openregistration',
-            name='address',
-            field=models.TextField(blank=True, null=True),
+            model_name="openregistration", name="address", field=models.TextField(blank=True, null=True),
         ),
     ]

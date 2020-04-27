@@ -10,17 +10,17 @@ from .generic import UserMixin
 
 @pytest.mark.django_db
 class TestForAnonymous:
-    list_url = reverse('v1:project-list')
+    list_url = reverse("v1:project-list")
     project = None
 
     @pytest.fixture(autouse=True)
     def setup_project(self, db):
         if not self.project:
-            self.project = mommy.make_recipe('hipeac.project')
+            self.project = mommy.make_recipe("hipeac.project")
         return
 
     def get_detail_url(self, id):
-        return reverse('v1:project-detail', args=[id])
+        return reverse("v1:project-detail", args=[id])
 
     def test_list(self, api_client):
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK
@@ -42,7 +42,6 @@ class TestForAnonymous:
 
 
 class TestForAuthenticated(UserMixin, TestForAnonymous):
-
     def test_create(self, api_client):
         api_client.force_authenticate(user=self.user)
         assert api_client.post(self.list_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -59,14 +58,14 @@ class TestForAdministrator(TestForAuthenticated):
     @pytest.fixture(autouse=True)
     def setup_project(self, db):
         if not self.project:
-            self.user_admin = mommy.make_recipe('hipeac.user')
-            self.project = mommy.make_recipe('hipeac.project')
+            self.user_admin = mommy.make_recipe("hipeac.user")
+            self.project = mommy.make_recipe("hipeac.project")
             Permission(content_object=self.project, user=self.user_admin, level=Permission.ADMIN).save()
         return
 
     def test_update(self, api_client, db):
         api_client.force_authenticate(user=self.user_admin)
         detail_url = self.get_detail_url(self.project.id)
-        assert api_client.patch(detail_url, {'name': 'name'}).status_code == status.HTTP_200_OK
+        assert api_client.patch(detail_url, {"name": "name"}).status_code == status.HTTP_200_OK
         assert api_client.post(detail_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         # assert api_client.put(self.list_url, {'name': 'name'}).status_code == status.HTTP_202_ACCEPTED

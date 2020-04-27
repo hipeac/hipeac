@@ -6,16 +6,10 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0053_b2b'),
+        ("hipeac", "0053_b2b"),
     ]
 
     operations = [
-        migrations.AlterModelOptions(
-            name='b2b',
-            options={'ordering': ['date', 'room', 'start_at']},
-        ),
-        migrations.AlterModelTable(
-            name='b2b',
-            table='hipeac_event_b2b',
-        ),
+        migrations.AlterModelOptions(name="b2b", options={"ordering": ["date", "room", "start_at"]},),
+        migrations.AlterModelTable(name="b2b", table="hipeac_event_b2b",),
     ]

@@ -8,18 +8,30 @@ import hipeac.functions
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0003_auto_20181203_1702'),
+        ("hipeac", "0003_auto_20181203_1702"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='institution',
-            name='image',
-            field=models.FileField(blank=True, null=True, upload_to=hipeac.functions.get_images_path, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['png'])], verbose_name='Logo'),
+            model_name="institution",
+            name="image",
+            field=models.FileField(
+                blank=True,
+                null=True,
+                upload_to=hipeac.functions.get_images_path,
+                validators=[django.core.validators.FileExtensionValidator(allowed_extensions=["png"])],
+                verbose_name="Logo",
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='image',
-            field=models.FileField(blank=True, null=True, upload_to=hipeac.functions.get_images_path, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['png'])], verbose_name='Logo'),
+            model_name="project",
+            name="image",
+            field=models.FileField(
+                blank=True,
+                null=True,
+                upload_to=hipeac.functions.get_images_path,
+                validators=[django.core.validators.FileExtensionValidator(allowed_extensions=["png"])],
+                verbose_name="Logo",
+            ),
         ),
     ]

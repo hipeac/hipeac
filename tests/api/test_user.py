@@ -7,13 +7,13 @@ from rest_framework import status
 
 @pytest.mark.django_db
 class TestForAnonymous:
-    account_url = reverse('v1:auth-user-account')
+    account_url = reverse("v1:auth-user-account")
 
-    @pytest.mark.skip(reason='HTTP_405_METHOD_NOT_ALLOWED')
+    @pytest.mark.skip(reason="HTTP_405_METHOD_NOT_ALLOWED")
     def test_list(self, api_client):
         pass
 
-    @pytest.mark.skip(reason='HTTP_405_METHOD_NOT_ALLOWED')
+    @pytest.mark.skip(reason="HTTP_405_METHOD_NOT_ALLOWED")
     def test_create(self, api_client):
         pass
 
@@ -31,32 +31,26 @@ class TestForAnonymous:
 
 @pytest.mark.django_db
 class TestForAuthenticated(TestForAnonymous):
-
     @pytest.fixture(autouse=True)
     def setup_data(self):
-        self.user = mommy.make_recipe('hipeac.user')
+        self.user = mommy.make_recipe("hipeac.user")
         return
 
     def test_account_read(self, api_client):
         api_client.force_authenticate(user=self.user)
         res = api_client.get(self.account_url)
         assert res.status_code == status.HTTP_200_OK
-        assert res.json()['id'] == self.user.id
+        assert res.json()["id"] == self.user.id
 
     def test_account_update(self, api_client):
         api_client.force_authenticate(user=self.user)
         full_data = {
-            'username': 'hipeac',
-            'first_name': 'HiPEAC',
-            'last_name': '5',
-            'profile': {
-                'country': 'BE',
-                'application_areas': [],
-                'topics': [],
-                'projects': []
-            }
+            "username": "hipeac",
+            "first_name": "HiPEAC",
+            "last_name": "5",
+            "profile": {"country": "BE", "application_areas": [], "topics": [], "projects": []},
         }
-        assert api_client.patch(self.account_url, {'username': 'hipeac'}).status_code == status.HTTP_200_OK
+        assert api_client.patch(self.account_url, {"username": "hipeac"}).status_code == status.HTTP_200_OK
         assert api_client.post(self.account_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert api_client.put(self.account_url, full_data).status_code == status.HTTP_200_OK
 

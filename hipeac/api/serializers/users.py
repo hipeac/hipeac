@@ -22,10 +22,10 @@ class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
 
     class Meta:
         model = Profile
-        exclude = ('user', 'is_bouncing', 'is_public', 'is_subscribed')
+        exclude = ("user", "is_bouncing", "is_public", "is_subscribed")
 
     def get_membership_tags(self, obj):
-        return obj.membership_tags.split(',') if obj.membership_tags else []
+        return obj.membership_tags.split(",") if obj.membership_tags else []
 
 
 class ProfileMiniSerializer(ProfileSerializer):
@@ -35,10 +35,10 @@ class ProfileMiniSerializer(ProfileSerializer):
 
     class Meta:
         model = Profile
-        fields = ('name', 'country', 'institution', 'avatar_url', 'topics')
+        fields = ("name", "country", "institution", "avatar_url", "topics")
 
     def get_topics(self, obj):
-        return [int(t) for t in obj.topics.split(',')] if obj.topics else []
+        return [int(t) for t in obj.topics.split(",")] if obj.topics else []
 
 
 class ProfileMembershipSerializer(ProfileSerializer):
@@ -47,10 +47,10 @@ class ProfileMembershipSerializer(ProfileSerializer):
 
     class Meta:
         model = Profile
-        fields = ('name', 'institution', 'second_institution', 'advisor', 'topics')
+        fields = ("name", "institution", "second_institution", "advisor", "topics")
 
     def get_topics(self, obj):
-        return [int(t) for t in obj.topics.split(',')] if obj.topics else []
+        return [int(t) for t in obj.topics.split(",")] if obj.topics else []
 
 
 class ProfileNestedSerializer(ProfileSerializer):
@@ -59,8 +59,17 @@ class ProfileNestedSerializer(ProfileSerializer):
 
     class Meta:
         model = Profile
-        fields = ('name', 'country', 'institution', 'second_institution', 'membership_date', 'membership_tags',
-                  'application_areas', 'topics', 'avatar_url')
+        fields = (
+            "name",
+            "country",
+            "institution",
+            "second_institution",
+            "membership_date",
+            "membership_tags",
+            "application_areas",
+            "topics",
+            "avatar_url",
+        )
 
 
 class ProfilePublicSerializer(ProfileNestedSerializer):
@@ -68,8 +77,19 @@ class ProfilePublicSerializer(ProfileNestedSerializer):
 
     class Meta:
         model = Profile
-        fields = ('bio', 'name', 'country', 'institution', 'second_institution', 'membership_date', 'membership_tags',
-                  'application_areas', 'topics', 'links', 'avatar_url')
+        fields = (
+            "bio",
+            "name",
+            "country",
+            "institution",
+            "second_institution",
+            "membership_date",
+            "membership_tags",
+            "application_areas",
+            "topics",
+            "links",
+            "avatar_url",
+        )
 
 
 # Users
@@ -78,15 +98,15 @@ class ProfilePublicSerializer(ProfileNestedSerializer):
 
 class UserPublicSerializer(serializers.ModelSerializer):
     profile = ProfilePublicSerializer()
-    url = serializers.HyperlinkedIdentityField(view_name='v1:user-detail')
+    url = serializers.HyperlinkedIdentityField(view_name="v1:user-detail")
     href = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'username', 'url', 'href', 'profile')
+        fields = ("id", "username", "url", "href", "profile")
 
     def get_href(self, obj) -> str:
-        return reverse('user', args=[obj.username]) if obj.profile.is_public else None
+        return reverse("user", args=[obj.username]) if obj.profile.is_public else None
 
 
 class UserPublicMiniSerializer(UserPublicSerializer):
@@ -109,4 +129,4 @@ class AuthUserSerializer(NestedUpdateMixin, serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        exclude = ('password', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
+        exclude = ("password", "is_active", "is_staff", "is_superuser", "groups", "user_permissions")

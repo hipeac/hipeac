@@ -6,13 +6,9 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0043_auto_20190917_1316'),
+        ("hipeac", "0043_auto_20190917_1316"),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='profile',
-            name='is_public',
-            field=models.BooleanField(default=True),
-        ),
+        migrations.AlterField(model_name="profile", name="is_public", field=models.BooleanField(default=True),),
     ]

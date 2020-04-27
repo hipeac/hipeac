@@ -14,17 +14,17 @@ class TestForAnonymous:
     @pytest.fixture(autouse=True)
     def setup_session(self, db):
         if not self.session:
-            self.session = mommy.make_recipe('hipeac.session')
+            self.session = mommy.make_recipe("hipeac.session")
         return
 
     def get_detail_url(self, id: int):
-        return reverse('v1:session-detail', args=[id])
+        return reverse("v1:session-detail", args=[id])
 
-    @pytest.mark.skip(reason='HTTP_405_METHOD_NOT_ALLOWED')
+    @pytest.mark.skip(reason="HTTP_405_METHOD_NOT_ALLOWED")
     def test_list(self, api_client):
         pass
 
-    @pytest.mark.skip(reason='HTTP_405_METHOD_NOT_ALLOWED')
+    @pytest.mark.skip(reason="HTTP_405_METHOD_NOT_ALLOWED")
     def test_create(self, api_client):
         pass
 
@@ -43,7 +43,6 @@ class TestForAnonymous:
 
 
 class TestForAuthenticated(UserMixin, TestForAnonymous):
-
     def test_delete(self, api_client):
         api_client.force_authenticate(user=self.user)
         assert api_client.delete(self.get_detail_url(self.session.id)).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -55,27 +54,27 @@ class TestForAdministrator(TestForAuthenticated):
     @pytest.fixture(autouse=True)
     def setup_test_data(self, db, now):
         if not self.test_data:
-            session_type = mommy.make_recipe('hipeac.session_type')
+            session_type = mommy.make_recipe("hipeac.session_type")
             self.test_data = {
-                'title': 'Session title',
-                'session_type': {'id': session_type.id},
-                'application_areas': [],
-                'topics': [],
-                'projects': [],
+                "title": "Session title",
+                "session_type": {"id": session_type.id},
+                "application_areas": [],
+                "topics": [],
+                "projects": [],
             }
         return
 
     @pytest.fixture(autouse=True)
     def setup_session(self, db):
         if not self.session:
-            self.user_admin = mommy.make_recipe('hipeac.user')
-            self.session = mommy.make_recipe('hipeac.session')
+            self.user_admin = mommy.make_recipe("hipeac.user")
+            self.session = mommy.make_recipe("hipeac.session")
             Permission(content_object=self.session, user=self.user_admin, level=Permission.ADMIN).save()
         return
 
     def test_update(self, api_client):
         api_client.force_authenticate(user=self.user_admin)
         detail_url = self.get_detail_url(self.session.id)
-        assert api_client.patch(detail_url, {'title': 'New title'}).status_code == status.HTTP_200_OK
+        assert api_client.patch(detail_url, {"title": "New title"}).status_code == status.HTTP_200_OK
         assert api_client.post(detail_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert api_client.put(detail_url, self.test_data).status_code == status.HTTP_200_OK

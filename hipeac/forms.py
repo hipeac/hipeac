@@ -16,7 +16,7 @@ class HiSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not settings.DEBUG:
-            self.fields['captcha'] = ReCaptchaField()
+            self.fields["captcha"] = ReCaptchaField()
 
 
 class CommaSeparatedChoiceField(MultipleChoiceField):
@@ -30,34 +30,33 @@ class CommaSeparatedChoiceField(MultipleChoiceField):
             self.choices = ()
 
     def prepare_value(self, value):
-        return value.split(',') if isinstance(value, str) else value
+        return value.split(",") if isinstance(value, str) else value
 
     def to_python(self, value):
-        return ','.join(value)
+        return ",".join(value)
 
 
 class MembershipTagsChoiceField(CommaSeparatedChoiceField):
-
     def _get_custom_choices(self):
         return (
-            ('---', (
-                ('member', 'Member'),
-                ('affiliated', 'Affiliated Member'),
-            )),
-            ('--- Geographic attributes', (
-                ('non-eu', 'Outside Europe (associated)'),
-                ('nms', 'New member state (NMS)'),
-            )),
-            ('--- Other attributes', (
-                ('innovation', 'Innovation member'),
-                ('industry', 'Industry member'),
-                ('phd', 'PhD student'),
-                ('staff', 'Staff member'),
-            )),
+            ("---", (("member", "Member"), ("affiliated", "Affiliated Member"),)),
+            (
+                "--- Geographic attributes",
+                (("non-eu", "Outside Europe (associated)"), ("nms", "New member state (NMS)"),),
+            ),
+            (
+                "--- Other attributes",
+                (
+                    ("innovation", "Innovation member"),
+                    ("industry", "Industry member"),
+                    ("phd", "PhD student"),
+                    ("staff", "Staff member"),
+                ),
+            ),
         )
 
     def validate(self, value):
-        if value == '':
+        if value == "":
             return
         validate_membership_tags(value)
 
@@ -71,21 +70,21 @@ class MetadataChoiceField(CommaSeparatedChoiceField):
         return [(m.id, m.value) for m in metadata if m.type == self.metadata_type]
 
     def validate(self, value):
-        if value == '':
+        if value == "":
             return
         validate_comma_separated_integer_list(value)
 
 
 class ApplicationAreasChoiceField(MetadataChoiceField):
-    metadata_type = 'application_area'
+    metadata_type = "application_area"
 
 
 class JobPositionChoiceField(MetadataChoiceField):
-    metadata_type = 'job_position'
+    metadata_type = "job_position"
 
 
 class TopicsChoiceField(MetadataChoiceField):
-    metadata_type = 'topic'
+    metadata_type = "topic"
 
 
 class SessionProposalForm(forms.ModelForm):
@@ -94,7 +93,7 @@ class SessionProposalForm(forms.ModelForm):
 
     class Meta:
         model = SessionProposal
-        exclude = ('created_at', 'updated_at')
+        exclude = ("created_at", "updated_at")
         widgets = {
-            'event': forms.HiddenInput(),
+            "event": forms.HiddenInput(),
         }

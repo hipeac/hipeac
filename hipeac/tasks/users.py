@@ -4,12 +4,13 @@ from celery.schedules import crontab
 from hipeac.tools.notifications.events import RegistrationPendingNotificator
 from hipeac.tools.notifications.users import (
     LinkedInNotificator,
-    MembershipIndustryNotificator, MembershipResearcherNotificator,
-    ResearchTopicsPendingNotificator
+    MembershipIndustryNotificator,
+    MembershipResearcherNotificator,
+    ResearchTopicsPendingNotificator,
 )
 
 
-@periodic_task(run_every=crontab(minute='*/5'))
+@periodic_task(run_every=crontab(minute="*/5"))
 def process_user_notifications():
     LinkedInNotificator().process_data()
     MembershipIndustryNotificator().process_data()

@@ -4,7 +4,7 @@ from django.template.defaultfilters import date as date_filter
 class TemplateEmail:
     template_key_legacy = None
     template = None
-    from_email = 'HiPEAC <management@hipeac.net>'
+    from_email = "HiPEAC <management@hipeac.net>"
 
     def __init__(self, *args, instance, **kwargs) -> None:
         self.instance = instance

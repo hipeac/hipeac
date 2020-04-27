@@ -11,7 +11,7 @@ from .generic import Notificator
 
 
 class LinkedInNotificator(Notificator):
-    category = 'linkedin_account'
+    category = "linkedin_account"
     discard = True
 
     def deleteOne(self, *, user_id: int) -> None:
@@ -40,27 +40,27 @@ class LinkedInNotificator(Notificator):
             cursor.execute(query, [LinkedInOAuth2Provider.id])
 
             for result in cursor.fetchall():
-                bulk_notifications.append((
-                    self.category,  # category
-                    result[0],  # user_id
-                    result[0],  # object_id == user_id
-                    self.to_json({  # data
-                        'discard_id': result[0],
-                    }),
-                    deadline,  # deadline
-                ))
+                bulk_notifications.append(
+                    (
+                        self.category,  # category
+                        result[0],  # user_id
+                        result[0],  # object_id == user_id
+                        self.to_json({"discard_id": result[0]}),  # data
+                        deadline,  # deadline
+                    )
+                )
 
         self.insert(bulk_notifications)
 
     def parse_notification(self, notification: Notification) -> Dict[str, Any]:
         return {
-            'text': f'Connect your LinkedIn and HiPEAC accounts to be able to log in even if you change institutions.',
-            'path': reverse('socialaccount_connections'),
+            "text": f"Connect your LinkedIn and HiPEAC accounts to be able to log in even if you change institutions.",
+            "path": reverse("socialaccount_connections"),
         }
 
 
 class MembershipIndustryNotificator(Notificator):
-    category = 'membership_industry'
+    category = "membership_industry"
     discard = True
 
     def deleteOne(self, *, user_id: int) -> None:
@@ -83,29 +83,29 @@ class MembershipIndustryNotificator(Notificator):
             cursor.execute(query)
 
             for result in cursor.fetchall():
-                bulk_notifications.append((
-                    self.category,  # category
-                    result[0],  # user_id
-                    result[0],  # object_id == user_id
-                    self.to_json({  # data
-                        'discard_id': result[0],
-                    }),
-                    deadline,  # deadline
-                ))
+                bulk_notifications.append(
+                    (
+                        self.category,  # category
+                        result[0],  # user_id
+                        result[0],  # object_id == user_id
+                        self.to_json({"discard_id": result[0]}),  # data
+                        deadline,  # deadline
+                    )
+                )
 
         self.insert(bulk_notifications)
 
     def parse_notification(self, notification: Notification) -> Dict[str, Any]:
         return {
-            'text': 'HiPEAC is always open to new members from industry. '
-                    'HiPEAC membership is FREE and keeps you informed, supported and connected. '
-                    'Become a Member now!',
-            'path': '/network/#/benefits/industry/',
+            "text": "HiPEAC is always open to new members from industry. "
+            "HiPEAC membership is FREE and keeps you informed, supported and connected. "
+            "Become a Member now!",
+            "path": "/network/#/benefits/industry/",
         }
 
 
 class MembershipResearcherNotificator(Notificator):
-    category = 'membership_researcher'
+    category = "membership_researcher"
     discard = True
 
     def deleteOne(self, *, user_id: int) -> None:
@@ -135,29 +135,29 @@ class MembershipResearcherNotificator(Notificator):
             cursor.execute(query)
 
             for result in cursor.fetchall():
-                bulk_notifications.append((
-                    self.category,  # category
-                    result[0],  # user_id
-                    result[0],  # object_id == user_id
-                    self.to_json({  # data
-                        'discard_id': result[0],
-                    }),
-                    deadline,  # deadline
-                ))
+                bulk_notifications.append(
+                    (
+                        self.category,  # category
+                        result[0],  # user_id
+                        result[0],  # object_id == user_id
+                        self.to_json({"discard_id": result[0]}),  # data
+                        deadline,  # deadline
+                    )
+                )
 
         self.insert(bulk_notifications)
 
     def parse_notification(self, notification: Notification) -> Dict[str, Any]:
         return {
-            'text': 'HiPEAC is always open to new members. '
-                    'HiPEAC membership is FREE and keeps you informed, supported and connected. '
-                    'Become a Member now!',
-            'path': '/network/#/benefits/',
+            "text": "HiPEAC is always open to new members. "
+            "HiPEAC membership is FREE and keeps you informed, supported and connected. "
+            "Become a Member now!",
+            "path": "/network/#/benefits/",
         }
 
 
 class ResearchTopicsPendingNotificator(Notificator):
-    category = 'research_topics_pending'
+    category = "research_topics_pending"
     discard = False
 
     def deleteOne(self, *, user_id: int) -> None:
@@ -178,18 +178,20 @@ class ResearchTopicsPendingNotificator(Notificator):
             cursor.execute(query)
 
             for result in cursor.fetchall():
-                bulk_notifications.append((
-                    self.category,  # category
-                    result[0],  # user_id
-                    result[0],  # object_id == user_id
-                    '{}',  # data
-                    deadline,  # deadline
-                ))
+                bulk_notifications.append(
+                    (
+                        self.category,  # category
+                        result[0],  # user_id
+                        result[0],  # object_id == user_id
+                        "{}",  # data
+                        deadline,  # deadline
+                    )
+                )
 
         self.insert(bulk_notifications)
 
     def parse_notification(self, notification: Notification) -> Dict[str, Any]:
         return {
-            'text': f'Include your **areas of expertise** in your research profile to help other researchers find you.',
-            'path': f"{reverse('user_profile')}#/research/",
+            "text": f"Include your **areas of expertise** in your research profile to help other researchers find you.",
+            "path": f"{reverse('user_profile')}#/research/",
         }

@@ -8,13 +8,19 @@ import hipeac.functions
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0007_auto_20181212_1215'),
+        ("hipeac", "0007_auto_20181212_1215"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='image',
-            field=models.FileField(blank=True, null=True, upload_to=hipeac.functions.get_images_path, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['jpg'])], verbose_name='Avatar'),
+            model_name="profile",
+            name="image",
+            field=models.FileField(
+                blank=True,
+                null=True,
+                upload_to=hipeac.functions.get_images_path,
+                validators=[django.core.validators.FileExtensionValidator(allowed_extensions=["jpg"])],
+                verbose_name="Avatar",
+            ),
         ),
     ]

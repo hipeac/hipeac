@@ -1,40 +1,38 @@
-import datetime
-
-from django.core.exceptions import ValidationError
 from django.db import models
-
-from hipeac.models.generic import HipeacCountries
 
 
 class InternshipApplication(models.Model):
     """
     A HiPEAC PhD Internship application.
     """
+
     STATUS_CHOICES = (
-        ('UN', 'Pending'),
-        ('OK', 'Accepted'),
-        ('NO', 'Rejected'),
+        ("UN", "Pending"),
+        ("OK", "Accepted"),
+        ("NO", "Rejected"),
     )
 
-    internship = models.ForeignKey('hipeac.Internship', related_name='applications', on_delete=models.CASCADE)
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='UN')
-    host_decision = models.CharField(max_length=2, choices=STATUS_CHOICES, default='UN')
+    internship = models.ForeignKey("hipeac.Internship", related_name="applications", on_delete=models.CASCADE)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default="UN")
+    host_decision = models.CharField(max_length=2, choices=STATUS_CHOICES, default="UN")
     rank = models.SmallIntegerField(default=0)
     comments = models.TextField()
-    available_from = models.DateField(help_text='YYYY-MM-DD')
-    available_to = models.DateField(help_text='YYYY-MM-DD')
+    available_from = models.DateField(help_text="YYYY-MM-DD")
+    available_to = models.DateField(help_text="YYYY-MM-DD")
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey('auth.User', related_name='internship_applications', null=True,
-                                   on_delete=models.SET_NULL)
+    created_by = models.ForeignKey(
+        "auth.User", related_name="internship_applications", null=True, on_delete=models.SET_NULL
+    )
 
     selected = models.BooleanField(default=False)
-    summary = models.TextField(null=True, blank=True, help_text='Summary sent by the student to HiPEAC.')
-    advisor_string = models.CharField('Advisor', max_length=250, null=True, blank=True,
-                                      help_text='Fill in your advisors\'s name here.')
+    summary = models.TextField(null=True, blank=True, help_text="Summary sent by the student to HiPEAC.")
+    advisor_string = models.CharField(
+        "Advisor", max_length=250, null=True, blank=True, help_text="Fill in your advisors's name here."
+    )
 
     class Meta:
-        ordering = ['-created_at']
-        unique_together = ('internship', 'created_by')
+        ordering = ["-created_at"]
+        unique_together = ("internship", "created_by")
 
     def clean(self):
         """
@@ -72,7 +70,7 @@ class InternshipApplication(models.Model):
         pass
 
     def __str__(self):
-        return f'{self.applicant().profile.name} (to {self.internship.institution})'
+        return f"{self.applicant().profile.name} (to {self.internship.institution})"
 
     def applicant(self):
         return self.created_by
@@ -82,9 +80,10 @@ class InternshipApplication(models.Model):
         return self.available_from.year
 
     def is_granted(self):
-        return self.status == 'OK'
+        return self.status == "OK"
+
     is_granted.boolean = True
-    is_granted.short_description = 'Granted'
+    is_granted.short_description = "Granted"
 
     def is_editable_by_user(self, user):
         """

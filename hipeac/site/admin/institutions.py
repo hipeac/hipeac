@@ -14,26 +14,17 @@ class InstitutionAdminForm(ModelForm):
 @admin.register(Institution)
 class InstitutionAdmin(HideDeleteActionMixin, admin.ModelAdmin):
     form = InstitutionAdminForm
-    exclude = ('updated_at',)
+    exclude = ("updated_at",)
 
-    list_display = ('id', 'name', 'type', 'country')
-    list_filter = ('type',)
-    search_fields = ('name', 'local_name', 'colloquial_name')
+    list_display = ("id", "name", "type", "country")
+    list_filter = ("type",)
+    search_fields = ("name", "local_name", "colloquial_name")
 
-    autocomplete_fields = ('parent',)
+    autocomplete_fields = ("parent",)
     inlines = (LinksInline, PermissionsInline)
     fieldsets = (
-        (None, {
-            'fields': ('type', 'name', 'local_name', 'colloquial_name'),
-        }),
-        ('INFO', {
-            'fields': (('country', 'location'), 'description', 'image'),
-        }),
-        ('RECRUITMENT', {
-            'fields': ('recruitment_contact', 'recruitment_email'),
-        }),
-        ('METADATA', {
-            'classes': ('collapse',),
-            'fields': ('application_areas', 'topics'),
-        }),
+        (None, {"fields": ("type", "name", "local_name", "colloquial_name")}),
+        ("INFO", {"fields": (("country", "location"), "description", "image")}),
+        ("RECRUITMENT", {"fields": ("recruitment_contact", "recruitment_email")}),
+        ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics")}),
     )

@@ -5,27 +5,22 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveMode
 from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import OpenEvent, OpenRegistration
-from ..serializers import (
-    OpenEventSerializer,
-    OpenRegistrationSerializer
-)
+from ..serializers import OpenEventSerializer, OpenRegistrationSerializer
 
 
 class OpenEventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     queryset = OpenEvent.objects.all()
     serializer_class = OpenEventSerializer
-    lookup_field = 'code'
+    lookup_field = "code"
 
     @action(
-        detail=True,
-        pagination_class=None,
-        serializer_class=OpenRegistrationSerializer,
+        detail=True, pagination_class=None, serializer_class=OpenRegistrationSerializer,
     )
     @never_cache
     def registrations(self, request, *args, **kwargs):
-        secret = request.query_params.get('secret_key', False)
+        secret = request.query_params.get("secret_key", False)
         if not secret or str(self.get_object().secret) != secret:
-            raise PermissionDenied('Please include a valid `secret_key` query parameter in your request.')
+            raise PermissionDenied("Please include a valid `secret_key` query parameter in your request.")
 
         self.queryset = self.get_object().registrations
         return super().list(request, *args, **kwargs)
@@ -34,13 +29,13 @@ class OpenEventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 class OpenRegistrationViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = OpenRegistration.objects.all()
     serializer_class = OpenRegistrationSerializer
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
 
     def create(self, request, *args, **kwargs):
         try:
-            self.request.data["event"] = OpenEvent.objects.get(code=self.request.query_params.get('event', None)).id
+            self.request.data["event"] = OpenEvent.objects.get(code=self.request.query_params.get("event", None)).id
         except OpenEvent.DoesNotExist:
-            raise ValidationError({'event': ['Event does not exist.']})
+            raise ValidationError({"event": ["Event does not exist."]})
         return super().create(request, *args, **kwargs)
 
     @never_cache

@@ -7,18 +7,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0063_phdmobility'),
+        ("hipeac", "0063_phdmobility"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='phdmobility',
-            name='internship',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='phd_mobilities', to='hipeac.Internship'),
+            model_name="phdmobility",
+            name="internship",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="phd_mobilities",
+                to="hipeac.Internship",
+            ),
         ),
         migrations.AlterField(
-            model_name='phdmobility',
-            name='job',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='phd_mobilities', to='hipeac.Job'),
+            model_name="phdmobility",
+            name="job",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="phd_mobilities",
+                to="hipeac.Job",
+            ),
         ),
     ]

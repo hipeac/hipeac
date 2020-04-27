@@ -7,18 +7,38 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0019_video_event'),
+        ("hipeac", "0019_video_event"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='metadata',
-            name='type',
-            field=models.CharField(choices=[('gender', 'Gender'), ('title', 'Title'), ('meal_preference', 'Meal preference'), ('job_position', 'Position'), ('employment_type', 'Employment type'), ('application_area', 'Application area'), ('session_type', 'Session type'), ('topic', 'Topic'), ('project_programme', 'EU project programme')], max_length=32),
+            model_name="metadata",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("gender", "Gender"),
+                    ("title", "Title"),
+                    ("meal_preference", "Meal preference"),
+                    ("job_position", "Position"),
+                    ("employment_type", "Employment type"),
+                    ("application_area", "Application area"),
+                    ("session_type", "Session type"),
+                    ("topic", "Topic"),
+                    ("project_programme", "EU project programme"),
+                ],
+                max_length=32,
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='programme',
-            field=models.ForeignKey(blank=True, limit_choices_to={'type': 'project_programme'}, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='project_project_programme', to='hipeac.Metadata'),
+            model_name="project",
+            name="programme",
+            field=models.ForeignKey(
+                blank=True,
+                limit_choices_to={"type": "project_programme"},
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="project_project_programme",
+                to="hipeac.Metadata",
+            ),
         ),
     ]

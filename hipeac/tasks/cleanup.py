@@ -8,4 +8,4 @@ def truncate_notifications_table():
     """ This resets table ids and cleans the table.
     """
     with connection.cursor() as cursor:
-        cursor.execute('TRUNCATE TABLE hipeac_notification')
+        cursor.execute("TRUNCATE TABLE hipeac_notification")

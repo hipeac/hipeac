@@ -10,17 +10,17 @@ from .generic import UserMixin
 
 @pytest.mark.django_db
 class TestForAnonymous:
-    list_url = reverse('v1:institution-list')
+    list_url = reverse("v1:institution-list")
     institution = None
 
     @pytest.fixture(autouse=True)
     def setup_institution(self, db):
         if not self.institution:
-            self.institution = mommy.make_recipe('hipeac.institution')
+            self.institution = mommy.make_recipe("hipeac.institution")
         return
 
     def get_detail_url(self, id):
-        return reverse('v1:institution-detail', args=[id])
+        return reverse("v1:institution-detail", args=[id])
 
     def test_list(self, api_client):
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK
@@ -42,7 +42,6 @@ class TestForAnonymous:
 
 
 class TestForAuthenticated(UserMixin, TestForAnonymous):
-
     def test_create(self, api_client):
         api_client.force_authenticate(user=self.user)
         assert api_client.post(self.list_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
@@ -62,25 +61,25 @@ class TestForAdministrator(TestForAuthenticated):
     def setup_test_data(self, db):
         if not self.test_data:
             self.test_data = {
-                'name': 'Institution',
-                'type': Institution.UNIVERSITY,
-                'country': 'BE',
-                'application_areas': [],
-                'topics': []
+                "name": "Institution",
+                "type": Institution.UNIVERSITY,
+                "country": "BE",
+                "application_areas": [],
+                "topics": [],
             }
         return
 
     @pytest.fixture(autouse=True)
     def setup_institution(self, db):
         if not self.institution:
-            self.user_admin = mommy.make_recipe('hipeac.user')
-            self.institution = mommy.make_recipe('hipeac.institution')
+            self.user_admin = mommy.make_recipe("hipeac.user")
+            self.institution = mommy.make_recipe("hipeac.institution")
             Permission(content_object=self.institution, user=self.user_admin, level=Permission.ADMIN).save()
         return
 
     def test_update(self, api_client, db):
         api_client.force_authenticate(user=self.user_admin)
         detail_url = self.get_detail_url(self.institution.id)
-        assert api_client.patch(detail_url, {'name': 'name'}).status_code == status.HTTP_200_OK
+        assert api_client.patch(detail_url, {"name": "name"}).status_code == status.HTTP_200_OK
         assert api_client.post(detail_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert api_client.put(detail_url, self.test_data).status_code == status.HTTP_200_OK

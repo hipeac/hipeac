@@ -9,7 +9,6 @@ from hipeac.models import Link, get_cached_metadata
 
 
 class ImagesMixin:
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__image_path = self.image.path if self.image else None
@@ -23,7 +22,7 @@ class ImagesMixin:
             return None
 
         name, extension = os.path.splitext(os.path.basename(self.image.url))
-        extension = '.jpg' if extension.lower() == '.jpeg' else extension.lower()
+        extension = ".jpg" if extension.lower() == ".jpeg" else extension.lower()
         return get_image_variant_paths(self.image.url, extension=extension, pre=get_absolute_uri())
 
 
@@ -49,7 +48,7 @@ class LinkMixin:
     @property
     def twitter_username(self) -> Optional[str]:
         twitter_link = self.get_link(Link.TWITTER)  # noqa
-        return twitter_link.split('/')[-1] if twitter_link else None  # noqa
+        return twitter_link.split("/")[-1] if twitter_link else None  # noqa
 
     @property
     def website(self) -> Optional[str]:
@@ -57,28 +56,26 @@ class LinkMixin:
 
 
 class MetadataMixin:
-
     def get_metadata(self, field_name: str):
-        if field_name not in ['application_areas', 'career_levels', 'topics']:
+        if field_name not in ["application_areas", "career_levels", "topics"]:
             return []
         value = getattr(self, field_name)
-        if value == '':
+        if value == "":
             return []
-        keys = [int(key) for key in getattr(self, field_name).split(',')]
+        keys = [int(key) for key in getattr(self, field_name).split(",")]
         metadata = get_cached_metadata()
         return [metadata[key] for key in keys if key in metadata]
 
-    def get_metadata_display(self, field_name: str, separator: str = ', ') -> str:
+    def get_metadata_display(self, field_name: str, separator: str = ", ") -> str:
         metadata = [str(m) for m in self.get_metadata(field_name)]
         metadata.sort()
         return separator.join(metadata)
 
 
 class EditorMixin:
-
     def get_editor_url(self) -> str:
         content_type = ContentType.objects.get_for_model(self)
-        return reverse('editor', args=[content_type.id, self.id])  # noqa
+        return reverse("editor", args=[content_type.id, self.id])  # noqa
 
 
 class UrlMixin(EditorMixin):

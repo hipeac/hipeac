@@ -5,7 +5,6 @@ from google.cloud.language import types
 
 
 class NaturalLanguageAnalyzer:
-
     def __init__(self):
         self.client = language.LanguageServiceClient()
 

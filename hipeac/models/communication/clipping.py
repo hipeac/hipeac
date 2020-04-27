@@ -13,7 +13,7 @@ class Clipping(models.Model):
     publication_date = models.DateField(default=timezone.now)
 
     class Meta:
-        ordering = ['-publication_date']
+        ordering = ["-publication_date"]
 
     def __str__(self) -> str:
-        return f'Clipping @ {self.media}: {self.title}'
+        return f"Clipping @ {self.media}: {self.title}"

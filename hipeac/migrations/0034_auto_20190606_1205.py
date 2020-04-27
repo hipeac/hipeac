@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0033_metadata_euraxess_value'),
+        ("hipeac", "0033_metadata_euraxess_value"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='sessionproposal',
-            name='session_format',
+            model_name="sessionproposal",
+            name="session_format",
             field=models.CharField(blank=True, max_length=250, null=True),
         ),
     ]

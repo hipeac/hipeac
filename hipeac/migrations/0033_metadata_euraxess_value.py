@@ -6,13 +6,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0032_auto_20190520_1020'),
+        ("hipeac", "0032_auto_20190520_1020"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='metadata',
-            name='euraxess_value',
-            field=models.CharField(blank=True, max_length=250, null=True),
+            model_name="metadata", name="euraxess_value", field=models.CharField(blank=True, max_length=250, null=True),
         ),
     ]

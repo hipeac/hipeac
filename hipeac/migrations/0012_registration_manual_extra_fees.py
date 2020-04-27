@@ -6,13 +6,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0011_session_keywords'),
+        ("hipeac", "0011_session_keywords"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='registration',
-            name='manual_extra_fees',
-            field=models.PositiveSmallIntegerField(default=0),
+            model_name="registration", name="manual_extra_fees", field=models.PositiveSmallIntegerField(default=0),
         ),
     ]

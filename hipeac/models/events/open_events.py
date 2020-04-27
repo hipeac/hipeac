@@ -14,7 +14,7 @@ from ..mixins import ImagesMixin, LinkMixin
 
 class OpenEventQuerySet(models.QuerySet):
     def upcoming(self):
-        return self.filter(end_date__gte=timezone.now().date()).order_by('end_date').first()
+        return self.filter(end_date__gte=timezone.now().date()).order_by("end_date").first()
 
 
 class OpenEvent(ImagesMixin, LinkMixin, models.Model):
@@ -32,7 +32,7 @@ class OpenEvent(ImagesMixin, LinkMixin, models.Model):
     country = CountryField(db_index=True)
     hashtag = models.CharField(max_length=32, null=True, blank=True)
     custom_url = models.URLField(null=True, help_text="https://events.hipeac.net/...")
-    image = models.FileField('Banner', upload_to=get_images_path, null=True, blank=True, help_text='4:1 format')
+    image = models.FileField("Banner", upload_to=get_images_path, null=True, blank=True, help_text="4:1 format")
     travel_info = models.TextField(null=True, blank=True)
 
     registrations_count = models.PositiveIntegerField(default=0)
@@ -42,14 +42,14 @@ class OpenEvent(ImagesMixin, LinkMixin, models.Model):
     def clean(self) -> None:
         validate_event_dates(self)
         if self.hashtag:
-            self.hashtag = self.hashtag[1:] if self.hashtag.startswith('#') else self.hashtag
+            self.hashtag = self.hashtag[1:] if self.hashtag.startswith("#") else self.hashtag
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.city)
         super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ['-start_date']
+        ordering = ["-start_date"]
 
     def __str__(self) -> str:
         return self.name

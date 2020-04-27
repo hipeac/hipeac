@@ -14,8 +14,9 @@ class SessionProposal(models.Model):
     """
     A session proposal for a conference.
     """
+
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    event = models.ForeignKey('hipeac.Event', on_delete=models.CASCADE, related_name='session_proposals')
+    event = models.ForeignKey("hipeac.Event", on_delete=models.CASCADE, related_name="session_proposals")
 
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
@@ -41,11 +42,11 @@ class SessionProposal(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self) -> str:
-        return reverse('session_proposal_update', args=[self.event_id, self.uuid])
+        return reverse("session_proposal_update", args=[self.event_id, self.uuid])
 
 
 @receiver(post_save, sender=SessionProposal)
 def session_proposal_post_save(sender, instance, created, *args, **kwargs):
     if created:
         email = SessionProposalEmail(instance=instance)
-        send_task('hipeac.tasks.emails.send_from_template', email.data)
+        send_task("hipeac.tasks.emails.send_from_template", email.data)

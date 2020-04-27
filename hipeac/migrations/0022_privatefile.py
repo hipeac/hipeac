@@ -8,23 +8,28 @@ import hipeac.models.generic
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('hipeac', '0021_vision_flyer'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("hipeac", "0021_vision_flyer"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PrivateFile',
+            name="PrivateFile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to=hipeac.models.generic.PrivateFile.get_upload_path)),
-                ('position', models.PositiveSmallIntegerField(default=0)),
-                ('description', models.TextField()),
-                ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='private_files', to='contenttypes.ContentType')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("file", models.FileField(upload_to=hipeac.models.generic.PrivateFile.get_upload_path)),
+                ("position", models.PositiveSmallIntegerField(default=0)),
+                ("description", models.TextField()),
+                ("object_id", models.PositiveIntegerField()),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="private_files",
+                        to="contenttypes.ContentType",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ['content_type', 'object_id', 'position'],
-            },
+            options={"ordering": ["content_type", "object_id", "position"]},
         ),
     ]

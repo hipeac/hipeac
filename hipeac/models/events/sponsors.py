@@ -7,19 +7,21 @@ class Sponsor(models.Model):
     BRONZE = 3
     ACADEMIC = 9
     TYPE_CHOICES = (
-        (GOLD, 'Gold'),
-        (SILVER, 'Silver'),
-        (BRONZE, 'Bronze'),
-        (ACADEMIC, 'Academic'),
+        (GOLD, "Gold"),
+        (SILVER, "Silver"),
+        (BRONZE, "Bronze"),
+        (ACADEMIC, "Academic"),
     )
 
-    event = models.ForeignKey('hipeac.Event', related_name='sponsors', on_delete=models.CASCADE)
-    institution = models.ForeignKey('hipeac.Institution', related_name='sponsored_events', null=True, blank=True,
-                                    on_delete=models.CASCADE)
-    project = models.ForeignKey('hipeac.Project', related_name='sponsored_events', null=True, blank=True,
-                                on_delete=models.CASCADE)
+    event = models.ForeignKey("hipeac.Event", related_name="sponsors", on_delete=models.CASCADE)
+    institution = models.ForeignKey(
+        "hipeac.Institution", related_name="sponsored_events", null=True, blank=True, on_delete=models.CASCADE
+    )
+    project = models.ForeignKey(
+        "hipeac.Project", related_name="sponsored_events", null=True, blank=True, on_delete=models.CASCADE
+    )
     sponsorship_type = models.PositiveSmallIntegerField(choices=TYPE_CHOICES, default=BRONZE)
     amount = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
-        ordering = ['sponsorship_type', '-amount', 'institution__name']
+        ordering = ["sponsorship_type", "-amount", "institution__name"]

@@ -8,23 +8,34 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('hipeac', '0049_auto_20191127_1039'),
+        ("hipeac", "0049_auto_20191127_1039"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ActionPoint',
+            name="ActionPoint",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('NO', 'Discarded'), ('UN', 'Not started'), ('IN', 'In progress'), ('OK', 'Completed'), ('FI', 'Finalized')], default='UN', max_length=2)),
-                ('title', models.TextField()),
-                ('description', models.TextField(blank=True, null=True)),
-                ('progress', models.TextField(blank=True, null=True, verbose_name='Progress description')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('owners', models.ManyToManyField(related_name='action_points', to=settings.AUTH_USER_MODEL)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("NO", "Discarded"),
+                            ("UN", "Not started"),
+                            ("IN", "In progress"),
+                            ("OK", "Completed"),
+                            ("FI", "Finalized"),
+                        ],
+                        default="UN",
+                        max_length=2,
+                    ),
+                ),
+                ("title", models.TextField()),
+                ("description", models.TextField(blank=True, null=True)),
+                ("progress", models.TextField(blank=True, null=True, verbose_name="Progress description")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("owners", models.ManyToManyField(related_name="action_points", to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-                'ordering': ['created_at'],
-            },
+            options={"ordering": ["created_at"]},
         ),
     ]

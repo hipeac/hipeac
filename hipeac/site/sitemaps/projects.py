@@ -4,12 +4,11 @@ from hipeac.models import Project
 
 
 class ProjectSitemap(Sitemap):
-
     def items(self):
-        return Project.objects.only('id', 'acronym', 'updated_at', 'start_date', 'end_date')
+        return Project.objects.only("id", "acronym", "updated_at", "start_date", "end_date")
 
     def changefreq(self, obj):
-        return 'weekly' if obj.is_active() else 'monthly'
+        return "weekly" if obj.is_active() else "monthly"
 
     def lastmod(self, obj):
         return obj.updated_at

@@ -19,37 +19,37 @@ def custom_titled_filter(title):
 class HideDeleteActionMixin:
     def get_actions(self, request):
         actions = super().get_actions(request)
-        if request.user.is_superuser and 'delete_selected' in actions:
-            del actions['delete_selected']
+        if request.user.is_superuser and "delete_selected" in actions:
+            del actions["delete_selected"]
         return actions
 
 
 class ImagesInline(GenericTabularInline):
     model = Image
-    classes = ('collapse',)
+    classes = ("collapse",)
     extra = 0
 
 
 class LinksInline(GenericTabularInline):
     model = Link
-    classes = ('collapse',)
+    classes = ("collapse",)
     extra = 0
 
 
 class PermissionsInline(GenericTabularInline):
     model = Permission
-    classes = ('collapse',)
+    classes = ("collapse",)
     extra = 0
-    autocomplete_fields = ('user',)
+    autocomplete_fields = ("user",)
 
 
 class PrivateFilesInline(GenericTabularInline):
     model = PrivateFile
-    classes = ('collapse',)
+    classes = ("collapse",)
     extra = 0
 
 
 class PublicFilesInline(GenericTabularInline):
     model = PublicFile
-    classes = ('collapse',)
+    classes = ("collapse",)
     extra = 0

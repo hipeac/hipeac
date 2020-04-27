@@ -5,19 +5,18 @@ from hipeac.tools.pdf import PdfResponse, Pdf
 
 def get_programme(date):
     return (
-        'European Network on High Performance and Embedded Architecture and Compilation',
-        'Horizon2020 research and innovation',
-        '779656',
+        "European Network on High Performance and Embedded Architecture and Compilation",
+        "Horizon2020 research and innovation",
+        "779656",
     )
     return (
-        'European Network on High Performance and Embedded Architecture and Compilation',
-        'FP7 ICT Cooperation',
-        '779656',
+        "European Network on High Performance and Embedded Architecture and Compilation",
+        "FP7 ICT Cooperation",
+        "779656",
     )
 
 
 class CertificatePdfMaker:
-
     def __init__(self, *, registration, filename: str, as_attachment: bool = False):
         self._response = PdfResponse(filename=filename, as_attachment=as_attachment)
         self.registration = registration
@@ -44,24 +43,23 @@ Gent, Belgium<br />
 """
 
         with Pdf() as pdf:
-            pdf.add_text(str(event), 'h4')
+            pdf.add_text(str(event), "h4")
             pdf.add_spacer()
-            pdf.add_text('Certificate of Attendance', 'h1')
+            pdf.add_text("Certificate of Attendance", "h1")
             pdf.add_spacer()
-            pdf.add_text('To Whom It May Concern,')
-            pdf.add_text(main_text, 'p', 'markdown')
-            pdf.add_text(f'{reg.user.profile.name} attended the following sessions:')
-            for session in reg.sessions.select_related('session_type'):
-                if session.session_type.value != 'Social Event':
+            pdf.add_text("To Whom It May Concern,")
+            pdf.add_text(main_text, "p", "markdown")
+            pdf.add_text(f"{reg.user.profile.name} attended the following sessions:")
+            for session in reg.sessions.select_related("session_type"):
+                if session.session_type.value != "Social Event":
                     t = f'- *{session.session_type.value}:* "{session.title}"'
-                    if session.session_type.value == 'Keynote':
-                        t = f'{t}, by {session.main_speaker.profile.name} ({session.main_speaker.profile.institution})'
-                    pdf.add_text(t, 'p', 'markdown')
+                    if session.session_type.value == "Keynote":
+                        t = f"{t}, by {session.main_speaker.profile.name} ({session.main_speaker.profile.institution})"
+                    pdf.add_text(t, "p", "markdown")
             pdf.add_text(
-                f'More information can be found on <https://www.hipeac.net{event.get_absolute_url()}>',
-                'p', 'markdown'
+                f"More information can be found on <https://www.hipeac.net{event.get_absolute_url()}>", "p", "markdown"
             )
-            pdf.add_text(signature, 'p')
+            pdf.add_text(signature, "p")
             pdf.add_page_break()
 
             self._response.write(pdf.get())

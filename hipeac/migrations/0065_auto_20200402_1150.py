@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0064_auto_20200402_1146'),
+        ("hipeac", "0064_auto_20200402_1146"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='phdmobility',
-            options={'ordering': ['-start_date'], 'verbose_name': 'PhD mobility', 'verbose_name_plural': 'PhD mobilities'},
+            name="phdmobility",
+            options={
+                "ordering": ["-start_date"],
+                "verbose_name": "PhD mobility",
+                "verbose_name_plural": "PhD mobilities",
+            },
         ),
     ]

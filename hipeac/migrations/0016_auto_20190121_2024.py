@@ -6,13 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0015_auto_20190121_1732'),
+        ("hipeac", "0015_auto_20190121_1732"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='project',
-            name='programme',
-            field=models.CharField(blank=True, choices=[('FP7', 'FP7'), ('H2020', 'H2020'), ('ECSEL', 'ECSEL'), ('EUREKA', 'EUREKA'), ('OTHER', 'Other')], max_length=5, null=True),
+            model_name="project",
+            name="programme",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("FP7", "FP7"),
+                    ("H2020", "H2020"),
+                    ("ECSEL", "ECSEL"),
+                    ("EUREKA", "EUREKA"),
+                    ("OTHER", "Other"),
+                ],
+                max_length=5,
+                null=True,
+            ),
         ),
     ]

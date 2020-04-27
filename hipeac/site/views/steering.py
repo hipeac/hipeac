@@ -6,15 +6,14 @@ from django.views import generic
 
 
 class UserIsSteeringMemberMixin:
-
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.groups.filter(name='Steering Committee').exists():
-            messages.error(request, 'You don\'t have the necessary permissions to view this page.')
+        if not request.user.groups.filter(name="Steering Committee").exists():
+            messages.error(request, "You don't have the necessary permissions to view this page.")
             raise PermissionDenied
 
         return super().dispatch(request, *args, **kwargs)
 
 
 class SteeringCommittee(UserIsSteeringMemberMixin, generic.TemplateView):
-    template_name = 'steering/steering.html'
+    template_name = "steering/steering.html"

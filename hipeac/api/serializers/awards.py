@@ -9,7 +9,7 @@ class PublicationConferenceListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PublicationConference
-        fields = '__all__'
+        fields = "__all__"
 
 
 class PublicationSerializer(serializers.ModelSerializer):
@@ -24,17 +24,15 @@ class PublicationSerializer(serializers.ModelSerializer):
 
 
 class PublicationListSerializer(PublicationSerializer):
-
     class Meta:
         model = Publication
-        exclude = ('authors',)
+        exclude = ("authors",)
 
 
 class TechTransferCallSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = TechTransferCall
-        exclude = ('is_frozen',)
+        exclude = ("is_frozen",)
 
 
 class TechTransferApplicationSerializer(serializers.ModelSerializer):
@@ -43,8 +41,17 @@ class TechTransferApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TechTransferApplication
-        exclude = ('created_at', 'applicant', 'awardee', 'awarded_from', 'awarded_to',
-                   'description', 'partners_description', 'value', 'team')
+        exclude = (
+            "created_at",
+            "applicant",
+            "awardee",
+            "awarded_from",
+            "awarded_to",
+            "description",
+            "partners_description",
+            "value",
+            "team",
+        )
 
     def get_year(self, obj) -> int:
         return obj.call.year

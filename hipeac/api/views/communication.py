@@ -3,7 +3,11 @@ from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import Article, Clipping, Quote, Magazine, Video
 from ..serializers import (
-    ArticleListSerializer, ClippingListSerializer, QuoteListSerializer, MagazineListSerializer, VideoListSerializer
+    ArticleListSerializer,
+    ClippingListSerializer,
+    QuoteListSerializer,
+    MagazineListSerializer,
+    VideoListSerializer,
 )
 
 
@@ -13,7 +17,7 @@ class ArticleViewSet(ListModelMixin, GenericViewSet):
     serializer_class = ArticleListSerializer
 
     def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.defer('excerpt', 'content')
+        self.queryset = self.queryset.defer("excerpt", "content")
         return super().list(request, *args, **kwargs)
 
 
@@ -24,19 +28,20 @@ class ClippingViewSet(ListModelMixin, GenericViewSet):
 
 
 class QuoteViewSet(ListModelMixin, GenericViewSet):
-    queryset = Quote.objects.prefetch_related('institution')
+    queryset = Quote.objects.prefetch_related("institution")
     pagination_class = None
     serializer_class = QuoteListSerializer
 
 
 class MagazineViewSet(ListModelMixin, GenericViewSet):
-    queryset = Magazine.objects.all().prefetch_related('images')
+    queryset = Magazine.objects.all().prefetch_related("images")
     pagination_class = None
     serializer_class = MagazineListSerializer
 
 
 class VideoViewSet(ListModelMixin, GenericViewSet):
-    queryset = Video.objects.filter(is_expert=True) \
-                            .prefetch_related('users__profile__institution', 'users__profile__second_institution')
+    queryset = Video.objects.filter(is_expert=True).prefetch_related(
+        "users__profile__institution", "users__profile__second_institution"
+    )
     pagination_class = None
     serializer_class = VideoListSerializer

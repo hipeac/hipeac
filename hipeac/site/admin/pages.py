@@ -11,14 +11,14 @@ admin.site.unregister(FlatPage)
 
 @admin.register(Block)
 class BlockAdmin(HideDeleteActionMixin, admin.ModelAdmin):
-    list_display = ('id', 'page', 'key')
-    list_filter = ('page',)
+    list_display = ("id", "page", "key")
+    list_filter = ("page",)
 
     inlines = (ImagesInline,)
 
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
-            return ('key', 'notes')
+            return ("key", "notes")
         return ()
 
 

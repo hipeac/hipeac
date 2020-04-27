@@ -7,28 +7,23 @@ import hipeac.models.mixins
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0048_auto_20191125_1151'),
+        ("hipeac", "0048_auto_20191125_1151"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Meeting',
+            name="Meeting",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_at', models.DateTimeField()),
-                ('end_at', models.DateTimeField()),
-                ('location', models.CharField(max_length=250)),
-                ('description', models.TextField()),
-                ('url_webex', models.URLField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("start_at", models.DateTimeField()),
+                ("end_at", models.DateTimeField()),
+                ("location", models.CharField(max_length=250)),
+                ("description", models.TextField()),
+                ("url_webex", models.URLField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
-            options={
-                'ordering': ['-start_at'],
-            },
+            options={"ordering": ["-start_at"]},
             bases=(hipeac.models.mixins.LinkMixin, models.Model),
         ),
-        migrations.AlterModelOptions(
-            name='hipeacpartner',
-            options={'ordering': ['hipeac', 'position']},
-        ),
+        migrations.AlterModelOptions(name="hipeacpartner", options={"ordering": ["hipeac", "position"]},),
     ]

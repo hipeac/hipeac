@@ -6,13 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0050_actionpoint'),
+        ("hipeac", "0050_actionpoint"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='actionpoint',
-            name='status',
-            field=models.CharField(choices=[('discarded', 'Discarded'), ('not_started', 'Not started'), ('in_progress', 'In progress'), ('completed', 'Completed'), ('finalized', 'Finalized')], default='UN', max_length=16),
+            model_name="actionpoint",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("discarded", "Discarded"),
+                    ("not_started", "Not started"),
+                    ("in_progress", "In progress"),
+                    ("completed", "Completed"),
+                    ("finalized", "Finalized"),
+                ],
+                default="UN",
+                max_length=16,
+            ),
         ),
     ]

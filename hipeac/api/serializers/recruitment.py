@@ -18,13 +18,13 @@ class JobBaseSerializer(WritableNestedModelSerializer):
     employment_type = MetadataField()
     keywords = JsonField(read_only=True)
     email = serializers.EmailField(required=True)
-    url = serializers.HyperlinkedIdentityField(view_name='v1:job-detail', read_only=True)
-    href = serializers.CharField(source='get_absolute_url', read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name="v1:job-detail", read_only=True)
+    href = serializers.CharField(source="get_absolute_url", read_only=True)
     add_to_euraxess = serializers.BooleanField(required=True)
 
     class Meta:
         model = Job
-        exclude = ('description', 'share', 'reminder_sent_for', 'evaluation_sent_for')
+        exclude = ("description", "share", "reminder_sent_for", "evaluation_sent_for")
 
 
 class JobNestedSerializer(JobBaseSerializer):
@@ -36,16 +36,16 @@ class JobSerializer(JobBaseSerializer):
     links = LinkSerializer(required=False, many=True, allow_null=True)
 
     class Meta(JobBaseSerializer.Meta):
-        exclude = ('share', 'reminder_sent_for', 'evaluation_sent_for', 'created_by')
+        exclude = ("share", "reminder_sent_for", "evaluation_sent_for", "created_by")
 
     def validate_institution(self, data):
-        validate_institution(data, self.context['request'].user)
+        validate_institution(data, self.context["request"].user)
         return data
 
 
 class JobEvaluationSerializer(serializers.ModelSerializer):
     job = JobSerializer(read_only=True)
-    url = serializers.HyperlinkedIdentityField(view_name='v1:job-evaluation-detail', read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name="v1:job-evaluation-detail", read_only=True)
 
     class Meta:
         model = JobEvaluation

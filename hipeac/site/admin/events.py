@@ -10,11 +10,24 @@ from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
 from hipeac.functions import send_task
 from hipeac.models import (
     Profile,
-    Event, Committee, Coupon, Registration, Roadshow, Break, Session, Sponsor, Venue, Room,
-    SessionProposal
+    Event,
+    Committee,
+    Coupon,
+    Registration,
+    Roadshow,
+    Break,
+    Session,
+    Sponsor,
+    Venue,
+    Room,
+    SessionProposal,
 )
 from hipeac.site.emails.events import (
-    RegistrationReminderEmail, SessionProceedingsEmail, SessionReminderEmail, SessionSpeakersReminderEmail, NoShowsEmail
+    RegistrationReminderEmail,
+    SessionProceedingsEmail,
+    SessionReminderEmail,
+    SessionSpeakersReminderEmail,
+    NoShowsEmail,
 )
 from .generic import ImagesInline, LinksInline, PermissionsInline, PrivateFilesInline
 from .users import ProfileCsvWriter, send_profile_update_reminders
@@ -22,238 +35,294 @@ from .users import ProfileCsvWriter, send_profile_update_reminders
 
 class BreaksInline(admin.TabularInline):
     model = Break
-    classes = ('collapse',)
+    classes = ("collapse",)
     extra = 0
 
 
 class CommitteesInline(admin.TabularInline):
-    autocomplete_fields = ('members',)
-    classes = ('collapse',)
+    autocomplete_fields = ("members",)
+    classes = ("collapse",)
     model = Committee
     extra = 0
 
 
 @admin.register(Coupon)
 class CouponAdmin(admin.ModelAdmin):
-    list_display = ('id', 'code', 'value', 'notes')
-    list_filter = ('event',)
-    search_fields = ('code', 'notes')
+    list_display = ("id", "code", "value", "notes")
+    list_filter = ("event",)
+    search_fields = ("code", "notes")
 
 
 class CouponsInline(admin.TabularInline):
     model = Coupon
-    classes = ('collapse',)
+    classes = ("collapse",)
     extra = 0
 
 
 class SponsorsInline(admin.TabularInline):
     model = Sponsor
-    classes = ('collapse',)
+    classes = ("collapse",)
     extra = 0
-    raw_id_fields = ('institution', 'project')
+    raw_id_fields = ("institution", "project")
 
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    actions = ('select_export_users_csv',)
-    date_hierarchy = 'start_date'
-    list_display = ('id', 'start_date', 'end_date', 'name', 'type', 'sessions_link', 'registrations_link',
-                    'is_active', 'is_open')
-    list_filter = ('type',)
-    list_per_page = 20
-    search_fields = ('city', 'country', 'start_date__year')
-
-    autocomplete_fields = ('coordinating_institution', 'venues')
-    readonly_fields = ('registrations_count',)
-    fieldsets = (
-        (None, {
-            'fields': ('city', 'country', 'coordinating_institution', 'hashtag', 'registrations_count'),
-        }),
-        ('DATES', {
-            'fields': (
-                'start_date',
-                'end_date',
-                'registration_start_date',
-                ('registration_early_deadline', 'registration_deadline'),
-            ),
-        }),
-        ('INFORMATION', {
-            'fields': ('presentation', 'venues', 'travel_info'),
-        }),
-        ('IMAGES', {
-            'fields': ('image',),
-        }),
+    actions = ("select_export_users_csv",)
+    date_hierarchy = "start_date"
+    list_display = (
+        "id",
+        "start_date",
+        "end_date",
+        "name",
+        "type",
+        "sessions_link",
+        "registrations_link",
+        "is_active",
+        "is_open",
     )
-    inlines = (BreaksInline, SponsorsInline, CommitteesInline, CouponsInline, LinksInline,)
+    list_filter = ("type",)
+    list_per_page = 20
+    search_fields = ("city", "country", "start_date__year")
+
+    autocomplete_fields = ("coordinating_institution", "venues")
+    readonly_fields = ("registrations_count",)
+    fieldsets = (
+        (None, {"fields": ("city", "country", "coordinating_institution", "hashtag", "registrations_count")}),
+        (
+            "DATES",
+            {
+                "fields": (
+                    "start_date",
+                    "end_date",
+                    "registration_start_date",
+                    ("registration_early_deadline", "registration_deadline"),
+                ),
+            },
+        ),
+        ("INFORMATION", {"fields": ("presentation", "venues", "travel_info")}),
+        ("IMAGES", {"fields": ("image",)}),
+    )
+    inlines = (
+        BreaksInline,
+        SponsorsInline,
+        CommitteesInline,
+        CouponsInline,
+        LinksInline,
+    )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(Count('sessions', distinct=True)) \
-                                            .annotate(Count('registrations', distinct=True))
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(Count("sessions", distinct=True))
+            .annotate(Count("registrations", distinct=True))
+        )
 
     def is_active(self, obj) -> bool:
         return obj.is_active()
+
     is_active.boolean = True
-    is_active.short_description = 'Active'
+    is_active.short_description = "Active"
 
     def is_open(self, obj) -> bool:
         return obj.is_open_for_registration()
+
     is_open.boolean = True
-    is_open.short_description = 'Open'
+    is_open.short_description = "Open"
 
     def registrations_link(self, obj):
         if obj.registrations__count == 0:
-            return '-'
-        url = reverse('admin:hipeac_registration_changelist')
+            return "-"
+        url = reverse("admin:hipeac_registration_changelist")
         return mark_safe(f'<a href="{url}?event__id__exact={obj.id}">{obj.registrations__count}</a>')
-    registrations_link.short_description = 'Registrations'
+
+    registrations_link.short_description = "Registrations"
 
     def sessions_link(self, obj):
         if obj.sessions__count == 0:
-            return '-'
-        url = reverse('admin:hipeac_session_changelist')
+            return "-"
+        url = reverse("admin:hipeac_session_changelist")
         return mark_safe(f'<a href="{url}?event__id__exact={obj.id}">{obj.sessions__count}</a>')
-    sessions_link.short_description = 'Sessions'
+
+    sessions_link.short_description = "Sessions"
 
     def select_export_users_csv(self, request, queryset):
         if queryset.count() > 1:
-            messages.error(request, 'Please select only one event.')
+            messages.error(request, "Please select only one event.")
             return
-        ids = queryset.first().registrations.values_list('user_id', flat=True)
-        return ProfileCsvWriter(filename='hipeac-jobs.csv', queryset=Profile.objects.filter(user_id__in=ids)).response
-    select_export_users_csv.short_description = '[CSV] Export attendees data for an event'
+        ids = queryset.first().registrations.values_list("user_id", flat=True)
+        return ProfileCsvWriter(filename="hipeac-jobs.csv", queryset=Profile.objects.filter(user_id__in=ids)).response
+
+    select_export_users_csv.short_description = "[CSV] Export attendees data for an event"
 
 
 class RegistrationIsPaidFilter(admin.SimpleListFilter):
-    title = 'payment status'
-    parameter_name = 'paid'
+    title = "payment status"
+    parameter_name = "paid"
 
     def lookups(self, request, model_admin):
         return (
-            ('y', 'Paid'),
-            ('c', 'Paid, using a coupon'),
-            ('n', 'Not paid, no invoice'),
-            ('i', 'Not paid, but requested invoice'),
+            ("y", "Paid"),
+            ("c", "Paid, using a coupon"),
+            ("n", "Not paid, no invoice"),
+            ("i", "Not paid, but requested invoice"),
         )
 
     def queryset(self, request, queryset):
-        if self.value() == 'y':
+        if self.value() == "y":
             return queryset.filter(saldo__gte=0)
-        elif self.value() == 'c':
+        elif self.value() == "c":
             return queryset.filter(saldo__gte=0, coupon__isnull=False)
-        elif self.value() == 'n':
+        elif self.value() == "n":
             return queryset.filter(saldo__lt=0, invoice_requested=False)
-        elif self.value() == 'i':
+        elif self.value() == "i":
             return queryset.filter(saldo__lt=0, invoice_requested=True)
 
 
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
-    date_hierarchy = 'created_at'
-    list_display = ('id', 'created_at', 'name', 'fee', 'is_paid', 'with_coupon', 'invoice_requested', 'invoice_sent',
-                    'visa_requested', 'visa_sent')
-    list_filter = (RegistrationIsPaidFilter, 'invoice_requested', 'invoice_sent', 'with_booth',
-                   'visa_requested', 'visa_sent', 'event')
-    search_fields = ('id', 'user__email', 'user__username', 'user__first_name', 'user__last_name')
-
-    autocomplete_fields = ('event',)
-    raw_id_fields = ('user', 'coupon')
-    readonly_fields = ('base_fee', 'extra_fees', 'paid', 'saldo')
-    fieldsets = (
-        (None, {
-            'fields': ('event', ('user', 'visa_requested', 'visa_sent')),
-        }),
-        ('PAYMENT', {
-            'fields': ('fee_type', ('base_fee', 'extra_fees'), 'manual_extra_fees',
-                       ('paid_via_invoice', 'invoice_requested', 'invoice_sent'),
-                       'coupon', 'paid', 'saldo'),
-        }),
-        ('EXTRA INFORMATION', {
-            'fields': ('with_booth',),
-        }),
+    date_hierarchy = "created_at"
+    list_display = (
+        "id",
+        "created_at",
+        "name",
+        "fee",
+        "is_paid",
+        "with_coupon",
+        "invoice_requested",
+        "invoice_sent",
+        "visa_requested",
+        "visa_sent",
     )
-    actions = ('send_reminder', 'send_payment_reminder', 'send_profile_update_reminder', 'send_no_show_reminder')
+    list_filter = (
+        RegistrationIsPaidFilter,
+        "invoice_requested",
+        "invoice_sent",
+        "with_booth",
+        "visa_requested",
+        "visa_sent",
+        "event",
+    )
+    search_fields = ("id", "user__email", "user__username", "user__first_name", "user__last_name")
+
+    autocomplete_fields = ("event",)
+    raw_id_fields = ("user", "coupon")
+    readonly_fields = ("base_fee", "extra_fees", "paid", "saldo")
+    fieldsets = (
+        (None, {"fields": ("event", ("user", "visa_requested", "visa_sent"))}),
+        (
+            "PAYMENT",
+            {
+                "fields": (
+                    "fee_type",
+                    ("base_fee", "extra_fees"),
+                    "manual_extra_fees",
+                    ("paid_via_invoice", "invoice_requested", "invoice_sent"),
+                    "coupon",
+                    "paid",
+                    "saldo",
+                ),
+            },
+        ),
+        ("EXTRA INFORMATION", {"fields": ("with_booth",)}),
+    )
+    actions = ("send_reminder", "send_payment_reminder", "send_profile_update_reminder", "send_no_show_reminder")
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('user__profile__institution', 'coupon') \
-                                            .prefetch_related('event')
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("user__profile__institution", "coupon")
+            .prefetch_related("event")
+        )
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
+    def change_view(self, request, object_id, form_url="", extra_context=None):
         instance = Registration.objects.get(pk=object_id)
         extra_context = extra_context or {}
-        extra_context['is_paid'] = instance.is_paid
-        extra_context['base_fee'] = instance.base_fee
-        extra_context['remaining_fee'] = instance.remaining_fee
+        extra_context["is_paid"] = instance.is_paid
+        extra_context["base_fee"] = instance.base_fee
+        extra_context["remaining_fee"] = instance.remaining_fee
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
 
     def name(self, obj):
-        institution = obj.user.profile.institution.short_name if obj.user.profile.institution else '-'
-        url = reverse('admin:auth_user_changelist')
+        institution = obj.user.profile.institution.short_name if obj.user.profile.institution else "-"
+        url = reverse("admin:auth_user_changelist")
         return format_html(
             f'<a href="{url}{obj.user_id}/" target="admin_user">{obj.user.profile.name}</a>, {institution}'
         )
 
     def fee(self, obj):
-        return format_html(f'{obj.base_fee}&nbsp;+&nbsp;{obj.extra_fees}')
+        return format_html(f"{obj.base_fee}&nbsp;+&nbsp;{obj.extra_fees}")
 
     def is_paid(self, obj) -> bool:
         return obj.is_paid
+
     is_paid.boolean = True
-    is_paid.short_description = 'Paid'
+    is_paid.short_description = "Paid"
 
     def with_coupon(self, obj):
         return obj.coupon is not None
+
     with_coupon.boolean = True
-    with_coupon.short_description = 'Coupon'
+    with_coupon.short_description = "Coupon"
 
     def send_payment_reminder(self, request, queryset):
         queryset = queryset.exclude(saldo__gte=0)  # check if `registration.saldo` >= 0 (aka `is_paid()`)
         for instance in queryset:
             email = (
-                'events.registrations.payment_reminder',
-                f'[HiPEAC] Payment reminder #{instance.event.hashtag} / {instance.id}',
-                'HiPEAC <management@hipeac.net>',
+                "events.registrations.payment_reminder",
+                f"[HiPEAC] Payment reminder #{instance.event.hashtag} / {instance.id}",
+                "HiPEAC <management@hipeac.net>",
                 [instance.user.email],
                 {
-                    'user_name': instance.user.profile.name,
-                    'event_name': instance.event.name,
-                    'registration_id': instance.id,
-                    'payment_url': instance.get_payment_url(),
-                    'invoice_requested': instance.invoice_requested,
-                }
+                    "user_name": instance.user.profile.name,
+                    "event_name": instance.event.name,
+                    "registration_id": instance.id,
+                    "payment_url": instance.get_payment_url(),
+                    "invoice_requested": instance.invoice_requested,
+                },
             )
-            send_task('hipeac.tasks.emails.send_from_template', email)
-        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
-    send_payment_reminder.short_description = ('[Mailer] Send payment reminder')
+            send_task("hipeac.tasks.emails.send_from_template", email)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_payment_reminder.short_description = "[Mailer] Send payment reminder"
 
     def send_no_show_reminder(self, request, queryset):
         for instance in queryset:
             email = NoShowsEmail(instance=instance)
-            send_task('hipeac.tasks.emails.send_from_template', email.data)
-        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
-    send_no_show_reminder.short_description = ('[Mailer] Send no-shows reminder to users')
+            send_task("hipeac.tasks.emails.send_from_template", email.data)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_no_show_reminder.short_description = "[Mailer] Send no-shows reminder to users"
 
     def send_reminder(self, request, queryset):
         for instance in queryset:
             email = RegistrationReminderEmail(instance=instance)
-            send_task('hipeac.tasks.emails.send_from_template', email.data)
-        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
-    send_reminder.short_description = ('[Mailer] Send reminder to users')
+            send_task("hipeac.tasks.emails.send_from_template", email.data)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_reminder.short_description = "[Mailer] Send reminder to users"
 
     def send_profile_update_reminder(self, request, queryset):
-        user_ids = queryset.values_list('user_id', flat=True)
-        users = get_user_model().objects.filter(id__in=user_ids) \
-                                .select_related('profile') \
-                                .prefetch_related('profile__institution') \
-                                .prefetch_related('profile__second_institution')
+        user_ids = queryset.values_list("user_id", flat=True)
+        users = (
+            get_user_model()
+            .objects.filter(id__in=user_ids)
+            .select_related("profile")
+            .prefetch_related("profile__institution")
+            .prefetch_related("profile__second_institution")
+        )
         send_profile_update_reminders(users)
-        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
-    send_profile_update_reminder.short_description = ('[Mailer] Send profile update reminder')
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_profile_update_reminder.short_description = "[Mailer] Send profile update reminder"
 
 
 @admin.register(Roadshow)
 class RoadshowAdmin(admin.ModelAdmin):
-    date_hierarchy = 'start_date'
-    list_display = ('id', 'name', 'country', 'start_date', 'end_date')
+    date_hierarchy = "start_date"
+    list_display = ("id", "name", "country", "start_date", "end_date")
 
     inlines = (ImagesInline, LinksInline)
 
@@ -267,70 +336,72 @@ class SessionAdminForm(ModelForm):
 class SessionAdmin(admin.ModelAdmin):
     form = SessionAdminForm
 
-    actions = ('select_export_users_csv', 'send_reminder', 'send_speakers_reminder', 'send_proceedings_reminder')
-    date_hierarchy = 'date'
-    list_display = ('id', 'title', 'date', 'start_at', 'end_at', 'session_type', 'registrations_count')
-    list_filter = ('session_type', 'event')
-    search_fields = ('title',)
+    actions = ("select_export_users_csv", "send_reminder", "send_speakers_reminder", "send_proceedings_reminder")
+    date_hierarchy = "date"
+    list_display = ("id", "title", "date", "start_at", "end_at", "session_type", "registrations_count")
+    list_filter = ("session_type", "event")
+    search_fields = ("title",)
 
-    autocomplete_fields = ('event', 'projects', 'main_speaker', 'room')
-    radio_fields = {'session_type': admin.VERTICAL}
+    autocomplete_fields = ("event", "projects", "main_speaker", "room")
+    radio_fields = {"session_type": admin.VERTICAL}
     inlines = (LinksInline, PrivateFilesInline, PermissionsInline)
     fieldsets = (
-        (None, {
-            'fields': ('event', ('date', 'start_at', 'end_at'), 'room', 'session_type', 'title', 'is_private'),
-        }),
-        ('INFO', {
-            'fields': ('main_speaker', 'summary', 'projects', 'organizers'),
-        }),
-        ('METADATA', {
-            'classes': ('collapse',),
-            'fields': ('application_areas', 'topics'),
-        }),
+        (None, {"fields": ("event", ("date", "start_at", "end_at"), "room", "session_type", "title", "is_private")}),
+        ("INFO", {"fields": ("main_speaker", "summary", "projects", "organizers")}),
+        ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics")}),
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('event', 'session_type') \
-                                            .annotate(Count('registrations', distinct=True))
+        return (
+            super()
+            .get_queryset(request)
+            .prefetch_related("event", "session_type")
+            .annotate(Count("registrations", distinct=True))
+        )
 
     def registrations_count(self, obj):
-        return obj.registrations__count if obj.registrations__count > 0 else '-'
-    registrations_count.short_description = 'Registrations'
+        return obj.registrations__count if obj.registrations__count > 0 else "-"
+
+    registrations_count.short_description = "Registrations"
 
     def select_export_users_csv(self, request, queryset):
         if queryset.count() > 1:
-            messages.error(request, 'Please select only one session.')
+            messages.error(request, "Please select only one session.")
             return
-        ids = queryset.first().registrations.values_list('user_id', flat=True)
-        return ProfileCsvWriter(filename='hipeac-jobs.csv', queryset=Profile.objects.filter(user_id__in=ids)).response
-    select_export_users_csv.short_description = '[CSV] Export attendees data for a session'
+        ids = queryset.first().registrations.values_list("user_id", flat=True)
+        return ProfileCsvWriter(filename="hipeac-jobs.csv", queryset=Profile.objects.filter(user_id__in=ids)).response
+
+    select_export_users_csv.short_description = "[CSV] Export attendees data for a session"
 
     def send_proceedings_reminder(self, request, queryset):
         for instance in queryset:
             if instance.acl.count() == 0:
                 continue
             email = SessionProceedingsEmail(instance=instance)
-            send_task('hipeac.tasks.emails.send_from_template', email.data)
-        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
-    send_proceedings_reminder.short_description = ('[Mailer] Ask proceedings to organizers')
+            send_task("hipeac.tasks.emails.send_from_template", email.data)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_proceedings_reminder.short_description = "[Mailer] Ask proceedings to organizers"
 
     def send_reminder(self, request, queryset):
         for instance in queryset:
             if instance.acl.count() == 0:
                 continue
             email = SessionReminderEmail(instance=instance)
-            send_task('hipeac.tasks.emails.send_from_template', email.data)
-        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
-    send_reminder.short_description = ('[Mailer] Send reminder to organizers')
+            send_task("hipeac.tasks.emails.send_from_template", email.data)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_reminder.short_description = "[Mailer] Send reminder to organizers"
 
     def send_speakers_reminder(self, request, queryset):
         for instance in queryset:
             if instance.acl.count() == 0:
                 continue
             email = SessionSpeakersReminderEmail(instance=instance)
-            send_task('hipeac.tasks.emails.send_from_template', email.data)
-        admin.ModelAdmin.message_user(self, request, 'Emails are being sent.')
-    send_speakers_reminder.short_description = ('[Mailer] Send speakers reminder to organizers')
+            send_task("hipeac.tasks.emails.send_from_template", email.data)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_speakers_reminder.short_description = "[Mailer] Send speakers reminder to organizers"
 
 
 class RoomsInline(admin.TabularInline):
@@ -340,13 +411,13 @@ class RoomsInline(admin.TabularInline):
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    search_fields = ('name',)
+    search_fields = ("name",)
 
 
 @admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'city', 'country')
-    search_fields = ('name', 'city', 'country')
+    list_display = ("id", "name", "city", "country")
+    search_fields = ("name", "city", "country")
 
     inlines = (ImagesInline, LinksInline)
 
@@ -360,14 +431,15 @@ class SessionProposalAdminForm(ModelForm):
 class SessionProposalAdmin(admin.ModelAdmin):
     form = SessionProposalAdminForm
 
-    date_hierarchy = 'created_at'
-    list_display = ('id', 'event', 'title', 'created_by', 'created_at', 'link')
-    list_filter = ('event',)
-    search_fields = ('uuid', 'first_name', 'last_name')
+    date_hierarchy = "created_at"
+    list_display = ("id", "event", "title", "created_by", "created_at", "link")
+    list_filter = ("event",)
+    search_fields = ("uuid", "first_name", "last_name")
 
     def created_by(self, obj):
-        return f'{obj.first_name} {obj.last_name} <{obj.email}>'
+        return f"{obj.first_name} {obj.last_name} <{obj.email}>"
 
     def link(self, obj):
         return mark_safe(f'<a class="viewlink" href="{obj.get_absolute_url()}" target="_blank"></a>')
-    link.short_description = 'View'
+
+    link.short_description = "View"

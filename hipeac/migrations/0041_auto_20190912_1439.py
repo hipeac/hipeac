@@ -6,13 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0040_auto_20190709_1640'),
+        ("hipeac", "0040_auto_20190709_1640"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='link',
-            name='type',
-            field=models.CharField(choices=[('website', 'Website'), ('dblp', 'DBLP'), ('twitter', 'Twitter'), ('linkedin', 'LinkedIn'), ('github', 'GitHub'), ('youtube', 'YouTube'), ('easychair', 'EasyChair'), ('cordis', 'Cordis'), ('google_maps', 'Google Maps'), ('google_photos', 'Google Photos'), ('other', 'Other')], max_length=32),
+            model_name="link",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("website", "Website"),
+                    ("dblp", "DBLP"),
+                    ("twitter", "Twitter"),
+                    ("linkedin", "LinkedIn"),
+                    ("github", "GitHub"),
+                    ("youtube", "YouTube"),
+                    ("easychair", "EasyChair"),
+                    ("cordis", "Cordis"),
+                    ("google_maps", "Google Maps"),
+                    ("google_photos", "Google Photos"),
+                    ("other", "Other"),
+                ],
+                max_length=32,
+            ),
         ),
     ]

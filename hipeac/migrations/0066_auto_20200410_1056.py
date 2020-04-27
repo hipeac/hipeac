@@ -6,23 +6,71 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0065_auto_20200402_1150'),
+        ("hipeac", "0065_auto_20200402_1150"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='clipping',
-            name='type',
-            field=models.CharField(blank=True, choices=[('general', 'General'), ('jobs', 'Jobs'), ('internships', 'PhD Internships'), ('industry', 'Industry'), ('innovation', 'Innovation community'), ('csw', 'Computing Systems Week'), ('conference', 'HiPEAC Conference'), ('acaces', 'ACACES'), ('roadshow', 'HiPEAC Roadshow'), ('collaborations', 'Collaboration Grants')], max_length=16, null=True),
+            model_name="clipping",
+            name="type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("general", "General"),
+                    ("jobs", "Jobs"),
+                    ("internships", "PhD Internships"),
+                    ("industry", "Industry"),
+                    ("innovation", "Innovation community"),
+                    ("csw", "Computing Systems Week"),
+                    ("conference", "HiPEAC Conference"),
+                    ("acaces", "ACACES"),
+                    ("roadshow", "HiPEAC Roadshow"),
+                    ("collaborations", "Collaboration Grants"),
+                ],
+                max_length=16,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='video',
-            name='type',
-            field=models.CharField(blank=True, choices=[('general', 'General'), ('jobs', 'Jobs'), ('internships', 'PhD Internships'), ('industry', 'Industry'), ('innovation', 'Innovation community'), ('csw', 'Computing Systems Week'), ('conference', 'HiPEAC Conference'), ('acaces', 'ACACES'), ('roadshow', 'HiPEAC Roadshow'), ('collaborations', 'Collaboration Grants')], max_length=16, null=True),
+            model_name="video",
+            name="type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("general", "General"),
+                    ("jobs", "Jobs"),
+                    ("internships", "PhD Internships"),
+                    ("industry", "Industry"),
+                    ("innovation", "Innovation community"),
+                    ("csw", "Computing Systems Week"),
+                    ("conference", "HiPEAC Conference"),
+                    ("acaces", "ACACES"),
+                    ("roadshow", "HiPEAC Roadshow"),
+                    ("collaborations", "Collaboration Grants"),
+                ],
+                max_length=16,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='quote',
-            name='type',
-            field=models.CharField(blank=True, choices=[('general', 'General'), ('jobs', 'Jobs'), ('internships', 'PhD Internships'), ('industry', 'Industry'), ('innovation', 'Innovation community'), ('csw', 'Computing Systems Week'), ('conference', 'HiPEAC Conference'), ('acaces', 'ACACES'), ('roadshow', 'HiPEAC Roadshow'), ('collaborations', 'Collaboration Grants')], max_length=16, null=True),
+            model_name="quote",
+            name="type",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("general", "General"),
+                    ("jobs", "Jobs"),
+                    ("internships", "PhD Internships"),
+                    ("industry", "Industry"),
+                    ("innovation", "Innovation community"),
+                    ("csw", "Computing Systems Week"),
+                    ("conference", "HiPEAC Conference"),
+                    ("acaces", "ACACES"),
+                    ("roadshow", "HiPEAC Roadshow"),
+                    ("collaborations", "Collaboration Grants"),
+                ],
+                max_length=16,
+                null=True,
+            ),
         ),
     ]

@@ -9,24 +9,21 @@ from ..mixins import UrlMixin
 
 class ArticleQuerySet(models.QuerySet):
     def published(self):
-        return self.filter(
-            is_ready=True,
-            publication_date__lte=timezone.now().date()
-        )
+        return self.filter(is_ready=True, publication_date__lte=timezone.now().date())
 
 
 class Article(UrlMixin, models.Model):
-    route_name = 'article'
+    route_name = "article"
 
-    TYPE_BLOG = 'blog'
-    TYPE_NEWS = 'news'
-    TYPE_RELEASE = 'release'
-    TYPE_JOBS = 'jobs'
+    TYPE_BLOG = "blog"
+    TYPE_NEWS = "news"
+    TYPE_RELEASE = "release"
+    TYPE_JOBS = "jobs"
     TYPE_CHOICES = (
-        (TYPE_BLOG, 'HiPEAC Blog'),
-        (TYPE_NEWS, 'HiPEAC News'),
-        (TYPE_RELEASE, 'HiPEAC Press Release'),
-        (TYPE_JOBS, 'HiPEAC Career News'),
+        (TYPE_BLOG, "HiPEAC Blog"),
+        (TYPE_NEWS, "HiPEAC News"),
+        (TYPE_RELEASE, "HiPEAC Press Release"),
+        (TYPE_JOBS, "HiPEAC Career News"),
     )
 
     is_ready = models.BooleanField(default=False)
@@ -36,19 +33,20 @@ class Article(UrlMixin, models.Model):
     excerpt = models.TextField()
     content = models.TextField()
 
-    images = GenericRelation('hipeac.Image')
-    event = models.ForeignKey('hipeac.Event', null=True, blank=True, on_delete=models.SET_NULL, related_name='articles')
-    projects = models.ManyToManyField('hipeac.Project', blank=True, related_name='articles')
-    institutions = models.ManyToManyField('hipeac.Institution', blank=True, related_name='articles')
+    images = GenericRelation("hipeac.Image")
+    event = models.ForeignKey("hipeac.Event", null=True, blank=True, on_delete=models.SET_NULL, related_name="articles")
+    projects = models.ManyToManyField("hipeac.Project", blank=True, related_name="articles")
+    institutions = models.ManyToManyField("hipeac.Institution", blank=True, related_name="articles")
 
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL,
-                                   related_name='authored_articles')
+    created_by = models.ForeignKey(
+        "auth.User", null=True, blank=True, on_delete=models.SET_NULL, related_name="authored_articles"
+    )
 
     objects = ArticleQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-publication_date']
+        ordering = ["-publication_date"]
 
     def __str__(self) -> str:
         return self.title
@@ -56,8 +54,8 @@ class Article(UrlMixin, models.Model):
     def get_parent_url(self) -> str:
         return {
             self.TYPE_BLOG: f'{reverse("news")}#/blog/',
-            self.TYPE_NEWS: reverse('news'),
-            self.TYPE_RELEASE: reverse('press'),
+            self.TYPE_NEWS: reverse("news"),
+            self.TYPE_RELEASE: reverse("press"),
             self.TYPE_JOBS: f'{reverse("jobs")}#/career-center/',
         }[self.type]
 

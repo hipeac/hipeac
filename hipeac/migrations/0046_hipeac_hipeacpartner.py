@@ -9,27 +9,41 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('hipeac', '0045_auto_20191014_1154'),
+        ("hipeac", "0045_auto_20191014_1154"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Hipeac',
+            name="Hipeac",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('project', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='hipeac.Project')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "project",
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to="hipeac.Project"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='HipeacPartner',
+            name="HipeacPartner",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('description', models.TextField(blank=True, null=True)),
-                ('position', models.PositiveSmallIntegerField(default=0)),
-                ('tasks', models.CharField(blank=True, max_length=250, null=True)),
-                ('hipeac', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='partners', to='hipeac.Hipeac')),
-                ('institution', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='hipeac.Institution')),
-                ('representatives', models.ManyToManyField(related_name='hipeac_projects', to=settings.AUTH_USER_MODEL)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("description", models.TextField(blank=True, null=True)),
+                ("position", models.PositiveSmallIntegerField(default=0)),
+                ("tasks", models.CharField(blank=True, max_length=250, null=True)),
+                (
+                    "hipeac",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="partners", to="hipeac.Hipeac"
+                    ),
+                ),
+                (
+                    "institution",
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to="hipeac.Institution"),
+                ),
+                (
+                    "representatives",
+                    models.ManyToManyField(related_name="hipeac_projects", to=settings.AUTH_USER_MODEL),
+                ),
             ],
         ),
     ]

@@ -15,8 +15,9 @@ class ArticleRedirect(generic.View):
     """
     Redirects old URLs to article page.
     """
+
     def get(self, request, *args, **kwargs):
-        article = get_object_or_404(Article, pk=kwargs.get('pk'))
+        article = get_object_or_404(Article, pk=kwargs.get("pk"))
         return redirect(article.get_absolute_url())
 
 
@@ -25,19 +26,20 @@ class ArticleDetail(SlugMixin, generic.DetailView):
     Displays an Article.
     If the slug doesn't match we make a 301 Permanent Redirect.
     """
+
     model = Article
-    template_name = 'communication/article/article.html'
+    template_name = "communication/article/article.html"
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related('images', 'institutions', 'projects')
+        return super().get_queryset().prefetch_related("images", "institutions", "projects")
 
 
 class NewsFeed(Feed):
-    title = 'HiPEAC News'
-    link = reverse_lazy('news')
+    title = "HiPEAC News"
+    link = reverse_lazy("news")
 
     def items(self):
-        return Article.objects.published().order_by('-publication_date')[:30]
+        return Article.objects.published().order_by("-publication_date")[:30]
 
     def item_categories(self, item) -> List[str]:
         return [item.get_type_display()]
@@ -46,7 +48,7 @@ class NewsFeed(Feed):
         return item.title
 
     def item_description(self, item) -> str:
-        return f'{marked(item.excerpt)}{marked(item.content)}'
+        return f"{marked(item.excerpt)}{marked(item.content)}"
 
     def item_pubdate(self, item):
         return datetime.datetime.combine(item.publication_date, datetime.time.min)

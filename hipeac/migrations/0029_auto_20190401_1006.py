@@ -8,29 +8,30 @@ import hipeac.models.generic
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('hipeac', '0028_techtransferapplication_team_string'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("hipeac", "0028_techtransferapplication_team_string"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PublicFile',
+            name="PublicFile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to=hipeac.models.generic.PublicFile.get_upload_path)),
-                ('position', models.PositiveSmallIntegerField(default=0)),
-                ('description', models.TextField()),
-                ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='public_files', to='contenttypes.ContentType')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("file", models.FileField(upload_to=hipeac.models.generic.PublicFile.get_upload_path)),
+                ("position", models.PositiveSmallIntegerField(default=0)),
+                ("description", models.TextField()),
+                ("object_id", models.PositiveIntegerField()),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="public_files",
+                        to="contenttypes.ContentType",
+                    ),
+                ),
             ],
-            options={
-                'db_table': 'hipeac_files_public',
-                'ordering': ['content_type', 'object_id', 'position'],
-            },
+            options={"db_table": "hipeac_files_public", "ordering": ["content_type", "object_id", "position"]},
             bases=(hipeac.models.generic.DeleteFileMixin, models.Model),
         ),
-        migrations.AlterModelTable(
-            name='privatefile',
-            table='hipeac_files_private',
-        ),
+        migrations.AlterModelTable(name="privatefile", table="hipeac_files_private",),
     ]

@@ -11,47 +11,49 @@ class UserProfile(generic.DetailView):
     """
     Displays a User profile.
     """
+
     queryset = Profile.objects.public()
-    context_object_name = 'profile'
-    slug_field = 'user__username'
-    template_name = 'users/profile.html'
+    context_object_name = "profile"
+    slug_field = "user__username"
+    template_name = "users/profile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['phd_mobilities'] = self.get_object().user.phd_mobilities.select_related('institution')
+        context["phd_mobilities"] = self.get_object().user.phd_mobilities.select_related("institution")
         return context
 
 
 class UserAuthenticatedMixin:
-
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
 
 class UserSettings(UserAuthenticatedMixin, generic.TemplateView):
-    template_name = 'users/user/settings.html'
+    template_name = "users/user/settings.html"
 
 
 class UserCertificates(UserAuthenticatedMixin, generic.ListView):
-    template_name = 'users/user/certificates.html'
+    template_name = "users/user/certificates.html"
 
     def get_queryset(self):
         today = timezone.now().date()
-        return self.request.user.registrations.filter(event__end_date__lte=today).select_related('event')
+        return self.request.user.registrations.filter(event__end_date__lte=today).select_related("event")
 
 
 class UserCertificatePdf(UserAuthenticatedMixin, generic.DetailView):
     model = Registration
 
     def get_object(self):
-        if not hasattr(self, 'object'):
-            self.object = self.request.user.registrations.select_related('user__profile') \
-                                                         .prefetch_related('user__profile__institution') \
-                                                         .get(uuid=self.kwargs.get('uuid'))
+        if not hasattr(self, "object"):
+            self.object = (
+                self.request.user.registrations.select_related("user__profile")
+                .prefetch_related("user__profile__institution")
+                .get(uuid=self.kwargs.get("uuid"))
+            )
         return self.object
 
     def get(self, request, *args, **kwargs):
         reg = self.get_object()
-        maker = CertificatePdfMaker(registration=reg, filename=f'hipeac-certificate--{reg.id}.pdf', as_attachment=False)
+        maker = CertificatePdfMaker(registration=reg, filename=f"hipeac-certificate--{reg.id}.pdf", as_attachment=False)
         return maker.response

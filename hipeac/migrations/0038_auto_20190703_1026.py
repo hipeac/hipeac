@@ -8,17 +8,14 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('hipeac', '0037_magazine_event'),
+        ("hipeac", "0037_magazine_event"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='video',
-            name='user',
-        ),
+        migrations.RemoveField(model_name="video", name="user",),
         migrations.AddField(
-            model_name='video',
-            name='users',
-            field=models.ManyToManyField(blank=True, related_name='videos', to=settings.AUTH_USER_MODEL),
+            model_name="video",
+            name="users",
+            field=models.ManyToManyField(blank=True, related_name="videos", to=settings.AUTH_USER_MODEL),
         ),
     ]

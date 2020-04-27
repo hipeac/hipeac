@@ -6,13 +6,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0020_auto_20190208_1151'),
+        ("hipeac", "0020_auto_20190208_1151"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='vision',
-            name='flyer',
-            field=models.FileField(blank=True, null=True, upload_to='public/vision'),
+            model_name="vision", name="flyer", field=models.FileField(blank=True, null=True, upload_to="public/vision"),
         ),
     ]
