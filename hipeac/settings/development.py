@@ -14,7 +14,7 @@ try:
 
     INSTALLED_APPS += ("debug_toolbar",)  # noqa
     MIDDLEWARE += ("debug_toolbar.middleware.DebugToolbarMiddleware",)  # noqa
-except Exception:
+except ModuleNotFoundError:
     pass
 
 

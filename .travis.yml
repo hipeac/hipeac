@@ -4,10 +4,11 @@ python:
     - "3.7"
 
 install:
-    - pip install codecov tox-travis
+    - pip install -r requirements.txt
+    - pip install codecov maya model-bakery pytest pytest-cov pytest-django requests
 
 script:
-    - tox
+    - pytest --cov=hipeac
 
 after_success:
     - codecov
