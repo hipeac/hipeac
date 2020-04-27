@@ -63,7 +63,7 @@ class TestForAdministrator(TestForAuthenticated):
             Permission(content_object=self.project, user=self.user_admin, level=Permission.ADMIN).save()
         return
 
-    def test_update(self, api_client, db):
+    def test_update(self, api_client):
         api_client.force_authenticate(user=self.user_admin)
         detail_url = self.get_detail_url(self.project.id)
         assert api_client.patch(detail_url, {"name": "name"}).status_code == status.HTTP_200_OK

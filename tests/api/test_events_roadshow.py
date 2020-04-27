@@ -18,13 +18,13 @@ class TestForAnonymous:
     def get_detail_url(self, id: int):
         return reverse("v1:roadshow-detail", args=[id])
 
-    def test_list(self, api_client, db):
+    def test_list(self, api_client):
         assert api_client.get(self.list_url).status_code == status.HTTP_200_OK
 
     def test_create(self, api_client):
         assert api_client.post(self.list_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-    def test_read(self, api_client, db):
+    def test_read(self, api_client):
         assert api_client.get(self.get_detail_url(self.roadshow.id)).status_code == status.HTTP_200_OK
 
     def test_update(self, api_client):

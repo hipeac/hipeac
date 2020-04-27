@@ -22,6 +22,7 @@ project = Recipe("hipeac.Project", start_date=now.date, end_date=now.add(years=2
 
 event = Recipe(
     "hipeac.Event",
+    coordinating_institution=foreign_key(institution),
     registration_start_date=now.date,
     registration_early_deadline=now.add(days=30).datetime,
     registration_deadline=now.add(days=60).datetime,
