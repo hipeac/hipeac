@@ -1,1 +1,2 @@
-hipeac/site/static/vendor/** linguist-vendored
+/docs/** linguist-documentation
+/hipeac/site/static/vendor/** linguist-vendored
