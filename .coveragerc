@@ -1,19 +1,19 @@
 [run]
 omit =
-    *apps.py
-    *migrations/*
-    *settings/*
-    *tests/*
-    *migratedata.py
-    *urls.py
-    *wsgi.py
-    manage.py
+  *apps.py
+  *migrations/*
+  *settings/*
+  *tests/*
+  *migratedata.py
+  *urls.py
+  *wsgi.py
+  manage.py
 
 [report]
 exclude_lines =
-    pragma: no cover
-    def __repr__
-    def __str__
-    def slug
-    send_task
-    if settings.DEBUG:
+  pragma: no cover
+  def __repr__
+  def __str__
+  def slug
+  send_task
+  if settings.DEBUG:

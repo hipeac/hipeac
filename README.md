@@ -1,7 +1,7 @@
 HiPEAC.net
 ==========
 
-[![travis-badge]][travis]
+[![github-actions-badge]][github-actions]
 [![codecov-badge]][codecov]
 [![codefactor-badge]][codefactor]
 [![license-badge]](LICENSE)
@@ -46,8 +46,8 @@ Tab size is 4 spaces. Max line length is 120. You should run `flake8` and `black
     $ black hipeac
 
 
-[travis]: https://travis-ci.com/hipeac/hipeac?branch=master
-[travis-badge]: https://api.travis-ci.com/hipeac/hipeac.svg?branch=master
+[github-actions]: https://github.com/hipeac/hipeac/actions
+[github-actions-badge]: https://github.com/hipeac/hipeac/workflows/test%20suite/badge.svg
 [codecov]: https://codecov.io/gh/hipeac/hipeac
 [codecov-badge]: https://codecov.io/gh/hipeac/hipeac/branch/master/graph/badge.svg
 [codefactor]: https://www.codefactor.io/repository/github/hipeac/hipeac
