@@ -35,7 +35,7 @@
     padding-left: 24px;
     font-size: smaller;
 
-    .material-icons, svg {
+    .material-icons:first-child, svg {
         float: left;
         margin-left: -24px;
         font-size: 1.1rem;
@@ -68,6 +68,7 @@
 
     .list-group-item {
         padding: .4rem 0;
+        cursor: pointer;
 
         &:first-child {
             border-top: 0;
@@ -76,6 +77,17 @@
         &:last-child {
             padding-bottom: 0;
         }
+    }
+
+    &.bigger {
+      font-size: 1.1rem;
+      padding-left: 0;
+
+      .material-icons, svg {
+        font-size: 1.3rem;
+        margin-left: 0px;
+        margin-top: .15rem;
+      }
     }
 }
 

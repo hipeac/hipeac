@@ -41,7 +41,7 @@
     {% verbatim %}
     <div v-if="upcomingEvent" v-cloak>
       <div class="hipeac-card rounded-0 rounded-top mb-0">
-        <a :href="upcomingEvent.href" class="btn btn-lg btn-outline-primary btn-block">Join us <span class="d-none d-md-inline-block">in {{ upcomingEvent.city }}</span> for #{{ upcomingEvent.hashtag }}!  <i class="material-icons">arrow_forward</i></a>
+        <a :href="upcomingEvent.href" class="btn btn-lg btn-outline-primary btn-block">Join us <span v-if="upcomingEvent.is_virtual" class="d-none d-md-inline-block">from home</span><span v-else class="d-none d-md-inline-block">in {{ upcomingEvent.city }}</span> for #{{ upcomingEvent.hashtag }}!  <i class="material-icons">arrow_forward</i></a>
       </div>
       <a :href="upcomingEvent.href"><img v-if="upcomingEvent.images" :src="upcomingEvent.images.lg" class="border border-top-0 rounded-bottom w-100" style="margin-bottom:30px"></a>
     </div>

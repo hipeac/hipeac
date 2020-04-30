@@ -13,8 +13,8 @@
     <span v-if="viewAllSessions" class="text-sm float-right text-secondary mt-1">
       <icon v-if="event.is_virtual" class="sm mr-1" name="schedule"></icon>Schedule is showing your local time</span>
     <div class="custom-control custom-switch">
-      <input v-model="viewAllSessions" type="checkbox" class="custom-control-input" id="viewSwitch">
-      <label class="custom-control-label" for="viewSwitch">View detailed program with all sessions</label>
+      <input v-model="viewAllSessions" type="checkbox" class="custom-control-input pointer" id="viewSwitch">
+      <label class="custom-control-label pointer" for="viewSwitch">View detailed program with all sessions</label>
     </div>
 
     <div v-if="viewAllSessions">
@@ -46,13 +46,13 @@
       </div>
     </div>
 
-    <div v-else>
-      <div v-for="course in courses" :key="course">
+    <div v-else class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+      <div v-for="course in courses" :key="course.id" class="col">
         <hr class="my-4">
         <span class="badge badge-light badge-pill float-right ml-3 mb-2">
           <icon v-if="event.is_virtual" class="sm mr-1" name="videocam"></icon>{{ course.sessions.length }} sessions</span>
         <router-link :to="{name: 'course', params: {courseId: course.id}}" class="inherit">
-          <img v-for="teacher in course.teachers" :key="teacher.id" :src="teacher.profile.avatar_url" class="float-right rounded-circle ml-3 mb-3 avatar sm">
+          <img v-for="teacher in course.teachers" :key="teacher.id" :src="teacher.profile.avatar_url" class="rounded-circle mr-3 mb-3 avatar md">
           <p class="font-weight-light m-0">
             <span>{{ course.title }}</span><br>
             <strong>{{ course.teachersStr }}</strong>

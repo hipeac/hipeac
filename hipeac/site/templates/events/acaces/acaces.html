@@ -39,16 +39,16 @@
 {% endblock %}
 
 {% block content %}
-  <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" class="container">
+  <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" class="container">
     <div is="router-view"></div>
   </div>
 {% endblock %}
 
 {% block vue_templates %}
-  {% include './v-about.html' with id='v-about' event_id=event.id year=event.year %}
-  {% include './v-course.html' with id='v-course' event_id=event.id %}
-  {% include './v-logistics.html' with id='v-logistics' event_id=event.id %}
-  {% include './v-program.html' with id='v-program' event_id=event.id %}
+  {% include './v-about.html' with id='v-about' event=event year=event.year %}
+  {% include './v-course.html' with id='v-course' %}
+  {% include './v-logistics.html' with id='v-logistics' %}
+  {% include './v-program.html' with id='v-program' %}
 {% endblock %}
 
 {% block scripts %}
@@ -75,7 +75,9 @@
         },
         fetchCourses: function (state) {
           ajax().get($('#urls').data('courses-url')).done(function (res) {
-            state.courses = Object.freeze(mapper().courses(res));
+            state.courses = Object.freeze(mapper().courses(res).sort(function (a, b) {
+              return sort().text(a.teachersStr, b.teachersStr);
+            }));
           });
         },
         fetchRegistrations: function (state) {
@@ -96,7 +98,7 @@
     var AboutView = {
       template: '#v-about',
       computed: _.extend(
-        Vuex.mapState(['user', 'event', 'articles', 'committees']), {
+        Vuex.mapState(['user', 'event', 'courses']), {
       })
     };
 
@@ -122,7 +124,7 @@
       data: function () {
         return {
           q: '',
-          viewAllSessions: true,
+          viewAllSessions: false,
           filters: {
             topics: []
           }
@@ -159,7 +161,8 @@
                 date: session.date,
                 startAt: session.startAt,
                 duration: session.duration,
-                teachersStr: course.teachersStr
+                teachersStr: course.teachersStr,
+                topics: course.topics
               });
             });
           });
@@ -390,6 +393,11 @@
       "endDate": "{{ event.end_date | date:'c' }}",
       {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
       {% if event.is_virtual %}
+        "organizer": {
+          "@type": "Organization",
+          "name": "HiPEAC",
+          "url": "https://www.hipeac.net/"
+        },
         "location": {
           "@type": "VirtualLocation"
         }

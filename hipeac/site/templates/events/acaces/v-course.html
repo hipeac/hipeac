@@ -62,7 +62,9 @@
         </display-sm>
         <div v-for="teacher in course.teachers" :key="teacher.id" class="mb-4">
           <img :src="teacher.profile.avatar_url" class="float-right rounded-circle ml-3 mb-3">
-          <h6 class="mt-0 mb-2">{{ teacher.profile.name }}<br>{{ teacher.profile.institution.name }}, {{ teacher.profile.institution.country.name }}</h6>
+          <h6 class="mt-0 mb-2">{{ teacher.profile.name }}<br>
+            <span v-if="teacher.profile.institution">{{ teacher.profile.institution.name }}, {{ teacher.profile.institution.country.name }}</span>
+          </h6>
           <marked :text="teacher.profile.bio" class="text-sm"></marked>
         </div>
       </div>

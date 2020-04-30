@@ -91,9 +91,11 @@ function mapper() {
         obj.href = obj.redirect_url || obj.href;
         obj.past = moment().subtract(1, 'days').isAfter(obj.end_date);
         obj.year = moment(obj.start_date).year();
+        obj.startDate = moment(obj.start_date);
+        obj.endDate = moment(obj.end_date);
         obj.datesStr = [
-          moment(obj.start_date).format('MMMM D'),
-          moment(obj.end_date).format('D, YYYY')
+          obj.startDate.format('MMMM D'),
+          obj.endDate.format('D, YYYY')
         ].join('-');
 
         // shortcuts

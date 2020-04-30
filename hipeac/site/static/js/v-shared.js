@@ -544,7 +544,8 @@ Vue.component('event-list', SimpleList.extend({
                             '<td>' +
                                 '{{ item.name }} {{ item.is_past }}<br>' +
                                 '<small>' +
-                                  '<span v-if="item.country"><strong>{{ item.country.name }}</strong>, </span>' +
+                                  '<icon v-if="item.is_virtual" class="sm mr-1" name="videocam"></icon>' +
+                                  '<span v-else><strong>{{ item.country.name }}</strong>, </span>' +
                                   '{{ item.datesStr }}' +
                                 '</small>'+
                             '</td>' +

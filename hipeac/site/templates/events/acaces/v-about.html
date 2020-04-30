@@ -13,13 +13,28 @@
           <marked :text="event.presentation" class="catchphrase-first mt-4"></marked>
         </div>
         <div class="col-12 col-md-4 mb-3 mb-md-0">
-          <button v-if="event.is_virtual" class="btn btn-outline-success btn-block mb-3" disabled>
-            <i class="material-icons mr-2">timelapse</i>Virtual event</button>
-          <router-link :to="{name: 'program'}" class="d-block inherit">
-            <i class="material-icons lg mb-2">today</i><br>
-            <strong>{{ event.datesStr }}</strong>
-            <i class="material-icons sm ml-1">arrow_forward</i>
-          </router-link>
+          <p v-if="event.is_virtual" class="alert alert-warning text-center px-4" role="alert">
+            <i class="material-icons">timelapse</i><br>This <strong>virtual event</strong> will be held between {{ event.startDate.format('dddd') }}, <span class="text-nowrap">{{ event.startDate.format('MMMM D') }}</span> and {{ event.endDate.format('dddd') }}, <span class="text-nowrap">{{ event.endDate.format('MMMM D') }}</span>. See the <a is="router-link" :to="{name: 'logistics'}" class="inherit">"Logistics" tab</a> for more practical information.
+          </p>
+          <ul class="list-group list-group-flush list-group-links bigger mb-5">
+            <router-link tag="li" :to="{name: 'program'}" class="list-group-item py-3">
+              <i class="material-icons mr-2">date_range</i>
+              <i class="float-right material-icons ml-2">arrow_forward</i>
+              <span>{{ event.datesStr }}</span>
+            </router-link>
+            <router-link v-if="courses && courses.length" tag="li" :to="{name: 'program'}" class="list-group-item py-3">
+              <i class="material-icons mr-2">view_week</i>
+              <i class="float-right material-icons ml-2">arrow_forward</i>
+              <span>{{ courses.length }} <span v-if="event.is_virtual">virtual </span>courses</span>
+            </router-link>
+            {% endverbatim %}{% if event.is_open_for_registration %}
+            <router-link v-if="courses" tag="li" :to="{name: 'program'}" class="list-group-item py-3 text-primary">
+              <i class="material-icons mr-2">create</i>
+              <i class="float-right material-icons ml-2">arrow_forward</i>
+              <span>{{ courses.length }} Register now!</span>
+            </router-link>
+            {% endif %}{% verbatim %}
+          </ul>
           <display-sm class="mb-2 mt-4">Steering Committee</display-sm>
           <ul class="pl-3 text-sm">
             <li>Koen De Bosschere, Ghent University, Belgium (Chair)</li>
