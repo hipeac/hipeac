@@ -1,0 +1,55 @@
+{% load humanize %}
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+  <div v-if="event">
+    <img v-if="!event.is_virtual && event.images" :src="event.images.lg" class="border border-bottom-0 rounded-top w-100">
+    <div class="hipeac-card mt-3">
+      <div class="row justify-content-between">
+        <div class="col-12 col-md-7 mb-3 mb-md-0">
+          <display-lg class="text-left mt-0 mb-4">{% endverbatim %}{{ year | add:"-2004" | ordinal }}{% verbatim %} International Summer School on Advanced Computer Architecture and Compilation for High-performance Embedded Systems</display-lg>
+          <marked :text="event.presentation" class="catchphrase-first mt-4"></marked>
+        </div>
+        <div class="col-12 col-md-4 mb-3 mb-md-0">
+          <button v-if="event.is_virtual" class="btn btn-outline-success btn-block mb-3" disabled>
+            <i class="material-icons mr-2">timelapse</i>Virtual event</button>
+          <router-link :to="{name: 'program'}" class="d-block inherit">
+            <i class="material-icons lg mb-2">today</i><br>
+            <strong>{{ event.datesStr }}</strong>
+            <i class="material-icons sm ml-1">arrow_forward</i>
+          </router-link>
+          <display-sm class="mb-2 mt-4">Steering Committee</display-sm>
+          <ul class="pl-3 text-sm">
+            <li>Koen De Bosschere, Ghent University, Belgium (Chair)</li>
+            <li>Emre Ozer, ARM, UK</li>
+            <li>Mateo Valero, BSC, Spain</li>
+            <li>Marc Duranton, CEA, France</li>
+            <li>Luca Fanucci, University of Pisa</li>
+            <li>Per Stenstrom, Chalmers, Sweden</li>
+            <li>Mike O'Boyle, University of Edinburgh, UK</li>
+            <li>Manolis Katevenis, FORTH, Greece</li>
+            <li>Olivier Zendra, INRIA, France</li>
+            <li>Rainer Leupers, RWTH Aachen, Germany</li>
+            <li>Daniel Gracia Perez, Thales R&T, France</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div v-if="event && event.sponsors.length" class="hipeac-card">
+      <ul class="logos">
+        <li v-for="sponsor in event.sponsors" :key="sponsor.id">
+          <a v-if="sponsor.institution" :href="sponsor.institution.href">
+            <img :src="sponsor.institution.images.sm">
+          </a>
+          <a v-if="sponsor.project" :href="sponsor.project.href">
+            <img :src="sponsor.project.images.sm">
+          </a>
+        </li>
+      </ul>
+    </div>
+    <quotes-carousel-row types="acaces"></quotes-carousel-row>
+  </div>
+{% endverbatim %}
+</script>

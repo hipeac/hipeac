@@ -6,37 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0066_auto_20200410_1056'),
+        ("hipeac", "0066_auto_20200410_1056"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='call',
-            name='manager',
-        ),
-        migrations.RemoveField(
-            model_name='call',
-            name='reviewers',
-        ),
-        migrations.AlterUniqueTogether(
-            name='review',
-            unique_together=None,
-        ),
-        migrations.RemoveField(
-            model_name='review',
-            name='application',
-        ),
-        migrations.RemoveField(
-            model_name='review',
-            name='reviewer',
-        ),
-        migrations.DeleteModel(
-            name='Application',
-        ),
-        migrations.DeleteModel(
-            name='Call',
-        ),
-        migrations.DeleteModel(
-            name='Review',
-        ),
+        migrations.RemoveField(model_name="call", name="manager",),
+        migrations.RemoveField(model_name="call", name="reviewers",),
+        migrations.AlterUniqueTogether(name="review", unique_together=None,),
+        migrations.RemoveField(model_name="review", name="application",),
+        migrations.RemoveField(model_name="review", name="reviewer",),
+        migrations.DeleteModel(name="Application",),
+        migrations.DeleteModel(name="Call",),
+        migrations.DeleteModel(name="Review",),
     ]

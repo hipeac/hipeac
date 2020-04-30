@@ -21,6 +21,8 @@ from hipeac.models import (
     Venue,
     Room,
     SessionProposal,
+    Course,
+    CourseSession,
 )
 from hipeac.site.emails.events import (
     RegistrationReminderEmail,
@@ -88,7 +90,10 @@ class EventAdmin(admin.ModelAdmin):
     autocomplete_fields = ("coordinating_institution", "venues")
     readonly_fields = ("registrations_count",)
     fieldsets = (
-        (None, {"fields": ("city", "country", "coordinating_institution", "hashtag", "registrations_count")}),
+        (
+            None,
+            {"fields": ("is_virtual", "city", "country", "coordinating_institution", "hashtag", "registrations_count")},
+        ),
         (
             "DATES",
             {
@@ -446,3 +451,22 @@ class SessionProposalAdmin(admin.ModelAdmin):
         return mark_safe(f'<a class="viewlink" href="{obj.get_absolute_url()}" target="_blank"></a>')
 
     link.short_description = "View"
+
+
+class CourseSessionsInline(admin.TabularInline):
+    model = CourseSession
+    extra = 0
+
+
+class CourseAdminForm(ModelForm):
+    topics = TopicsChoiceField(required=False)
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    form = CourseAdminForm
+
+    search_fields = ("name",)
+
+    raw_id_fields = ("teachers",)
+    inlines = (CourseSessionsInline,)

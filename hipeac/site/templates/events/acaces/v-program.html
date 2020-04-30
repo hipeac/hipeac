@@ -1,0 +1,63 @@
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+  <div v-if="event">
+    <router-view></router-view>
+    <router-view name="modal"></router-view>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-main">
+{% verbatim %}
+  <div v-if="event && courses" class="hipeac-card">
+    <div class="custom-control custom-switch">
+      <input v-model="viewAllSessions" type="checkbox" class="custom-control-input" id="viewSwitch">
+      <label class="custom-control-label" for="viewSwitch">View detailed program with all sessions</label>
+    </div>
+
+    <div v-if="viewAllSessions">
+      <div v-for="(data, date) in coursesList" :key="date">
+        <hr class="my-4">
+        <div class="row">
+          <div class="col-12 col-md-2">
+            <display-md class="mt-0 mb-3 text-left">{{ date | moment('dddd') }}<br>{{ date | moment }}</display-md>
+          </div>
+          <div class="col-12 col-md-10">
+            <div class="row" v-for="(course, index) in data" :key="course.key">
+              <div v-if="index > 0" class="col-12"><hr></div>
+              <div class="col-12 col-md-2 col-lg-1 mb-2 mb-md-0">
+                <catchphrase class="mb-0">{{ course.startAt.format('HH:mm') }}</catchphrase>
+              </div>
+              <div class="col-12 col-md-10 col-lg-11">
+                <span class="badge badge-light badge-pill float-right ml-3 mb-2">
+                  <icon v-if="event.is_virtual" class="sm mr-1" name="videocam"></icon>{{ course.duration.asHours() }} hours</span>
+                <router-link :to="{name: 'course', params: {courseId: course.id}}" class="inherit">
+                  <p class="font-weight-light m-0">
+                    <span>{{ course.title }}</span><br>
+                    <strong>{{ course.teachersStr }}</strong>
+                  </p>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else>
+      <div v-for="course in courses" :key="course">
+        <hr class="my-4">
+        <span class="badge badge-light badge-pill float-right ml-3 mb-2">
+          <icon v-if="event.is_virtual" class="sm mr-1" name="videocam"></icon>{{ course.sessions.length }} sessions</span>
+        <router-link :to="{name: 'course', params: {courseId: course.id}}" class="inherit">
+          <img v-for="teacher in course.teachers" :key="teacher.id" :src="teacher.profile.avatar_url" class="float-right rounded-circle ml-3 mb-3 avatar sm">
+          <p class="font-weight-light m-0">
+            <span>{{ course.title }}</span><br>
+            <strong>{{ course.teachersStr }}</strong>
+          </p>
+        </router-link>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

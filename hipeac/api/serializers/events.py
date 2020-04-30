@@ -3,21 +3,9 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.functions import truncate_md
-from hipeac.models import (
-    B2b,
-    Event,
-    Committee,
-    Registration,
-    Poster,
-    Roadshow,
-    Session,
-    Break,
-    Sponsor,
-    Venue,
-    Room,
-    Project,
-    Institution,
-)
+from hipeac.models import (B2b, Break, Committee, Course, CourseSession, Event, Institution,
+                           Poster, Project, Registration, Roadshow, Room,
+                           Session, Sponsor, Venue)
 from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
@@ -222,3 +210,18 @@ class RoadshowListSerializer(RoadshowNestedSerializer):
 
 class RoadshowSerializer(RoadshowNestedSerializer):
     pass
+
+
+class CourseSessionListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseSession
+        exclude = ()
+
+class CourseListSerializer(serializers.ModelSerializer):
+    sessions = CourseSessionListSerializer(many=True)
+    teachers = UserPublicSerializer(many=True, read_only=True)
+    topics = MetadataListField()
+
+    class Meta:
+        model = Course
+        exclude = ()

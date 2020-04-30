@@ -16,7 +16,7 @@ from hipeac.site.forms import SessionProposalForm, ThematicSessionProposalForm
 from .mixins import SlugMixin
 
 
-class EventDetail(SlugMixin, generic.DetailView):
+class EventDetail(generic.DetailView):
     """
     Displays a Event page.
     If the slug doesn't match we make a 301 Permanent Redirect.
@@ -48,6 +48,18 @@ class EventDetail(SlugMixin, generic.DetailView):
         except Exception:
             return redirect(reverse_lazy("events"))
         return super().dispatch(request, *args, **kwargs)
+
+
+class AcacesDetail(EventDetail):
+    """Displays a ACACES page.
+    """
+
+    template_name = "events/acaces/acaces.html"
+
+    def get_object(self, queryset=None):
+        if not hasattr(self, "object"):
+            self.object = self.get_queryset().get(type="acaces", start_date__year=self.kwargs.get("year"))
+        return self.object
 
 
 class EventB2BDetail(SlugMixin, generic.DetailView):

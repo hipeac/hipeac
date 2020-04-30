@@ -543,7 +543,10 @@ Vue.component('event-list', SimpleList.extend({
                             '</td>' +
                             '<td>' +
                                 '{{ item.name }} {{ item.is_past }}<br>' +
-                                '<small><strong>{{ item.country.name }}</strong>, {{ item.datesStr }}</small>'+
+                                '<small>' +
+                                  '<span v-if="item.country"><strong>{{ item.country.name }}</strong>, </span>' +
+                                  '{{ item.datesStr }}' +
+                                '</small>'+
                             '</td>' +
                             '<td class="text-right align-middle pr-0">' +
                                 '<a v-if="item.redirect_url" :href="item.href" target="_blank">' +

@@ -5,23 +5,15 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import B2b, Event, Roadshow, Session, Registration
-from ..permissions import HasAdminPermissionOrReadOnly, HasRegistrationForEvent, B2bPermission, RegistrationPermission
-from ..serializers import (
-    ArticleListSerializer,
-    B2bSerializer,
-    CommitteeListSerializer,
-    EventListSerializer,
-    EventSerializer,
-    JobNestedSerializer,
-    RegistrationListSerializer,
-    AuthRegistrationSerializer,
-    RoadshowListSerializer,
-    RoadshowSerializer,
-    SessionListSerializer,
-    SessionSerializer,
-    VideoListSerializer,
-)
+from hipeac.models import B2b, Event, Registration, Roadshow, Session
+from ..permissions import B2bPermission, HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
+from ..serializers import (ArticleListSerializer, AuthRegistrationSerializer,
+                           B2bSerializer, CommitteeListSerializer,
+                           CourseListSerializer, EventListSerializer,
+                           EventSerializer, JobNestedSerializer,
+                           RegistrationListSerializer, RoadshowListSerializer,
+                           RoadshowSerializer, SessionListSerializer,
+                           SessionSerializer, VideoListSerializer)
 
 
 class B2bViewSet(UpdateModelMixin, GenericViewSet):
@@ -72,6 +64,13 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     )
     def committees(self, request, *args, **kwargs):
         self.queryset = self.get_object().committees.prefetch_related("members__profile__institution")
+        return super().list(request, *args, **kwargs)
+
+    @action(
+        detail=True, pagination_class=None, serializer_class=CourseListSerializer,
+    )
+    def courses(self, request, *args, **kwargs):
+        self.queryset = self.get_object().courses.prefetch_related("teachers__profile__institution", "sessions")
         return super().list(request, *args, **kwargs)
 
     @action(

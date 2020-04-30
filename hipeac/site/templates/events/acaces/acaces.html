@@ -1,0 +1,408 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+
+{% block subtitle %}{{ event }}{% endblock %}
+
+{% block submenu %}
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'program'}" class="nav-link">Program</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'logistics'}" class="nav-link">Logistics</a>
+  </li>
+  {% if user.is_authenticated %}
+    <li v-if="user.isRegistered" class="nav-item" v-cloak>
+      <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
+    </li>
+    {% if event.is_open_for_registration or event.is_finished %}
+      <li class="nav-item">
+        <a href="#" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>
+      </li>
+    {% endif %}
+  {% endif %}
+  {% if event.hashtag %}
+    <li class="nav-item">
+      <a href="https://twitter.com/search?q=%23{{ event.hashtag }}" class="nav-link" target="_blank">
+        <span is="twitter-icon" v-tooltip="'#{{ event.hashtag }}'"></span>
+      </a>
+    </li>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" class="container">
+    <div is="router-view"></div>
+  </div>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-about.html' with id='v-about' event_id=event.id year=event.year %}
+  {% include './v-course.html' with id='v-course' event_id=event.id %}
+  {% include './v-logistics.html' with id='v-logistics' event_id=event.id %}
+  {% include './v-program.html' with id='v-program' event_id=event.id %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js file event %}
+  <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
+  <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        user: {
+          isAuthenticated: USER_IS_AUTHENTICATED,
+          isRegistered: false
+        },
+        event: null,
+        courses: [],
+        attendees: [],
+        course: null
+      },
+      mutations: {
+        fetchEvent: function (state) {
+          ajax().get($('#urls').data('event-url')).done(function (res) {
+            state.event = Object.freeze(mapper().events([res])[0]);
+          });
+        },
+        fetchCourses: function (state) {
+          ajax().get($('#urls').data('courses-url')).done(function (res) {
+            state.courses = Object.freeze(mapper().courses(res));
+          });
+        },
+        fetchRegistrations: function (state) {
+          if (!USER_IS_AUTHENTICATED) return;
+          ajax().get($('#urls').data('registrations-url')).done(function (res) {
+            state.user.isRegistered = true;
+            state.attendees = Object.freeze(mapper().users(res.map(function (obj) {
+              return obj.user;
+            })));
+          });
+        },
+        updateCourse: function (state, data) {
+          state.course = Object.freeze(data);
+        }
+      }
+    });
+
+    var AboutView = {
+      template: '#v-about',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'articles', 'committees']), {
+      })
+    };
+
+    var AttendeesView = {
+      template: '#v-attendees',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'attendees']), {
+        institutions: function () {
+          return extractInstitutions(this.attendees);
+        }
+      })
+    };
+
+    var ProgramView = {
+      template: '#v-program',
+      computed: _.extend(
+        Vuex.mapState(['event', 'courses']), {
+      })
+    };
+
+    var ProgramMainView = {
+      template: '#v-program-main',
+      data: function () {
+        return {
+          q: '',
+          viewAllSessions: true,
+          filters: {
+            topics: []
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['event', 'courses']), {
+        filteredcourseIds: function () {
+          if (!this.event) return [];
+          var filters = this.filters;
+          var filteredItems = filterIntersection(filters.topics, this.event.sessions, 'topicIds');
+          filteredItems = filterIntersection(filters.applicationAreas, filteredItems, 'applicationAreaIds');
+          if (filters.sessionTypes.length > 0) {
+            filteredItems = _.filter(filteredItems, function (obj) {
+              return _.contains(filters.sessionTypes, obj.session_type.id);
+            });
+          }
+          return _.pluck(filterMultiple(filteredItems, this.q), 'id');
+        },
+        coursesList: function () {
+          if (!this.event) return [];
+
+          var output = [];
+
+          _.each(this.courses, function (course) {
+            var i = 0;
+
+            _.each(course.sessions, function (session) {
+              i++;
+              output.push({
+                key: course.id + '-' + session.id,
+                id: course.id,
+                title: course.title + ' (#' + i + ')',
+                date: session.date,
+                startAt: session.startAt,
+                duration: session.duration,
+                teachersStr: course.teachersStr
+              });
+            });
+          });
+
+          return _.groupBy(output.sort(function (a, b) {
+            return a.startAt - b.startAt;
+          }), function (obj) {
+            return moment(obj.date);
+          });;
+        },
+        topics: function () {
+          if (!this.event) return [];
+          return extractMetadata(this.courses, 'topics');
+        }
+      }),
+      methods: {
+        updateQuery: function (val) {
+          this.q = val;
+        },
+        resetFilters: function () {
+          this.filters.applicationAreas = [];
+          this.filters.topics = [];
+          this.filters.sessionTypes = [];
+        }
+      },
+      created: function () {
+        EventHub.$on('query-changed', this.updateQuery);
+        EventHub.$on('carousel-query-sent', this.updateQuery);
+      }
+    };
+
+    var CourseModalView = {
+      template: '#v-course',
+      props: ['courseId'],
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'courses', 'course']), {
+      }),
+      methods: {
+        closeModal: function () {
+          $(this.$refs['modal']).modal('hide');
+        }
+      },
+      beforeRouteEnter: function (to, from, next) {
+        next(function (self) {
+          var ref = (from.name) ? from : {name: 'program', params: {}};
+          $(self.$refs['modal']).on('hide.bs.modal', function (e) {
+            self.$router.push(ref);
+          }).modal('show');
+        });
+      },
+      beforeRouteLeave: function (to, from, next) {
+        next();
+        var store = this.$store;
+        var modal = $(this.$refs['modal']);
+        setTimeout(function () {
+          if (modal.hasClass('show')) { modal.modal('hide') };
+          store.commit('updateCourse', null);
+        }, 50);
+      },
+      watch: {
+        'courses': function (val, oldVal) {
+          this.$store.commit('updateCourse', _.findWhere(val, {id: +this.courseId}));
+        }
+      },
+      created: function () {
+        this.$store.commit('updateCourse', _.findWhere(this.courses, {id: +this.courseId}));
+      }
+    };
+
+    var CourseMainView = {
+      template: '#v-course-main',
+      computed: _.extend(
+        Vuex.mapState(['event', 'course']), {
+      }),
+    };
+
+    var CourseAttendeesView = {
+      template: '#v-course-attendees',
+      data: function () {
+        return {
+          attendees: []
+        }
+      },
+      props: ['courseId'],
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'course']), {
+        institutions: function () {
+          return extractInstitutions(this.attendees);
+        }
+      }),
+      methods: {
+        fetchAttendees: function () {
+          var self = this;
+          api().getSessionAttendees(this.courseId).done(function (res) {
+            self.attendees = Object.freeze(mapper().users(res.map(function (obj) {
+              return obj.user;
+            })));
+          });
+        }
+      },
+      created: function () {
+        this.fetchAttendees();
+      }
+    };
+
+    var CourseDownloadsView = {
+      template: '#v-course-downloads',
+      computed: _.extend(
+        Vuex.mapState(['event', 'course']), {
+      }),
+    };
+
+    var LogisticsView = {
+      template: '#v-logistics',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      }),
+    };
+
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'about',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'courses',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'attendees',
+          path: '/attendees/',
+          pathToRegexpOptions: {strict: true},
+          component: AttendeesView
+        },
+        {
+          name: 'logistics',
+          path: '/logistics/',
+          pathToRegexpOptions: {strict: true},
+          component: LogisticsView
+        },
+        {
+          path: '/program/',
+          pathToRegexpOptions: {strict: true},
+          component: ProgramView,
+          children: [
+            {
+              name: 'program',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: ProgramMainView
+            },
+            {
+              path: 'courses/:courseId/',
+              pathToRegexpOptions: {strict: true},
+              components: {
+                default: ProgramMainView,
+                modal: CourseModalView
+              },
+              props: {
+                default: true,
+                modal: true
+              },
+              children: [
+                {
+                  name: 'course',
+                  path: '',
+                  pathToRegexpOptions: {strict: true},
+                  component: CourseMainView,
+                  props: true
+                },
+                {
+                  name: 'courseAttendees',
+                  path: 'attendees/',
+                  pathToRegexpOptions: {strict: true},
+                  component: CourseAttendeesView,
+                  props: true
+                },
+                {
+                  name: 'courseDownloads',
+                  path: 'downloads/',
+                  pathToRegexpOptions: {strict: true},
+                  component: CourseDownloadsView,
+                  props: true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      }),
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      },
+      created: function () {
+        $.when(
+          this.$store.commit('fetchEvent'),
+          this.$store.commit('fetchCourses'),
+          this.$store.commit('fetchRegistrations'),
+        );
+      }
+    });
+  </script>
+{% endcompress %}
+  <script type="application/ld+json">{% spaceless_json %}
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": "{{ event }}",
+      "description": "{{ event.presentation | truncate }}",
+      "url": "{{ request.build_absolute_uri }}",
+      "startDate": "{{ event.start_date | date:'c' }}",
+      "endDate": "{{ event.end_date | date:'c' }}",
+      {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
+      {% if event.is_virtual %}
+        "location": {
+          "@type": "VirtualLocation"
+        }
+      {% else %}
+        "location": {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "{{ event.city }}",
+            "addressCountry": "{{ event.country.code }}"
+          }
+        }
+      {% endif %}
+    }
+  {% endspaceless_json %}</script>
+{% endblock %}

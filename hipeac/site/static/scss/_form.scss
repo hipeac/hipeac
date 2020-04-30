@@ -26,6 +26,11 @@ label {
     &.form-check-label {
         font-weight: inherit;
     }
+
+    .custom-switch &.custom-control-label {
+      font-weight: inherit;
+      font-size: inherit;
+    }
 }
 
 .form-control::placeholder {

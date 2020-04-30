@@ -3,6 +3,7 @@
 from .b2b import *
 from .breaks import *
 from .committees import *
+from .courses import *
 from .events import *
 from .fees import *
 from .open_events import *

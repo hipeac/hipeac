@@ -72,14 +72,15 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     registration_early_deadline = models.DateTimeField(null=True, blank=True)
     registration_deadline = models.DateTimeField()
     is_ready = models.BooleanField(default=False, help_text="Is programme ready?")
+    is_virtual = models.BooleanField(default=False, help_text="Is it a virtual event?")
 
     type = models.CharField(max_length=16, editable=False, choices=TYPE_CHOICES)
     coordinating_institution = models.ForeignKey(
         "hipeac.Institution", null=True, blank=True, on_delete=models.SET_NULL, related_name="coordinated_events"
     )
     presentation = models.TextField(null=True, blank=True)
-    city = models.CharField(max_length=100)
-    country = CountryField(db_index=True)
+    city = models.CharField(max_length=100, null=True, blank=True, help_text="Empty for virtual events")
+    country = CountryField(db_index=True, null=True, blank=True, help_text="Empty for virtual events")
     hashtag = models.CharField(max_length=32, null=True, blank=True)
     slug = models.CharField(max_length=100, editable=False)
     redirect_url = models.URLField(null=True, editable=False)
@@ -98,7 +99,8 @@ class Event(ImagesMixin, LinkMixin, models.Model):
             self.hashtag = self.hashtag[1:] if self.hashtag.startswith("#") else self.hashtag
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.city)
+
+        self.slug = slugify(self.city) if not self.is_virtual else slugify(f"{self.season}-virtual")
         super().save(*args, **kwargs)
 
     class Meta:
@@ -118,45 +120,16 @@ class Event(ImagesMixin, LinkMixin, models.Model):
         dates_range = range(0, self.end_date.toordinal() - self.start_date.toordinal() + 1)
         return [self.start_date + datetime.timedelta(days=x) for x in dates_range]
 
-    def get_absolute_url(self) -> str:
-        if self.type == self.EC_MEETING:
-            return reverse(self.type, args=[self.id])
-        return reverse(self.type, args=[self.start_date.year, self.slug])
-
-    @property
-    def google_maps_url(self) -> str:
-        return self.get_link(Link.GOOGLE_MAPS)
-
-    @property
-    def google_photos_url(self) -> str:
-        return self.get_link(Link.GOOGLE_PHOTOS)
-
-    def is_early(self) -> bool:
-        if not self.registration_early_deadline:
-            return False
-        return timezone.now() <= self.registration_early_deadline
-
-    def is_active(self) -> bool:
-        return self.start_date <= timezone.now().date() <= self.end_date
-
-    def is_finished(self) -> bool:
-        return self.end_date < timezone.now().date()
-
-    def is_open_for_registration(self) -> bool:
-        now = timezone.now()
-        return self.registration_start_date <= now.date() and now <= self.registration_deadline
-
     @property
     def name(self) -> str:
+        location = "" if self.is_virtual else f", {self.city}"
+
         if self.type == self.ACACES:
-            return f"ACACES {self.start_date.year}, {self.city}"
-
+            return f"ACACES {self.start_date.year}{location}"
         if self.type == self.CONFERENCE:
-            return f"HiPEAC {self.start_date.year}, {self.city}"
-
+            return f"HiPEAC {self.start_date.year}{location}"
         if self.type == self.CSW:
-            season = "Spring" if (self.start_date.month < 8) else "Autumn"
-            return f"CSW {season} {self.start_date.year}, {self.city}"
+            return f"CSW {self.season} {self.start_date.year}{location}"
 
         return f'{self.city}, {self.start_date.strftime("%B %Y")}'
 
@@ -165,6 +138,14 @@ class Event(ImagesMixin, LinkMixin, models.Model):
         if not hasattr(self, "_fees"):
             self._fees = dict(self.fees.values_list("type", "value"))
         return self._fees
+
+    @property
+    def google_maps_url(self) -> str:
+        return self.get_link(Link.GOOGLE_MAPS)
+
+    @property
+    def google_photos_url(self) -> str:
+        return self.get_link(Link.GOOGLE_PHOTOS)
 
     @cached_property
     def jobs(self):
@@ -190,8 +171,35 @@ class Event(ImagesMixin, LinkMixin, models.Model):
         return queryset
 
     @property
+    def season(self) -> str:
+        return "Spring" if (self.start_date.month < 8) else "Autumn"
+
+    @property
     def year(self) -> int:
         return self.start_date.year
+
+    def is_early(self) -> bool:
+        if not self.registration_early_deadline:
+            return False
+        return timezone.now() <= self.registration_early_deadline
+
+    def is_active(self) -> bool:
+        return self.start_date <= timezone.now().date() <= self.end_date
+
+    def is_finished(self) -> bool:
+        return self.end_date < timezone.now().date()
+
+    def is_open_for_registration(self) -> bool:
+        now = timezone.now()
+        return self.registration_start_date <= now.date() and now <= self.registration_deadline
+
+    def get_absolute_url(self) -> str:
+        if self.type == self.ACACES:
+            return reverse(self.type, args=[self.year])
+        if self.type == self.EC_MEETING:
+            return reverse(self.type, args=[self.id])
+
+        return reverse(self.type, args=[self.year, self.slug])
 
 
 @receiver(post_save, sender=Event)

@@ -55,6 +55,7 @@ class Link(models.Model):
     CORDIS = "cordis"
     GOOGLE_MAPS = "google_maps"
     GOOGLE_PHOTOS = "google_photos"
+    ZOOM = "zoom"
     OTHER = "other"
     TYPE_CHOICES = (
         (WEBSITE, "Website"),
@@ -67,6 +68,7 @@ class Link(models.Model):
         (CORDIS, "Cordis"),
         (GOOGLE_MAPS, "Google Maps"),
         (GOOGLE_PHOTOS, "Google Photos"),
+        (ZOOM, "Zoom.us"),
         (OTHER, "Other"),
     )
 
