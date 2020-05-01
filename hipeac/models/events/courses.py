@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.exceptions import ValidationError
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 
@@ -30,18 +31,19 @@ class CourseSession(models.Model):
     )
 
     course = models.ForeignKey(Course, related_name="sessions", on_delete=models.CASCADE)
-    date = models.DateField()
-    start_at = models.TimeField()
-    end_at = models.TimeField()
+    start_at = models.DateTimeField()
+    end_at = models.DateTimeField()
     notes = models.TextField(null=True, blank=True)
     links = GenericRelation("hipeac.Link")
 
     class Meta:
         db_table = "hipeac_event_course_session"
-        ordering = ["date", "start_at"]
+        ordering = ["start_at"]
 
     def clean(self) -> None:
-        validate_date(self.date, self.course.event)
+        validate_date(self.start_at.date(), self.course.event)
+        if self.start_at.date() != self.end_at.date():
+            raise ValidationError("Start and end date must be the same.")
 
     def __str__(self) -> str:
-        return f"{self.course} ({self.date})"
+        return f"{self.course} ({self.start_at.date})"

@@ -72,8 +72,9 @@ function mapper() {
     },
     courseSessions: function (items) {
       return items.map(function (obj) {
-        obj.startAt = moment(obj.date + 'T' + obj.start_at + '+02:00');
-        obj.endAt = moment(obj.date + 'T' + obj.end_at + '+02:00');
+        obj.date = moment(obj.start_at).set('hour', 9);
+        obj.startAt = moment(obj.start_at);
+        obj.endAt = moment(obj.end_at);
         obj.duration = moment.duration(obj.endAt.diff(obj.startAt))
         return obj;
       });
