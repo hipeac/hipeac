@@ -101,6 +101,8 @@ class Registration(models.Model):
         return self.user_id == user.id
 
     def get_absolute_url(self) -> str:
+        if self.event.type == self.event.ACACES:
+            return reverse("acaces_registration", args=[self.event.year])
         return "".join([self.event.get_absolute_url(), "#/registration/"])
 
     def get_payment_url(self) -> str:
