@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import B2b, Event, Registration, Roadshow, Session
+from hipeac.models import B2b, Course, Event, Registration, Roadshow, Session
 from ..permissions import B2bPermission, HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
 from ..serializers import (
     ArticleListSerializer,
@@ -136,22 +136,16 @@ class RoadshowViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return super().list(request, *args, **kwargs)
 
 
-class SessionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Session.objects.prefetch_related("session_type")
+class CourseViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Course.objects.all()
     permission_classes = (HasAdminPermissionOrReadOnly,)
-    serializer_class = SessionSerializer
+    serializer_class = CourseListSerializer
 
     def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related("main_speaker__profile")
+        self.queryset = self.queryset.prefetch_related("teachers__profile")
         self.pagination_class = None
-        self.serializer_class = SessionListSerializer
+        self.serializer_class = CourseListSerializer
         return super().list(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related(
-            "main_speaker__profile__institution", "projects", "private_files", "links"
-        )
-        return super().retrieve(request, *args, **kwargs)
 
     @action(
         detail=True,
@@ -168,6 +162,24 @@ class SessionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
         )
 
         return super().list(request, *args, **kwargs)
+
+
+class SessionViewSet(CourseViewSet):
+    queryset = Session.objects.prefetch_related("session_type")
+    permission_classes = (HasAdminPermissionOrReadOnly,)
+    serializer_class = SessionSerializer
+
+    def list(self, request, *args, **kwargs):
+        self.queryset = self.queryset.prefetch_related("main_speaker__profile")
+        self.pagination_class = None
+        self.serializer_class = SessionListSerializer
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.queryset = self.queryset.prefetch_related(
+            "main_speaker__profile__institution", "projects", "private_files", "links"
+        )
+        return super().retrieve(request, *args, **kwargs)
 
 
 class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):

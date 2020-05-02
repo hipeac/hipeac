@@ -87,6 +87,9 @@ function api() {
         getEvents: function () {
             return ajax().get('/api/v1/events/events/');
         },
+        getCourseAttendees: function (id) {
+          return ajax().get('/api/v1/events/courses/' + id + '/attendees/');
+        },
         getSession: function (id) {
             return ajax().get('/api/v1/events/sessions/' + id + '/');
         },

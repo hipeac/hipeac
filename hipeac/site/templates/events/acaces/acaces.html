@@ -257,7 +257,7 @@
       methods: {
         fetchAttendees: function () {
           var self = this;
-          api().getSessionAttendees(this.courseId).done(function (res) {
+          api().getCourseAttendees(this.courseId).done(function (res) {
             self.attendees = Object.freeze(mapper().users(res.map(function (obj) {
               return obj.user;
             })));
