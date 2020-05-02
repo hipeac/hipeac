@@ -19,8 +19,8 @@
   <li class="nav-item">
     <a href="{% url 'acaces' event.year %}#/logistics/" class="nav-link">Logistics</a>
   </li>
-  <li v-if="user.isRegistered" class="nav-item" v-cloak>
-    <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
+  <li v-if="!registrationIsNew" class="nav-item" v-cloak>
+    <a href="{% url 'acaces' event.year %}#/attendees/" class="nav-link">Attendees</a>
   </li>
   {% if event.is_open_for_registration or event.is_finished %}
     <li class="nav-item">
