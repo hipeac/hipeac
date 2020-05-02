@@ -7,13 +7,22 @@ from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import B2b, Event, Registration, Roadshow, Session
 from ..permissions import B2bPermission, HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
-from ..serializers import (ArticleListSerializer, AuthRegistrationSerializer,
-                           B2bSerializer, CommitteeListSerializer,
-                           CourseListSerializer, EventListSerializer,
-                           EventSerializer, JobNestedSerializer,
-                           RegistrationListSerializer, RoadshowListSerializer,
-                           RoadshowSerializer, SessionListSerializer,
-                           SessionSerializer, VideoListSerializer)
+from ..serializers import (
+    ArticleListSerializer,
+    AuthRegistrationSerializer,
+    B2bSerializer,
+    CommitteeListSerializer,
+    CourseListSerializer,
+    EventListSerializer,
+    EventSerializer,
+    JobNestedSerializer,
+    RegistrationListSerializer,
+    RoadshowListSerializer,
+    RoadshowSerializer,
+    SessionListSerializer,
+    SessionSerializer,
+    VideoListSerializer,
+)
 
 
 class B2bViewSet(UpdateModelMixin, GenericViewSet):
@@ -167,7 +176,9 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
 
     def get_queryset(self):
         event_id = self.request.query_params.get("event_id", None)
-        queryset = Registration.objects.filter(user_id=self.request.user.id).prefetch_related("sessions", "posters")
+        queryset = Registration.objects.filter(user_id=self.request.user.id).prefetch_related(
+            "courses", "sessions", "posters"
+        )
         if event_id is not None:
             queryset = queryset.filter(event_id=event_id)
         return queryset

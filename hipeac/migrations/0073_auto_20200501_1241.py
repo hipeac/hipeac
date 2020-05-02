@@ -6,26 +6,12 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0072_course_topics'),
+        ("hipeac", "0072_course_topics"),
     ]
 
     operations = [
-        migrations.AlterModelOptions(
-            name='coursesession',
-            options={'ordering': ['start_at']},
-        ),
-        migrations.RemoveField(
-            model_name='coursesession',
-            name='date',
-        ),
-        migrations.AlterField(
-            model_name='coursesession',
-            name='end_at',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
-            model_name='coursesession',
-            name='start_at',
-            field=models.DateTimeField(),
-        ),
+        migrations.AlterModelOptions(name="coursesession", options={"ordering": ["start_at"]},),
+        migrations.RemoveField(model_name="coursesession", name="date",),
+        migrations.AlterField(model_name="coursesession", name="end_at", field=models.DateTimeField(),),
+        migrations.AlterField(model_name="coursesession", name="start_at", field=models.DateTimeField(),),
     ]

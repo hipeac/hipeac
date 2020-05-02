@@ -8,13 +8,23 @@ import re
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0071_auto_20200430_0950'),
+        ("hipeac", "0071_auto_20200430_0950"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='course',
-            name='topics',
-            field=models.CharField(blank=True, max_length=250, validators=[django.core.validators.RegexValidator(re.compile('^\\d+(?:,\\d+)*\\Z'), code='invalid', message='Enter only digits separated by commas.')]),
+            model_name="course",
+            name="topics",
+            field=models.CharField(
+                blank=True,
+                max_length=250,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        re.compile("^\\d+(?:,\\d+)*\\Z"),
+                        code="invalid",
+                        message="Enter only digits separated by commas.",
+                    )
+                ],
+            ),
         ),
     ]

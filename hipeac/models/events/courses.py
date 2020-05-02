@@ -23,13 +23,6 @@ class Course(models.Model):
 
 
 class CourseSession(models.Model):
-    LESSON = "lesson"
-    LUNCH = "lunch"
-    TYPE_CHOICES = (
-        (LESSON, "Lesson"),
-        (LUNCH, "Lunch break"),
-    )
-
     course = models.ForeignKey(Course, related_name="sessions", on_delete=models.CASCADE)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()

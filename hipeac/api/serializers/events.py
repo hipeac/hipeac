@@ -3,9 +3,23 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.functions import truncate_md
-from hipeac.models import (B2b, Break, Committee, Course, CourseSession, Event, Institution,
-                           Poster, Project, Registration, Roadshow, Room,
-                           Session, Sponsor, Venue)
+from hipeac.models import (
+    B2b,
+    Break,
+    Committee,
+    Course,
+    CourseSession,
+    Event,
+    Institution,
+    Poster,
+    Project,
+    Registration,
+    Roadshow,
+    Room,
+    Session,
+    Sponsor,
+    Venue,
+)
 from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
@@ -77,6 +91,8 @@ class AuthRegistrationSerializer(WritableNestedModelSerializer):
     payment_href = serializers.URLField(source="get_payment_url", read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
+    courses = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), many=True, allow_empty=True)
+    sessions = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all(), many=True, allow_empty=True)
     posters = PosterSerializer(many=True)
 
     class Meta:
@@ -216,6 +232,7 @@ class CourseSessionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseSession
         exclude = ()
+
 
 class CourseListSerializer(serializers.ModelSerializer):
     sessions = CourseSessionListSerializer(many=True)

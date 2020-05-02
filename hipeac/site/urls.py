@@ -63,6 +63,7 @@ urlpatterns = [
     path("<int:year>/<slug:slug>/stats/", views.EventStats.as_view(), name="conference_stats"),
     path("<int:year>/<slug:slug>/", views.EventDetail.as_view(), name="conference"),
     path("acaces/<int:year>/", views.AcacesDetail.as_view(), name="acaces"),
+    path("acaces/<int:year>/registration/", views.AcacesRegistration.as_view(), name="acaces_registration"),
     path("csw/<int:year>/<slug:slug>/", views.EventDetail.as_view(), name="csw"),
     path("events/ec/<int:pk>/", views.EventDetail.as_view(), name="ec_meeting"),
     re_path(r"^events/roadshow/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$", views.RoadshowDetail.as_view(), name="roadshow"),

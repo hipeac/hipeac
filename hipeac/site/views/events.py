@@ -62,6 +62,14 @@ class AcacesDetail(EventDetail):
         return self.object
 
 
+class AcacesRegistration(AcacesDetail):
+    template_name = "events/acaces/registration.html"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
 class EventB2BDetail(SlugMixin, generic.DetailView):
     """
     Displays a Event B2B page.

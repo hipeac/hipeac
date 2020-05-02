@@ -46,6 +46,7 @@ class Registration(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     event = models.ForeignKey("hipeac.Event", on_delete=models.CASCADE, related_name="registrations")
     user = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE, related_name="registrations")
+    courses = models.ManyToManyField("hipeac.Course", related_name="registrations")
     sessions = models.ManyToManyField("hipeac.Session", related_name="registrations")
     with_booth = models.BooleanField(default=False)
 
@@ -158,6 +159,19 @@ def registration_post_save(sender, instance, created, *args, **kwargs):
         send_task("hipeac.tasks.emails.send_from_template", email)
 
 
+@receiver(m2m_changed, sender=Registration.courses.through)
+def registration_courses_changed(sender, instance, **kwargs) -> None:
+    if kwargs.get("action") == "post_add":
+        logs = list(RegistrationLog.objects.filter(registration_id=instance.id).values_list("course_id", flat=True))
+        new_logs = []
+
+        for course in instance.courses.exclude(id__in=logs).only("id"):
+            new_logs.append(RegistrationLog(registration_id=instance.id, course_id=course.id))
+
+        if new_logs:
+            RegistrationLog.objects.bulk_create(new_logs)
+
+
 @receiver(m2m_changed, sender=Registration.sessions.through)
 def registration_sessions_changed(sender, instance, **kwargs) -> None:
     if kwargs.get("action") == "post_add":
@@ -178,9 +192,10 @@ class RegistrationLog(models.Model):
     """
 
     registration = models.ForeignKey(Registration, on_delete=models.CASCADE, related_name="logs")
-    session = models.ForeignKey("hipeac.Session", on_delete=models.CASCADE, related_name="logs")
+    session = models.ForeignKey("hipeac.Session", null=True, blank=True, on_delete=models.CASCADE, related_name="logs")
+    course = models.ForeignKey("hipeac.Course", null=True, blank=True, on_delete=models.CASCADE, related_name="logs")
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("registration", "session")
+        unique_together = (("registration", "session"), ("registration", "course"))
