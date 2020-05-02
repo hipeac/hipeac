@@ -28,11 +28,13 @@
               <span>{{ courses.length }} <span v-if="event.is_virtual">virtual </span>courses</span>
             </router-link>
             {% endverbatim %}{% if event.is_open_for_registration %}
-            <router-link v-if="courses" tag="li" :to="{name: 'program'}" class="list-group-item py-3 text-primary">
-              <i class="material-icons mr-2">create</i>
-              <i class="float-right material-icons ml-2">arrow_forward</i>
-              <span>{{ courses.length }} Register now!</span>
-            </router-link>
+            <li class="list-group-item py-3 text-primary">
+              <a href="{% url 'acaces_registration' event.year %}" class="inherit d-block">
+                <i class="material-icons mr-2">create</i>
+                <i class="float-right material-icons ml-2">arrow_forward</i>
+                <span>Register now!</span>
+              </a>
+            </li>
             {% endif %}{% verbatim %}
           </ul>
           <display-sm class="mb-2 mt-4">Steering Committee</display-sm>
