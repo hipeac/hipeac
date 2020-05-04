@@ -17,6 +17,11 @@
             <i class="material-icons">timelapse</i><br>This <strong>virtual event</strong> will be held between {{ event.startDate.format('dddd') }}, <span class="text-nowrap">{{ event.startDate.format('MMMM D') }}</span> and {{ event.endDate.format('dddd') }}, <span class="text-nowrap">{{ event.endDate.format('MMMM D') }}</span>. See the <a is="router-link" :to="{name: 'logistics'}" class="inherit">"Logistics" tab</a> for more practical information.
           </p>
           <ul class="list-group list-group-flush list-group-links bigger mb-5">
+            <router-link v-if="!event.fees.length" tag="li" :to="{name: 'program'}" class="list-group-item py-3">
+              <i class="material-icons mr-2">card_giftcard</i>
+              <i class="float-right material-icons ml-2">arrow_forward</i>
+              <span>Free event</span>
+            </router-link>
             <router-link tag="li" :to="{name: 'program'}" class="list-group-item py-3">
               <i class="material-icons mr-2">date_range</i>
               <i class="float-right material-icons ml-2">arrow_forward</i>

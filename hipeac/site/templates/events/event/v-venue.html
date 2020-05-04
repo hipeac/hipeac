@@ -10,10 +10,10 @@
         </div>
       </div>
     </div>
-    <div v-if="event.travel_info" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+    <div v-if="event.logistics" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
       <div class="hipeac-card">
         <display-sm class="mb-3">Travel information</display-sm>
-        <marked v-if="event.travel_info" :text="event.travel_info"></marked>
+        <marked v-if="event.logistics" :text="event.logistics"></marked>
         <div v-if="event.google_mid" class="mt-auto w-100">
           <hr class="my-4">
           <p class="m-0 text-sm"><i class="material-icons sm">info</i> Check the <strong>side panel in the map below</strong> for more information about the venues and the hotels in the area.</p>

@@ -105,7 +105,7 @@ class EventAdmin(admin.ModelAdmin):
                 ),
             },
         ),
-        ("INFORMATION", {"fields": ("presentation", "venues", "travel_info")}),
+        ("INFORMATION", {"fields": ("presentation", "venues", "logistics")}),
         ("IMAGES", {"fields": ("image",)}),
     )
     inlines = (

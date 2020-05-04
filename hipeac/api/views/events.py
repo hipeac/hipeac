@@ -36,7 +36,7 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     serializer_class = EventSerializer
 
     def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.defer("travel_info")
+        self.queryset = self.queryset.defer("logistics")
         self.pagination_class = None
         self.serializer_class = EventListSerializer
         return super().list(request, *args, **kwargs)

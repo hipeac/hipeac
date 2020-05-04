@@ -187,7 +187,7 @@ class EventNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        exclude = ("coordinating_institution", "venues", "travel_info", "image")
+        exclude = ("coordinating_institution", "venues", "logistics", "image")
 
 
 class EventListSerializer(EventNestedSerializer):

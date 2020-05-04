@@ -85,7 +85,7 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     slug = models.CharField(max_length=100, editable=False)
     redirect_url = models.URLField(null=True, editable=False)
     image = models.FileField("Banner", upload_to=get_images_path, null=True, blank=True, help_text="4:1 format")
-    travel_info = models.TextField(null=True, blank=True)
+    logistics = models.TextField(null=True, blank=True)
 
     registrations_count = models.PositiveIntegerField(default=0)
     links = GenericRelation("hipeac.Link")

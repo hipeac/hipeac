@@ -1,4 +1,21 @@
+{% load static %}
+
+
 <script type="text/x-template" id="{{ id }}">
-  <div class="hipeac-card">
+  <div v-if="event" class="row">
+    <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+      <div class="hipeac-card">
+        <display-sm class="mb-3">Tools</display-sm>
+        <img src="{% static 'images/mattermost.svg' %}" class="float-right avatar md">
+        <span v-if="!user.isRegistered">Once you register you can join our summer school Mattermost.</span>
+        <span v-else>You can join the summer school Mattermost <a href="https://teams.hipeac.net/signup_user_complete/?id=sscmrj5sd7bp8dsdn8hnigs9ae">here</a>.</span>
+      </div>
+    </div>
+    <div v-if="event.logistics" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+      <div class="hipeac-card">
+        <display-sm class="mb-3">Logistics</display-sm>
+        <marked v-if="event.logistics" :text="event.logistics"></marked>
+      </div>
+    </div>
   </div>
 </script>
