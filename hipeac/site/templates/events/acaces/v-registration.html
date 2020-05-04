@@ -34,8 +34,8 @@
           <div class="hipeac-card">
             <div v-if="event.is_open_for_registration">
               <loading text="Saving..." icon="save" class="float-right mt-2"></loading>
-              <button v-if="registrationIsNew" @click.prevent="save" class="btn btn-primary" :disabled="emptySessions">Create new registration</button>
-              <button v-else @click.prevent="save" class="btn btn-outline-success" :disabled="emptySessions">Update registration</button>
+              <button v-if="registrationIsNew" @click.prevent="save" class="btn btn-primary" :disabled="emptyCourses">Create new registration</button>
+              <button v-else @click.prevent="save" class="btn btn-outline-success" :disabled="emptyCourses">Update registration</button>
             </div>
             <p v-if="registration.fee > 0" class="float-right">
               <a v-if="registration.isPaid" :href="registration.payment_href" class="float-right btn btn-outline-primary">
