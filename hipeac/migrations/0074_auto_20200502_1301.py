@@ -7,27 +7,38 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0073_auto_20200501_1241'),
+        ("hipeac", "0073_auto_20200501_1241"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='registration',
-            name='courses',
-            field=models.ManyToManyField(related_name='registrations', to='hipeac.Course'),
+            model_name="registration",
+            name="courses",
+            field=models.ManyToManyField(related_name="registrations", to="hipeac.Course"),
         ),
         migrations.AddField(
-            model_name='registrationlog',
-            name='course',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='logs', to='hipeac.Course'),
+            model_name="registrationlog",
+            name="course",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="logs",
+                to="hipeac.Course",
+            ),
         ),
         migrations.AlterField(
-            model_name='registrationlog',
-            name='session',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='logs', to='hipeac.Session'),
+            model_name="registrationlog",
+            name="session",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="logs",
+                to="hipeac.Session",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='registrationlog',
-            unique_together={('registration', 'course'), ('registration', 'session')},
+            name="registrationlog", unique_together={("registration", "course"), ("registration", "session")},
         ),
     ]

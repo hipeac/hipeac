@@ -1,4 +1,5 @@
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
@@ -14,6 +15,11 @@ class JobViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        if self.request.data.get("email", "") == "" and not self.request.data.get("links"):
+            raise ValidationError({"contact_data": ["Please add an email or related website."]})
+        return super().create(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
         self.queryset = (

@@ -17,7 +17,7 @@ class JobBaseSerializer(WritableNestedModelSerializer):
     career_levels = MetadataListField()
     employment_type = MetadataField()
     keywords = JsonField(read_only=True)
-    email = serializers.EmailField(required=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
     url = serializers.HyperlinkedIdentityField(view_name="v1:job-detail", read_only=True)
     href = serializers.CharField(source="get_absolute_url", read_only=True)
     add_to_euraxess = serializers.BooleanField(required=True)

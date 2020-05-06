@@ -102,7 +102,7 @@ class Job(LinkMixin, MetadataMixin, UrlMixin, models.Model):
     location = models.CharField(max_length=250, null=True, blank=True)
     country = CountryField(db_index=True, null=True, blank=True, countries=HipeacCountries)
 
-    email = models.EmailField(null=True, blank=False)
+    email = models.EmailField(null=True, blank=True)
     share = models.BooleanField(default=True, editable=False)
     add_to_euraxess = models.BooleanField(default=True)
 
