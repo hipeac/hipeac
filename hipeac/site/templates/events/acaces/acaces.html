@@ -23,6 +23,13 @@
     <li v-if="user.isRegistered" class="nav-item" v-cloak>
       <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
     </li>
+    {% if user.is_staff %}
+      <li class="nav-item">
+        <a href="{% url 'acaces_stats' event.year %}" class="nav-link">
+          <i class="material-icons">insert_chart_outlined</i>
+        </a>
+      </li>
+    {% endif %}
     {% if event.is_open_for_registration or event.is_finished %}
       <li class="nav-item">
         <a href="{% url 'acaces_registration' event.year %}" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>

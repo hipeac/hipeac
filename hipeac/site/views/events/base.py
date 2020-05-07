@@ -13,7 +13,7 @@ from hipeac.models import Event, Roadshow, Registration, Coupon, SessionProposal
 from hipeac.tools.payments.legacy import Ogone, process_ogone_parameters, OGONE_URL, OGONE_PSPID
 from hipeac.tools.pdf import PdfResponse, Pdf, H2020
 from hipeac.site.forms import SessionProposalForm, ThematicSessionProposalForm
-from .mixins import SlugMixin
+from hipeac.site.views.mixins import SlugMixin
 
 
 class EventDetail(generic.DetailView):
@@ -47,26 +47,6 @@ class EventDetail(generic.DetailView):
                 return redirect(redirect_url)
         except Exception:
             return redirect(reverse_lazy("events"))
-        return super().dispatch(request, *args, **kwargs)
-
-
-class AcacesDetail(EventDetail):
-    """Displays a ACACES page.
-    """
-
-    template_name = "events/acaces/acaces.html"
-
-    def get_object(self, queryset=None):
-        if not hasattr(self, "object"):
-            self.object = self.get_queryset().get(type="acaces", start_date__year=self.kwargs.get("year"))
-        return self.object
-
-
-class AcacesRegistration(AcacesDetail):
-    template_name = "events/acaces/registration.html"
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
 

@@ -1,0 +1,285 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+
+{% block subtitle %}{{ event }}{% endblock %}
+
+{% block submenu %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'acaces' event.year %}"><i class="material-icons mr-1">arrow_back</i>Back to event</a>
+  </li>
+{% endblock %}
+
+{% block content %}
+  <div is="router-view" name="modal"></div>
+  <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" class="container">
+    <div class="hipeac-card">
+      <div class="row">
+        <div class="col-12 col-lg-8">
+          <h6>Registrations by course</h6>
+          <table class="table table-sm text-sm">
+            <thead>
+              <tr>
+                <th class="text-left">Course</th>
+                <th class="text-right">Reg.</th>
+                <th></th>
+              <tr>
+            </thead>
+            <tbody>
+            {% for course in regbycourse %}
+              <tr>
+                <td><em>{{ course.teachers }}</em><br>{{ course.title }}</td>
+                <td class="text-right">{{ course.registrations }}</td>
+                <td>
+                  <a is="router-link" :to="{name: 'course', params: {courseId: {{ course.id }} }}">+</a>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          <div class="row my-5">
+            <div class="col-12 col-lg-6">
+              <h6># courses per registration</h6>
+              <table class="table table-sm text-sm">
+                <thead>
+                  <tr>
+                    <th class="text-left">Number of courses</th>
+                    <th class="text-right">Reg.</th>
+                  <tr>
+                </thead>
+                <tbody>
+                {% for calc in coursebyreg %}
+                  <tr>
+                    <td>{{ calc.courses }}</td>
+                    <td class="text-right">{{ calc.registrations }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="col-12 col-lg-6">
+              <h6>Registrations by country</h6>
+              <table class="table table-sm text-sm">
+                <thead>
+                  <tr>
+                    <th class="text-left">Country</th>
+                    <th class="text-right">Reg.</th>
+                  <tr>
+                </thead>
+                <tbody>
+                {% for country in regbycountry %}
+                  <tr>
+                    <td>{{ country.name }}</td>
+                    <td class="text-right">{{ country.registrations }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <h6>Registrations by institution</h6>
+          <table class="table table-sm text-sm">
+            <thead>
+              <tr>
+                <th class="text-left">Institution</th>
+                <th class="text-right">Reg.</th>
+              <tr>
+            </thead>
+            <tbody>
+            {% for institution in regbyinstitution %}
+              <tr>
+                <td>{{ institution.name }}, {{ institution.country }}</td>
+                <td class="text-right">{{ institution.registrations }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-course.html' with id='v-course' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js file event %}
+  <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
+  <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
+  <script>
+    var Store = new Vuex.Store({
+      state: {
+        user: {
+          isAuthenticated: true,
+          isRegistered: true
+        },
+        event: null,
+        courses: [],
+        course: null
+      },
+      mutations: {
+        fetchEvent: function (state) {
+          ajax().get($('#urls').data('event-url')).done(function (res) {
+            state.event = Object.freeze(mapper().events([res])[0]);
+          });
+        },
+        fetchCourses: function (state) {
+          ajax().get($('#urls').data('courses-url')).done(function (res) {
+            state.courses = Object.freeze(mapper().courses(res).sort(function (a, b) {
+              return sort().text(a.teachersStr, b.teachersStr);
+            }));
+          });
+        },
+        updateCourse: function (state, data) {
+          state.course = Object.freeze(data);
+        }
+      }
+    });
+
+    var CourseModalView = {
+      template: '#v-course',
+      props: ['courseId'],
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'courses', 'course']), {
+      }),
+      methods: {
+        closeModal: function () {
+          $(this.$refs['modal']).modal('hide');
+        }
+      },
+      beforeRouteEnter: function (to, from, next) {
+        next(function (self) {
+          var ref = (from.name) ? from : {name: 'program', params: {}};
+          $(self.$refs['modal']).on('hide.bs.modal', function (e) {
+            self.$router.push(ref);
+          }).modal('show');
+        });
+      },
+      beforeRouteLeave: function (to, from, next) {
+        next();
+        var store = this.$store;
+        var modal = $(this.$refs['modal']);
+        setTimeout(function () {
+          if (modal.hasClass('show')) { modal.modal('hide') };
+          store.commit('updateCourse', null);
+        }, 50);
+      },
+      watch: {
+        'courses': function (val, oldVal) {
+          this.$store.commit('updateCourse', _.findWhere(val, {id: +this.courseId}));
+        }
+      },
+      created: function () {
+        this.$store.commit('updateCourse', _.findWhere(this.courses, {id: +this.courseId}));
+      }
+    };
+
+    var CourseMainView = {
+      template: '#v-course-main',
+      computed: _.extend(
+        Vuex.mapState(['event', 'course']), {
+      }),
+    };
+
+    var CourseAttendeesView = {
+      template: '#v-course-attendees',
+      data: function () {
+        return {
+          attendees: []
+        }
+      },
+      props: ['courseId'],
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'course']), {
+        institutions: function () {
+          return extractInstitutions(this.attendees);
+        }
+      }),
+      methods: {
+        fetchAttendees: function () {
+          var self = this;
+          api().getCourseAttendees(this.courseId).done(function (res) {
+            self.attendees = Object.freeze(mapper().users(res.map(function (obj) {
+              return obj.user;
+            })));
+          });
+        }
+      },
+      created: function () {
+        this.fetchAttendees();
+      }
+    };
+
+    var CourseDownloadsView = {
+      template: '#v-course-downloads',
+      computed: _.extend(
+        Vuex.mapState(['event', 'course']), {
+      }),
+    };
+
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          path: '/courses/:courseId/',
+          pathToRegexpOptions: {strict: true},
+          components: {
+            modal: CourseModalView
+          },
+          props: {
+            default: true,
+            modal: true
+          },
+          children: [
+            {
+              name: 'course',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: CourseMainView,
+              props: true
+            },
+            {
+              name: 'courseAttendees',
+              path: 'attendees/',
+              pathToRegexpOptions: {strict: true},
+              component: CourseAttendeesView,
+              props: true
+            },
+            {
+              name: 'courseDownloads',
+              path: 'downloads/',
+              pathToRegexpOptions: {strict: true},
+              component: CourseDownloadsView,
+              props: true
+            }
+          ]
+        }
+      ]
+    });
+
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      }),
+      created: function () {
+        $.when(
+          this.$store.commit('fetchEvent'),
+          this.$store.commit('fetchCourses'),
+        );
+      }
+    });
+  </script>
+{% endcompress %}
+{% endblock %}
