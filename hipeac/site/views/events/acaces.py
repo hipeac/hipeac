@@ -1,3 +1,5 @@
+import json
+
 from collections import namedtuple
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -102,5 +104,29 @@ class AcacesStats(AcacesDetail):
                 ORDER BY registrations DESC
             """, [self.get_object().id])
             context["regbycountry"] = namedtuplefetchall(cursor)
+
+            cursor.execute("""
+                SELECT r.id, CONCAT(u.first_name, ' ', u.last_name) as full_name, u.email, i.name as institution, c.name AS country, pos.title as poster, c1.registered as c1, c2.registered as c2, c3.registered as c3, c4.registered as c4, c5.registered as c5, c6.registered as c6, c8.registered as c8, c9.registered as c9, c10.registered as c10, c11.registered as c11, c12.registered as c12
+                FROM auth_user as u
+                INNER JOIN hipeac_profile AS p ON u.id = p.user_id
+                LEFT JOIN hipeac_institution AS i ON p.institution_id = i.id
+                LEFT JOIN tmp_country AS c ON i.country = c.code
+                INNER JOIN hipeac_registration AS r ON u.id = r.user_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 1) AS c1 ON r.id = c1.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 2) AS c2 ON r.id = c2.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 3) AS c3 ON r.id = c3.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 4) AS c4 ON r.id = c4.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 5) AS c5 ON r.id = c5.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 6) AS c6 ON r.id = c6.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 8) AS c8 ON r.id = c8.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 9) AS c9 ON r.id = c9.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 10) AS c10 ON r.id = c10.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 11) AS c11 ON r.id = c11.registration_id
+                LEFT JOIN (SELECT registration_id, 'true' AS registered FROM hipeac_registration_courses WHERE course_id = 12) AS c12 ON r.id = c12.registration_id
+                LEFT JOIN hipeac_poster AS pos ON r.id = pos.registration_id
+                WHERE r.event_id = %s
+                ORDER BY r.created_at
+            """, [self.get_object().id])
+            context["json_data"] = [t._asdict() for t in namedtuplefetchall(cursor)]
 
         return context

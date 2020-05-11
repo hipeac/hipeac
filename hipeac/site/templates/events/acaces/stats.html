@@ -18,21 +18,40 @@
 {% block content %}
   <div is="router-view" name="modal"></div>
   <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" class="container">
+    <ul class="nav nav-tabs justify-content-center">
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'main'}" exact>
+          <icon name="insert_chart_outlined" class="mr-1"></icon>Stats</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'registrations'}" exact>
+          <icon name="line_weight" class="mr-1"></icon>All registrations</a>
+      </li>
+    </ul>
+    <div is="router-view"></div>
+    <div is="router-view" name="modal"></div>
+  </div>
+{% endblock %}
+
+{% block vue_templates %}
+  <script type="text/x-template" id="v-main">
     <div class="hipeac-card">
       <div class="row">
         <div class="col-12 col-lg-8">
-          <h6>Registrations by course</h6>
+          <display-sm class="mb-3">Registrations by course</display-sm>
           <table class="table table-sm text-sm">
             <thead>
               <tr>
+                <th class="text-left">ID</th>
                 <th class="text-left">Course</th>
                 <th class="text-right">Reg.</th>
                 <th></th>
-              <tr>
+              </tr>
             </thead>
             <tbody>
             {% for course in regbycourse %}
               <tr>
+                <td>C{{ course.id }}</td>
                 <td><em>{{ course.teachers }}</em><br>{{ course.title }}</td>
                 <td class="text-right">{{ course.registrations }}</td>
                 <td>
@@ -44,13 +63,13 @@
           </table>
           <div class="row my-5">
             <div class="col-12 col-lg-6">
-              <h6># courses per registration</h6>
+              <display-sm class="mb-3"># courses per registration</display-sm>
               <table class="table table-sm text-sm">
                 <thead>
                   <tr>
                     <th class="text-left">Number of courses</th>
                     <th class="text-right">Reg.</th>
-                  <tr>
+                  </tr>
                 </thead>
                 <tbody>
                 {% for calc in coursebyreg %}
@@ -63,13 +82,13 @@
               </table>
             </div>
             <div class="col-12 col-lg-6">
-              <h6>Registrations by country</h6>
+              <display-sm class="mb-3">Registrations by country</display-sm>
               <table class="table table-sm text-sm">
                 <thead>
                   <tr>
                     <th class="text-left">Country</th>
                     <th class="text-right">Reg.</th>
-                  <tr>
+                  </tr>
                 </thead>
                 <tbody>
                 {% for country in regbycountry %}
@@ -84,13 +103,13 @@
           </div>
         </div>
         <div class="col-12 col-md-6 col-lg-4">
-          <h6>Registrations by institution</h6>
+          <display-sm class="mb-3">Registrations by institution</display-sm>
           <table class="table table-sm text-sm">
             <thead>
               <tr>
                 <th class="text-left">Institution</th>
                 <th class="text-right">Reg.</th>
-              <tr>
+              </tr>
             </thead>
             <tbody>
             {% for institution in regbyinstitution %}
@@ -104,15 +123,37 @@
         </div>
       </div>
     </div>
-  </div>
-{% endblock %}
-
-{% block vue_templates %}
+  </script>
+  <script type="text/x-template" id="v-registrations">
+    <div class="hipeac-card">
+      <div class="q-pa-md w-100">
+        <q-table
+          dense flat
+          :data="tableData"
+          :columns="tableColumns"
+          :pagination="pagination"
+          row-key="email"
+        ></q-table>
+      </div>
+    </div>
+  </script>
   {% include './v-course.html' with id='v-course' %}
 {% endblock %}
 
+{% block styles %}
+  <link href="{% static 'vendor/quasar@1.10.4/quasar.min.css' %}" type="text/css" rel="stylesheet">
+  <style>
+    body { -moz-osx-font-smoothing: auto; }
+    .q-table__bottom { display: none; }
+    h6 { font-size: .9rem; line-height: 1.4; }
+  </style>
+{% endblock %}
+
 {% block scripts %}
-{% compress js file event %}
+  {{ json_data | json_script:"registrations-data" }}
+{% compress js file event_acaces %}
+  <script src="{% static 'vendor/quasar@1.10.4/quasar.ie.polyfills.umd.min.js' %}"></script>
+  <script src="{% static 'vendor/quasar@1.10.4/quasar.umd.min.js' %}"></script>
   <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
   <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
   <script>
@@ -144,6 +185,13 @@
         }
       }
     });
+
+    var MainView = {
+      template: '#v-main',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'courses']), {
+      })
+    };
 
     var CourseModalView = {
       template: '#v-course',
@@ -226,17 +274,64 @@
       }),
     };
 
+    var RegistrationsView = {
+      template: '#v-registrations',
+      data: function () {
+        return {
+          tableData: JSON.parse(document.getElementById('registrations-data').textContent),
+          tableColumns: [
+            {name: 'id', label: 'ID', field: 'id'},
+            {name: 'name', label: 'Full name', field: 'full_name', align: 'left', sortable: true},
+            {name: 'institution', label: 'Institution', field: 'institution', align: 'left', sortable: true},
+            {name: 'country', label: 'Country', field: 'country', align: 'left', sortable: true},
+            {name: 'email', label: 'Email', field: 'email', align: 'left'},
+            {name: 'c1', label: 'C1', field: 'c1', sortable: true},
+            {name: 'c2', label: 'C2', field: 'c2', sortable: true},
+            {name: 'c3', label: 'C3', field: 'c3', sortable: true},
+            {name: 'c4', label: 'C4', field: 'c4', sortable: true},
+            {name: 'c5', label: 'C5', field: 'c5', sortable: true},
+            {name: 'c6', label: 'C6', field: 'c6', sortable: true},
+            {name: 'c8', label: 'C7', field: 'c8', sortable: true},
+            {name: 'c9', label: 'C9', field: 'c9', sortable: true},
+            {name: 'c10', label: 'C10', field: 'c10', sortable: true},
+            {name: 'c11', label: 'C11', field: 'c11', sortable: true},
+            {name: 'c12', label: 'C12', field: 'c12', sortable: true},
+            {name: 'poster', label: 'Poster', field: 'poster', sortable: true, align: 'left'}
+          ],
+          pagination: {
+            rowsPerPage: 0
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'courses']), {
+      })
+    };
+
     var Router = new VueRouter({
       linkActiveClass: 'active',
       routes: [
         {
+          name: 'registrations',
+          path: '/registrations/',
+          pathToRegexpOptions: {strict: true},
+          component: RegistrationsView
+        },
+        {
+          name: 'main',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: MainView
+        },
+        {
           path: '/courses/:courseId/',
           pathToRegexpOptions: {strict: true},
           components: {
+            default: MainView,
             modal: CourseModalView
           },
           props: {
-            default: true,
+            deafult: true,
             modal: true
           },
           children: [
