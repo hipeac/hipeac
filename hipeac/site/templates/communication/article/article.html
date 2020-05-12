@@ -29,6 +29,22 @@
               <div class="marked">
                 {{ article.content | markdown }}
               </div>
+              {% if article.public_files.count %}
+                <div class="mt-5">
+                  <display-sm class="mb-3 mt-5">Related files</display-sm>
+                  <table class="table table-sm">
+                  {% for file in article.public_files.all %}
+                    <tr>
+                      <td class="sm"><i class="material-icons sm">description</i></td>
+                      <td>{{ file.description }}</td>
+                      <td class="text-right">
+                        <a href="{{ MEDIA_URL }}{{ file.file }}" target="_blank"><i class="material-icons sm">get_app</i></a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </table>
+                </div>
+              {% endif %}
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
 from hipeac.models.communication import Article, Clipping, Magazine, Quote, Video
-from .generic import ImagesInline
+from .generic import ImagesInline, PublicFilesInline
 
 
 @admin.register(Article)
@@ -17,7 +17,7 @@ class ArticleAdmin(admin.ModelAdmin):
     autocomplete_fields = ("event", "institutions", "projects")
     radio_fields = {"type": admin.VERTICAL}
     readonly_fields = ("created_by",)
-    inlines = (ImagesInline,)
+    inlines = (ImagesInline, PublicFilesInline)
 
 
 @admin.register(Clipping)
