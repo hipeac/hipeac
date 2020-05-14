@@ -120,6 +120,14 @@
                   <small><a href @click.prevent="addPoster"><icon name="add" class="sm mr-1"></icon>Present another poster</a></small>
                 </tfoot>
               </table>
+
+<div v-if="registrationHasPosters" class="alert alert-warning p-3">
+  <p>We will produce proceedings with 1-4 page abstracts per poster. So, the participants can in advance have a look at the book of abstracts in order to get an idea about the interests of the other participants. After the summer school, it can be used to find back information about the poster presentations.</p>
+  <p>If you are interested on including your poster abstract in the booklet, you can add it here.</p>
+  <label>PDF file <input type="file" id="file" ref="file" @change="handleAbstractUpload()"></label>
+  <button @click="submitAbstractFile()" class="btn btn-sm btn-secondary mt-2">Upload poster abstract</button>
+</div>
+
               <display-sm class="mt-4 mb-3">Choose courses</display-sm>
               <small v-if="emptyCourses" class="d-block text-danger mb-2">Please choose at least one course to attend.</small>
               <table class="table">

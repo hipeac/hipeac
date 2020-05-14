@@ -19,7 +19,7 @@
   <li class="nav-item">
     <a href="{% url 'acaces' event.year %}#/logistics/" class="nav-link">Logistics</a>
   </li>
-  {% if event.is_open_for_registration or event.is_finished %}
+  {% if event.is_open_forregistrationBackup or event.is_finished %}
     <li class="nav-item">
       <a href="{% url 'acaces' event.year %}" class="nav-link active"><i class="material-icons mr-1">edit</i>My registration</a>
     </li>
@@ -76,9 +76,14 @@
       template: '#v-registration',
       data: function () {
         return {
+          abstract: {
+            topics: [],
+            file: null
+          },
           endpoint: $('#urls').data('registration-url'),
           registrationIsNew: false,
-          registration: null
+          registrationHasPosters: false,
+          registration: null,
         };
       },
       computed: _.extend(
@@ -103,6 +108,7 @@
 
           ajax().get(this.endpoint, {event_id: this.event.id}).done(function (res) {
             if (res.results.length == 1) {
+              self.registrationHasPosters = res.results[0].posters.length > 0;
               self.registrationIsNew = false;
               self.registration = mapper().registrations(res.results)[0];
             } else {
@@ -121,12 +127,14 @@
           EventHub.$emit('loading', true);
           if (this.registrationIsNew) {
             ajax().post(this.endpoint, this.registration).done(function (res) {
+              self.registrationHasPosters = res.posters.length > 0;
               self.registration = mapper().registrations([res])[0];
               self.registrationIsNew = false;
               EventHub.$emit('loading', false);
             });
           } else {
             ajax().put(this.registration.url, this.registration).done(function (res) {
+              self.registrationHasPosters = res.posters.length > 0;
               self.registration = mapper().registrations([res])[0];
               EventHub.$emit('loading', false);
             });
@@ -141,6 +149,28 @@
         },
         removePoster: function (poster) {
           this.registration.posters = _.without(this.registration.posters, poster);
+        },
+        handleAbstractUpload: function () {
+          this.abstract.file = this.$refs.file.files[0];
+        },
+        submitAbstractFile: function () {
+          var self = this;
+          var formData = new FormData();
+          formData.append('file', this.abstract.file);
+
+          $.ajax({
+            method: 'POST',
+            url: this.registration.url + 'add_abstract/',
+            data: formData,
+            processData: false,
+            contentType: 'multipart/form-data',
+            headers: {
+                'Content-Disposition': 'attachment; filename=abstract_' + this.registration.id + '.pdf',
+                'X-CSRFTOKEN': CSRF_TOKEN,
+            }
+          }).done(function (res) {
+            self.fetchRegistration();
+          });
         }
       },
       mounted: function () {

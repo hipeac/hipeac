@@ -3,9 +3,11 @@ from django.views.decorators.cache import never_cache
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.parsers import FileUploadParser
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import B2b, Course, Event, Registration, Roadshow, Session
+from hipeac.models import AcacesPosterAbstract, B2b, Course, Event, Registration, Roadshow, Session
 from ..permissions import B2bPermission, HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
 from ..serializers import (
     ArticleListSerializer,
@@ -208,3 +210,12 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
     @never_cache
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+
+    @action(
+        detail=True, methods=["POST"], parser_classes=(FileUploadParser,),
+    )
+    def add_abstract(self, request, pk):
+        abstract = AcacesPosterAbstract(file=request.data["file"])
+        abstract.registration = self.get_object()
+        abstract.save()
+        return Response(status=201)

@@ -1,3 +1,4 @@
+from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -23,3 +24,14 @@ class Poster(models.Model):
     @property
     def slug(self) -> str:
         return slugify(self.title)
+
+
+class AcacesPosterAbstract(models.Model):
+    registration = models.OneToOneField(
+        "hipeac.Registration", primary_key=True, related_name="poster_abstract", on_delete=models.CASCADE
+    )
+    file = models.FileField(blank=False, null=False)
+    topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+
+    def __str__(self):
+        return self.file.name
