@@ -30,7 +30,7 @@ class AcacesPosterAbstract(models.Model):
     registration = models.OneToOneField(
         "hipeac.Registration", primary_key=True, related_name="poster_abstract", on_delete=models.CASCADE
     )
-    file = models.FileField(blank=False, null=False)
+    file = models.FileField(upload_to="public/abstract", blank=False, null=False)
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
 
     def __str__(self):
