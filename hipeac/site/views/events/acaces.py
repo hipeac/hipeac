@@ -51,7 +51,8 @@ class AcacesStats(AcacesDetail):
         context = super().get_context_data(**kwargs)
 
         with connection.cursor() as cursor:
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT c.*, teachers.names AS teachers, COUNT(r.id) AS registrations
                 FROM hipeac_event_course AS c
                 LEFT JOIN hipeac_registration_courses AS r ON c.id = r.course_id
@@ -65,10 +66,13 @@ class AcacesStats(AcacesDetail):
                 WHERE c.event_id = %s
                 GROUP BY c.id
                 ORDER BY registrations DESC
-            """, [self.get_object().id])
+            """,
+                [self.get_object().id],
+            )
             context["regbycourse"] = namedtuplefetchall(cursor)
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT p.registrations AS courses, COUNT(p.id) AS registrations
                 FROM (
                     SELECT r.id, COUNT(r.id) AS registrations
@@ -79,10 +83,13 @@ class AcacesStats(AcacesDetail):
                     HAVING registrations > 0
                 ) AS p
                 GROUP BY p.registrations
-            """, [self.get_object().id])
+            """,
+                [self.get_object().id],
+            )
             context["coursebyreg"] = namedtuplefetchall(cursor)
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT i.name, c.name AS country, COUNT(r.id) AS registrations
                 FROM hipeac_institution AS i
                 LEFT JOIN tmp_country AS c ON i.country = c.code
@@ -91,10 +98,13 @@ class AcacesStats(AcacesDetail):
                 WHERE r.event_id = %s
                 GROUP BY i.id
                 ORDER BY registrations DESC
-            """, [self.get_object().id])
+            """,
+                [self.get_object().id],
+            )
             context["regbyinstitution"] = namedtuplefetchall(cursor)
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT c.name, COUNT(r.id) AS registrations
                 FROM tmp_country AS c
                 LEFT JOIN hipeac_profile AS p ON c.code = p.country
@@ -102,10 +112,13 @@ class AcacesStats(AcacesDetail):
                 WHERE r.event_id = %s
                 GROUP BY c.code
                 ORDER BY registrations DESC
-            """, [self.get_object().id])
+            """,
+                [self.get_object().id],
+            )
             context["regbycountry"] = namedtuplefetchall(cursor)
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT r.id, CONCAT(u.first_name, ' ', u.last_name) as full_name, u.email, i.name as institution, c.name AS country, pos.title as poster, c1.registered as c1, c2.registered as c2, c3.registered as c3, c4.registered as c4, c5.registered as c5, c6.registered as c6, c8.registered as c8, c9.registered as c9, c10.registered as c10, c11.registered as c11, c12.registered as c12
                 FROM auth_user as u
                 INNER JOIN hipeac_profile AS p ON u.id = p.user_id
@@ -126,7 +139,9 @@ class AcacesStats(AcacesDetail):
                 LEFT JOIN hipeac_poster AS pos ON r.id = pos.registration_id
                 WHERE r.event_id = %s
                 ORDER BY r.created_at
-            """, [self.get_object().id])
+            """,
+                [self.get_object().id],
+            )
             context["json_data"] = [t._asdict() for t in namedtuplefetchall(cursor)]
 
         return context

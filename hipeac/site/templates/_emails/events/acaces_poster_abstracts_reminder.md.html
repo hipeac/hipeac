@@ -1,0 +1,21 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block body %}
+**Registration number: {{ registration_id }}**
+
+Dear {{ user_name }},
+
+the last day for submitting a poster abstract will be the 20th of June.
+If you are interested in having your poster abstract published in the ACACES booklet
+you can still upload your abstract on your registration page
+
+https://www.hipeac.net{{ registration_url }}
+
+You only have to submit the poster abstract, not the poster itself.
+We will send out more guidelines about the virtual poster session once we have more details.
+
+Please also update the title and authors of your poster on the registration page.
+{% endblock %}
+
+{% block footer %}HiPEAC Staff{% endblock %}

@@ -25,6 +25,7 @@ from hipeac.models import (
     CourseSession,
 )
 from hipeac.site.emails.events import (
+    AcacesPosterAbstractsReminderEmail,
     RegistrationReminderEmail,
     SessionProceedingsEmail,
     SessionReminderEmail,
@@ -234,7 +235,13 @@ class RegistrationAdmin(admin.ModelAdmin):
         ),
         ("EXTRA INFORMATION", {"fields": ("with_booth",)}),
     )
-    actions = ("send_reminder", "send_payment_reminder", "send_profile_update_reminder", "send_no_show_reminder")
+    actions = (
+        "send_reminder",
+        "send_payment_reminder",
+        "send_profile_update_reminder",
+        "send_no_show_reminder",
+        "send_acaces_poster_abstract_reminder",
+    )
 
     def get_queryset(self, request):
         return (
@@ -324,6 +331,14 @@ class RegistrationAdmin(admin.ModelAdmin):
         admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
 
     send_profile_update_reminder.short_description = "[Mailer] Send profile update reminder"
+
+    def send_acaces_poster_abstract_reminder(self, request, queryset):
+        for instance in queryset:
+            email = AcacesPosterAbstractsReminderEmail(instance=instance)
+            send_task("hipeac.tasks.emails.send_from_template", email.data)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_acaces_poster_abstract_reminder.short_description = "[Mailer] Send ACACES poster reminder to users"
 
 
 @admin.register(Roadshow)

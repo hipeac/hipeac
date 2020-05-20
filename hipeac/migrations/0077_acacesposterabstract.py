@@ -9,16 +9,38 @@ import re
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0076_auto_20200506_1245'),
+        ("hipeac", "0076_auto_20200506_1245"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AcacesPosterAbstract',
+            name="AcacesPosterAbstract",
             fields=[
-                ('registration', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, related_name='poster_abstract', serialize=False, to='hipeac.Registration')),
-                ('file', models.FileField(upload_to='')),
-                ('topics', models.CharField(blank=True, max_length=250, validators=[django.core.validators.RegexValidator(re.compile('^\\d+(?:,\\d+)*\\Z'), code='invalid', message='Enter only digits separated by commas.')])),
+                (
+                    "registration",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        related_name="poster_abstract",
+                        serialize=False,
+                        to="hipeac.Registration",
+                    ),
+                ),
+                ("file", models.FileField(upload_to="")),
+                (
+                    "topics",
+                    models.CharField(
+                        blank=True,
+                        max_length=250,
+                        validators=[
+                            django.core.validators.RegexValidator(
+                                re.compile("^\\d+(?:,\\d+)*\\Z"),
+                                code="invalid",
+                                message="Enter only digits separated by commas.",
+                            )
+                        ],
+                    ),
+                ),
             ],
         ),
     ]
