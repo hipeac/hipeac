@@ -245,8 +245,8 @@ class SessionProposalView(SuccessMessageMixin, generic.FormView):
     def dispatch(self, request, *args, **kwargs):
         event = self.get_event()
 
-        if event.is_ready:
-            return redirect(event.get_absolute_url())
+        # if event.is_ready:
+        #    return redirect(event.get_absolute_url())
 
         if event.type not in [Event.CONFERENCE, Event.CSW]:
             messages.error(request, "You cannot submit a proposal for this event.")
