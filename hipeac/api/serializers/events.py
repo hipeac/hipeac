@@ -4,7 +4,6 @@ from rest_framework import serializers
 
 from hipeac.functions import truncate_md
 from hipeac.models import (
-    AcacesPosterAbstract,
     B2b,
     Break,
     Committee,
@@ -27,6 +26,7 @@ from .projects import ProjectNestedSerializer
 from .users import UserPublicMiniSerializer, UserPublicSerializer
 
 
+"""
 class AcacesPosterAbstractSerializer(serializers.ModelSerializer):
     file = serializers.FileField(use_url=True)
     topics = MetadataListField()
@@ -34,6 +34,7 @@ class AcacesPosterAbstractSerializer(serializers.ModelSerializer):
     class Meta:
         model = AcacesPosterAbstract
         exclude = ()
+"""
 
 
 class B2bSerializer(serializers.ModelSerializer):
@@ -101,7 +102,7 @@ class AuthRegistrationSerializer(WritableNestedModelSerializer):
     payment_href = serializers.URLField(source="get_payment_url", read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
-    poster_abstract = AcacesPosterAbstractSerializer(read_only=True)
+    # poster_abstract = AcacesPosterAbstractSerializer(read_only=True)
     courses = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), many=True, allow_empty=True)
     sessions = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all(), many=True, allow_empty=True)
     posters = PosterSerializer(many=True)

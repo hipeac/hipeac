@@ -359,8 +359,8 @@ class SessionAdmin(admin.ModelAdmin):
     form = SessionAdminForm
 
     actions = ("select_export_users_csv", "send_reminder", "send_speakers_reminder", "send_proceedings_reminder")
-    date_hierarchy = "date"
-    list_display = ("id", "title", "date", "start_at", "end_at", "session_type", "registrations_count")
+    date_hierarchy = "legacy_date"
+    list_display = ("id", "title", "legacy_date", "legacy_start_at", "legacy_end_at", "session_type", "registrations_count")
     list_filter = ("session_type", "event")
     search_fields = ("title",)
 
@@ -368,7 +368,7 @@ class SessionAdmin(admin.ModelAdmin):
     radio_fields = {"session_type": admin.VERTICAL}
     inlines = (LinksInline, PrivateFilesInline, PermissionsInline)
     fieldsets = (
-        (None, {"fields": ("event", ("date", "start_at", "end_at"), "room", "session_type", "title", "is_private")}),
+        (None, {"fields": ("event", ("legacy_date", "legacy_start_at", "legacy_end_at"), "room", "session_type", "title", "is_private")}),
         ("INFO", {"fields": ("main_speaker", "summary", "projects", "organizers")}),
         ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics")}),
     )

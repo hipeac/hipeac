@@ -62,8 +62,8 @@
         <div class="col-6 col-md-12">
           <display-sm class="mb-1">Practical info</display-sm>
           <ul class="list-unstyled text-sm mb-4">
-            <li><i class="material-icons sm">today</i> {{ session.date | moment }}</li>
-            <li><i class="material-icons sm">schedule</i> {{ session.startAt }} - {{ session.endAt }}</li>
+            <li><i class="material-icons sm">today</i> {{ session.date.format('MMM D, YYYY') }}</li>
+            <li><i class="material-icons sm">schedule</i> {{ session.startAt.format('HH:mm') }} - {{ session.endAt.format('HH:mm') }}</li>
             <li v-if="event.rooms[session.room]">
               <i class="material-icons sm">room</i> {{ event.rooms[session.room].venue }}</li>
             <li v-if="event.rooms[session.room]">

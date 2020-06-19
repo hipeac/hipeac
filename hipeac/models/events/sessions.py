@@ -25,9 +25,11 @@ class Session(LinkMixin, models.Model):
     )
     is_private = models.BooleanField(default=False)
 
-    date = models.DateField()
-    start_at = models.TimeField(null=True, blank=True)
-    end_at = models.TimeField(null=True, blank=True)
+    legacy_date = models.DateField()
+    legacy_start_at = models.TimeField(null=True, blank=True)
+    legacy_end_at = models.TimeField(null=True, blank=True)
+    start_at = models.DateTimeField(null=True, blank=True)
+    end_at = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=250)
     organizers = models.TextField(null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
@@ -64,9 +66,9 @@ class Session(LinkMixin, models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["event", "date"]),
+            models.Index(fields=["event", "legacy_date"]),
         ]
-        ordering = ["date", "session_type__position", "start_at", "room__position", "end_at"]
+        ordering = ["legacy_date", "session_type__position", "legacy_start_at", "room__position", "legacy_end_at"]
 
     def clean(self) -> None:
         validate_date(self.date, self.event)

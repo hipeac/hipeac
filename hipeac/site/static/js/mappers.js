@@ -75,7 +75,7 @@ function mapper() {
         obj.date = moment(obj.start_at).set('hour', 9);
         obj.startAt = moment(obj.start_at);
         obj.endAt = moment(obj.end_at);
-        obj.duration = moment.duration(obj.endAt.diff(obj.startAt))
+        obj.duration = moment.duration(obj.endAt.diff(obj.startAt));
         return obj;
       });
     },
@@ -221,8 +221,10 @@ function mapper() {
     },
     sessions: function (items) {
       return items.map(function (obj) {
-        obj.startAt = obj.start_at.substring(0, 5);
-        obj.endAt = obj.end_at.substring(0, 5);
+        obj.date = moment(obj.start_at).set('hour', 9);
+        obj.startAt = moment(obj.start_at);
+        obj.endAt = moment(obj.end_at);
+        obj.duration = moment.duration(obj.endAt.diff(obj.startAt));
         obj.applicationAreaIds = _.pluck(obj.application_areas, 'id');
         obj.topicIds = _.pluck(obj.topics, 'id');
         obj.isKeynote = obj.session_type.value == 'Keynote';

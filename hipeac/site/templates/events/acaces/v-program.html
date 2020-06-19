@@ -18,25 +18,25 @@
     </div>
 
     <div v-if="viewAllSessions">
-      <div v-for="(data, date) in coursesList" :key="date">
+      <div v-for="(data, date) in sessionsList" :key="date">
         <hr class="my-4">
         <div class="row">
           <div class="col-12 col-md-2">
             <display-md class="mt-0 mb-3 text-left">{{ date | moment('dddd') }}<br>{{ date | moment }}</display-md>
           </div>
           <div class="col-12 col-md-10">
-            <div class="row" v-for="(course, index) in data" :key="course.key">
+            <div class="row" v-for="(session, index) in data" :key="session.key">
               <div v-if="index > 0" class="col-12"><hr></div>
               <div class="col-12 col-md-2 col-lg-1 mb-2 mb-md-0">
-                <catchphrase class="mb-0">{{ course.startAt.format('HH:mm') }}</catchphrase>
+                <catchphrase class="mb-0">{{ session.startAt.format('HH:mm') }}</catchphrase>
               </div>
               <div class="col-12 col-md-10 col-lg-11">
                 <span class="badge badge-light badge-pill float-right ml-3 mb-2">
-                  <icon v-if="event.is_virtual" class="sm mr-1" name="videocam"></icon>{{ course.duration.asHours() }} hours</span>
-                <router-link :to="{name: 'course', params: {courseId: course.id}}" class="inherit">
+                  <icon v-if="event.is_virtual" class="sm mr-1" name="videocam"></icon>{{ session.duration.asHours() }} hours</span>
+                <router-link :to="{name: session.route, params: {sessionId: session.id}}" class="inherit">
                   <p class="font-weight-light m-0">
-                    <span>{{ course.title }}</span><br>
-                    <strong>{{ course.teachersStr }}</strong>
+                    <span>{{ session.title }}</span><br>
+                    <strong>{{ session.teachersStr }}</strong>
                   </p>
                 </router-link>
               </div>
@@ -46,20 +46,37 @@
       </div>
     </div>
 
-    <div v-else class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
-      <div v-for="course in courses" :key="course.id" class="col">
-        <hr class="my-4">
-        <span class="badge badge-light badge-pill float-right ml-3 mb-2">
-          <icon v-if="event.is_virtual" class="sm mr-1" name="videocam"></icon>{{ course.sessions.length }} sessions</span>
-        <router-link :to="{name: 'course', params: {courseId: course.id}}" class="inherit">
-          <img v-for="teacher in course.teachers" :key="teacher.id" :src="teacher.profile.avatar_url" class="rounded-circle mr-3 mb-3 avatar md">
-          <p class="font-weight-light m-0">
-            <span>{{ course.title }}</span><br>
-            <strong>{{ course.teachersStr }}</strong>
-          </p>
-        </router-link>
+    <div v-else>
+      <hr class="my-3">
+      <display-md class="text-left mt-3 mb-1">Student activities</display-md>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+        <div v-for="session in event.sessions" :key="session.id" class="col">
+          <hr class="my-4">
+          <router-link :to="{name: 'session', params: {sessionId: session.id}}" class="inherit">
+            <p class="font-weight-light m-0">
+              <span>{{ session.title }}</span>
+            </p>
+          </router-link>
+        </div>
+      </div>
+      <hr class="mt-5">
+      <display-md class="text-left mt-3 mb-1">Courses</display-md>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+        <div v-for="course in courses" :key="course.id" class="col">
+          <hr class="my-4">
+          <span class="badge badge-light badge-pill float-right ml-3 mb-2">
+            <icon v-if="event.is_virtual" class="sm mr-1" name="videocam"></icon>{{ course.sessions.length }} sessions</span>
+          <router-link :to="{name: 'course', params: {sessionId: course.id}}" class="inherit">
+            <img v-for="teacher in course.teachers" :key="teacher.id" :src="teacher.profile.avatar_url" class="rounded-circle mr-3 mb-3 avatar md">
+            <p class="font-weight-light m-0">
+              <span>{{ course.title }}</span><br>
+              <strong>{{ course.teachersStr }}</strong>
+            </p>
+          </router-link>
+        </div>
       </div>
     </div>
+
   </div>
 {% endverbatim %}
 </script>

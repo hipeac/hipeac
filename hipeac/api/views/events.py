@@ -7,7 +7,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import AcacesPosterAbstract, B2b, Course, Event, Registration, Roadshow, Session
+from hipeac.models import B2b, Course, Event, Registration, Roadshow, Session
 from ..permissions import B2bPermission, HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
 from ..serializers import (
     ArticleListSerializer,
@@ -211,6 +211,7 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+    """
     @action(
         detail=True, methods=["POST"], parser_classes=(FileUploadParser,),
     )
@@ -219,3 +220,4 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
         abstract.registration = self.get_object()
         abstract.save()
         return Response(status=201)
+    """
