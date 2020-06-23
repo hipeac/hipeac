@@ -25,9 +25,6 @@ class Session(LinkMixin, models.Model):
     )
     is_private = models.BooleanField(default=False)
 
-    legacy_date = models.DateField()
-    legacy_start_at = models.TimeField(null=True, blank=True)
-    legacy_end_at = models.TimeField(null=True, blank=True)
     start_at = models.DateTimeField(null=True, blank=True)
     end_at = models.DateTimeField(null=True, blank=True)
     title = models.CharField(max_length=250)
@@ -66,9 +63,9 @@ class Session(LinkMixin, models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["event", "legacy_date"]),
+            models.Index(fields=["event"]),
         ]
-        ordering = ["legacy_date", "session_type__position", "legacy_start_at", "room__position", "legacy_end_at"]
+        ordering = ["session_type__position", "start_at", "room__position", "end_at"]
 
     def clean(self) -> None:
         validate_date(self.date, self.event)
@@ -80,7 +77,7 @@ class Session(LinkMixin, models.Model):
         return self.main_speaker_id == user.id or self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
 
     def get_absolute_url(self) -> str:
-        return "".join([self.event.get_absolute_url(), f"#/schedule/sessions/{self.id}/"])
+        return "".join([self.event.get_absolute_url(), f"#/program/sessions/{self.id}/"])
 
     def get_editor_url(self) -> str:
         content_type = ContentType.objects.get_for_model(self)

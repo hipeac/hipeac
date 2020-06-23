@@ -188,7 +188,7 @@
           }).sort(function (a, b) {
             return a.startAt - b.startAt;
           }), function (obj) {
-            return obj.date.format('YYYY-MM-DD');
+            return obj.isoDay;
           });
         },
         topics: function () {

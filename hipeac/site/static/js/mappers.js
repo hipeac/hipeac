@@ -73,6 +73,7 @@ function mapper() {
     courseSessions: function (items) {
       return items.map(function (obj) {
         obj.date = moment(obj.start_at).set('hour', 9);
+        obj.isoDay = obj.date.format('YYYY-MM-DD');
         obj.startAt = moment(obj.start_at);
         obj.endAt = moment(obj.end_at);
         obj.duration = moment.duration(obj.endAt.diff(obj.startAt));
@@ -126,7 +127,7 @@ function mapper() {
 
         if (obj.sessions && obj.sessions.length) {
           obj.sessions = sessionsMapper(obj.sessions);
-          var sessionsMap = _.groupBy(obj.sessions, 'date');
+          var sessionsMap = _.groupBy(obj.sessions, 'isoDay');
         }
 
         var schedule = _.map(obj.dates, function (date) {
@@ -222,6 +223,7 @@ function mapper() {
     sessions: function (items) {
       return items.map(function (obj) {
         obj.date = moment(obj.start_at).set('hour', 9);
+        obj.isoDay = obj.date.format('YYYY-MM-DD');
         obj.startAt = moment(obj.start_at);
         obj.endAt = moment(obj.end_at);
         obj.duration = moment.duration(obj.endAt.diff(obj.startAt));

@@ -15,7 +15,7 @@
   </li>
   {% if event.is_ready %}
     <li class="nav-item">
-      <a is="router-link" :to="{name: 'schedule'}" class="nav-link">Schedule</a>
+      <a is="router-link" :to="{name: 'program'}" class="nav-link">Program</a>
     </li>
   {% else %}
     {% if event.type == 'conference' %}
@@ -80,7 +80,7 @@
   {% include './v-venue.html' with id='v-venue' %}
 
   {% if event.is_ready %}
-    {% include './v-schedule.html' with id='v-schedule' %}
+    {% include './v-program.html' with id='v-program' %}
   {% else %}
     {% if event.type == 'conference' %}
       {% include './v-call-papers.html' with id='v-call-papers' %}
@@ -289,15 +289,15 @@
       }
     };
 
-    var ScheduleView = {
-      template: '#v-schedule',
+    var ProgramView = {
+      template: '#v-program',
       computed: _.extend(
         Vuex.mapState(['event']), {
       })
     };
 
-    var ScheduleMainView = {
-      template: '#v-schedule-main',
+    var ProgramMainView = {
+      template: '#v-program-main',
       data: function () {
         return {
           q: '',
@@ -360,8 +360,8 @@
       }
     };
 
-    var ScheduleKeynotesView = {
-      template: '#v-schedule-keynotes',
+    var ProgramKeynotesView = {
+      template: '#v-program-keynotes',
       computed: _.extend(
         Vuex.mapState(['event', 'keynotes']), {
       }),
@@ -370,8 +370,8 @@
       }
     };
 
-    var SchedulePapersView = {
-      template: '#v-schedule-papers',
+    var ProgramPapersView = {
+      template: '#v-program-papers',
       computed: _.extend(
         Vuex.mapState(['event', 'papers']), {
       }),
@@ -380,8 +380,8 @@
       }
     };
 
-    var SchedulePostersView = {
-      template: '#v-schedule-posters',
+    var ProgramPostersView = {
+      template: '#v-program-posters',
       computed: _.extend(
         Vuex.mapState(['event', 'posters']), {
       }),
@@ -417,7 +417,7 @@
       },
       beforeRouteEnter: function (to, from, next) {
         next(function (self) {
-          var ref = (from.name) ? from : {name: 'schedule', params: {}};
+          var ref = (from.name) ? from : {name: 'program', params: {}};
           $(self.$refs['modal']).on('hide.bs.modal', function (e) {
             self.$router.push(ref);
           }).modal('show');
@@ -560,39 +560,39 @@
           component: RegistrationView
         },
         {
-          path: '/schedule/',
+          path: '/program/',
           pathToRegexpOptions: {strict: true},
-          component: ScheduleView,
+          component: ProgramView,
           children: [
             {
-              name: 'schedule',
+              name: 'program',
               path: '',
               pathToRegexpOptions: {strict: true},
-              component: ScheduleMainView
+              component: ProgramMainView
             },
             {
               name: 'keynotes',
               path: 'keynotes/',
               pathToRegexpOptions: {strict: true},
-              component: ScheduleKeynotesView
+              component: ProgramKeynotesView
             },
             {
               name: 'papers',
               path: 'paper-track/',
               pathToRegexpOptions: {strict: true},
-              component: SchedulePapersView
+              component: ProgramPapersView
             },
             {
               name: 'posters',
               path: 'posters/',
               pathToRegexpOptions: {strict: true},
-              component: SchedulePostersView
+              component: ProgramPostersView
             },
             {
               path: 'sessions/:sessionId/',
               pathToRegexpOptions: {strict: true},
               components: {
-                default: ScheduleMainView,
+                default: ProgramMainView,
                 modal: SessionModalView
               },
               props: {
