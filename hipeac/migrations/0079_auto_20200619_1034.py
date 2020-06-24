@@ -8,21 +8,25 @@ import re
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0078_auto_20200527_1312'),
+        ("hipeac", "0078_auto_20200527_1312"),
     ]
 
     operations = [
+        migrations.AddField(model_name="poster", name="abstract", field=models.TextField(blank=True, null=True),),
         migrations.AddField(
-            model_name='poster',
-            name='abstract',
-            field=models.TextField(blank=True, null=True),
+            model_name="poster",
+            name="topics",
+            field=models.CharField(
+                blank=True,
+                max_length=250,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        re.compile("^\\d+(?:,\\d+)*\\Z"),
+                        code="invalid",
+                        message="Enter only digits separated by commas.",
+                    )
+                ],
+            ),
         ),
-        migrations.AddField(
-            model_name='poster',
-            name='topics',
-            field=models.CharField(blank=True, max_length=250, validators=[django.core.validators.RegexValidator(re.compile('^\\d+(?:,\\d+)*\\Z'), code='invalid', message='Enter only digits separated by commas.')]),
-        ),
-        migrations.DeleteModel(
-            name='AcacesPosterAbstract',
-        ),
+        migrations.DeleteModel(name="AcacesPosterAbstract",),
     ]

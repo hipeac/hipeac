@@ -6,18 +6,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hipeac', '0080_auto_20200623_0827'),
+        ("hipeac", "0080_auto_20200623_0827"),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='session',
-            name='end_at',
-            field=models.DateTimeField(blank=True, null=True),
-        ),
-        migrations.AddField(
-            model_name='session',
-            name='start_at',
-            field=models.DateTimeField(blank=True, null=True),
-        ),
+        migrations.AddField(model_name="session", name="end_at", field=models.DateTimeField(blank=True, null=True),),
+        migrations.AddField(model_name="session", name="start_at", field=models.DateTimeField(blank=True, null=True),),
     ]
