@@ -162,8 +162,8 @@
                         <span>{{ session.title }}</span>
                       </label>
                     </td>
-                    <td class="text-nowrap">
-                      <small>{{ session.date | moment }}, {{ session.startAt }}</small>
+                    <td class="text-nowrap text-right">
+                      <small>{{ session.startAt.format("ddd, MMMM Do H:mm") }} ({{ session.duration.asHours() }}h)</small>
                     </td>
                   </tr>
                 </tbody>

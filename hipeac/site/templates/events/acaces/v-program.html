@@ -10,7 +10,7 @@
 <script type="text/x-template" id="{{ id }}-main">
 {% verbatim %}
   <div v-if="event && courses" class="hipeac-card">
-    <span v-if="viewAllSessions" class="text-sm float-right text-secondary mt-1">
+    <span class="text-sm float-right text-secondary mt-1">
       <icon v-if="event.is_virtual" class="sm mr-1" name="schedule"></icon>Schedule is showing your local time</span>
     <div class="custom-control custom-switch">
       <input v-model="viewAllSessions" type="checkbox" class="custom-control-input pointer" id="viewSwitch">
@@ -54,7 +54,8 @@
           <hr class="my-4">
           <router-link :to="{name: 'session', params: {sessionId: session.id}}" class="inherit">
             <p class="font-weight-light m-0">
-              <span>{{ session.title }}</span>
+              <span>{{ session.title }}</span><br>
+              <strong>{{ session.startAt.format("ddd, MMMM Do H:mm") }}</strong>
             </p>
           </router-link>
         </div>
