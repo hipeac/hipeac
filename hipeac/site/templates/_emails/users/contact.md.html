@@ -1,0 +1,17 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block header %}{{ sender_first_name }} has sent you a message via HiPEAC.net{% endblock %}
+
+{% block body %}
+Dear {{ user_name }},
+
+{{ sender_name }} {% if sender_affiliation %}({{ sender_affiliation }}) {% endif %}has sent you a message using the contact form on the HiPEAC website:
+
+> {{ message }}
+
+You can contact {{ sender_first_name }} directly via <{{ sender_email }}> to answer the request
+or you can just ignore this message if you consider it inappropriate.
+{% endblock %}
+
+{% block footer %}HiPEAC, European Network on High-performance Embedded Architecture and Compilation{% endblock %}

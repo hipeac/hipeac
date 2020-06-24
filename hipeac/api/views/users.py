@@ -1,9 +1,17 @@
+from http import HTTPStatus
+
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
+
+from hipeac.functions import send_task
+from hipeac.site.emails.users import UserContactEmail
 
 from hipeac.models import Profile, Video
 from ..serializers import (
@@ -59,3 +67,24 @@ class AuthUserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     def notifications(self, request, *args, **kwargs):
         self.queryset = request.user.notifications.active()
         return ListModelMixin.list(self, request, *args, **kwargs)
+
+
+class ContactUser(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+        """
+        Send a message to a HiPEAC user.
+        """
+        try:
+            email = UserContactEmail(instance={
+                "user": User.objects.get(id=self.request.data["user_id"]),
+                "sender": self.request.user,
+                "message": self.request.data["message"],
+            })
+            send_task("hipeac.tasks.emails.send_from_template", email.data)
+
+            return Response({"message": "Your message has been sent."})
+
+        except Exception:
+            return Response({"message": "We could not send your message."}, status=HTTPStatus.INTERNAL_SERVER_ERROR)

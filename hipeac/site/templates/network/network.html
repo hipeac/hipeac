@@ -124,6 +124,11 @@
 
     var MembersMainView = {
       template: '#v-members-main',
+      data: function () {
+        return {
+          userIsAuthenticated: USER_IS_AUTHENTICATED
+        }
+      },
       computed: _.extend(
         Vuex.mapState(['members', 'institutions']), {
         randomInstitutions: function () {

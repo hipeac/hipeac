@@ -21,6 +21,7 @@ TEMPLATE_PATHS = {
     "recruitment.jobs.created": "_emails/recruitment/jobs_created.md.html",
     "recruitment.jobs.evaluation": "_emails/recruitment/jobs_evaluation.md.html",
     "recruitment.jobs.expiration_reminder": "_emails/recruitment/jobs_expiration_reminder.md.html",
+    "users.contact": "_emails/users/contact.md.html",
     "users.members.non_eu.welcome": "_emails/users/members_non_eu_welcome.md.html",
     "users.members.welcome": "_emails/users/members_welcome.md.html",
     "users.profile.update_reminder": "_emails/users/profile_update_reminder.md.html",
