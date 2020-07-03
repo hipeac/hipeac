@@ -8,7 +8,7 @@
   <head>
     <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500|Material+Icons" type="text/css" rel="stylesheet">
     {% compress css file bootstrap %}
-      <link href="{% static 'vendor/bootstrap@4.4.1/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static 'vendor/bootstrap@4.5.0/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
       <link href="{% static 'scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
     {% endcompress %}
     {% block styles %}{% endblock %}
@@ -94,9 +94,9 @@
     {% block main %}{% block content %}{% endblock %}{% endblock %}
     {% block vue_templates %}{% endblock %}
     {% compress js file bootstrap %}
-      <script src="{% static 'vendor/jquery@3.4.1/jquery.min.js' %}"></script>
+      <script src="{% static 'vendor/jquery@3.5.1/jquery.min.js' %}"></script>
       <script src="{% static 'vendor/popper.js@1.16.0/popper.min.js' %}"></script>
-      <script src="{% static 'vendor/bootstrap@4.4.1/bootstrap.min.js' %}"></script>
+      <script src="{% static 'vendor/bootstrap@4.5.0/bootstrap.min.js' %}"></script>
     {% endcompress %}
     {% compress js file helpers %}
       <script src="{% static 'vendor/commonmark@0.28.1/commonmark.js' %}"></script>
