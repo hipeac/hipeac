@@ -70,6 +70,9 @@ Vue.component('user-contact-modal', {
       '<div class="modal-dialog modal-md" role="document">' +
         '<div v-if="user" class="modal-content">' +
           '<div class="modal-body">' +
+            '<button @click.prevent="hide" type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+              '<span aria-hidden="true">&times;</span>' +
+            '</button>'+
             '<display-sm class="mb-3">Contact form</display-sm>' +
             '<p>For privacy reasons we cannot share other users\' emails. ' +
             'Please use this form to send a message to <strong>{{ user.profile.name }}</strong>' +
@@ -77,7 +80,7 @@ Vue.component('user-contact-modal', {
             ': we will share your email address with {{ user.profile.name }} so you can get a direct response.</p>' +
             '<textarea v-model="msg" class="form-control" rows="3"></textarea>' +
             '<button @click="sendMessage" class="btn btn-outline-primary mt-2 mb-5">Send message</button>' +
-            '<p v-if="msgSent === null" class="text-sm text-secondary mb-0">Please note that it is possible that your message doesn\'t get an answer.</p>' +
+            '<p v-if="msgSent === null" class="text-sm text-secondary mb-0">Please note that {{ user.profile.name }} can choose to discard your message.</p>' +
             '<p v-else-if="msgSent === true" class="text-sm text-success mb-0"><strong>Your message has been sent!</strong></p>' +
             '<p v-else class="text-sm text-danger mb-0"><strong>We could not send your message, please try again later.</strong></p>' +
           '</div>' +
@@ -89,6 +92,9 @@ Vue.component('user-contact-modal', {
     show: function (user) {
       this.user = user;
       $(this.$refs.userContactModal).modal();
+    },
+    hide: function () {
+      $(this.$refs.userContactModal).modal('hide');
     },
     sendMessage: function () {
       var self = this;
