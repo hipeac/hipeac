@@ -13,7 +13,9 @@ class Course(models.Model):
     overview = models.TextField(null=True, blank=True)
     teachers = models.ManyToManyField(get_user_model(), blank=True, related_name="courses")
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+
     links = GenericRelation("hipeac.Link")
+    private_files = GenericRelation("hipeac.PrivateFile")
 
     class Meta:
         db_table = "hipeac_event_course"
@@ -39,4 +41,4 @@ class CourseSession(models.Model):
             raise ValidationError("Start and end date must be the same.")
 
     def __str__(self) -> str:
-        return f"{self.course} ({self.start_at.date})"
+        return f"{self.course} ({self.start_at.date()})"

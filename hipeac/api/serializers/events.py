@@ -250,6 +250,8 @@ class CourseListSerializer(serializers.ModelSerializer):
     sessions = CourseSessionListSerializer(many=True)
     teachers = UserPublicSerializer(many=True, read_only=True)
     topics = MetadataListField()
+    links = LinkSerializer(required=False, many=True, allow_null=True)
+    private_files = PrivateFileSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course

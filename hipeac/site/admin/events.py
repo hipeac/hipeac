@@ -483,4 +483,4 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
     raw_id_fields = ("teachers",)
-    inlines = (CourseSessionsInline,)
+    inlines = (CourseSessionsInline, LinksInline, PrivateFilesInline)
