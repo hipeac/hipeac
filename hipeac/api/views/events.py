@@ -165,6 +165,11 @@ class CourseViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Generi
 
         return super().list(request, *args, **kwargs)
 
+    @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
+    def videos(self, request, *args, **kwargs):
+        self.queryset = self.get_object().videos
+        return super().list(request, *args, **kwargs)
+
 
 class SessionViewSet(CourseViewSet):
     queryset = Session.objects.prefetch_related("session_type")

@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 
+from ..communication import Video
 from .events import validate_date
 
 
@@ -22,6 +23,11 @@ class Course(models.Model):
 
     def __str__(self) -> str:
         return f"{self.title}"
+
+    @property
+    def videos(self):
+        teacher_id = self.teachers.all()[0].id
+        return Video.objects.filter(event_id=self.event_id, users__pk=teacher_id)
 
 
 class CourseSession(models.Model):
