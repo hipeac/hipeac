@@ -154,7 +154,7 @@ ACCOUNT_FORMS = {
 }
 
 SOCIALACCOUNT_PROVIDERS = {
-    "github": {"SCOPE": ["user"]},
+    "github": {"SCOPE": ["read:user", "user:email"]},
     "google": {"SCOPE": ["profile", "email"], "AUTH_PARAMS": {"access_type": "online"}},
     "linkedin": {
         "SCOPE": ["r_emailaddress", "r_liteprofile"],
