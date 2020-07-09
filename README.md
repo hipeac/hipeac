@@ -6,6 +6,7 @@ HiPEAC.net
 [![codefactor-badge]][codefactor]
 [![license-badge]](LICENSE)
 
+
 The HiPEAC api/website uses [Django][django] and the [Django REST Framework][drf].
 
 Application dependencies
@@ -46,12 +47,12 @@ Tab size is 4 spaces. Max line length is 120. You should run `flake8` and `black
     $ black hipeac
 
 
-[github-actions]: https://github.com/hipeac/hipeac/actions
-[github-actions-badge]: https://github.com/hipeac/hipeac/workflows/test%20suite/badge.svg
 [codecov]: https://codecov.io/gh/hipeac/hipeac
 [codecov-badge]: https://codecov.io/gh/hipeac/hipeac/branch/master/graph/badge.svg
 [codefactor]: https://www.codefactor.io/repository/github/hipeac/hipeac
 [codefactor-badge]: https://www.codefactor.io/repository/github/hipeac/hipeac/badge
+[github-actions]: https://github.com/hipeac/hipeac/actions?query=workflow%3A%22tests%22
+[github-actions-badge]: https://github.com/hipeac/hipeac/workflows/tests/badge.svg
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 
 [django]: https://www.djangoproject.com/

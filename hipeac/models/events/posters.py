@@ -13,11 +13,17 @@ class Poster(models.Model):
         (PROJECT, "EU Project poster"),
     )
 
+    ASSETS_PRIVATE_FOLDER = "private/poster"
+
     registration = models.ForeignKey("hipeac.Registration", related_name="posters", on_delete=models.CASCADE)
     type = models.CharField(max_length=16, choices=TYPE_CHOICES)
     title = models.TextField()
     authors = models.TextField(null=True, blank=True)
-    abstract = models.TextField(null=True, blank=True)
+    abstract = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
+    poster = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
+    presentation = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
+    video_url = models.URLField(null=True, blank=True)
+    breakout_room = models.CharField(max_length=250, null=True, blank=True)
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
 
     def __str__(self) -> str:

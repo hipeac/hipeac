@@ -86,7 +86,8 @@ class SponsorSerializer(serializers.ModelSerializer):
 class PosterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Poster
-        fields = ("id", "title", "authors", "type")
+        fields = ("id", "title", "authors", "type", "abstract", "presentation", "video_url", "breakout_room")
+        read_only_fields = ("abstract", "presentation", "video_url", "breakout_room")
 
 
 class RegistrationListSerializer(serializers.ModelSerializer):

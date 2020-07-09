@@ -170,6 +170,16 @@ class Event(ImagesMixin, LinkMixin, models.Model):
             queryset = Job.objects.none()
         return queryset
 
+    @cached_property
+    def posters(self):
+        from .posters import Poster
+        return Poster.objects.filter(registration__event_id=self.id)
+
+    @cached_property
+    def posters_by_room(self):
+        from .posters import Poster
+        return Poster.objects.filter(registration__event_id=self.id).order_by("breakout_room", "title")
+
     @property
     def season(self) -> str:
         return "Spring" if (self.start_date.month < 8) else "Autumn"

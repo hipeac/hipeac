@@ -19,6 +19,7 @@ from hipeac.models import (
     Session,
     Sponsor,
     Venue,
+    Poster,
     Room,
     SessionProposal,
     Course,
@@ -59,6 +60,12 @@ class CouponAdmin(admin.ModelAdmin):
 class CouponsInline(admin.TabularInline):
     model = Coupon
     classes = ("collapse",)
+    extra = 0
+
+
+class PostersInline(admin.StackedInline):
+    classes = ("collapse",)
+    model = Poster
     extra = 0
 
 
@@ -215,6 +222,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     search_fields = ("id", "user__email", "user__username", "user__first_name", "user__last_name")
 
     autocomplete_fields = ("event",)
+    inlines = (PostersInline,)
     raw_id_fields = ("user", "coupon")
     readonly_fields = ("base_fee", "extra_fees", "paid", "saldo")
     fieldsets = (
