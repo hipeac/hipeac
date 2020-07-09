@@ -68,7 +68,7 @@ class Session(LinkMixin, models.Model):
         ordering = ["session_type__position", "start_at", "room__position", "end_at"]
 
     def clean(self) -> None:
-        validate_date(self.date, self.event)
+        validate_date(self.start_at.date(), self.event)
 
     def __str__(self) -> str:
         return self.title

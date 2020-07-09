@@ -86,7 +86,7 @@ class SessionProceedingsEmail(TemplateEmail):
             "event_name": self.instance.event.name,
             "event_city": self.instance.event.city,
             "event_url": self.instance.event.get_absolute_url(),
-            "session_date": self.date_filter(self.instance.date),
+            "session_date": self.date_filter(self.instance.start_at.date()),
             "session_title": self.instance.title,
             "session_type": self.instance.session_type.value,
         }
@@ -108,7 +108,7 @@ class SessionReminderEmail(TemplateEmail):
             "event_name": self.instance.event.name,
             "event_city": self.instance.event.city,
             "event_url": self.instance.event.get_absolute_url(),
-            "session_date": self.date_filter(self.instance.date),
+            "session_date": self.date_filter(self.instance.start_at.date()),
             "session_title": self.instance.title,
             "session_type": self.instance.session_type.value,
             "session_editor_url": self.instance.get_editor_url(),
@@ -131,7 +131,7 @@ class SessionSpeakersReminderEmail(TemplateEmail):
             "event_name": self.instance.event.name,
             "event_city": self.instance.event.city,
             "event_url": self.instance.event.get_absolute_url(),
-            "session_date": self.date_filter(self.instance.date),
+            "session_date": self.date_filter(self.instance.start_at.date()),
             "session_title": self.instance.title,
             "session_type": self.instance.session_type.value,
         }
