@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import generic
 
-from hipeac.models import Profile, Registration
+from hipeac.models import Event, Profile, Registration
 from hipeac.site.pdfs.events import CertificatePdfMaker
 
 
@@ -38,7 +38,11 @@ class UserCertificates(UserAuthenticatedMixin, generic.ListView):
 
     def get_queryset(self):
         today = timezone.now().date()
-        return self.request.user.registrations.filter(event__end_date__lte=today).select_related("event")
+        return (
+            self.request.user.registrations.filter(event__end_date__lte=today)
+            .exclude(event__type=Event.ACACES)
+            .select_related("event")
+        )
 
 
 class UserCertificatePdf(UserAuthenticatedMixin, generic.DetailView):

@@ -77,11 +77,13 @@ class ContactUser(APIView):
         Send a message to a HiPEAC user.
         """
         try:
-            email = UserContactEmail(instance={
-                "user": User.objects.get(id=self.request.data["user_id"]),
-                "sender": self.request.user,
-                "message": self.request.data["message"],
-            })
+            email = UserContactEmail(
+                instance={
+                    "user": User.objects.get(id=self.request.data["user_id"]),
+                    "sender": self.request.user,
+                    "message": self.request.data["message"],
+                }
+            )
             send_task("hipeac.tasks.emails.send_from_template", email.data)
 
             return Response({"message": "Your message has been sent."})
