@@ -33,6 +33,7 @@ from hipeac.site.emails.events import (
     SessionSpeakersReminderEmail,
     NoShowsEmail,
 )
+from .csv.events import csv_zoom_attendee_report
 from .generic import ImagesInline, LinksInline, PermissionsInline, PrivateFilesInline
 from .users import ProfileCsvWriter, send_profile_update_reminders
 
@@ -78,7 +79,7 @@ class SponsorsInline(admin.TabularInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    actions = ("select_export_users_csv",)
+    actions = ("select_export_users_csv", "select_zoom_attendee_report_csv")
     date_hierarchy = "start_date"
     list_display = (
         "id",
@@ -169,6 +170,15 @@ class EventAdmin(admin.ModelAdmin):
         return ProfileCsvWriter(filename="hipeac-jobs.csv", queryset=Profile.objects.filter(user_id__in=ids)).response
 
     select_export_users_csv.short_description = "[CSV] Export attendees data for an event"
+
+    def select_zoom_attendee_report_csv(self, request, queryset):
+        if queryset.count() > 1:
+            messages.error(request, "Please select only one event.")
+            return
+
+        return csv_zoom_attendee_report(queryset.first(), "hipeac-events--zoom-attendee-report.csv")
+
+    select_zoom_attendee_report_csv.short_description = "[CSV] Export attendees report based on Zoom data"
 
 
 class RegistrationIsPaidFilter(admin.SimpleListFilter):

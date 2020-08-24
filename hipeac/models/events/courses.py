@@ -35,6 +35,8 @@ class CourseSession(models.Model):
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
     notes = models.TextField(null=True, blank=True)
+    zoom_attendee_report = models.FileField(upload_to="private/zoom", null=True, blank=True)
+
     links = GenericRelation("hipeac.Link")
 
     class Meta:
@@ -48,3 +50,7 @@ class CourseSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.course} ({self.start_at.date()})"
+
+    @property
+    def minutes(self) -> int:
+        return int((self.end_at - self.start_at).total_seconds() / 60.0)
