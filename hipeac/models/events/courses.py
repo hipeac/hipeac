@@ -25,6 +25,18 @@ class Course(models.Model):
         return f"{self.title}"
 
     @property
+    def hours(self) -> float:
+        return round(self.minutes / 60, 1)
+
+    @property
+    def minutes(self) -> int:
+        return sum([s.minutes for s in self.sessions.all()])
+
+    @property
+    def teachers_string(self) -> str:
+        return " / ".join([t.profile.name for t in self.teachers.all()])
+
+    @property
     def videos(self):
         teacher_id = self.teachers.all()[0].id
         return Video.objects.filter(event_id=self.event_id, users__pk=teacher_id)

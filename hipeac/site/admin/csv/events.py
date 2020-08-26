@@ -22,10 +22,7 @@ def csv_zoom_attendee_report(event: Event, filename):
         "affiliation",
         "institution country",
     ]
-    minute_columns = [
-        "actual_duration",
-        "", "", "", ""
-    ]
+    minute_columns = ["actual_duration", "", "", "", ""]
     registrations = {}
     email_map = {}
     full_name_map = {}
@@ -49,8 +46,7 @@ def csv_zoom_attendee_report(event: Event, filename):
         full_name_map[registration.user.profile.name] = registration.user_id
 
     for course in event.courses.all():
-        teachers = " / ".join([t.profile.name for t in course.teachers.all()])
-        course_field = f"{course.id} - {teachers}"
+        course_field = f"{course.id} - {course.teachers_string}"
         columns.append(course_field)
         durations = [0]
         s = 1
