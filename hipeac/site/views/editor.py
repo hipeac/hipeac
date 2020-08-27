@@ -41,13 +41,13 @@ class EditorView(EditorBaseView):
 
     def get_object(self, **kwargs):
         if not hasattr(self, "object"):
-            ct = ContentType.objects.get(id=kwargs.get("ct", None))
-            self.object = ct.get_object_for_this_type(pk=kwargs.get("pk", None))
+            ct = ContentType.objects.get(id=int(str(kwargs.get("ct"))))
+            self.object = ct.get_object_for_this_type(pk=int(str(kwargs.get("pk"))))
         return self.object
 
     def get_model_name(self, **kwargs):
         if not hasattr(self, "model_name"):
-            ct = ContentType.objects.get(id=kwargs.get("ct", None))
+            ct = ContentType.objects.get(id=int(str(kwargs.get("ct"))))
             self.model_name = ct.model
         return self.model_name
 
