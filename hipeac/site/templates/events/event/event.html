@@ -31,9 +31,15 @@
       </li>
     {% endif %}
   {% endif %}
-  <li class="nav-item">
-    <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
-  </li>
+  {% if event.is_virtual %}
+    <li class="nav-item">
+      <a is="router-link" :to="{name: 'logistics'}" class="nav-link">Logistics</a>
+    </li>
+  {% else %}
+    <li class="nav-item">
+      <a is="router-link" :to="{name: 'venue'}" class="nav-link">Venue and travel</a>
+    </li>
+  {% endif %}
   {% if event.type == 'conference' %}
     <li class="nav-item">
       <a is="router-link" :to="{name: 'jobs'}" class="nav-link">Recruitment</a>
@@ -75,6 +81,7 @@
   {% include './v-attendees.html' with id='v-attendees' %}
   {% include './v-industry.html' with id='v-industry' %}
   {% include './v-jobs.html' with id='v-jobs' hashtag=event.hashtag %}
+  {% include './v-logistics.html' with id='v-attendees' %}
   {% include './v-registration.html' with id='v-registration' %}
   {% include './v-session.html' with id='v-session' %}
   {% include './v-venue.html' with id='v-venue' %}
@@ -488,6 +495,13 @@
       }
     };
 
+    var LogisticsView = {
+      template: '#v-logistics',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      }),
+    };
+
     var SessionDownloadsView = {
       template: '#v-session-downloads',
       computed: _.extend(
@@ -553,6 +567,12 @@
           path: '/recruitment/',
           pathToRegexpOptions: {strict: true},
           component: JobsView
+        },
+        {
+          name: 'logistics',
+          path: '/logistics/',
+          pathToRegexpOptions: {strict: true},
+          component: LogisticsView
         },
         {
           name: 'registration',

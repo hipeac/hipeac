@@ -1,0 +1,19 @@
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}">
+  <div v-if="event" class="row">
+    <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
+      <div class="hipeac-card">
+        <display-sm class="mb-3">Tools</display-sm>
+        <span>We will be using Zoom webinars for all sessions.</span>
+      </div>
+    </div>
+    <div v-if="event.logistics" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
+      <div class="hipeac-card">
+        <display-sm class="mb-3">Logistics</display-sm>
+        <marked v-if="event.logistics" :text="event.logistics"></marked>
+      </div>
+    </div>
+  </div>
+</script>
