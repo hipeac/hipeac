@@ -81,7 +81,7 @@
   {% include './v-attendees.html' with id='v-attendees' %}
   {% include './v-industry.html' with id='v-industry' %}
   {% include './v-jobs.html' with id='v-jobs' hashtag=event.hashtag %}
-  {% include './v-logistics.html' with id='v-attendees' %}
+  {% include './v-logistics.html' with id='v-logistics' %}
   {% include './v-registration.html' with id='v-registration' %}
   {% include './v-session.html' with id='v-session' %}
   {% include './v-venue.html' with id='v-venue' %}
@@ -496,10 +496,52 @@
     };
 
     var LogisticsView = {
+      data: function () {
+        return {
+          endpoint: $('#urls').data('registration-url'),
+          registration: null,
+          links: []
+        };
+      },
       template: '#v-logistics',
       computed: _.extend(
         Vuex.mapState(['user', 'event']), {
+        access_sessions: function () {
+          if (!this.event || this.links.length == 0) return [];
+          var session_ids = _.pluck(this.links, 'session');
+          var link_collection = _.indexBy(this.links, 'session');
+          return this.event.sessions.filter(function (obj) {
+            return _.contains(session_ids, obj.id);
+          }).map(function (obj) {
+            obj.access_link = link_collection[obj.id];
+            return obj;
+          });
+        }
       }),
+      methods: {
+        fetchRegistration: function () {
+          var self = this;
+
+          if (!this.event) {
+            setTimeout(function () { self.fetchRegistration(); }, 25);
+            return;
+          };
+
+          ajax().get(this.endpoint, {event_id: this.event.id}).done(function (res) {
+            if (res.results.length == 1) {
+              self.registration = mapper().registrations(res.results)[0];
+              console.log(self.registration.url);
+              ajax().get(self.registration.url + 'access_links/').done(function (r) {
+                console.log(r);
+                self.links = r;
+              });
+            }
+          });
+        },
+      },
+      created: function () {
+        this.fetchRegistration();
+      }
     };
 
     var SessionDownloadsView = {

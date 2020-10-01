@@ -17,6 +17,7 @@ from hipeac.models import (
     Roadshow,
     Room,
     Session,
+    SessionAccessLink,
     Sponsor,
     Venue,
 )
@@ -186,6 +187,13 @@ class SessionSerializer(SessionListSerializer):
             }
             for institution in obj.institutions.all()
         ]
+
+
+class SessionAccessLinkSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SessionAccessLink
+        exclude = ()
 
 
 class EventNestedSerializer(serializers.ModelSerializer):

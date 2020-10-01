@@ -7,7 +7,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import B2b, Course, Event, Registration, Roadshow, Session
+from hipeac.models import B2b, Course, Event, Registration, Roadshow, Session, SessionAccessLink
 from ..permissions import B2bPermission, HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
 from ..serializers import (
     ArticleListSerializer,
@@ -23,6 +23,7 @@ from ..serializers import (
     RoadshowSerializer,
     SessionListSerializer,
     SessionSerializer,
+    SessionAccessLinkSerializer,
     VideoListSerializer,
 )
 
@@ -190,10 +191,11 @@ class SessionViewSet(CourseViewSet):
 
 
 class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Registration.objects.prefetch_related("courses", "sessions", "posters")
     permission_classes = (RegistrationPermission,)
     serializer_class = AuthRegistrationSerializer
 
-    def get_queryset(self):
+    def get_queryset_for_event(self):
         event_id = self.request.query_params.get("event_id", None)
         queryset = Registration.objects.filter(user_id=self.request.user.id).prefetch_related(
             "courses", "sessions", "posters"
@@ -210,11 +212,27 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
 
     @never_cache
     def list(self, request, *args, **kwargs):
+        self.queryset = self.get_queryset_for_event()
         return super().list(request, *args, **kwargs)
 
     @never_cache
     def retrieve(self, request, *args, **kwargs):
+        self.queryset = self.get_queryset_for_event()
         return super().retrieve(request, *args, **kwargs)
+
+    @never_cache
+    @action(detail=True, queryset=SessionAccessLink.objects.all())
+    def access_links(self, request, *args, **kwargs):
+        """
+        Retrieve personalized Zoom links for the registered sessions.
+        """
+        registration = Registration.objects.get(id=kwargs.get("pk"))
+        session_ids = list(Session.objects.filter(event_id=registration.event_id).values_list("id", flat=True))
+        self.queryset = SessionAccessLink.objects.filter(user_id=self.request.user.id, session_id__in=session_ids)
+        self.pagination_class = None
+        self.serializer_class = SessionAccessLinkSerializer
+        return super().list(request, *args, **kwargs)
+
 
     """
     @action(

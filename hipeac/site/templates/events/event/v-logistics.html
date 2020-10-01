@@ -6,13 +6,26 @@
     <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
       <div class="hipeac-card">
         <display-sm class="mb-3">Tools</display-sm>
-        <span>We will be using Zoom webinars for all sessions.</span>
+        <p>The different sessions will be delivered using Zoom webinars.</p>
+        <span v-if="!user.isRegistered">Once you register you can join our Mattermost team.</span>
+        <span v-else>Students are also invited to join our <a href="https://teams.hipeac.net/signup_user_complete/?id=9hz3ieodmpdn9jj4dmzg1nmrtc">Mattermost team</a>, where we will be posting news about the Career Session and other student activities.</span>
       </div>
     </div>
     <div v-if="event.logistics" class="col-12 col-md-6 col-lg-8 d-flex align-items-stretch">
       <div class="hipeac-card">
         <display-sm class="mb-3">Logistics</display-sm>
         <marked v-if="event.logistics" :text="event.logistics"></marked>
+        <hr class="my-4">
+        <img src="{% static 'images/zoom.svg' %}" class="float-right ml-4 mb-3" style="width: 120px">
+        <p>All sessions will be delivered using Zoom. Once you register on our website, you will receive a dedicated Zoom link for the sessions you want to attend. A reminder will be sent 24 hours before the session starts.</p>
+        <div v-if="links.length">
+          <p>You can also access your sessions directly using the following links:</p>
+{% verbatim %}
+          <ul>
+            <li v-for="s in access_sessions" :key="s.id">{{ s.startAt.format("ddd, MMMM Do H:mm") }}: "{{ s.title }}" ({{ s.session_type.value}}) - [<a :href="s.access_link.url"><strong>Personal link</strong></a>]</li>
+          </ul>
+{% endverbatim %}
+        </div>
       </div>
     </div>
   </div>
