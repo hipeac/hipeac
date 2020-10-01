@@ -48,6 +48,7 @@ class Session(LinkMixin, models.Model):
     private_files = GenericRelation("hipeac.PrivateFile")
 
     zoom_webinar_id = models.CharField(max_length=32, null=True, blank=True)
+    zoom_attendee_report = models.FileField(upload_to="private/zoom", null=True, blank=True)
 
     keywords = models.TextField(default="[]", editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -67,7 +68,7 @@ class Session(LinkMixin, models.Model):
         indexes = [
             models.Index(fields=["event"]),
         ]
-        ordering = ["session_type__position", "start_at", "room__position", "end_at"]
+        ordering = ["start_at", "session_type__position", "room__position", "end_at"]
 
     def clean(self) -> None:
         validate_date(self.start_at.date(), self.event)

@@ -45,6 +45,40 @@ def csv_zoom_attendee_report(event: Event, filename):
         email_map[registration.user.email] = registration.user_id
         full_name_map[registration.user.profile.name] = registration.user_id
 
+    for session in event.sessions.all():
+        session_field = f"{session.id} - {session.title}"
+        columns.append(session_field)
+        minutes[session_field] = {}
+        duration = 0
+
+        if session.zoom_attendee_report:
+            duration, report = attendee_report(str(session.zoom_attendee_report.file))
+
+            for u in report:
+                name = f'{u["first_name"]} {u["last_name"]}'
+
+                # find user registration
+                if u["email"] in email_map:
+                    uid = email_map[u["email"]]
+                elif name in full_name_map:
+                    uid = full_name_map[name]
+                else:
+                    uid = None
+                    continue
+
+                if uid in minutes[session_field]:
+                    minutes[session_field][uid] += u["minutes"]
+                else:
+                    minutes[session_field][uid] = u["minutes"]
+
+        for user_id, data in registrations.items():
+            if user_id in minutes[session_field]:
+                registrations[user_id][session_field] = minutes[session_field][user_id]
+            else:
+                registrations[user_id][session_field] = "-"
+
+        minute_columns = minute_columns + [duration]
+
     for course in event.courses.all():
         course_field = f"{course.id} - {course.teachers_string}"
         columns.append(course_field)

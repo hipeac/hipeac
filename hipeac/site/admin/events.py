@@ -398,6 +398,7 @@ class SessionAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("event", ("start_at", "end_at"), "room", "session_type", "title", "is_private")}),
         ("INFO", {"fields": ("main_speaker", "summary", "projects", "organizers")}),
+        ("ZOOM", {"fields": ("zoom_webinar_id", "zoom_attendee_report")}),
         ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics")}),
     )
 

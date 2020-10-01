@@ -20,7 +20,7 @@
               <strong>Extras: EUR {{ registration.extra_fees }}</strong>
               <hr>
             </div>
-            <div v-if="event.is_open_for_registration">
+            <div v-if="event.is_open_for_registration && !event.is_virtual">
               <display-sm class="mb-3">Practical information</display-sm>
               <div class="big-checkbox">
                 <label>

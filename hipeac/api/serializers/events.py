@@ -17,6 +17,7 @@ from hipeac.models import (
     Roadshow,
     Room,
     Session,
+    SessionAccessLink,
     Sponsor,
     Venue,
 )
@@ -162,6 +163,7 @@ class SessionSerializer(SessionListSerializer):
         exclude = (
             "created_at",
             "updated_at",
+            "zoom_attendee_report",
         )
 
     def get_excerpt(self, obj) -> str:
@@ -186,6 +188,12 @@ class SessionSerializer(SessionListSerializer):
             }
             for institution in obj.institutions.all()
         ]
+
+
+class SessionAccessLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessionAccessLink
+        exclude = ()
 
 
 class EventNestedSerializer(serializers.ModelSerializer):
@@ -244,7 +252,7 @@ class RoadshowSerializer(RoadshowNestedSerializer):
 class CourseSessionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseSession
-        exclude = ()
+        exclude = ("zoom_attendee_report",)
 
 
 class CourseListSerializer(serializers.ModelSerializer):

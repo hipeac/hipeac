@@ -108,7 +108,7 @@
   <div v-if="event" class="hipeac-card">
     <div class="row">
       <div v-for="keynote in keynotes" class="col-12 col-md-6 col-lg pr-md-5 mb-5 mb-lg-0">
-        <p><strong>{{ keynote.date | moment('dddd, MMM Do') }}</strong> / <span class="text-nowrap">{{ keynote.startAt }} - {{ keynote.endAt }}</span></p>
+        <p><strong>{{ keynote.startAt.format("ddd, MMMM Do H:mm") }}</strong></p>
         <div v-if="keynote.main_speaker && keynote.main_speaker.profile">
           <img :src="keynote.main_speaker.profile.avatar_url" class="rounded-circle float-right ml-3 mb-3">
           <h6 class="text-light-weight">{{ keynote.main_speaker.profile.name }}</h6>

@@ -185,14 +185,22 @@ def registration_sessions_changed(sender, instance, **kwargs) -> None:
             new_logs.append(RegistrationLog(registration_id=instance.id, session_id=session.id))
 
             if session.zoom_webinar_id:
-                send_task("hipeac.tasks.events.add_webinar_registrant", ((
-                    session.id, user.id, session.zoom_webinar_int, {
-                        "email": user.email,
-                        "first_name": user.first_name,
-                        "last_name": user.last_name,
-                        "country": user.profile.country.code,
-                    }
-                ),))
+                send_task(
+                    "hipeac.tasks.events.add_webinar_registrant",
+                    (
+                        (
+                            session.id,
+                            user.id,
+                            session.zoom_webinar_int,
+                            {
+                                "email": user.email,
+                                "first_name": user.first_name,
+                                "last_name": user.last_name,
+                                "country": user.profile.country.code,
+                            },
+                        ),
+                    ),
+                )
 
         if new_logs:
             RegistrationLog.objects.bulk_create(new_logs)
