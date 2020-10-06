@@ -95,12 +95,13 @@ def send_evaluations():
 def send_weekly_digest():
     """Sends a digest to publicity@hipeac.net with the Jobs posted in the last 2 weeks, every two weeks."""
     today = timezone.now().date()
-    two_weeks_ago = today - timedelta(days=14)
-    queryset = Job.objects.active()
     week_number = int(today.strftime("%U"))
 
     if week_number % 2 == 0:  # ignore even weeks; @periodic_task doesn't allow this
         return
+
+    two_weeks_ago = today - timedelta(days=14)
+    queryset = Job.objects.active()
 
     send_from_template(
         "recruitment.jobs.digest",
@@ -108,6 +109,26 @@ def send_weekly_digest():
         JOBS_DIGEST_EMAIL,
         ["publicity@hipeac.net"],
         {"jobs": queryset.filter(created_at__gte=two_weeks_ago), "total": queryset.count()},
+    )
+
+
+@periodic_task(run_every=crontab(day_of_week="thu", hour=10, minute=0))
+def send_weekly_internships_digest():
+    """Sends a digest to phd@hipeac.net with the active Internships, once every 4 weeks."""
+    today = timezone.now().date()
+    week_number = int(today.strftime("%U"))
+
+    if week_number % 4 != 2:  # once every four weeks solution
+        return
+
+    queryset = Job.objects.active_internships()
+
+    send_from_template(
+        "recruitment.jobs.internships_digest",
+        "Latest internship opportunities (%s)" % date(timezone.now(), "F Y"),
+        JOBS_DIGEST_EMAIL,
+        ["phd@hipeac.net"],
+        {"jobs": queryset, "total": queryset.count()},
     )
 
 

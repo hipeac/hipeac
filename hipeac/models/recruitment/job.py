@@ -36,6 +36,9 @@ class JobQuerySet(models.QuerySet):
     def active(self):
         return self.filter(deadline__gte=timezone.now().date()).order_by("deadline")
 
+    def active_internships(self):
+        return self.filter(deadline__gte=timezone.now().date(), employment_type=17).order_by("deadline")
+
 
 class JobManager(models.Manager):
     def get_queryset(self):
@@ -43,6 +46,9 @@ class JobManager(models.Manager):
 
     def active(self):
         return self.get_queryset().active()
+
+    def active_internships(self):
+        return self.get_queryset().active_internships()
 
     @staticmethod
     def grouped_for_email(queryset) -> dict:

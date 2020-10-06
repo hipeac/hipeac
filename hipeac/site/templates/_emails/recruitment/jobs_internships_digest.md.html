@@ -1,0 +1,27 @@
+{% extends 'email.'|add:email_format %}
+
+
+{% block header %}Latest HiPEAC internships {% now 'F Y' %}{% endblock %}
+
+{% block body %}
+HiPEAC is actively promoting [paid internships](https://www.hipeac.net/jobs/#/internships/)
+in renowned companies for students of European universities!
+
+Head to the [HiPEAC’s portal](https://www.hipeac.net/jobs/#/?q=internship) and discover
+the current ({{ total }}) internships for people just like you – or follow us daily
+on Twitter ([@HiPEACjobs](https://twitter.com/hipeacjobs)) and you will not miss any!
+
+Take a look at the latest internships posted in the HiPEAC Jobs portal:
+
+---------------
+{% for job in jobs %}
+{% if email_format == 'html' and job.institution.image %}<img src="{{ job.institution.images.sm }}" style="float:right; margin:0 0 20px 20px">{% endif %}{% if email_format == 'html' %}<h4 style="margin:0"><strong>{% else %}**{% endif %}"{{ job.title }}"{% if email_format == 'html' %}</strong>{% else %}**{% endif %} @ {{ job.institution }}, {{ job.country.name }}{% if email_format == 'html' %}</h4>{% endif %}
+
+- https://www.hipeac.net/jobs/{{ job.id }}/
+- Deadline: {{ job.deadline }}
+
+---------------
+{% endfor %}
+{% endblock %}
+
+{% block footer %}HiPEAC Recruitment{% endblock %}

@@ -18,6 +18,7 @@ TEMPLATE_PATHS = {
     "events.sessions.speakers_reminder": "_emails/events/sessions_speakers_reminder.md.html",
     "events.open_registrations.created": "_emails/events/open_registrations_created.md.html",
     "recruitment.jobs.digest": "_emails/recruitment/jobs_digest.md.html",
+    "recruitment.jobs.internships_digest": "_emails/recruitment/jobs_internships_digest.md.html",
     "recruitment.jobs.created": "_emails/recruitment/jobs_created.md.html",
     "recruitment.jobs.evaluation": "_emails/recruitment/jobs_evaluation.md.html",
     "recruitment.jobs.expiration_reminder": "_emails/recruitment/jobs_expiration_reminder.md.html",
