@@ -79,7 +79,7 @@ class SponsorsInline(admin.TabularInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    actions = ("select_export_users_csv", "select_zoom_attendee_report_csv")
+    actions = ("select_export_users_csv", "select_zoom_attendee_report_csv", "sync_webinar_registrants")
     date_hierarchy = "start_date"
     list_display = (
         "id",
@@ -178,7 +178,18 @@ class EventAdmin(admin.ModelAdmin):
 
         return csv_zoom_attendee_report(queryset.first(), "hipeac-events--zoom-attendee-report.csv")
 
-    select_zoom_attendee_report_csv.short_description = "[CSV] Export attendees report based on Zoom data"
+    select_zoom_attendee_report_csv.short_description = "[Zoom] Export attendees report (CSV)"
+
+    def sync_webinar_registrants(self, request, queryset):
+        if queryset.count() > 1:
+            messages.error(request, "Please select only one event.")
+            return
+
+        send_task("hipeac.tasks.events.sync_webinar_registrants", (queryset.first().id,))
+        messages.info(request, "Attendees information is being synced with Zoom.")
+        return
+
+    sync_webinar_registrants.short_description = "[Zoom] Sync webinar attendees"
 
 
 class RegistrationIsPaidFilter(admin.SimpleListFilter):

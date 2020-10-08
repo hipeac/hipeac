@@ -8,7 +8,7 @@ python_version = "3.8"
 
 [packages]
 carbonize = "*"
-celery = "*"
+celery = "==4.4.7"
 commonmark = "*"
 coreapi = "*"
 cssselect = "*"
@@ -40,6 +40,7 @@ sentry-sdk = "*"
 svglib = "==0.9.0"
 twitter = "*"
 whitenoise = "*"
+zoomus = "*"
 
 [dev-packages]
 black = "==19.10b0"

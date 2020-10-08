@@ -47,6 +47,8 @@ class Session(LinkMixin, models.Model):
     links = GenericRelation("hipeac.Link")
     private_files = GenericRelation("hipeac.PrivateFile")
 
+    zoom_webinar_id = models.CharField(max_length=32, null=True, blank=True)
+
     keywords = models.TextField(default="[]", editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -90,3 +92,13 @@ class Session(LinkMixin, models.Model):
     @property
     def slug(self) -> str:
         return slugify(self.title)
+
+    @property
+    def zoom_webinar_int(self) -> int:
+        return int(self.zoom_webinar_id.replace(" ", ""))
+
+
+class SessionAccessLink(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="access_links")
+    user = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE, related_name="session_access_links")
+    url = models.URLField(max_length=500)
