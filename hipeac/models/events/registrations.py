@@ -177,11 +177,22 @@ def registration_courses_changed(sender, instance, **kwargs) -> None:
 @receiver(m2m_changed, sender=Registration.sessions.through)
 def registration_sessions_changed(sender, instance, **kwargs) -> None:
     if kwargs.get("action") == "post_add":
+        user = get_user_model().objects.select_related("profile").get(id=instance.user_id)
         logs = list(RegistrationLog.objects.filter(registration_id=instance.id).values_list("session_id", flat=True))
         new_logs = []
 
-        for session in instance.sessions.exclude(id__in=logs).only("id"):
+        for session in instance.sessions.exclude(id__in=logs).only("id", "zoom_webinar_id"):
             new_logs.append(RegistrationLog(registration_id=instance.id, session_id=session.id))
+
+            if session.zoom_webinar_id:
+                send_task("hipeac.tasks.events.add_webinar_registrant", ((
+                    session.id, user.id, session.zoom_webinar_int, {
+                        "email": user.email,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                        "country": user.profile.country.code,
+                    }
+                ),))
 
         if new_logs:
             RegistrationLog.objects.bulk_create(new_logs)

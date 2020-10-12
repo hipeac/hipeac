@@ -21,4 +21,4 @@ class Zoomer:
         if res.ok:
             return res.json()["join_url"]
 
-        return None
+        return res.json()
