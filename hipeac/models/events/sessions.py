@@ -67,7 +67,7 @@ class Session(LinkMixin, models.Model):
         indexes = [
             models.Index(fields=["event"]),
         ]
-        ordering = ["session_type__position", "start_at", "room__position", "end_at"]
+        ordering = ["start_at", "session_type__position", "room__position", "end_at"]
 
     def clean(self) -> None:
         validate_date(self.start_at.date(), self.event)
