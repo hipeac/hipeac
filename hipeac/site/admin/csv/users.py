@@ -36,6 +36,7 @@ def csv_users_activity(queryset, filename):
         columns.append(year_str + " Paper Awards")
         columns.append(year_str + " Conference attendance")
         columns.append(year_str + " CSW attendance")
+        columns.append(year_str + " ACACES attendance")
         columns.append(year_str + " Organized activities")
         columns.append(year_str + " Posted jobs")
         columns.append(year_str + " Magazine contributions")
@@ -56,6 +57,7 @@ def csv_users_activity(queryset, filename):
         paper_awards = {}
         conferences = {}
         csws = {}
+        summer_schools = {}
         posted_jobs = {}
         magazine_contributions = {}
 
@@ -66,6 +68,7 @@ def csv_users_activity(queryset, filename):
             paper_awards[year] = 0
             conferences[year] = 0
             csws[year] = 0
+            summer_schools[year] = 0
             posted_jobs[year] = 0
             magazine_contributions[year] = 0
 
@@ -90,6 +93,8 @@ def csv_users_activity(queryset, filename):
                     conferences[row[1]] = row[2]
                 if row[0] == "csw":
                     csws[row[1]] = row[2]
+                if row[0] == "acaces":
+                    summer_schools[row[1]] = row[2]
 
         # Publications
 
@@ -131,7 +136,7 @@ def csv_users_activity(queryset, filename):
 
         with connection.cursor() as cursor:
             query = """
-                SELECT YEAR(s.date), COUNT(*)
+                SELECT YEAR(s.start_at), COUNT(*)
                 FROM hipeac_session AS s
                 INNER JOIN (
                     SELECT *
@@ -142,8 +147,8 @@ def csv_users_activity(queryset, filename):
                     SELECT user_id
                     FROM hipeac_profile
                     WHERE user_id = %s OR advisor_id = %s
-                ) AND s.date BETWEEN '%s-01-01' AND '%s-12-31'
-                GROUP BY YEAR(s.date)
+                ) AND s.start_at BETWEEN '%s-01-01 00:00' AND '%s-12-31 23:59'
+                GROUP BY YEAR(s.start_at)
             """
             cursor.execute(query, [user.id, user.id, years[0], years[-1]])
 
@@ -205,6 +210,7 @@ def csv_users_activity(queryset, filename):
             user_data.append(paper_awards[year])
             user_data.append(conferences[year])
             user_data.append(csws[year])
+            user_data.append(summer_schools[year])
             user_data.append(organized_activities[year])
             user_data.append(posted_jobs[year])
             user_data.append(magazine_contributions[year])
