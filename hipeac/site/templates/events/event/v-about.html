@@ -69,6 +69,18 @@
     <div class="row">
       <div class="col-12 col-md-12 col-lg-6">
         <article-card v-if="event" title="Event news" :eventId="event.id" :max="10" :show-more="false"></article-card>
+        {% endverbatim %}
+        {% if event.id == 6802 %}
+          <div class="hipeac-card text-sm">
+            <display-sm class="mb-3">In memory of Béla Fehér</display-sm>
+            <img src="https://www.hipeac.net/media/public/images/32/2658.jpg" class="rounded-circle float-right ml-3 mb-3">
+            <p>It is with great sadness that we report the loss of <strong>Béla Fehér</strong>.</p>
+            <p>Béla Fehér, Professor of Electrical Engineering at Budapest University of Technology and Economics (BME) was due to be General Chair of HiPEAC 2021 conference. He had been a HiPEAC Member since March 2015.</p>
+            <p>A student and then staff member of BME, Béla was one of the first researchers in Hungary who started to work with FPGA technology and since then he was the leading researcher at the university and in Hungary in this area. Over the years, he published almost 80 research papers, earned four patents and became a great authority internationally, involved in several international research projects, including JENET (Joint European Network on Embedded Internet Technologies), TETRAMAX (Technology Transfer via Multinational Application Experiments) and BRAINE (Big data pRocessing and Artificial Intelligence at the Network Edge).</p>
+            <p>He leaves behind his wife, son and daughter.</p>
+          </div>
+        {% endif %}
+        {% verbatim %}
         <div class="hipeac-card" v-if="user.isRegistered && event.links.google_photos">
           {% endverbatim %}
             <img src="{% static 'images/google-photos.svg' %}" class="float-right logo-photos ml-3">
