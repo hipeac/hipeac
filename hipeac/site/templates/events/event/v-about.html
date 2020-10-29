@@ -8,7 +8,7 @@
     <div class="hipeac-card rounded-0 rounded-bottom">
       <div class="row text-center text-sm text-secondary">
         <div class="col-6 col-md-3 mb-3 mb-md-0">
-          <router-link :to="{name: 'schedule'}" class="d-block inherit">
+          <router-link :to="{name: 'program'}" class="d-block inherit">
             <i class="material-icons lg mb-2">today</i><br>
             <strong>{{ event.datesStr }}</strong>
             <i class="material-icons sm ml-1">arrow_forward</i>
@@ -57,10 +57,10 @@
     <div v-if="event && event.sponsors.length" class="hipeac-card">
       <ul class="logos">
         <li v-for="sponsor in event.sponsors" :key="sponsor.id">
-          <a v-if="sponsor.institution" :href="sponsor.institution.href">
+          <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
             <img :src="sponsor.institution.images.sm">
           </a>
-          <a v-if="sponsor.project" :href="sponsor.project.href">
+          <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
             <img :src="sponsor.project.images.sm">
           </a>
         </li>
@@ -69,6 +69,18 @@
     <div class="row">
       <div class="col-12 col-md-12 col-lg-6">
         <article-card v-if="event" title="Event news" :eventId="event.id" :max="10" :show-more="false"></article-card>
+        {% endverbatim %}
+        {% if event.id == 6802 %}
+          <div class="hipeac-card text-sm">
+            <display-sm class="mb-3">In memory of Béla Fehér</display-sm>
+            <img src="https://www.hipeac.net/media/public/images/32/2658.jpg" class="rounded-circle float-right ml-3 mb-3">
+            <p>It is with great sadness that we report the loss of <strong>Béla Fehér</strong>.</p>
+            <p>Béla Fehér, Professor of Electrical Engineering at Budapest University of Technology and Economics (BME) was due to be General Chair of the HiPEAC 2021 Conference. He had been a HiPEAC Member since March 2015.</p>
+            <p>A student and then staff member of BME, Béla was one of the first researchers in Hungary who started to work with FPGA technology and since then he was the leading researcher at the university and in Hungary in this area. Over the years, he published almost 80 research papers, earned four patents and became a great authority internationally, involved in several international research projects, including JENET (Joint European Network on Embedded Internet Technologies), TETRAMAX (Technology Transfer via Multinational Application Experiments) and BRAINE (Big data pRocessing and Artificial Intelligence at the Network Edge).</p>
+            <p>He leaves behind his wife, son and daughter.</p>
+          </div>
+        {% endif %}
+        {% verbatim %}
         <div class="hipeac-card" v-if="user.isRegistered && event.links.google_photos">
           {% endverbatim %}
             <img src="{% static 'images/google-photos.svg' %}" class="float-right logo-photos ml-3">

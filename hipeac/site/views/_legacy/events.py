@@ -184,6 +184,8 @@ class EventStats(generic.TemplateView):
         # MEMBERSHIP
         # ----------
 
+        """
+
         def get_membership_data(event):
             y_dict = {
                 "MEMB": 0,
@@ -241,6 +243,8 @@ class EventStats(generic.TemplateView):
         figure = pgo.Figure(data=[current_trace, previous_trace], layout=layout)
         context["plots"]["membership"] = poff.plot(figure, auto_open=False, output_type="div")
 
+        """
+
         # ---------
         # COUNTRIES
         # ---------
@@ -254,7 +258,7 @@ class EventStats(generic.TemplateView):
                 Registration.objects.select_related("user__profile__institution")
                 .filter(event_id=event.id)
                 .values("user__profile__institution__country")
-                .order_by("-count", "user__profile__institution__country")
+                .order_by("user__profile__institution__country")
                 .annotate(count=Count("id"))
             ):
                 try:

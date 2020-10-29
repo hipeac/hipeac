@@ -166,7 +166,7 @@
     var AboutView = {
       template: '#v-about',
       computed: _.extend(
-        Vuex.mapState(['user', 'event', 'articles', 'committees']), {
+        Vuex.mapState(['user', 'event', 'committees']), {
       })
     };
 
@@ -218,7 +218,7 @@
     var JobsView = {
       template: '#v-jobs',
       computed: _.extend(
-        Vuex.mapState(['jobs']), {
+        Vuex.mapState(['event', 'jobs']), {
         ids: function () {
           return _.pluck(this.jobs, 'id');
         }
