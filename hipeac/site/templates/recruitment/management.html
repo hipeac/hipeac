@@ -37,6 +37,7 @@
                   <th>Deadline</th>
                   <th>Job position</th>
                   <th>Institution</th>
+                  <th>Share</th>
                   <th class="sm"><i class="material-icons sm">edit</i></th>
                   <th class="sm"><i class="material-icons sm">star</i></th>
                 </tr>
@@ -57,6 +58,10 @@
                   <td class="text-sm">{{ job.deadline }}</td>
                   <td class="text-sm">{{ job }}</td>
                   <td class="text-sm">{{ job.institution.short_name }}</td>
+                  <td>
+                    <a target="_blank" href="http://twitter.com/share?text={{ job.title }}&url=https://www.hipeac.net{{ job.get_absolute_url }}"><span is="twitter-icon" :size="14" class="mr-2"></span></a>
+                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&title={{ job.title }}&url=https://www.hipeac.net{{ job.get_absolute_url }}&source=HiPEAC"><span is="linkedin-icon" :size="14"></span></a>
+                  </td>
                   <td><a href="{{ job.get_editor_url }}" class="text-sm">Edit</a></td>
                   <td>
                     <a href="#" data-toggle="modal" data-target="#evaluationModal{{ job.id }}" class="text-sm">Evaluate</a>

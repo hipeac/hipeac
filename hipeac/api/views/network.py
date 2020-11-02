@@ -10,6 +10,7 @@ from ..serializers import (
     HipeacPartnerListSerializer,
     InstitutionNestedSerializer,
     InstitutionListSerializer,
+    InstitutionMiniSerializer,
     InstitutionSerializer,
     ProjectMiniSerializer,
     ProjectListSerializer,
@@ -30,7 +31,7 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
         self.serializer_class = InstitutionListSerializer
         return super().list(request, *args, **kwargs)
 
-    @action(detail=False, pagination_class=None, serializer_class=InstitutionNestedSerializer)
+    @action(detail=False, pagination_class=None, serializer_class=InstitutionMiniSerializer)
     def all(self, request, *args, **kwargs):
         self.queryset = self.queryset.only("id", "name", "local_name", "colloquial_name", "type", "country", "image")
         return super().list(request, *args, **kwargs)
