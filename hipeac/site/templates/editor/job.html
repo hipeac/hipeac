@@ -120,5 +120,13 @@
       </div>
     </div>
   </script>
+  <script type="text/x-template" id="v-extras">
+    <div v-if="obj.id" class="hipeac-card">
+      <display-sm class="mb-3">We automatically share all jobs posted on our Twitter account</display-sm>
+      <p><a href="https://twitter.com/jobs">Please visit our account</a> if you want to retweet our message. Or if you prefer you can also share this position directly on your social media accounts:</p>
+      <a :href="'http://twitter.com/share?text=' + obj.title + '&url=https://www.hipeac.net/jobs/' + obj.id + '/'" class="btn btn-primary btn-sm mr-2">Share on Twitter</a>
+      <a href="'https://www.linkedin.com/shareArticle?mini=true&title=' + obj.title + '&url=https://www.hipeac.net/jobs/' + obj.id + '/&source=HiPEAC'" class="btn btn-primary btn-sm">Share on Linkedin</a>
+    </div>
+  </script>
 {% endverbatim %}
 {% endblock %}

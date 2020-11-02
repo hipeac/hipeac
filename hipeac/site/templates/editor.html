@@ -48,6 +48,7 @@
           <router-view></router-view>
         </div>
         <div v-cloak v-if="obj" class="col-12 col-lg-6 d-none d-md-block scrollable">
+          <router-view name="extras"></router-view>
           <div class="hipeac-card bg-light-yellow">
             <router-view name="preview"></router-view>
           </div>
@@ -177,6 +178,13 @@
       })
     };
 
+    var ExtrasView = {
+      template: '#v-extras',
+      computed: _.extend(
+        Vuex.mapState(['obj']), {
+      })
+    };
+
     var Router = new VueRouter({
       linkActiveClass: 'active',
       routes: [
@@ -186,7 +194,8 @@
           pathToRegexpOptions: {strict: true},
           components: {
             default: EditorView,
-            preview: PreviewView
+            preview: PreviewView,
+            extras: ExtrasView
           }
         }
       ]
