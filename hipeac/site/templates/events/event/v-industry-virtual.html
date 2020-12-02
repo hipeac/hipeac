@@ -1,0 +1,141 @@
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+  <div>
+    <ul class="nav nav-tabs justify-content-center">
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'industry'}" exact>
+          <icon name="map" class="mr-1"></icon>Industry exhibition & session</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" class="nav-link" :to="{name: 'sponsorship'}" exact>
+          <icon name="check" class="mr-1"></icon>Sponsorship</a>
+      </li>
+    </ul>
+    <router-view></router-view>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-main">
+{% verbatim %}
+  <div>
+    <div class="hipeac-card">
+      <catchphrase>The HiPEAC conference is an excellent venue for companies large and small to showcase their products and services. Industry participants benefit from a dedicated session and the opportunity to network with key decision makers, experts at the forefront of computing systems research and fellow industry specialists. For anyone looking to locate top-quality candidates, HiPEAC offers our proven recruitment support and a dedicated STEM Student Day, during which advanced computing students visit industry exhibitors.</catchphrase>
+      <hr class="my-4">
+      <p>Larger and more impressive every year, the HiPEAC conference industry exhibition is a great way to promote your company to the computing systems community. The most cost-effective way to participate in the exhibition and the HiPEAC industry session is to sponsor the conference. <strong>From as little as €1,000, you can host a booth and get a full conference pass</strong>, along with promotion prior to and during the event and the chance to present at the industry session.</p>
+      <p>Alternatively, you can book a booth separately for €600. Contact Vicky Wandels for further details: <a href="mailto:Vicky.Wandels@UGent.be">Vicky.Wandels@UGent.be</a></p>
+    </div>
+    <div class="hipeac-card">
+      <a href="/media/public/drop-box/hipeac_2020_sponsorship.pdf" class="btn btn-sm btn-block btn-outline-success" target="_blank"><i class="material-icons mr-1">get_app</i>Download Sponsorship package</a>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card d-flex flex-column align-items-end">
+          <img src="/media/public/drop-box/industry01.jpg" class="w-100 mt-auto rounded">
+        </div>
+      </div>
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card d-flex flex-column align-items-end">
+          <img src="/media/public/drop-box/industry02.jpg" class="w-100 mt-auto rounded">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="{{ id }}-sponsorship">
+{% verbatim %}
+  <div>
+    <div class="hipeac-card">
+      <catchphrase>With a community of around 2,000 experts, HiPEAC (the European Network on High Performance a Embedded Architecture and Compilation) is the premier advanced computing network in Europe.</catchphrase>
+      <hr class="my-4">
+      <display-sm class="mb-3">Common package offered to all sponsors</display-sm>
+      <ul>
+        <li>Exposure to an audience of computing systems experts and jobseekers via acknowledgement in promotional emails, the opening and closing presentations and on the event website.</li>
+        <li>Free booth in the virtual industry exhibition, for the whole duration of the conference. A dedicated Q&amp;A per booth will be organised. The HiPEAC industry exhibition offers an ideal channel to raise the profile of the sponsor organisation and its offering. The exhibition is the ideal venue to launch a new product.</li>
+        <li>HiPEAC members’ companies usually participate actively in the exhibition, as a way of gaining visibility among the computing systems community and attracting new business.</li>
+      </ul>
+      <p>At your preference, you may choose to target your donation on subsidizing student attendance, or on the participation of women in engineering and minorities. We will be happy to talk about ways to increase the visibility of your company or to discuss recruitment possibilities at the conference.</p>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <display-md class="m-0">Gold sponsors</display-md>
+          <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 3 000</h6>
+          <div class="marked">
+            <ul>
+              <li>Listed first on the website, promotional emails etc.</li>
+              <li>Privileged virtual booth location creating more visibility</li>
+              <li>Invitation to speak at the industry session(s) (20min talk)</li>
+              <li><strong>Ten free registrations</strong> for technical and non-technical personnel (e.g. recruiters)</li>
+              <li><strong>Custom options available only to gold sponsors:</strong>
+                <ul>
+                  <li>Complementary donation to support the involvement of underrepresented groups in engineering</li>
+                  <li>Sponsor student activities: gifts for best student presentation, poster award, etc.</li>
+                  <li>Video/slideshow before and after presentations (subject to availability and cost)</li>
+                </ul>
+              </li>
+              <li><strong>Active support for job and internship posts on the HiPEAC job portal:</strong>
+                <ul>
+                  <li>Feedback on and improvement of job descriptions and company information</li>
+                  <li>HiPEAC staff will upload vacancies to the HiPEAC jobs portal from companies’ websites</li>
+                  <li>Additional promotion of the jobs through digital media (@hipeac and @hipeac jobs Twitter accounts, LinkedIn company page and monthly publicity mailing to the 2,000+ HiPEAC community)</li>
+                  <li>Two options for this active support: conference only or year-round</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="hipeac-card">
+          <display-md class="m-0">Silver sponsors</display-md>
+          <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 1 500</h6>
+          <div class="marked">
+            <ul>
+              <li>Listed after Gold sponsors on the website, promotional emails, etc.</li>
+              <li>Invitation to speak at the industry session(s) (20min talk)</li>
+              <li><strong>Five free registrations</strong> for technical and non-technical (e.g. recruiters) personnel</li>
+            </ul>
+          </div>
+        </div>
+        <div class="hipeac-card">
+          <display-md class="m-0">Bronze sponsors</display-md>
+          <h6 class="mt-1 mb-4 font-weight-light text-center">Starting at EUR 500</h6>
+          <div class="marked">
+            <ul>
+              <li>Name and logo on the website, promotional emails etc.</li>
+              <li>Opportunity to speak at the industry session(s), if time allows (first come first served, 10min talk)</li>
+              <li><strong>Two free registrations</strong></li>
+            </ul>
+          </div>
+        </div>
+        <div class="hipeac-card">
+          <display-md class="m-0">Platinum sponsors</display-md>
+          <div class="marked">
+            <p>Bespoke platinum sponsorship packages are also available, providing exceptional visibility. We
+would be very happy to discuss options – email us at <a href="mailto:sponsorship@hipeac.net">sponsorship@hipeac.net</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="event && event.sponsors.length" class="hipeac-card">
+      <display-sm class="mb-3">Sponsors</display-sm>
+      <ul class="logos">
+        <li v-for="sponsor in event.sponsors" :key="sponsor.id">
+          <a v-if="sponsor.institution" :href="sponsor.institution.href">
+            <img :src="sponsor.institution.images.sm">
+          </a>
+          <a v-if="sponsor.project" :href="sponsor.project.href">
+            <img :src="sponsor.project.images.sm">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endverbatim %}
+</script>
