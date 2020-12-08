@@ -1,15 +1,13 @@
 from django.conf import settings
-from google.cloud import language
-from google.cloud.language import enums
-from google.cloud.language import types
+from google.cloud import language_v1
 
 
 class NaturalLanguageAnalyzer:
     def __init__(self):
-        self.client = language.LanguageServiceClient()
+        self.client = language_v1.LanguageServiceClient()
 
     def analyze_entities(self, text):
-        document = types.Document(content=text, type=enums.Document.Type.PLAIN_TEXT)
+        document = language_v1.types.Document(content=text, type=language_v1.enums.Document.Type.PLAIN_TEXT)
         entities = self.client.analyze_entities(document).entities
         return entities
 
