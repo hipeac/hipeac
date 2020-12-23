@@ -1,14 +1,14 @@
 from django.conf import settings
-from google.cloud import language_v1
+from google.cloud import language
 
 
 class NaturalLanguageAnalyzer:
     def __init__(self):
-        self.client = language_v1.LanguageServiceClient()
+        self.client = language.LanguageServiceClient()
 
     def analyze_entities(self, text):
-        document = language_v1.types.Document(content=text, type=language_v1.enums.Document.Type.PLAIN_TEXT)
-        entities = self.client.analyze_entities(document).entities
+        document = language.Document(content=text, type_=language.Document.Type.PLAIN_TEXT)
+        entities = self.client.analyze_entities(document=document).entities
         return entities
 
     def get_keywords(self, text, min_salience=0.01):
