@@ -1,0 +1,113 @@
+{% load humanize %}
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+  <div v-if="event">
+    <q-card class="hipeac__card q-my-lg">
+      <q-card-section class="text-center">
+        <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-lg q-mb-none text-body2 text-grey-9">
+          <!--<li><q-icon size="sm" name="today" color="grey-7"></q-icon> {{ event.datesStr.format("ddd, MMMM Do") }}</li>-->
+          <li v-if="event.is_virtual">
+            <router-link :to="{name: 'logistics'}" class="inherit">
+              <q-icon size="sm" name="desktop_windows" class="q-mr-sm"></q-icon>
+              <span>Virtual event</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="{name: 'program'}" class="inherit">
+              <q-icon size="sm" name="date_range" class="q-mr-sm"></q-icon>
+              <span>{{ event.startDate.format('MMMM D') }} - {{ event.endDate.format('D, YYYY') }}</span>
+            </router-link>
+          </li>
+          <li v-if="event.sessions.length">
+            <router-link :to="{name: 'program'}" class="inherit">
+              <q-icon size="sm" name="category" class="q-mr-sm"></q-icon>
+              <span>{{ event.sessions.length }} sessions</span>
+            </router-link>
+          </li>
+          <li v-if="event.registrations_count && user.registration">
+            <router-link :to="{name: 'attendees'}" class="inherit">
+              <q-icon size="sm" name="people" class="q-mr-sm"></q-icon>
+              <span>{{ event.registrations_round }}<span v-if="event.registrations_round < event.registrations_count">+</span> attendees</span>
+            </router-link>
+          </li>
+          <li v-else class="text-bold text-primary">
+            <router-link :to="{name: 'registration'}" class="inherit">
+              <q-icon size="sm" name="edit" color="primary" class="q-mr-sm"></q-icon>
+              <span>Register</span>
+            </router-link>
+          </li>
+          <li v-if="user.registration" class="text-bold text-green">
+            <q-icon size="sm" name="check" color="green" class="q-mr-sm"></q-icon>
+            <span>Registered</span>
+          </li>
+        </ul>
+      </q-card-section>
+      <q-responsive v-if="$q.screen.gt.md && event.images" :ratio="9/2" class="rounded-borders">
+        <q-parallax :src="event.images.lg" :height="180" :speed="0.5"></q-parallax>
+      </q-responsive>
+    </q-card>
+    <q-card class="hipeac__card q-mb-lg">
+      <q-card-section class="q-ma-md q-mb-none">
+        <div v-if="event && event.sponsors.length" class="row items-center justify-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
+          <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4 col-md-2">
+            <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
+              <img :src="sponsor.institution.images.lg" class="sponsor">
+            </a>
+            <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
+              <img :src="sponsor.project.images.lg" class="sponsor">
+            </a>
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section v-if="event.virtualExhibition" class="q-mx-sm q-pt-none text-center">
+        <q-btn outline no-caps :to="{name: 'exhibition'}" label="Meet our sponsors at the virtual exhibition!" color="orange-9" size="lg" class="q-my-lg"></q-btn>
+      </q-card-section>
+    </q-card>
+    <div class="row q-col-gutter-lg">
+      <div class="col-12 col-md-6">
+        <!--<article-card v-if="event" title="Event news" :eventId="event.id" :max="10" :show-more="false"></article-card>-->
+        {% endverbatim %}
+        {% if event.id == 6802 %}
+          <q-card class="hipeac__card text-body2">
+            <q-card-section class="q-ma-sm q-mb-none">
+              <h5 class="text-h6 q-mb-md">In memory of Béla Fehér</h5>
+              <q-avatar size="120px" class="float-right q-ml-lg q-mb-lg"><img src="//www.hipeac.net/media/public/images/32/2658_OvVwgmY.jpg"></q-avatar>
+              <p>It is with great sadness that we report the loss of <strong>Béla Fehér</strong>.</p>
+              <p>Béla Fehér, Professor of Electrical Engineering at Budapest University of Technology and Economics (BME) was due to be General Chair of the HiPEAC 2021 Conference. He had been a HiPEAC Member since March 2015.</p>
+              <p>A student and then staff member of BME, Béla was one of the first researchers in Hungary who started to work with FPGA technology and since then he was the leading researcher at the university and in Hungary in this area. Over the years, he published almost 80 research papers, earned four patents and became a great authority internationally, involved in several international research projects, including JENET (Joint European Network on Embedded Internet Technologies), TETRAMAX (Technology Transfer via Multinational Application Experiments) and BRAINE (Big data pRocessing and Artificial Intelligence at the Network Edge).</p>
+              <p>He leaves behind his wife, son and daughter.</p>
+            </q-card-section>
+          </q-card>
+        {% endif %}
+        {% verbatim %}
+        <q-card class="hipeac__card" v-if="user.isRegistered && event.links.google_photos">
+          {% endverbatim %}
+            <img src="{% static 'images/google-photos.svg' %}" class="float-right logo-photos ml-3">
+          {% verbatim %}
+          <display-5 class="mb-0">Share your pictures from this event <a :href="event.links.google_photos">here</a>!</display-5>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-6">
+        <q-card class="hipeac__card text-sm" v-if="committees.length">
+          <h5 class="text-h6 q-mb-md">Committees</h5>
+          <q-separator></q-separator>
+          <div class="row">
+            <div v-for="committee in committees" class="col-12 col-md-6">
+              <strong>{{ committee.name }}</strong>
+              <ul class="list-unstyled">
+                <li v-for="user in committee.members">
+                  <span>{{ user.profile.name }}</span>
+                  <em v-if="user.profile.institution">, {{ user.profile.institution.short_name }}</em>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </q-card>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

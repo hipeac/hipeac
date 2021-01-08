@@ -66,6 +66,8 @@ class Registration(models.Model):
     visa_requested = models.BooleanField(default=False)
     visa_sent = models.BooleanField(default=False)
 
+    custom_data = models.JSONField(default=dict)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -14,7 +14,14 @@
             <i class="material-icons sm ml-1">arrow_forward</i>
           </router-link>
         </div>
-        <div class="col-6 col-md-3 mb-3 mb-md-0">
+        <div v-if="event.is_virtual" class="col-6 col-md-3 mb-3 mb-md-0">
+          <router-link :to="{name: 'logistics'}" class="d-block inherit">
+            <i class="material-icons lg mb-2">desktop_windows</i><br>
+            <strong>Virtual event</strong>
+            <i class="material-icons sm ml-1">arrow_forward</i>
+          </router-link>
+        </div>
+        <div v-else class="col-6 col-md-3 mb-3 mb-md-0">
           <router-link :to="{name: 'venue'}" class="d-block inherit">
             <i class="material-icons lg mb-2">location_on</i><br>
             <strong>{{ event.city }}, {{ event.country.name }}</strong>
@@ -22,9 +29,10 @@
           </router-link>
         </div>
         <div class="col-6 col-md-3">
-          <router-link v-if="event.sessions.length" :to="{name: 'schedule'}" class="d-block inherit">
+          <router-link v-if="event.sessions.length" :to="{name: 'program'}" class="d-block inherit">
             <i class="material-icons lg mb-2">category</i><br>
             <strong>{{ event.sessions.length }} sessions</strong>
+            <i class="material-icons sm ml-1">arrow_forward</i>
           </router-link>
           <router-link v-else :to="{name: 'call-sessions'}" class="d-block inherit">
             <i class="material-icons lg mb-2">category</i><br>

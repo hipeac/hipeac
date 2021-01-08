@@ -1,5 +1,3 @@
-import json
-
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -32,8 +30,9 @@ class Session(LinkMixin, models.Model):
     summary = models.TextField(null=True, blank=True)
     program = models.TextField(null=True, blank=True)
     main_speaker = models.ForeignKey(
-        get_user_model(), null=True, blank=True, on_delete=models.SET_NULL, related_name="talks"
+        get_user_model(), null=True, blank=True, on_delete=models.SET_NULL, related_name="main_talks"
     )
+    speakers = models.ManyToManyField(get_user_model(), blank=True, related_name="talks")
 
     room = models.ForeignKey("hipeac.Room", null=True, blank=True, on_delete=models.SET_NULL, related_name="sessions")
     max_attendees = models.PositiveSmallIntegerField(default=0, help_text="Leave on `0` for non limiting.")
@@ -50,17 +49,18 @@ class Session(LinkMixin, models.Model):
     zoom_webinar_id = models.CharField(max_length=32, null=True, blank=True)
     zoom_attendee_report = models.FileField(upload_to="private/zoom", null=True, blank=True)
 
-    keywords = models.TextField(default="[]", editable=False)
+    keywords = models.JSONField(default=list, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         if self.id:
-            self.keywords = json.dumps(
+            self.keywords = (
                 [institution.short_name for institution in self.institutions.all()]
                 + (["has:projects"] if self.projects.count() > 0 else [])
                 + [project.acronym for project in self.projects.all()]
-                + ([self.main_speaker.first_name, self.main_speaker.last_name] if self.main_speaker else [])
+                + [f"{speaker.first_name} {speaker.last_name}" for speaker in self.speakers.all()]
+                + ([f"{self.main_speaker.first_name} {self.main_speaker.last_name}"] if self.main_speaker else [])
             )
         super().save(*args, **kwargs)
 

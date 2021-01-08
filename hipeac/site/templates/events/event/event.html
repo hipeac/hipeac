@@ -263,6 +263,12 @@
                 posters: []
               };
             }
+
+            if (!_.has(self.registration, 'custom_data')) {
+              self.$set(self.registration, 'custom_data', {
+                exhibition: []
+              });
+            }
           });
         },
         save: function () {

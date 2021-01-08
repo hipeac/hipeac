@@ -1,0 +1,21 @@
+{% load static %}
+
+
+<div class="hipeac__footer">
+  <div class="text-grey-9 q-py-lg">
+    <div class="container">
+      <hipeac-social-media class="q-mb-md"></hipeac-social-media>
+      <q-separator></q-separator>
+      <div class="row justify-between q-mt-lg">
+        <div class="col-12 col-md-8">
+          <p class="text-caption"><strong>&copy; 2004-{% now 'Y' %} HiPEAC, European Network on High-performance Embedded Architecture and Compilation</strong><br>The HiPEAC project has received funding from the European Union’s Horizon2020 research and innovation programme under grant agreement number 871174.</p>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="q-gutter-x-lg">
+            <img class="float-right" src="{% static 'images/eu-flag.svg' %}" style="width:60px">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

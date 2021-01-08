@@ -21,7 +21,7 @@ from hipeac.models import (
     Sponsor,
     Venue,
 )
-from .generic import JsonField, LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
+from .generic import LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .users import UserPublicMiniSerializer, UserPublicSerializer
@@ -108,6 +108,7 @@ class AuthRegistrationSerializer(WritableNestedModelSerializer):
     courses = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), many=True, allow_empty=True)
     sessions = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all(), many=True, allow_empty=True)
     posters = PosterSerializer(many=True)
+    custom_data = serializers.JSONField(required=False)
 
     class Meta:
         model = Registration
@@ -120,7 +121,7 @@ class SessionNestedSerializer(WritableNestedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="v1:session-detail", read_only=True)
     href = serializers.CharField(source="get_absolute_url", read_only=True)
     session_type = MetadataFieldWithPosition()
-    keywords = JsonField(read_only=True)
+    keywords = serializers.JSONField(read_only=True)
 
     class Meta:
         model = Session
