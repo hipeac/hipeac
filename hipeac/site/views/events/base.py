@@ -206,6 +206,7 @@ class JobsPdfMaker:
             reg = self.registration
             attended = "attended" if reg.event.is_finished() else "will attend"
             institution = f" —{reg.user.profile.institution.name}—" if reg.user.profile.institution else ""
+            location = "virtual event" if reg.event.is_virtual else f"event in {reg.event.country.name}"
 
             pdf.add_text(str(reg.event), "h4")
             pdf.add_text(f"Receipt (#{reg.id})", "h1")
@@ -213,7 +214,7 @@ class JobsPdfMaker:
             pdf.add_text(
                 f"""On behalf of the European Network on High-performance Embedded Architecture and
 Compilation (HiPEAC), funded under the {H2020}, I would hereby like to confirm that <strong>{reg.user.profile.name}
-{institution}</strong> {attended} the <strong>{reg.event}</strong> event in {reg.event.country.name}, between
+{institution}</strong> {attended} the <strong>{reg.event}</strong> {location}, between
 {date_filter(reg.event.start_date)} and {date_filter(reg.event.end_date)}.""",
                 "p",
             )
