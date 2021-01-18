@@ -49,6 +49,12 @@
         <q-parallax :src="event.images.lg" :height="180" :speed="0.5"></q-parallax>
       </q-responsive>
     </q-card>
+    <q-card v-if="event.id == 6802" class="hipeac__card q-mb-lg">
+      <q-card-section class="q-mx-sm q-my-none text-center">
+        <display-3>The new <strong>HiPEAC Vision 2021</strong>: balancing opportunities and challenges - the road ahead for technology and computing</display-3>
+        <q-btn unelevated no-caps type="a" href="/vision/" target="_blank" label="Read more" color="primary" class="q-mt-md"></q-btn>
+      </q-card-section>
+    </q-card>
     <q-card class="hipeac__card q-mb-lg">
       <q-card-section class="q-ma-md q-mb-none">
         <div v-if="event && event.sponsors.length" class="row items-center justify-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
