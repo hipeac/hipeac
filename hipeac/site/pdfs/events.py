@@ -21,17 +21,22 @@ class CertificatePdfMaker:
     def __init__(self, *, registration, filename: str, as_attachment: bool = False):
         self._response = PdfResponse(filename=filename, as_attachment=as_attachment)
         self.registration = registration
-        self.make_pdf()
+
+        if registration.is_paid:
+            self.make_pdf()
+        else:
+            self.not_paid()
 
     def make_pdf(self):
         reg = self.registration
         event = reg.event
-        programme = get_programme(reg.event.end_date)
+        location = "virtual event" if event.is_virtual else f"event in {event.city}, {event.country.name}"
+        programme = get_programme(event.end_date)
         main_text = f"""
 On behalf of the {programme[0]} (HiPEAC), funded under the European {programme[1]} programme
 under grant agreement number {programme[2]}, I would hereby like to confirm that **{reg.user.profile.name}**
-— {reg.user.profile.institution.name} — attended the HiPEAC {event.year} {event.city} {event.type}
-from {date_filter(event.start_date)} to {date_filter(event.end_date)} in {event.city}, {event.country.name}.
+— {reg.user.profile.institution.name} — attended the <strong>{event}</strong> {location},
+from {date_filter(event.start_date)} to {date_filter(event.end_date)}.
 """
         signature = """
 Please do not hesitate to contact me for additional information.<br />
@@ -63,6 +68,23 @@ Gent, Belgium<br />
                 f"More information can be found on <https://www.hipeac.net{event.get_absolute_url()}>", "p", "markdown"
             )
             pdf.add_text(signature, "p")
+            pdf.add_page_break()
+
+            self._response.write(pdf.get())
+
+    def not_paid(self):
+        reg = self.registration
+        event = reg.event
+        main_text = """
+**Not available.**<br />
+Contact us if you think this is a mistake: <management@hipeac.net>
+"""
+        with Pdf() as pdf:
+            pdf.add_text(str(event), "h4")
+            pdf.add_spacer()
+            pdf.add_text("Certificate of Attendance", "h1")
+            pdf.add_spacer()
+            pdf.add_text(main_text, "p", "markdown")
             pdf.add_page_break()
 
             self._response.write(pdf.get())
