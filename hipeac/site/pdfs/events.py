@@ -31,7 +31,7 @@ class CertificatePdfMaker:
         reg = self.registration
         event = reg.event
         inst = reg.user.profile.institution
-        institution = "— {inst.name} — " if inst else ""
+        institution = f"— {inst.name} — " if inst else ""
         location = "virtual event" if event.is_virtual else f"event in {event.city}, {event.country.name}"
         programme = get_programme(event.end_date)
         main_text = f"""
