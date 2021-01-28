@@ -30,12 +30,14 @@ class CertificatePdfMaker:
     def make_pdf(self):
         reg = self.registration
         event = reg.event
+        inst = reg.user.profile.institution
+        institution = "— {inst.name} — " if inst else ""
         location = "virtual event" if event.is_virtual else f"event in {event.city}, {event.country.name}"
         programme = get_programme(event.end_date)
         main_text = f"""
 On behalf of the {programme[0]} (HiPEAC), funded under the European {programme[1]} programme
 under grant agreement number {programme[2]}, I would hereby like to confirm that **{reg.user.profile.name}**
-— {reg.user.profile.institution.name} — attended the <strong>{event}</strong> {location},
+{institution}attended the <strong>{event}</strong> {location},
 from {date_filter(event.start_date)} to {date_filter(event.end_date)}.
 """
         signature = """
