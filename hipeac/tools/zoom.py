@@ -37,15 +37,15 @@ def attendee_report(csv_path: str) -> Tuple[int, Dict]:
         tmp = None
 
         for row in csv_reader:
-            if len(row) > 2 and row[0] == "Topic":
+            if row[0] == "Topic":
                 section = "duration"
                 continue
 
-            if len(row) == 2 and row[0] in ["Host Details", "Panelist Details", "Other Attended"]:
+            if row[0] in ["Host Details", "Panelist Details", "Other Attended"]:
                 section = None
                 continue
 
-            if len(row) == 2 and row[0] == "Attendee Details":
+            if row[0] == "Attendee Details":
                 section = "attendees"
                 continue
 
@@ -53,7 +53,7 @@ def attendee_report(csv_path: str) -> Tuple[int, Dict]:
                 continue
 
             if not len(report) and section == "duration":
-                duration = int(row[3])
+                duration = int(row[3].strip())
                 continue
 
             if not len(report) and row[0] == "Attended":
