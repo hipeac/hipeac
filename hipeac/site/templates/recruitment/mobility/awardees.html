@@ -15,10 +15,12 @@
 {% block submenu %}
   {% if mobility_type == 'internship' %}
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'jobs' %}#/internships/"><i class="material-icons mr-1">arrow_back</i>Back to internships</a>
+      <a class="nav-link" href="{% url 'jobs' %}#/mobility/internships/"><i class="material-icons mr-1">arrow_back</i>Back to internships</a>
     </li>
+  {% endif %}
+  {% if mobility_type == 'collaboration' %}
     <li class="nav-item">
-      <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
+      <a class="nav-link" href="{% url 'jobs' %}#/mobility/collaboration-grants/"><i class="material-icons mr-1">arrow_back</i>Back to collaboration grants</a>
     </li>
   {% endif %}
 {% endblock %}
@@ -40,7 +42,7 @@
               <td><i class="material-icons sm">description</i></td>
               <td>{{ mobility.student.profile.name }} <small class="text-secondary">@ {{ mobility.institution }}: "{{ mobility.title }}"</td>
               <td>
-                <a href="{{ mobility.student.get_absolute_url }}">
+                <a href="{{ mobility.student.profile.get_absolute_url }}">
                   <i class="material-icons sm">arrow_forward</i>
                 </a>
               </td>

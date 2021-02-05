@@ -19,7 +19,7 @@
     <a is="router-link" :to="{name: 'careerCenter'}" class="nav-link">Career center</a>
   </li>
   <li class="nav-item">
-    <a is="router-link" :to="{name: 'internships'}" class="nav-link">Internship programme</a>
+    <a is="router-link" :to="{name: 'internships'}" class="nav-link">Mobility programmes</a>
   </li>
   <li class="nav-item">
     <a class="nav-link highlight" href="{% url 'editor_create' 'job' %}"><i class="material-icons mr-1">add</i>Add new</a>
@@ -44,7 +44,7 @@
 {% block vue_templates %}
   {% include './v-about.html' with id='v-about' display=flatpage.content blck=flatpage.page.tbs.about recruiters=flatpage.page.tbs.about_recruiters students=flatpage.page.tbs.about_students %}
   {% include './v-career-center.html' with id='v-career-center' blck=flatpage.page.tbs.career_center acaces=flatpage.page.tbs.career_center_acaces csw=flatpage.page.tbs.career_center_csw magazine=flatpage.page.tbs.career_center_magazine other=flatpage.page.tbs.career_center_other stem=flatpage.page.tbs.career_center_stem wall=flatpage.page.tbs.career_center_wall %}
-  {% include './v-internships.html' with id='v-internships' blck=flatpage.page.tbs.internships recruiters=flatpage.page.tbs.internships_recruiters students=flatpage.page.tbs.internships_students %}
+  {% include './v-mobility.html' with tbs=flatpage.page.tbs %}
   {% include './v-jobs.html' with id='v-jobs' %}
 {% endblock %}
 
@@ -115,10 +115,6 @@
       }
     };
 
-    var InternshipsView = {
-      template: '#v-internships'
-    };
-
     var JobsView = {
       template: '#v-jobs',
       data: function () {
@@ -179,6 +175,18 @@
       }
     };
 
+    var MobilityWrapperView = {
+      template: '#v-mobility-wrapper'
+    };
+
+    var MobilityCollaborationsView = {
+      template: '#v-collaborations'
+    };
+
+    var MobilityInternshipsView = {
+      template: '#v-internships'
+    };
+
     var Router = new VueRouter({
       linkActiveClass: 'active',
       routes: [
@@ -195,17 +203,34 @@
           component: CareerCenterView
         },
         {
-          name: 'internships',
-          path: '/internships/',
-          pathToRegexpOptions: {strict: true},
-          component: InternshipsView
-        },
-        {
           name: 'jobs',
           path: '/',
           pathToRegexpOptions: {strict: true},
           component: JobsView
-        }
+        },
+        {
+          path: '/mobility/',
+          pathToRegexpOptions: {strict: true},
+          component: MobilityWrapperView,
+          children: [
+            {
+              path: '/',
+              redirect: { name: 'internships' }
+            },
+            {
+              name: 'internships',
+              path: 'internships/',
+              pathToRegexpOptions: {strict: true},
+              component: MobilityInternshipsView
+            },
+            {
+              name: 'collaborations',
+              path: 'collaboration-grants/',
+              pathToRegexpOptions: {strict: true},
+              component: MobilityCollaborationsView
+            }
+          ]
+        },
       ],
       scrollBehavior: function () {
         return {x: 0, y: 0};

@@ -15,7 +15,7 @@ class Page(FlatPage):
 
 class Block(models.Model):
     page = models.ForeignKey(Page, related_name="blocks", on_delete=models.CASCADE)
-    key = models.CharField(max_length=32)
+    key = models.CharField(max_length=48)
     notes = models.CharField(max_length=255, blank=True)
     header = models.TextField(blank=True)
     content = models.TextField()

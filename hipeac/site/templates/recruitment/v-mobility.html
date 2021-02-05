@@ -1,0 +1,88 @@
+{% load hipeac %}
+
+
+<script type="text/x-template" id="v-mobility-wrapper">
+  <div>
+    <ul class="nav nav-tabs justify-content-center">
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'internships'}" class="nav-link" exact>
+          <icon name="how_to_reg" class="mr-1"></icon>Internships</a>
+      </li>
+      <li class="nav-item">
+        <a is="router-link" :to="{name: 'collaborations'}" class="nav-link" exact>
+          <icon name="group_work" class="mr-1"></icon>Collaboration Grants</a>
+      </li>
+    </ul>
+    <router-view></router-view>
+  </div>
+</script>
+
+<script type="text/x-template" id="v-internships">
+  <div>
+    <div class="row">
+      <div class="col-12 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <display-lg class="mt-1 mb-4">{{ tbs.internships.header }}</display-lg>
+          <div class="marked catchphrase-first">{{ tbs.internships.content | markdown }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <a href="{% url 'editor_create' 'job' %}" class="btn btn-sm btn-block btn-primary"><i class="material-icons mr-1">add</i>Add an internship <span class="d-none d-inline-block">to our portal</span></a>
+          <hr class="my-4">
+          <display-sm class="mb-3">{{ tbs.internships_recruiters.header }}</display-sm>
+          <div class="marked">{{ tbs.internships_recruiters.content | markdown }}</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <a is="router-link" :to="{name: 'jobs', query: {q: 'internship'}}" class="btn btn-sm btn-block btn-outline-secondary" exact><i class="material-icons mr-1">search</i>Find internships <span class="d-none d-inline-block">on our portal</span></a>
+          <hr class="my-4">
+          <display-sm class="mb-3">{{ tbs.internships_students.header }}</display-sm>
+          <div class="marked">{{ tbs.internships_students.content | markdown }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="hipeac-card">
+      <a href="{% url 'internship_awardees' %}" class="btn btn-sm btn-block btn-outline-success" exact><i class="material-icons mr-1">how_to_reg</i>See past internship awardees</a>
+    </div>
+  </div>
+</script>
+
+<script type="text/x-template" id="v-collaborations">
+  <div>
+    <div class="row">
+      <div class="col-12 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          <display-lg class="mt-1 mb-0">{{ tbs.collaborations.header }}</display-lg>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card">
+          {% if tbs.collaborations_easychair_url.content != '#' %}
+            <a href="{{ tbs.collaborations_easychair_url.content }}" target="_blank" class="btn btn-sm btn-block btn-primary text-wrap"><i class="material-icons mr-1">add</i>{{ tbs.collaborations_easychair_url.header }}</a>
+          {% endif %}
+          {% if tbs.collaborations_application_form_url.content != '#' %}
+            <a href="{{ tbs.collaborations_application_form_url.content }}" target="_blank" class="btn btn-sm btn-block btn-outline-secondary text-wrap"><i class="material-icons mr-1">get_app</i>{{ tbs.collaborations_application_form_url.header }}</a>
+          {% endif %}
+          <hr class="my-4">
+          <h6 class="display display-sm text-left m-0 mb-3 transparent">What are Collaboration Grants?</h6>
+          <div class="marked">{{ tbs.collaborations.content | markdown }}</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 d-flex align-items-stretch">
+        <div class="hipeac-card text-sm">
+          <h6 class="display display-sm text-left m-0 mb-3 transparent">{{ tbs.collaborations_faq.header }}</h6>
+          <div class="marked">{{ tbs.collaborations_faq.content | markdown }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="hipeac-card">
+      <a href="{% url 'collaboration_awardees' %}" class="btn btn-sm btn-block btn-outline-success" exact><i class="material-icons mr-1">how_to_reg</i>See past collaboration grant awardees</a>
+    </div>
+  </div>
+</script>
