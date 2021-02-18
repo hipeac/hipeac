@@ -23,7 +23,7 @@
       {% if user.is_authenticated %}
         <q-route-tab exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
       {% endif %}
-      <q-route-tab exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>
+      <q-route-tab v-if="event.is_open_for_registration" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>
     </q-tabs>
   </q-toolbar>
 {% endblock %}

@@ -1,11 +1,13 @@
 import uuid
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils import timezone
 
 from hipeac.functions import send_task
 from .fees import Fee
@@ -79,6 +81,10 @@ class Registration(models.Model):
         ]
         ordering = ("-created_at",)
         unique_together = ("event", "user")
+
+    def clean(self) -> None:
+        if not self.event.is_open_for_registration():
+            raise ValidationError("Registrations are closed for this event.")
 
     def save(self, *args, **kwargs):
         """

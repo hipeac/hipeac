@@ -33,15 +33,17 @@
               <span>{{ event.registrations_round }}<span v-if="event.registrations_round < event.registrations_count">+</span> attendees</span>
             </router-link>
           </li>
-          <li v-else class="text-bold text-primary">
+          <li v-else-if="event.is_open_for_registration" class="text-bold text-primary">
             <router-link :to="{name: 'registration'}" class="inherit">
               <q-icon size="sm" name="edit" color="primary" class="q-mr-sm"></q-icon>
               <span>Register</span>
             </router-link>
           </li>
           <li v-if="user.registration" class="text-bold text-green">
-            <q-icon size="sm" name="check" color="green" class="q-mr-sm"></q-icon>
-            <span>Registered</span>
+            <router-link :to="{name: 'registration'}" class="inherit">
+              <q-icon size="sm" name="check" color="green" class="q-mr-sm"></q-icon>
+              <span>Registered</span>
+            </router-link>
           </li>
         </ul>
       </q-card-section>

@@ -205,10 +205,14 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
         return queryset
 
     def perform_create(self, serializer):
+        event = Event.objects.get(id=self.request.data["event"])
+        if not event or not event.is_open_for_registration():
+            raise ValidationError({"message": ["Registrations are closed for this event."]})
+
         try:
             serializer.save(user=self.request.user)
         except IntegrityError:
-            raise ValidationError({"event-user": ["Duplicate entry - this user already has a registration."]})
+            raise ValidationError({"message": ["Duplicate entry - this user already has a registration."]})
 
     @never_cache
     def list(self, request, *args, **kwargs):
