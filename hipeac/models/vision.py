@@ -46,9 +46,11 @@ class VisionArticle(LinkMixin, models.Model):
 
     vision = models.ForeignKey(Vision, related_name="articles", on_delete=models.CASCADE)
     title = models.CharField(max_length=250)
-    authors = models.TextField(null=True)
+    authors = models.CharField(max_length=250, null=True, blank=True)
+    dimension = models.CharField(max_length=250, null=True, blank=True)
     file = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
     position = models.PositiveSmallIntegerField()
+    abstract = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = "hipeac_vision_article"
