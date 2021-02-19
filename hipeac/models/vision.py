@@ -39,3 +39,17 @@ class Vision(LinkMixin, models.Model):
 
     def get_download_url(self) -> str:
         return reverse("vision_download", args=[self.publication_date.year])
+
+
+class VisionArticle(LinkMixin, models.Model):
+    ASSETS_PRIVATE_FOLDER = "private/vision/article"
+
+    vision = models.ForeignKey(Vision, related_name="articles", on_delete=models.CASCADE)
+    title = models.CharField(max_length=250)
+    authors = models.TextField(null=True)
+    file = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
+    position = models.PositiveSmallIntegerField()
+
+    class Meta:
+        db_table = "hipeac_vision_article"
+        ordering = ("position",)
