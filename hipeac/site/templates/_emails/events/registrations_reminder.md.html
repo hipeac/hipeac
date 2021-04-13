@@ -9,11 +9,11 @@ Dear {{ user_name }},
 Given the number of registrations ({{ registrations_count }} already and still going up), it is important that we know in advance who will attend which activities. May we therefore ask you to log in onto the HiPEAC website, and check your registration page?
 https://www.hipeac.net{{ registration_url }}
 
-**Please make sure that the social event is selected if you intend to go.**
+{% if is_virtual %}Remember that during the event you can access your personalized Zoom links in the "Program" or "Logistic" tabs.{% else %}**Please make sure that the social event is selected if you intend to go.**{% endif %}
 
-We look forward to seeing you in {{ event_city }}!
+We look forward to seeing you {% if is_virtual %}online{% else %}in {{ event_city }}{% endif %}!
 
-PS: you can also check your badge information [on your profile page](https://www.hipeac.net/accounts/profile/). 
+PS: please also check your personal information [on your profile page](https://www.hipeac.net/accounts/profile/).
 {% endblock %}
 
 {% block footer %}HiPEAC Staff{% endblock %}

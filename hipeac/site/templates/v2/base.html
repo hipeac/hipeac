@@ -1,0 +1,64 @@
+{% spaceless %}
+{% load compress %}
+{% load static %}
+
+
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#" data-lang="en" data-auth="{{ user.is_authenticated | lower | default:'false' }}" data-csrf-token="{{ csrf_token }}">
+  <head>
+    <link href="//fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&family=Material+Icons&display=swap" rel="stylesheet">
+    {% compress css file quasar %}
+      <link href="{% static 'vendor_v2/quasar@1.14.7/quasar.min.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static 'scss/v2_base.scss' %}" type="text/x-scss" rel="stylesheet">
+    {% endcompress %}
+    {% block styles %}{% endblock %}
+    <title>{% block head_title %}HiPEAC{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta property="og:site_name" content="HiPEAC">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta name="twitter:site" content="@hipeac">
+    {% block structured_data %}{% endblock %}
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise"></script>
+    {% if not debug %}
+      <!-- Google tag manager -->
+    {% endif %}
+    {% block head_scripts %}{% endblock %}
+  </head>
+  <body class="bg-grey-1 text-dark">
+    {% block layout %}{% endblock %}
+    {% block vue_templates %}{% endblock %}
+    {% compress js file moment %}
+        <script src="{% static 'vendor_v2/moment@2.29.1/moment.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/moment-timezone@0.5.32/moment-timezone-with-data-10-year-range.min.js' %}"></script>
+    {% endcompress %}
+    {% compress js file helpers %}
+      <script src="{% static 'vendor_v2/axios@0.21.0/axios.min.js' %}"></script>
+      <script src="{% static 'vendor_v2/commonmark@0.29.3/commonmark.min.js' %}"></script>
+      <script src="{% static 'vendor_v2/underscore@1.12.0/underscore.min.js' %}"></script>
+    {% endcompress %}
+    {% compress js file vue %}
+      {% if debug %}
+        <script src="{% static 'vendor_v2/vue@2.6.12/vue.js' %}"></script>
+        <script src="{% static 'vendor_v2/vuex@3.6.0/vuex.js' %}"></script>
+        <script src="{% static 'vendor_v2/vue-router@3.4.9/vue-router.js' %}"></script>
+        <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.umd.js' %}"></script>
+      {% else %}
+        <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.ie.polyfills.umd.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/vue@2.6.12/vue.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/vuex@3.6.0/vuex.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/vue-router@3.4.9/vue-router.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.umd.min.js' %}"></script>
+      {%endif %}
+    {% endcompress %}
+    {% compress js file hipeac %}
+      <script src="{% static 'js_v2/base.js' %}"></script>
+      <script src="{% static 'js_v2/components/common.js' %}"></script>
+    {% endcompress %}
+    {% block extra_vendor_scripts %}{% endblock %}
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
+
+
+{% endspaceless %}

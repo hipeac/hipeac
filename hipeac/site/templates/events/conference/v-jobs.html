@@ -1,0 +1,25 @@
+{% load humanize %}
+{% load static %}
+
+
+<script type="text/x-template" id="v-jobs">
+{% verbatim %}
+  <div v-if="event">
+    <q-card class="hipeac__card q-my-lg">
+      <div class="row q-col-gutter-sm q-pa-sm">
+        <div class="col-12 col-md-6">
+          <q-card-section>
+            <display-3>Delegates from the sponsoring organisations whose current job vacancies are shown below will be at #HiPEAC21. On Tuesday, 19th January, during the job fair, you'll have the opportunity to meet and talk with research groups and companies looking for skilled students and specialist researchers like you!</display-3>
+          </q-card-section>
+        </div>
+        <div class="col-12 col-md-6">
+          <q-card-section>
+            <p class="q-mb-none">The job fair will be made using an online software called Brazen, where all the delegates will have access to the participants' information and CV's. If you are looking for fresh opportunities make sure to register! HiPEAC Jobs will also have a booth to help you with anything you need!</p>
+          </q-card-section>
+        </div>
+      </div>
+    </q-card>
+    <hipeac-job-cards v-if="jobs.length" :items="jobs"></hipeac-job-cards>
+  </div>
+{% endverbatim %}
+</script>

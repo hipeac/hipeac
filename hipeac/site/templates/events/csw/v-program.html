@@ -1,0 +1,145 @@
+{% load humanize %}
+{% load static %}
+
+
+<script type="text/x-template" id="v-program">
+{% verbatim %}
+  <div v-if="event && event.sessions.length">
+    <q-card class="hipeac__card q-mt-lg q-mb-md">
+      <q-tabs no-caps inline-label class="bg-white text-blue-9">
+        <q-route-tab :to="{name: 'program'}" icon="category" label="All sessions"></q-route-tab>
+        <q-route-tab exact :to="{name: 'keynotes'}" icon="stars" label="Keynotes"></q-route-tab>
+        <q-route-tab v-if="event.virtualExhibition" exact :to="{name: 'exhibition'}" icon="amp_stories" label="Exhibition"></q-route-tab>
+        <!--<q-route-tab v-if="$q.screen.gt.xs" :to="{name: 'program'}" icon="bookmark" label="Paper Track"></q-route-tab>-->
+      </q-tabs>
+    </q-card>
+    <router-view></router-view>
+    <router-view name="dialog"></router-view>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-program-main">
+{% verbatim %}
+  <div v-if="event">
+    <q-page-sticky v-if="!$q.screen.gt.xs" position="bottom-left" :offset="[18, 18]" style="z-index: 5000">
+      <q-btn rounded icon="filter_list" label="Filters" color="grey-1" text-color="dark" @click="dialog = true"></q-btn>
+    </q-page-sticky>
+
+    <q-card class="hipeac__card q-mb-lg">
+      <q-card-section class="q-mx-sm q-mt-sm">
+        <hipeac-search-box placeholder="Search by type, title, speakers, project, topics..."></hipeac-search-box>
+      </q-card-section>
+      <q-card-actions class="q-mb-sm q-mx-sm text-body2">
+        <!--<q-space v-if="!$q.screen.gt.xs"></q-space>
+        <q-checkbox v-for="(date, idx) in event.dates" :key="idx" v-model="selectedDays" :val="date.format('L')" :label="($q.screen.gt.sm) ? date.format('dddd, MMM D') : date.format('MMM D')" class="q-mr-md"></q-checkbox>
+        <q-space></q-space>-->
+        <q-btn v-if="$q.screen.gt.xs" flat no-caps @click="dialog = true" icon="filter_list" class="float-right" label="Filters"></q-btn>
+      </q-card-actions>
+      <q-separator></q-separator>
+      <q-banner class="bg-yellow-1 q-py-md q-px-lg">
+        <strong v-if="conflicts">You have registered for multiple simultaneous sessions, please check your registration.<br></strong>
+        <span>All times are displayed in your local time zone: {{ user.tz }}</span>
+        <span v-if="filtered">. <a href="#" @click.prevent="clearFilters()" class="inherit">Showing filtered results... &times;</a></span>
+      </q-banner>
+      <q-card-section v-for="(data, day) in program" :key="day" class="q-ma-sm">
+        <h3 class="q-mb-lg">{{ data.date.format('dddd, MMM D') }}</h3>
+        <div v-if="data.sessions" v-for="session in data.sessions" :key="session.id" class="row">
+          <div v-if="session.showTime" class="col-12 border-top"></div>
+          <div class="col-2 q-py-lg q-pr-lg text-center">
+            <div v-show="session.showTime">
+              <h4 v-if="$q.screen.gt.sm" class="text-h5">{{ session.startAt.format('h:mm') }} <small>{{ session.startAt.format('A') }}</small></h4>
+              <span v-else>{{ session.startAt.format('h:mm') }} <small>{{ session.startAt.format('A') }}</small></span>
+            </div>
+          </div>
+          <div class="col-10 border-left q-py-lg q-pl-lg col-pointer" :class="{'border-top': !session.showTime}" @click="$router.push({name: 'session', params: {id: session.id}})">
+            <hipeac-avatar-item v-if="session.isKeynote && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" :profile="keynotesDict[session.id].main_speaker.profile" class="q-px-none q-pt-none q-mb-sm"></hipeac-avatar-item>
+            <display-3 class="q-mb-xs">{{ session.title }}</display-3>
+            <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
+              <li>
+                <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
+                <span>{{ session.session_type.value }}</span>
+              </li>
+              <li>
+                <q-icon size="xs" name="schedule" color="grey-7" class="q-mr-xs"></q-icon>
+                <span>{{ session.startAt.format('HH:mm') }} - {{ session.endAt.format('HH:mm') }}</span>
+              </li>
+              <li v-if="sessionRegistered(session.id)">
+                <q-icon size="xs" name="check" color="green" class="q-mr-xs"></q-icon>
+                <span>Registered</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </q-card-section>
+      <q-banner class="bg-yellow-1 q-py-md q-px-lg">
+        <span>All times are displayed in your local time zone: {{ user.tz }}</span>
+      </q-banner>
+    </q-card>
+
+    <q-dialog v-model="dialog" position="right" full-height :seamless="$q.screen.gt.md">
+      <q-card class="q-pa-sm" style="width: 350px">
+        <q-card-actions>
+          <q-btn no-caps v-show="filters.length || selectedTracks.length" flat color="negative" label="Clear all" @click="clearFilters()"></q-btn>
+          <q-space></q-space>
+          <q-btn flat round color="dark" icon="close" class="q-ml-md float-right" @click="dialog = false"></q-btn>
+        </q-card-actions>
+        <q-card-section v-if="user.registration" class="bg-grey-2 rounded-borders q-px-md">
+          <q-toggle v-model="myProgram" checked-icon="tick" color="primary" class="float-right"></q-toggle>
+          <display-5>My sessions</display-5>
+          <p class="text-caption q-ma-none">Only show the sessions I am registered for</p>
+        </q-card-section>
+        <q-card-section class="q-px-md">
+          <display-5>Track</display-5>
+          <div class="q-gutter-x-sm q-mt-md q-mb-lg">
+            <q-checkbox v-for="track in tracks" :key="track.id" v-model="selectedTracks" :val="track.id" :label="track.name" :color="track.color"></q-checkbox>
+          </div>
+          <div v-if="tags.topics.length">
+            <display-5>Topics</display-5>
+            <div class="q-gutter-x-sm q-mt-md q-mb-lg text-body2">
+              <q-checkbox v-for="topic in tags.topics" :key="topic.id" v-model="filters" :val="topic.id" :label="topic.value" color="grey-7" size="xs"></q-checkbox>
+            </div>
+          </div>
+          <div v-if="tags.areas.length">
+            <display-5>Application areas</display-5>
+            <div class="q-gutter-x-sm q-mt-md q-mb-lg text-body2">
+              <q-checkbox v-for="area in tags.areas" :key="area.id" v-model="filters" :val="area.id" :label="area.value" color="grey-7" size="xs"></q-checkbox>
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-program-keynotes">
+{% verbatim %}
+  <div v-if="event">
+    <div v-if="keynotes.length" class="row q-col-gutter-md items-stretch">
+      <div v-for="keynote in keynotes" class="col-12 col-md">
+        <q-card class="hipeac__card column full-height pointer" @click="$router.push({name: 'session', params: {id: keynote.id}})">
+          <q-card-section>
+            <hipeac-avatar-item v-if="keynote.main_speaker" :profile="keynote.main_speaker.profile" class="q-mb-md"></hipeac-avatar-item>
+            <display-2 class="q-mt-sm q-mb-xs">{{ keynote.title }}</display-2>
+          </q-card-section>
+          <q-card-section>
+            <marked :text="keynote.excerpt"></marked>
+          </q-card-section>
+          <q-space></q-space>
+          <q-card-section>
+            <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9e">
+              <li><q-icon size="xs" name="today" color="grey-7"></q-icon> {{ keynote.startAt.format("ddd, MMMM Do") }}</li>
+              <li><q-icon size="xs" name="schedule" color="grey-7"></q-icon> {{ keynote.startAt.format('HH:mm') }} - {{ keynote.endAt.format('HH:mm') }}</li>
+            </ul>
+          </q-card-section>
+          <q-separator color="grey-2"></q-separator>
+          <q-card-actions>
+            <q-btn flat color="primary" :to="{name: 'session', params: {id: keynote.id}}">More info</q-btn>
+          </q-card-actions>
+        </q-card>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

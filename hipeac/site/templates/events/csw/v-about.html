@@ -1,0 +1,108 @@
+{% load humanize %}
+{% load static %}
+
+
+<script type="text/x-template" id="{{ id }}">
+{% verbatim %}
+  <div v-if="event">
+    <q-card class="hipeac__card q-my-lg">
+      <q-card-section class="text-center">
+        <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-lg q-mb-none text-body2 text-grey-9">
+          <!--<li><q-icon size="sm" name="today" color="grey-7"></q-icon> {{ event.datesStr.format("ddd, MMMM Do") }}</li>-->
+          <li v-if="event.is_virtual">
+            <router-link :to="{name: 'logistics'}" class="inherit">
+              <q-icon size="sm" name="desktop_windows" class="q-mr-sm"></q-icon>
+              <span>Virtual event</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="{name: 'program'}" class="inherit">
+              <q-icon size="sm" name="date_range" class="q-mr-sm"></q-icon>
+              <span>{{ event.startDate.format('MMMM D') }} - {{ event.endDate.format('D, YYYY') }}</span>
+            </router-link>
+          </li>
+          <li v-if="event.sessions.length">
+            <router-link :to="{name: 'program'}" class="inherit">
+              <q-icon size="sm" name="category" class="q-mr-sm"></q-icon>
+              <span>{{ event.sessions.length }} sessions</span>
+            </router-link>
+          </li>
+          <li v-if="event.registrations_count && user.registration">
+            <router-link :to="{name: 'attendees'}" class="inherit">
+              <q-icon size="sm" name="people" class="q-mr-sm"></q-icon>
+              <span>{{ event.registrations_round }}<span v-if="event.registrations_round < event.registrations_count">+</span> attendees</span>
+            </router-link>
+          </li>
+          <li v-else-if="event.is_open_for_registration" class="text-bold text-primary">
+            <router-link :to="{name: 'registration'}" class="inherit">
+              <q-icon size="sm" name="edit" color="primary" class="q-mr-sm"></q-icon>
+              <span>Register</span>
+            </router-link>
+          </li>
+          <li v-if="user.registration" class="text-bold text-green">
+            <router-link :to="{name: 'registration'}" class="inherit">
+              <q-icon size="sm" name="check" color="green" class="q-mr-sm"></q-icon>
+              <span>Registered</span>
+            </router-link>
+          </li>
+        </ul>
+      </q-card-section>
+      <q-responsive v-if="$q.screen.gt.md && event.images" :ratio="9/2" class="rounded-borders">
+        <q-parallax :src="event.images.lg" :height="180" :speed="0.5"></q-parallax>
+      </q-responsive>
+      <marked :text="event.presentation" class="text-center q-pa-lg q-mb-none"></marked>
+    </q-card>
+    <q-card v-if="event.id >= 6802" class="hipeac__card q-mb-lg">
+      <q-card-section class="q-mx-sm q-my-none text-center">
+        <display-3>The new <strong>HiPEAC Vision 2021</strong>: balancing opportunities and challenges - the road ahead for technology and computing</display-3>
+        <q-btn unelevated no-caps type="a" href="/vision/" target="_blank" label="Read more" color="primary" class="q-mt-md"></q-btn>
+      </q-card-section>
+    </q-card>
+    <q-card class="hipeac__card q-mb-lg">
+      <q-card-section class="q-ma-md q-mb-none">
+        <div v-if="event && event.sponsors.length" class="row items-center justify-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
+          <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4 col-md-2">
+            <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
+              <img :src="sponsor.institution.images.lg" class="sponsor">
+            </a>
+            <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
+              <img :src="sponsor.project.images.lg" class="sponsor">
+            </a>
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section v-if="event.virtualExhibition" class="q-mx-sm q-pt-none text-center">
+        <q-btn outline no-caps :to="{name: 'exhibition'}" label="Meet our sponsors at the virtual exhibition!" color="orange-9" size="lg" class="q-my-lg"></q-btn>
+      </q-card-section>
+    </q-card>
+    <div class="row q-col-gutter-lg">
+      <div class="col-12 col-md-6">
+        <!--<article-card v-if="event" title="Event news" :eventId="event.id" :max="10" :show-more="false"></article-card>-->
+        <q-card class="hipeac__card" v-if="user.isRegistered && event.links.google_photos">
+          {% endverbatim %}
+            <img src="{% static 'images/google-photos.svg' %}" class="float-right logo-photos ml-3">
+          {% verbatim %}
+          <display-5 class="mb-0">Share your pictures from this event <a :href="event.links.google_photos">here</a>!</display-5>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-6">
+        <q-card class="hipeac__card text-sm" v-if="committees.length">
+          <h5 class="text-h6 q-mb-md">Committees</h5>
+          <q-separator></q-separator>
+          <div class="row">
+            <div v-for="committee in committees" class="col-12 col-md-6">
+              <strong>{{ committee.name }}</strong>
+              <ul class="list-unstyled">
+                <li v-for="user in committee.members">
+                  <span>{{ user.profile.name }}</span>
+                  <em v-if="user.profile.institution">, {{ user.profile.institution.short_name }}</em>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </q-card>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

@@ -1,0 +1,74 @@
+{% extends 'v2/base.html' %}
+
+{% load account %}
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block scripts %}
+{% compress js inline %}
+  <script type="text/javascript">
+    new Vue({
+      el: '#vue'
+    });
+  </script>
+{% endcompress %}
+{% endblock %}
+
+{% block layout %}
+  <div v-cloak id="vue">
+    <q-layout view="lHr Lpr lFr" class="hipeac__layout">
+      {% block header %}
+        <q-header bordered class="bg-white text-dark hipeac__header">
+          <q-toolbar class="hipeac__toolbar container">
+            <!-- <q-btn flat @click="visibleDrawer = !visibleDrawer" round dense icon="menu"></q-btn> -->
+            <a href="{% url 'homepage' %}" class="q-mr-lg">
+              <img src="{% static 'images/hipeac.svg' %}" class="logo q-mt-xs">
+            </a>
+            <q-btn stretch flat no-caps type="a" href="{% url 'network' %}" label="Network" class="q-ml-lg {% active request 'network,user,institution,project' %}"></q-btn>
+            <q-btn stretch flat no-caps type="a" href="{% url 'events' %}" label="Events" class="{% active request 'events,acaces,conference,conference_v2,csw,roadshow' %}"></q-btn>
+            <q-btn stretch flat no-caps type="a" href="{% url 'jobs' %}" label="Jobs" class="{% active request 'jobs,job' %}"></q-btn>
+            <q-btn stretch flat no-caps type="a" href="{% url 'vision' %}" label="Vision" class="{% active request 'vision' %}"></q-btn>
+            <q-btn stretch flat no-caps type="a" href="{% url 'awards' %}" label="Awards" class="{% active request 'awards' %}"></q-btn>
+            <q-btn stretch flat no-caps type="a" href="{% url 'news' %}" label="News" class="{% active request 'news,article' %}"></q-btn>
+            <q-btn stretch flat no-caps type="a" href="{% url 'press' %}" label="Press room" class="{% active request 'press' %}"></q-btn>
+            <q-space></q-space>
+            {% if user.is_authenticated %}
+              <q-btn outline no-caps color="primary" type="a" href="{% url 'account_login' %}" color="danger" label="{% user_display user %}">
+                <q-menu anchor="bottom right" self="top right">
+
+                </q-menu>
+              </q-btn>
+            {% else %}
+              <q-btn outline no-caps type="a" href="{% url 'account_signup' %}" color="green" class="q-mr-sm">Join</q-btn>
+              <q-btn outline no-caps type="a" href="{% url 'account_login' %}" color="primary">Log in</q-btn>
+            {% endif %}
+          </q-toolbar>
+        </q-header>
+      {% endblock %}
+      {% block drawer %}{% endblock %}
+      {% block page_container %}
+        <q-page-container>
+          <q-page style="padding-top: 56px">
+            <q-page-sticky expand position="top" class="hipeac__submenu">
+              {% block submenu %}{% endblock %}
+            </q-page-sticky>
+            <div class="container">
+              {% if messages %}
+                {% for message in messages %}
+                  <q-banner inline-actions class="bg-yellow-2" role="alert">
+                    <span>{{ message }}</span>
+                  </q-banner>
+                {% endfor %}
+              {% endif %}
+              {% block page %}{% endblock %}
+            </div>
+            {% block page_footer %}{% include './_footer.html' %}{% endblock %}
+          </q-page>
+        </q-page-container>
+      {% endblock %}
+      {% block footer %}{% endblock %}
+    </q-layout>
+  </div>
+{% endblock %}

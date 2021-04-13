@@ -1,0 +1,764 @@
+{% extends 'v2/layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+
+{% block submenu %}
+  <q-toolbar class="container">
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
+    <q-space v-show="$q.screen.gt.sm"></q-space>
+    <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
+      <q-route-tab exact :to="{name: 'about'}" label="About"></q-route-tab>
+      <q-route-tab :to="{name: 'program'}" label="Program"></q-route-tab>
+      {% if event.is_virtual %}
+        <q-route-tab exact :to="{name: 'logistics'}" label="Logistics"></q-route-tab>
+      {% else %}
+        <q-route-tab exact :to="{name: 'venue'}" label="Venue and travel"></q-route-tab>
+      {% endif %}
+      <q-route-tab v-if="event && event" exact :to="{name: 'jobs'}" label="Recruitment"></q-route-tab>
+      {% if user.is_authenticated %}
+        <q-route-tab exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
+      {% endif %}
+      <q-route-tab v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>
+    </q-tabs>
+  </q-toolbar>
+{% endblock %}
+
+{% block page %}
+  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}"></div>
+  <router-view></router-view>
+  <q-page-sticky position="bottom-right" :offset="[18, 18]">
+    <q-fab v-if="!$q.screen.gt.sm" icon="menu" direction="up" vertical-actions-align="right" color="primary">
+      <q-fab-action exact :to="{name: 'about'}" color="white" text-color="dark" label="About"></q-fab-action>
+      <q-fab-action exact :to="{name: 'program'}" color="white" text-color="dark" label="Program"></q-fab-action>
+      {% if event.is_virtual %}
+        <q-fab-action exact :to="{name: 'logistics'}" color="white" text-color="dark" label="Logistics"></q-fab-action>
+      {% else %}
+        <q-fab-action exact :to="{name: 'venue'}" color="white" text-color="dark" label="Venue and travel"></q-fab-action>
+      {% endif %}
+      <q-fab-action exact :to="{name: 'jobs'}" color="white" text-color="dark" label="Recruitment"></q-fab-action>
+      {% if user.is_authenticated %}
+        <q-fab-action exact :to="{name: 'attendees'}" color="white" text-color="dark" label="Attendees"></q-fab-action>
+      {% endif %}
+      <q-fab-action exact :to="{name: 'registration'}" color="white" text-color="dark" :label="(user.registration) ? 'My registration' : 'Register'"></q-fab-action>
+    </q-fab>
+  </q-page-sticky>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-about.html' with id='v-about' %}
+  {% include './v-attendees.html' %}
+  {% include './v-jobs.html' %}
+  {% include './v-exhibition.html' %}
+  {% include './v-logistics.html' %}
+  {% include './v-program.html' %}
+  {% include './v-registration.html' %}
+  {% include './v-session.html' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js file conference %}
+  <script src="{% static 'js_v2/components/users.js' %}"></script>
+  <script src="{% static 'js_v2/components/jobs.js' %}"></script>
+  <script type="text/javascript">
+    var VARS = document.querySelector('#vars').dataset;
+
+    var Store = new Vuex.Store({
+      state: {
+        now: moment(),
+        event: null,
+        attendees: [],
+        committees: [],
+        jobs: [],
+        keynotes: [],
+        session: null,
+        user: {
+          isAuthenticated: USER_IS_AUTHENTICATED,
+          registration: undefined,
+          links: [],
+          tz: USER_TZ
+        }
+      },
+      getters: {
+        conflicts: function (state) {
+          if (!state.event || !state.user.registration) return false;
+          var times = _.pluck(state.event.sessions.filter(function (obj) {
+            return _.contains(state.user.registration.sessions, obj.id)
+          }), 'start_at');
+          return times.length > _.uniq(times).length;
+        },
+        links: function (state) {
+          if (!state.event || !state.user.links.length) return [];
+          return _.clone(state.user.links).map(function (obj) {
+            obj.s = _.findWhere(state.event.sessions, {id: obj.session});
+            return obj;
+          }).sort(function (a, b) {
+            return a.s.startAt - b.s.startAt;
+          }).filter(function (obj) {
+            return obj.s.endAt.isAfter(state.now);
+          });
+        }
+      },
+      mutations: {
+        getCommittees: function (state) {
+          Hipeac.api.get(VARS.committeesUrl).then(function (res) {
+            state.committees = Object.freeze(res.data);
+          });
+        },
+        getEvent: function (state) {
+          Hipeac.api.get(VARS.eventUrl).then(function (res) {
+            state.event = Object.freeze(Hipeac.map.event(res.data));
+          });
+        },
+        getJobs: function (state) {
+          Hipeac.api.get(VARS.jobsUrl).then(function (res) {
+            state.jobs = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.job(obj);
+            }));
+          });
+        },
+        getKeynotes: function (state) {
+          Hipeac.api.get(VARS.sessionsUrl, {session_type: 69}).then(function (res) {
+            state.keynotes = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.session(obj);
+            }));
+          });
+        },
+        getLinks: function (state) {
+          var self = this;
+          var reg = state.user.registration;
+
+          Hipeac.api.get(reg.url + 'access_links/').then(function (r) {
+            state.user.links = Object.freeze(r.data.filter(function (link) {
+              return _.contains(reg.sessions, link.session);
+            }));
+
+            setTimeout(function () {
+              self.commit('getLinks');
+            }, 15000);
+          });
+        },
+        getRegistration: function (state) {
+          if (!USER_IS_AUTHENTICATED) return;
+          var self = this;
+
+          Hipeac.api.get(VARS.registrationUrl, {event_id: +VARS.eventId}).then(function (res) {
+            if (res.data.results.length == 1) {
+              var reg = res.data.results[0];
+              state.user.registration = Object.freeze(Hipeac.map.registration(reg));
+              self.commit('getLinks');
+            } else {
+              state.user.registration = null;
+            }
+          });
+        },
+        getRegistrations: function (state) {
+          if (!USER_IS_AUTHENTICATED) return;
+
+          Hipeac.api.get(VARS.registrationsUrl).then(function (res) {
+            state.attendees = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.user(obj.user);
+            }));
+          });
+        },
+        updateNow: function (state) {
+          var self = this;
+          state.now = moment();
+          setTimeout(function () {
+            self.commit('updateNow');
+          }, 60000);
+        },
+        updateRegistration: function (state, data) {
+          state.user.registration = Object.freeze(Hipeac.map.registration(data));
+        },
+        updateSession: function (state, data) {
+          state.session = Object.freeze(data);
+        }
+      }
+    });
+
+    var AboutView = {
+      template: '#v-about',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'committees']), {
+      }),
+      created: function () {
+        this.$store.commit('getCommittees');
+      }
+    };
+
+    var AttendeesView = {
+      template: '#v-attendees',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'attendees']), {
+        institutions: function () {
+          return extractInstitutions(this.attendees);
+        }
+      }),
+      created: function () {
+        this.$store.commit('getRegistrations');
+      }
+    };
+
+    var JobsView = {
+      template: '#v-jobs',
+      computed: _.extend(
+        Vuex.mapState(['event', 'jobs']), {
+      }),
+      created: function () {
+        this.$store.commit('getJobs');
+      }
+    };
+
+    var LogisticsView = {
+      template: '#v-logistics',
+      computed: _.extend(
+        Vuex.mapState(['user']),
+        Vuex.mapGetters(['links']), {
+      })
+    };
+
+    var ProgramView = {
+      template: '#v-program',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      }),
+      created: function () {
+        this.$store.commit('getKeynotes');
+      }
+    };
+
+    var ProgramMainView = {
+      template: '#v-program-main',
+      data: function () {
+        return {
+          q: '',
+          dialog: false,
+          selectedTracks: [],
+          filters: [],
+          myProgram: false,
+          selectedDays: []
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'keynotes', 'now']),
+        Vuex.mapGetters(['conflicts', 'links']), {
+        keynotesDict: function () {
+          if (!this.keynotes.length) return {};
+          return _.indexBy(this.keynotes, 'id');
+        },
+        filtered: function () {
+          return this.selectedTracks.length > 0 || this.filters.length > 0 || this.myProgram;
+        },
+        tags: function () {
+          if (!this.event) return null;
+          var tags = {areas: [], topics: []};
+          _.each(this.prefilteredSessions, function (obj) {
+            _.each(obj.application_areas, function (o) {
+              tags.areas.push(o);
+            });
+            _.each(obj.topics, function (o) {
+              tags.topics.push(o);
+            });
+          });
+          return {
+            areas: _.sortBy(_.uniq(tags.areas, function (o) { return o.id; }), 'value'),
+            topics: _.sortBy(_.uniq(tags.topics, function (o) { return o.id; }), 'value')
+          };
+        },
+        tracks: function () {
+          if (!this.event) return null;
+          var tracks = [];
+          _.each(this.event.sessions, function (obj) {
+            obj.session_type.name = {
+              'Keynote': 'Keynotes',
+              'Tutorial': 'Tutorials',
+              'Workshop': 'Workshops'
+            }[obj.session_type.value] || obj.session_type.value;
+            obj.session_type.color = obj.color;
+            tracks.push(obj.session_type);
+          });
+          return _.sortBy(_.uniq(tracks, function (o) { return o.id; }), 'position');
+        },
+        prefilteredSessions: function () {
+          if (!this.event) return null;
+
+          var selectedTracks = this.selectedTracks;
+          var days = this.selectedDays;
+          var mine = this.myProgram;
+          var reg = this.user.registration;
+
+          var prefiltered = this.event.sessions.filter(function (obj) {
+            return _.contains(days, obj.startAt.format('L'));
+          });
+
+          if (this.q) {
+            prefiltered = Hipeac.utils.filterMultiple(prefiltered, this.q);
+          }
+
+          if (reg && mine) {
+            prefiltered = prefiltered.filter(function (obj) {
+              return _.contains(reg.sessions, obj.id);
+            });
+          }
+
+          if (selectedTracks.length) {
+            prefiltered = prefiltered.filter(function (obj) {
+              return _.intersection(obj.metadata, selectedTracks).length > 0;
+            });
+          }
+
+          return prefiltered;
+        },
+        sessions: function () {
+          if (!this.event) return null;
+          var filters = this.filters;
+          var filtered = this.prefilteredSessions;
+
+          if (filters.length) {
+            filtered = filtered.filter(function (obj) {
+              return _.intersection(obj.metadata, filters).length > 0;
+            });
+          }
+
+          var day = null;
+          var time = null;
+          var sTime = null;
+
+          _.each(filtered, function (obj) {
+            sDay = obj.startAt.format('YYYY-MM-DD');
+            sTime = obj.startAt.format('LT');
+            obj.showTime = (time != sTime || day != sDay);
+            time = sTime;
+            day = sDay;
+          });
+
+          return filtered;
+        },
+        program: function () {
+          if (!this.sessions) return null;
+          var days = _.uniq(this.sessions.map(function (obj) {
+            return obj.isoDay;
+          }));
+          var sessionsMap = _.groupBy(this.sessions, 'isoDay');
+          var program = days.map(function (day) {
+            return {
+              day: day,
+              date: moment(day),
+              sessions: sessionsMap[day]
+            };
+          });
+          return _.indexBy(program, 'day');
+        }
+      }),
+      methods: {
+        clearFilters: function () {
+          this.selectedTracks = [];
+          this.filters = [];
+          this.myProgram = false;
+        },
+        sessionRegistered: function (sessionId) {
+          return this.user.registration && _.contains(this.user.registration.sessions, sessionId);
+        },
+        sessionLink: function (sessionId) {
+          if (!this.user.registration) return null;
+          return _.findWhere(this.links, {session: sessionId}) || null;
+        },
+        updateDays: function () {
+          var self = this;
+
+          if (!this.event) {
+            setTimeout(function () { self.updateDays(); }, 25);
+            return;
+          };
+
+          var selectedDays = _.clone(this.event.dates.filter(function (obj) {
+            return obj.dayOfYear() >= self.now.dayOfYear();
+          })).map(function (date) {
+            return date.format('L');
+          });
+
+          this.selectedDays = (selectedDays.length)
+            ? selectedDays
+            : _.clone(this.event.dates).map(function (date) {
+              return date.format('L');
+            });
+        },
+        updateQuery: function (val) {
+          this.q = val;
+        }
+      },
+      created: function () {
+        this.updateDays();
+        this.$root.$on('query-changed', this.updateQuery);
+      },
+      beforeDestroy () {
+        this.$root.$off('query-changed');
+      }
+    };
+
+    var ProgramExhibitionView = {
+      template: '#v-exhibition',
+      data: function () {
+        return {
+          exhibition: null
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      }),
+      methods: {
+        getExhibition: function () {
+          var self = this;
+
+          if (!this.event) {
+            setTimeout(function () { self.getExhibition() }, 25);
+            return;
+          };
+
+          if (this.event.virtualExhibition) {
+            this.exhibition = _.clone(this.event.virtualExhibition);
+            Hipeac.api.get(this.exhibition.url).then(function (res) {
+              self.exhibition = Hipeac.map.session(res.data);
+            });
+          }
+        }
+      },
+      created: function () {
+        this.getExhibition();
+      }
+    };
+
+    var ProgramKeynotesView = {
+      template: '#v-program-keynotes',
+      computed: _.extend(
+        Vuex.mapState(['event', 'keynotes']), {
+      })
+    };
+
+    var SessionView = {
+      template: '#v-session',
+      props: ['id'],
+      data: function () {
+        return {
+          dialog: true,
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'session']),
+        Vuex.mapGetters(['links']), {
+        userIsRegistered: function () {
+          if (!this.user.registration) return false;
+          return _.contains(this.user.registration.sessions, +this.id);
+        },
+        userLink: function () {
+          if (!this.user.registration) return null;
+          return _.findWhere(this.links, {session: +this.id}) || null;
+        }
+      }),
+      methods: {
+        getSession: function () {
+          var self = this;
+
+          if (!this.event) {
+            setTimeout(function () { self.getSession() }, 25);
+            return;
+          };
+
+          var session = _.findWhere(this.event.sessions, {id: +this.id});
+          this.$store.commit('updateSession', session);
+          Hipeac.api.get(session.url).then(function (res) {
+            self.$store.commit('updateSession', Hipeac.map.session(res.data));
+          });
+        },
+        hideDialog: function () {
+          this.$router.push({name: 'program'});
+          this.$store.commit('updateSession', null);
+        }
+      },
+      created: function () {
+        this.getSession();
+      }
+    };
+
+    var SessionMainView = {
+      template: '#v-session-main',
+      computed: _.extend(
+        Vuex.mapState(['event', 'session']), {
+      }),
+    };
+
+    var SessionAttendeesView = {
+      template: '#v-session-attendees',
+      data: function () {
+        return {
+          attendees: []
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'session']), {
+        institutions: function () {
+          return extractInstitutions(this.attendees);
+        }
+      }),
+      methods: {
+        getAttendees: function () {
+          var self = this;
+          Hipeac.api.get(this.session.url + 'attendees/').then(function (res) {
+            self.attendees = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.user(obj.user);
+            }));
+          });
+        }
+      },
+      created: function () {
+        this.getAttendees();
+      }
+    };
+
+    var SessionBioView = {
+      template: '#v-session-bio',
+      computed: _.extend(
+        Vuex.mapState(['event', 'session']), {
+      }),
+    };
+
+    var SessionProgramView = {
+      template: '#v-session-program',
+      computed: _.extend(
+        Vuex.mapState(['event', 'session']), {
+      }),
+    };
+
+    var RegistrationView = {
+      template: '#v-registration',
+      data: function () {
+        return {
+          obj: null
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']),
+        Vuex.mapGetters(['conflicts']), {
+        program: function () {
+          if (!this.event) return null;
+          var days = _.uniq(this.event.sessions.map(function (obj) {
+            return obj.isoDay;
+          }));
+          var sessionsMap = _.groupBy(this.event.sessions, 'isoDay');
+          var program = days.map(function (day) {
+            return {
+              day: day,
+              date: moment(day),
+              sessions: sessionsMap[day]
+            };
+          });
+          return _.indexBy(program, 'day');
+        }
+      }),
+      methods: {
+        syncRegistration: function () {
+          var self = this;
+
+          if (!this.event || this.user.registration === undefined) {
+            setTimeout(function () { self.syncRegistration() }, 25);
+            return;
+          };
+
+          if (this.user.registration) {
+            this.obj = _.clone(this.user.registration);
+          } else {
+            this.obj = _.clone({
+              event: this.event.id,
+              courses: [],
+              sessions: [],
+              posters: []
+            });
+          }
+
+          if (!_.has(this.obj, 'custom_data')) { this.$set(this.obj, 'custom_data', {}); }
+          if (!_.has(this.obj.custom_data, 'exhibition')) { this.$set(this.obj.custom_data, 'exhibition', []); }
+        },
+        save: function () {
+          var self = this;
+          var method = (this.user.registration) ? 'put' : 'post';
+          var url = (this.user.registration) ? this.user.registration.url : VARS.registrationUrl;
+
+          Hipeac.api.request(method, url, this.obj).then(function (res) {
+            Hipeac.utils.notifySuccess('Registration updated.');
+            self.$store.commit('updateRegistration', res.data);
+            self.syncRegistration();
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
+        }
+      },
+      created: function () {
+        this.syncRegistration();
+      }
+    };
+
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      scrollBehavior: function (to, from) {
+        if (from.name.startsWith('session')) return;
+        return {x: 0, y: 0};
+      },
+      routes: [
+        {
+          name: 'about',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'attendees',
+          path: '/attendees/',
+          pathToRegexpOptions: {strict: true},
+          component: AttendeesView
+        },
+        {
+          name: 'jobs',
+          path: '/recruitment/',
+          pathToRegexpOptions: {strict: true},
+          component: JobsView
+        },
+        {
+          name: 'logistics',
+          path: '/logistics/',
+          pathToRegexpOptions: {strict: true},
+          component: LogisticsView
+        },
+        {
+          path: '/program/',
+          pathToRegexpOptions: {strict: true},
+          component: ProgramView,
+          children: [
+            {
+              name: 'program',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: ProgramMainView
+            },
+            {
+              name: 'exhibition',
+              path: 'exhibition/',
+              pathToRegexpOptions: {strict: true},
+              component: ProgramExhibitionView
+            },
+            {
+              name: 'keynotes',
+              path: 'keynotes/',
+              pathToRegexpOptions: {strict: true},
+              component: ProgramKeynotesView
+            },
+            {
+              path: 'sessions/:id/',
+              pathToRegexpOptions: {strict: true},
+              components: {
+                default: ProgramMainView,
+                dialog: SessionView
+              },
+              props: {
+                default: true,
+                dialog: true
+              },
+              children: [
+                {
+                  name: 'session',
+                  path: '',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionMainView,
+                  props: true
+                },
+                {
+                  name: 'sessionAttendees',
+                  path: 'attendees/',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionAttendeesView,
+                  props: true
+                },
+                {
+                  name: 'sessionBio',
+                  path: 'bio/',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionBioView,
+                  props: true
+                },
+                {
+                  name: 'sessionProgram',
+                  path: 'program/',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionProgramView
+                }/*,
+                {
+                  name: 'sessionDownloads',
+                  path: 'downloads/',
+                  pathToRegexpOptions: {strict: true},
+                  component: SessionDownloadsView,
+                  props: true
+                }*/
+              ]
+            }
+          ]
+        },
+        {
+          name: 'registration',
+          path: '/registration/',
+          pathToRegexpOptions: {strict: true},
+          component: RegistrationView
+        },
+      ]
+    });
+
+    new Vue({
+      el: '#vue',
+      router: Router,
+      store: Store,
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      }),
+      created: function () {
+        this.$store.commit('updateNow');
+        this.$store.commit('getEvent');
+        this.$store.commit('getRegistration');
+      }
+    });
+  </script>
+{% endcompress %}
+  <script type="application/ld+json">{% spaceless_json %}
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": "{{ event }}",
+      "description": "{{ event.presentation | truncate }}",
+      "url": "{{ request.build_absolute_uri }}",
+      "startDate": "{{ event.start_date | date:'c' }}",
+      "endDate": "{{ event.end_date | date:'c' }}",
+      {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
+      {% if event.is_virtual %}
+        "organizer": {
+          "@type": "Organization",
+          "name": "HiPEAC",
+          "url": "https://www.hipeac.net/"
+        },
+        "location": {
+          "@type": "VirtualLocation"
+        }
+      {% else %}
+        "location": {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "{{ event.city }}",
+            "addressCountry": "{{ event.country.code }}"
+          }
+        }
+      {% endif %}
+    }
+  {% endspaceless_json %}</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+<script type="text/x-template" id="v-attendees">
+{% verbatim %}
+  <div v-if="user.registration">
+    <q-card class="hipeac__card q-my-lg">
+      <q-card-section class="q-mx-sm q-mt-sm">
+        <user-viewer :users="attendees" :institutions="institutions" :show-profile-link="true" event-name="attendees-query-changed"></user-viewer>
+      </q-card-section>
+    </q-card>
+  </div>
+{% endverbatim %}
+</script>

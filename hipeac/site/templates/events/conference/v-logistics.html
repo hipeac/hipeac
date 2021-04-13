@@ -1,0 +1,57 @@
+{% load humanize %}
+{% load static %}
+
+
+<script type="text/x-template" id="v-logistics">
+{% verbatim %}
+  <div class="row q-col-gutter-lg q-mt-none q-mb-lg">
+    <div class="col-12 col-md-9" :class="{'items-stretch': !links.length}">
+      <q-card class="hipeac__card full-height">
+        <q-card-section class="q-ma-sm q-mb-none">
+          <img src="{% endverbatim %}{% static 'images/zoom.svg' %}{% verbatim %}" class="float-right q-ml-lg q-mb-md" style="width: 100px">
+          <div>The different sessions will be delivered using <strong>Zoom Webinars</strong>. Once you register for the conference and you add some sessions to your registration, a personalized Zoom link will be generated for you.</div>
+          <div v-if="links.length" class="q-mt-sm">You can access the Zoom webinars via the program or the list below.</div>
+        </q-card-section>
+        <q-banner v-if="links.length" class="bg-blue-1 q-py-md q-px-lg">
+          <span><strong>A note about privacy:</strong> most of the sessions will be recorded and the recordings will be shared later on our social media channels. No chat history or attendee activity will be shared, <strong>but</strong> if session organizers activate attendee mics for Q&A then your voice can end up in the final recording: you might want to use the chat instead if you don't agree with this.</span>
+        </q-banner>
+        <q-card-section v-if="links.length">
+          <q-list separator>
+            <q-item v-for="link in links" :key="link.id" tag="a" :href="link.url" target="_blank" class="q-py-md">
+              <q-item-section avatar>
+                <q-icon color="grey-7" name="videocam"></q-icon>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label overline>{{ link.s.startAt.format('dddd, MMM D') }}, {{ link.s.startAt.format('h:mm') }} <small>{{ link.s.startAt.format('A') }}</small></q-item-label>
+                <q-item-label class="q-mb-xs">{{ link.s.title }}</q-item-label>
+                <q-item-label caption lines="1">
+                  <span class="q-mr-md">
+                    <q-icon size="xs" name="lens" :color="link.s.color" class="q-mr-xs"></q-icon>
+                    <span>{{ link.s.session_type.value }}</span>
+                  </span>
+                  <span>
+                    <q-icon size="xs" name="link" class="q-mr-xs"></q-icon>
+                    <span>{{ link.url }}</span>
+                  </span>
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-card-section>
+        <q-banner v-if="links.length" class="bg-yellow-1 q-py-md q-px-lg">
+          <strong>Don't share your personal link with others, or you might not be able to join the webinar yourself!</strong><br>
+          <span>All times are displayed in your local time zone: {{ user.tz }}</span>
+        </q-banner>
+      </q-card>
+    </div>
+    <div class="col">
+      <q-card class="hipeac__card text-body2">
+        <q-card-section class="q-ma-sm q-mb-none">
+          <img src="{% endverbatim %}{% static 'images/mattermost.svg' %}{% verbatim %}" class="float-right q-ml-lg q-mb-md" style="width: 32px">
+          <p>Students that miss the interaction that a HiPEAC event is known for can join our <strong>Mattermost channel</strong>:<br><a v-if="user.isAuthenticated" href="https://teams.hipeac.net/signup_user_complete/?id=9hz3ieodmpdn9jj4dmzg1nmrtc">"Student Corner"</a><span v-else>"Student Corner"</span>.</p>
+        </q-card-section>
+      </q-card>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

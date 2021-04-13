@@ -99,8 +99,7 @@ class Event(ImagesMixin, LinkMixin, models.Model):
             self.hashtag = self.hashtag[1:] if self.hashtag.startswith("#") else self.hashtag
 
     def save(self, *args, **kwargs):
-
-        self.slug = slugify(self.city) if not self.is_virtual else slugify(f"{self.season}-virtual")
+        self.slug = slugify(self.city)
         super().save(*args, **kwargs)
 
     class Meta:

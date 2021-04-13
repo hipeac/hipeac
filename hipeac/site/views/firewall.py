@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import View
 from mimetypes import guess_type
 
-from hipeac.models import Magazine, Vision
+from hipeac.models import Magazine, Vision, VisionArticle
 
 
 class SendfileView(View):
@@ -72,5 +72,20 @@ class VisionDownload(SendfileView):
         vision.save()
 
         path, filename = os.path.split(vision_file.name.replace("private/", "/"))
+
+        return f"{path}/", filename
+
+
+class VisionArticleDownload(SendfileView):
+    """
+    Serves `private` vision article files, but records downloads first.
+    """
+
+    def get_path_and_filename(self, *args, **kwargs):
+        artic = get_object_or_404(VisionArticle, id=kwargs.get("id"), vision__publication_date__year=kwargs.get("year"))
+        artic.downloads = F("downloads") + 1
+        artic.save()
+
+        path, filename = os.path.split(artic.file.name.replace("private/", "/"))
 
         return f"{path}/", filename

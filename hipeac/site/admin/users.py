@@ -61,7 +61,7 @@ class ProfileInline(admin.StackedInline):
     raw_id_fields = ("advisor",)
     inlines = (LinksInline,)
     fieldsets = (
-        (None, {"fields": ("country", "bio", "meal_preference", "image")}),
+        (None, {"fields": ("country", "bio", "gender", "meal_preference", "image")}),
         ("AFFILIATION", {"fields": ("position", "institution", "department", "second_institution")}),
         ("MEMBERSHIP", {"fields": (("membership_date", "membership_revocation_date"), "advisor", "membership_tags")}),
         ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics", "projects")}),
@@ -80,6 +80,7 @@ class MembershipTypeFilter(admin.SimpleListFilter):
             ("affiliated", "Affiliated member"),
             ("industry", "Industry member or affiliate"),
             ("innovation", "Innovation member"),
+            ("stakeholder", "Stakeholder member"),
         )
 
     def queryset(self, request, queryset):

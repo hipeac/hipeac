@@ -51,6 +51,7 @@ class MembershipTagsChoiceField(CommaSeparatedChoiceField):
                     ("industry", "Industry member"),
                     ("phd", "PhD student"),
                     ("staff", "Staff member"),
+                    ("stakeholder", "Stakeholder member"),
                 ),
             ),
         )

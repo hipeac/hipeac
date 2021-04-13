@@ -20,7 +20,19 @@ from .mixins import ImagesMixin, LinkMixin, MetadataMixin
 
 
 def validate_membership_tags(value: str):
-    valid = ["member", "affiliated", "phd", "staff", "nms", "non-eu", "innovation", "industry", "female", "male"]
+    valid = [
+        "member",
+        "affiliated",
+        "phd",
+        "staff",
+        "nms",
+        "non-eu",
+        "innovation",
+        "industry",
+        "stakeholder",
+        "female",
+        "male",
+    ]
     incompatible = [("member", "affiliated"), ("nms", "non-eu"), ("female", "male")]
     tags = value.split(",")
     for tag in tags:

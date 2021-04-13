@@ -392,12 +392,12 @@ class SessionAdmin(admin.ModelAdmin):
     list_filter = ("session_type", "event")
     search_fields = ("title",)
 
-    autocomplete_fields = ("event", "projects", "main_speaker", "room")
+    autocomplete_fields = ("event", "projects", "main_speaker", "speakers", "room")
     radio_fields = {"session_type": admin.VERTICAL}
     inlines = (LinksInline, PrivateFilesInline, PermissionsInline)
     fieldsets = (
         (None, {"fields": ("event", ("start_at", "end_at"), "room", "session_type", "title", "is_private")}),
-        ("INFO", {"fields": ("main_speaker", "summary", "projects", "organizers")}),
+        ("INFO", {"fields": ("main_speaker", "speakers", "summary", "program", "projects", "organizers")}),
         ("ZOOM", {"fields": ("zoom_webinar_id", "zoom_attendee_report")}),
         ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics")}),
     )

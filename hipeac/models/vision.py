@@ -23,7 +23,7 @@ class Vision(LinkMixin, models.Model):
     file_draft = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
     file = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
     flyer = models.FileField(upload_to=ASSETS_FOLDER, null=True, blank=True)
-    downloads = models.PositiveSmallIntegerField(default=0)
+    downloads = models.PositiveIntegerField(default=0)
 
     images = GenericRelation("hipeac.Image")
     links = GenericRelation("hipeac.Link")
@@ -39,3 +39,23 @@ class Vision(LinkMixin, models.Model):
 
     def get_download_url(self) -> str:
         return reverse("vision_download", args=[self.publication_date.year])
+
+
+class VisionArticle(LinkMixin, models.Model):
+    ASSETS_PRIVATE_FOLDER = "private/vision/article"
+
+    vision = models.ForeignKey(Vision, related_name="articles", on_delete=models.CASCADE)
+    title = models.CharField(max_length=250)
+    authors = models.CharField(max_length=250, null=True, blank=True)
+    dimension = models.CharField(max_length=250, null=True, blank=True)
+    file = models.FileField(upload_to=ASSETS_PRIVATE_FOLDER, null=True, blank=True)
+    position = models.PositiveSmallIntegerField()
+    abstract = models.TextField(null=True, blank=True)
+    downloads = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = "hipeac_vision_article"
+        ordering = ("position",)
+
+    def get_download_url(self) -> str:
+        return reverse("vision_article_download", args=[self.vision.publication_date.year, self.id])

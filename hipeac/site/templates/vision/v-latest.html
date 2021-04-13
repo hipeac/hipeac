@@ -4,30 +4,14 @@
 
 <script type="text/x-template" id="v-latest-wrapper">
   <div>
-    <ul class="nav nav-tabs justify-content-center">
+    <ul v-if="vision && vision.articles.length" class="nav nav-tabs justify-content-center">
       <li class="nav-item">
         <a is="router-link" :to="{name: 'latest'}" class="nav-link" exact>
           <icon name="book" class="mr-1"></icon>Overview</a>
       </li>
       <li class="nav-item">
-        <a is="router-link" :to="{name: 'forCivilSociety'}" class="nav-link" exact>
-          <icon name="how_to_reg" class="mr-1"></icon>{{ tbs.for_civil_society.header }}</a>
-      </li>
-      <li class="nav-item">
-        <a is="router-link" :to="{name: 'forIndustry'}" class="nav-link" exact>
-          <icon name="business" class="mr-1"></icon>{{ tbs.for_industry.header }}</a>
-      </li>
-      <li class="nav-item">
-        <a is="router-link" :to="{name: 'forStudents'}" class="nav-link" exact>
-          <icon name="school" class="mr-1"></icon>{{ tbs.for_students.header }}</a>
-      </li>
-      <li class="nav-item">
-        <a is="router-link" :to="{name: 'forPolicyMakers'}" class="nav-link" exact>
-          <icon name="star" class="mr-1"></icon>{{ tbs.for_policy_makers.header }}</a>
-      </li>
-      <li class="nav-item">
-        <a is="router-link" :to="{name: 'impact'}" class="nav-link" exact>
-          <icon name="directions" class="mr-1"></icon>Impact</a>
+        <a is="router-link" :to="{name: 'articles'}" class="nav-link" exact>
+          <icon name="list" class="mr-1"></icon>Articles</a>
       </li>
     </ul>
     <router-view></router-view>
@@ -35,8 +19,8 @@
 </script>
 
 <script type="text/x-template" id="v-latest">
+{% verbatim %}
   <div v-if="visions">
-    {% verbatim %}
     <div class="hipeac-card">
       <div class="row">
         <div class="col-12 col-md-4 pr-md-5">
@@ -44,6 +28,7 @@
           <marked class="catchphrase-first mb-4" :text="vision.introduction"></marked>
           <div v-if="vision.download_url">
             <a :href="vision.download_url" class="btn btn-sm btn-primary btn-block"><i class="material-icons mr-1">get_app</i>Download the full vision</a>
+            <a v-if="vision.articles.length" is="router-link" :to="{name: 'articles'}" class="btn btn-sm btn-block btn-outline-secondary text-wrap"><i class="material-icons mr-1">list</i>List of recommendations</a>
             <a v-if="vision.flyer" :href="vision.flyer" target="_blank" class="btn btn-sm btn-outline-secondary btn-block"><i class="material-icons mr-1">vertical_split</i>See the flyer</a>
             <hr class="my-4">
           </div>
@@ -67,7 +52,6 @@
         </div>
       </div>
     </div>
-    {% endverbatim %}
   </div>
   <div v-else class="row">
     <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
@@ -77,130 +61,38 @@
       <skeleton-box></skeleton-box>
     </div>
   </div>
+{% endverbatim %}
 </script>
 
-<script type="text/x-template" id="v-civil-society">
+<script type="text/x-template" id="v-articles">
+{% verbatim %}
   <div class="hipeac-card">
-    <div class="row">
+    <div v-if="vision && vision.articles.length" class="row">
       <div class="col-12 col-md-4 pr-md-5">
-        <h5 class="mb-3">{{ tbs.for_civil_society.header }}</h5>
-        <catchphrase>From the technology directions which now mediate many aspects of our lives to the impact of technology on interpersonal relations and networks, The HiPEAC vision is a guide for how to appropriately navigate our new digitally facilitated lives.</catchphrase>
-      </div>
-      <div class="col-12 col-md-8">
-        {{ tbs.for_civil_society.content | markdown }}
-        <div v-if="visions && vision.public_files.length" class="mt-5">
-          <display-sm class="mb-3 mt-5">Related files</display-sm>
-          <table class="table table-sm">
-            <tr v-for="file in vision.public_files" :key="file.id">
-              <td class="sm"><i class="material-icons sm">description</i></td>
-              <td>{% verbatim %}{{ file.description }}{% endverbatim %}</td>
-              <td class="text-right">
-                <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
-              </td>
-            </tr>
-          </table>
+        <h5 class="mb-3">HiPEAC Vision 2021 recommendations in depth</h5>
+        <div class="catchphrase-first mb-4">
+          <p>In order to help the reader, instead of having big monolithic chapters, we propose to split the “rationale” part of the document into a coherent set of independent articles, illustrating or explaining different aspects of the recommendations we propose. We hope it will help and that you will take as much pleasure in reading this new release as we have done in producing it.</p>
         </div>
-      </div>
-    </div>
-  </div>
-</script>
-
-<script type="text/x-template" id="v-industry">
-  <div class="hipeac-card">
-    <div class="row">
-      <div class="col-12 col-md-4 pr-md-5">
-        <h5 class="mb-3">{{ tbs.for_industry.header }}</h5>
-      </div>
-      <div class="col-12 col-md-8">
-        {{ tbs.for_industry.content | markdown }}
-        <div v-if="visions && vision.public_files.length" class="mt-5">
-          <display-sm class="mb-3 mt-5">Related files</display-sm>
-          <table class="table table-sm">
-            <tr v-for="file in vision.public_files" :key="file.id">
-              <td class="sm"><i class="material-icons sm">description</i></td>
-              <td>{% verbatim %}{{ file.description }}{% endverbatim %}</td>
-              <td class="text-right">
-                <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</script>
-
-<script type="text/x-template" id="v-policy-makers">
-  <div class="hipeac-card">
-    <div class="row">
-      <div class="col-12 col-md-4 pr-md-5">
-        <h5 class="mb-3">{{ tbs.for_policy_makers.header }}</h5>
-        <catchphrase>From the technology directions which should be prioritized for investment to the impact of technology on people and the planet, The HiPEAC vision is a guide to help make decisions.</catchphrase>
-      </div>
-      <div class="col-12 col-md-8">
-        {{ tbs.for_policy_makers.content | markdown }}
-        <div v-if="visions && vision.public_files.length" class="mt-5">
-          <display-sm class="mb-3 mt-5">Related files</display-sm>
-          <table class="table table-sm">
-            <tr v-for="file in vision.public_files" :key="file.id">
-              <td class="sm"><i class="material-icons sm">description</i></td>
-              <td>{% verbatim %}{{ file.description }}{% endverbatim %}</td>
-              <td class="text-right">
-                <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
-              </td>
-            </tr>
-            <tr>
-              <td class="sm"><i class="material-icons sm">ondemand_video</i></td>
-              <td>CONNECT University Information Session</td>
-              <td class="text-right">
-                <a href="https://webcast.ec.europa.eu/connect-university-hipeac" target="_blank"><i class="material-icons sm">launch</i></a>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</script>
-
-<script type="text/x-template" id="v-students">
-  <div class="hipeac-card">
-    <div class="row">
-      <div class="col-12 col-md-4 pr-md-5">
-        <h5 class="mb-3">{{ tbs.for_students.header }}</h5>
-        <catchphrase>From the technology directions which now complement the classroom model that was traditionally at the core of education to the impact of technology on accessibility, The HiPEAC vision is a guide for how to optimally integrate this technology into the educational sphere.</catchphrase>
-      </div>
-      <div class="col-12 col-md-8">
-        {{ tbs.for_students.content | markdown }}
-        <div v-if="visions && vision.public_files.length" class="mt-5">
-          <display-sm class="mb-3 mt-5">Related files</display-sm>
-          <table class="table table-sm">
-            <tr v-for="file in vision.public_files" :key="file.id">
-              <td class="sm"><i class="material-icons sm">description</i></td>
-              <td>{% verbatim %}{{ file.description }}{% endverbatim %}</td>
-              <td class="text-right">
-                <a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</script>
-
-<script type="text/x-template" id="v-impact">
-  <div class="hipeac-card">
-    <div class="row">
-      <div class="col-12 col-md-4 pr-md-5">
-        <h5 class="mb-3">HiPEAC Vision impact</h5>
-        <catchphrase>{{ tbs.contributions.header }}</catchphrase>
-      </div>
-      <div class="col-12 col-md-8">
-        {{ tbs.contributions.content | markdown }}
         <hr class="my-4">
         <a v-if="vision" :href="'https://www.google.com/search?q=%22HiPEAC+Vision+' + vision.year + '%22+-site%3Ahipeac.net+-site%3Atwitter.com'" _target="blank" class="btn btn-sm btn-block btn-outline-secondary text-wrap"><i class="material-icons mr-1">search</i>Find more Vision references in Google</a>
       </div>
+      <div class="col-12 col-md-8">
+        <div v-for="(articles, dimension) in groupedArticles" class="text-sm">
+          <display-sm v-if="dimension" class="mb-3">{{ dimension }}</display-sm>
+          <table class="table table-sm">
+            <tr v-for="item in articles" :key="item.id">
+              <td class="sm"><icon name="description" class="sm"></icon></td>
+              <td>{{ item.title }} <small class="text-secondary">{{ item.authors }}</small></td>
+              <td class="text-right align-middle pr-0">
+                <a :href="item.download_url" target="_blank">
+                  <i class="material-icons sm">download</i>
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
+{% endverbatim %}
 </script>

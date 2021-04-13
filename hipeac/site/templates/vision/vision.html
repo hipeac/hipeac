@@ -35,6 +35,12 @@
       state: {
         visions: null
       },
+      getters: {
+        vision: function (state) {
+          if (state.visions) { return state.visions[0]; }
+          else { return null; }
+        }
+      },
       mutations: {
         fetchVisions: function (state) {
           ajax().get($('#urls').data('vision-list')).done(function (res) {
@@ -55,71 +61,28 @@
     };
 
     var LatestWrapperView = {
-      template: '#v-latest-wrapper'
+      template: '#v-latest-wrapper',
+      computed: _.extend(
+        Vuex.mapState(['visions']),
+        Vuex.mapGetters(['vision']), {
+      })
     };
 
     var LatestView = {
       template: '#v-latest',
       computed: _.extend(
-        Vuex.mapState(['visions']), {
-        vision: function () {
-          if (this.visions) { return this.visions[0]; }
-          else { return null; }
-        }
+        Vuex.mapState(['visions']),
+        Vuex.mapGetters(['vision']), {
       })
     };
 
-    var ForCivilSocietyView = {
-      template: '#v-civil-society',
+    var VisionArticleView = {
+      template: '#v-articles',
       computed: _.extend(
-        Vuex.mapState(['visions']), {
-        vision: function () {
-          if (this.visions) { return this.visions[0]; }
-          else { return null; }
-        }
-      })
-    };
-
-    var ForIndustryView = {
-      template: '#v-industry',
-      computed: _.extend(
-        Vuex.mapState(['visions']), {
-        vision: function () {
-          if (this.visions) { return this.visions[0]; }
-          else { return null; }
-        }
-      })
-    };
-
-    var ForPolicyMakersView = {
-      template: '#v-policy-makers',
-      computed: _.extend(
-        Vuex.mapState(['visions']), {
-        vision: function () {
-          if (this.visions) { return this.visions[0]; }
-          else { return null; }
-        }
-      })
-    };
-
-    var ForStudentsView = {
-      template: '#v-students',
-      computed: _.extend(
-        Vuex.mapState(['visions']), {
-        vision: function () {
-          if (this.visions) { return this.visions[0]; }
-          else { return null; }
-        }
-      })
-    };
-
-    var VisionImpactView = {
-      template: '#v-impact',
-      computed: _.extend(
-        Vuex.mapState(['visions']), {
-        vision: function () {
-          if (this.visions) { return this.visions[0]; }
-          else { return null; }
+        Vuex.mapGetters(['vision']), {
+        groupedArticles: function () {
+          if (!this.vision) return [];
+          return _.groupBy(this.vision.articles, 'dimension');
         }
       })
     };
@@ -143,34 +106,10 @@
               component: LatestView
             },
             {
-              name: 'forCivilSociety',
-              path: 'civil-society/',
+              name: 'articles',
+              path: 'articles/',
               pathToRegexpOptions: {strict: true},
-              component: ForCivilSocietyView
-            },
-            {
-              name: 'forIndustry',
-              path: 'industry/',
-              pathToRegexpOptions: {strict: true},
-              component: ForIndustryView
-            },
-            {
-              name: 'forPolicyMakers',
-              path: 'policy-makers/',
-              pathToRegexpOptions: {strict: true},
-              component: ForPolicyMakersView
-            },
-            {
-              name: 'forStudents',
-              path: 'students/',
-              pathToRegexpOptions: {strict: true},
-              component: ForStudentsView
-            },
-            {
-              name: 'impact',
-              path: 'impact/',
-              pathToRegexpOptions: {strict: true},
-              component: VisionImpactView
+              component: VisionArticleView
             }
           ]
         },

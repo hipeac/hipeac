@@ -60,6 +60,7 @@ class RegistrationReminderEmail(TemplateEmail):
 
     def get_context_data(self):
         return {
+            "is_virtual": self.instance.event.is_virtual,
             "user_name": self.instance.user.profile.name,
             "event_name": self.instance.event.name,
             "event_city": self.instance.event.city,

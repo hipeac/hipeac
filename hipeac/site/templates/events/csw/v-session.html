@@ -1,0 +1,88 @@
+<script type="text/x-template" id="v-session">
+{% verbatim %}
+  <div>
+    <q-dialog v-model="dialog" no-route-dismiss full-height @hide="hideDialog">
+      <q-card v-if="session" style="width: 800px; max-width: 95vw;">
+        <q-toolbar class="text-dark bg-grey-2">
+          <q-tabs no-caps inline-label shrink>
+            <q-route-tab exact :to="{name: 'session', params: {id: id}}">
+              <q-icon size="xs" name="lens" :color="session.color" class="q-mr-sm"></q-icon>
+              <div class="q-tab__label">{{ session.session_type.value }}</div>
+            </q-route-tab>
+            <q-route-tab v-if="session.isKeynote && session.main_speaker" exact :to="{name: 'sessionBio', params: {id: id}}" label="Bio"></q-route-tab>
+            <q-route-tab v-if="session.program" exact :to="{name: 'sessionProgram', params: {id: id}}" label="Program"></q-route-tab>
+            <q-route-tab v-if="user.registration" :to="{name: 'sessionAttendees', params: {id: id}}" label="Attendees"></q-route-tab>
+          </q-tabs>
+          <q-space></q-space>
+          <editor-btn v-if="session.editor_href" :url="session.editor_href" target="_blank"></editor-btn>
+          <q-btn flat round @click="dialog = false" icon="close"></q-btn>
+        </q-toolbar>
+        <div class="q-pa-md" :class="{'q-pa-lg': $q.screen.gt.sm}">
+          <q-card-section class="q-pt-none text-center">
+            <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
+              <li>
+                <q-icon size="xs" name="today" class="q-mr-xs"></q-icon>
+                <span>{{ session.startAt.format("ddd, MMMM Do") }}</span>
+              </li>
+              <li>
+                <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
+                <span>{{ session.startAt.format('HH:mm') }} - {{ session.endAt.format('HH:mm') }}</span>
+                <q-tooltip :offset="[10, 10]">All times are displayed in your local time zone: {{ user.tz }}</q-tooltip>
+              </li>
+              <li v-if="$q.screen.gt.sm && userIsRegistered" class="text-bold text-green">
+                <q-icon size="xs" name="check" color="green" class="q-mr-xs"></q-icon>
+                <span>Registered</span>
+              </li>
+              <li v-if="userLink" class="text-bold text-primary">
+                <a :href="userLink.url" tagret="_blank" class="inherit pointer">
+                  <q-icon size="xs" name="videocam" class="q-mr-xs"></q-icon>
+                  <span>Join Zoom</span>
+                </a>
+              </li>
+            </ul>
+          </q-card-section>
+          <q-separator class="q-mb-md"></q-separator>
+          <router-view></router-view>
+        </div>
+      </q-card>
+    </q-dialog>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-session-main">
+{% verbatim %}
+  <q-card-section>
+    <hipeac-avatar-item v-if="session.isKeynote && session.main_speaker" :profile="session.main_speaker.profile" class="q-mb-md" :class="{'float-right q-ml-md': $q.screen.gt.sm}"></hipeac-avatar-item>
+    <display-2 class="q-mb-md">{{ session.title }}</display-2>
+    <marked v-if="session.summary" :text="session.summary"></marked>
+    <skeleton-text v-else :lines="5"></skeleton-text>
+  </q-card-section>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-session-attendees">
+{% verbatim %}
+  <q-card-section v-if="user.registration">
+    <user-viewer :users="attendees" :institutions="institutions" :show-topics="false" :show-in-columns="false" event-name="session-attendees-query-changed"></user-viewer>
+  </q-card-section>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-session-bio">
+{% verbatim %}
+  <q-card-section>
+    <hipeac-avatar-item v-if="session.isKeynote && session.main_speaker" :profile="session.main_speaker.profile" class="q-mb-md" :class="{'float-right q-ml-md': $q.screen.gt.sm}"></hipeac-avatar-item>
+    <marked :text="session.main_speaker.profile.bio"></marked>
+  </q-card-section>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-session-program">
+{% verbatim %}
+  <q-card-section>
+    <marked v-if="session.program" :text="session.program"></marked>
+    <skeleton-text v-else :lines="5"></skeleton-text>
+  </q-card-section>
+{% endverbatim %}
+</script>

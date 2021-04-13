@@ -55,6 +55,7 @@ class UserCertificatePdf(UserAuthenticatedMixin, generic.DetailView):
 
     def get(self, request, *args, **kwargs):
         reg = self.get_object()
-        PdfMaker = VirtualEventCertificatePdfMaker if reg.event.is_virtual else CertificatePdfMaker
+        check_zoom = reg.event.is_virtual and reg.event.type == "ACACES"
+        PdfMaker = VirtualEventCertificatePdfMaker if check_zoom else CertificatePdfMaker
         maker = PdfMaker(registration=reg, filename=f"hipeac-certificate--{reg.id}.pdf", as_attachment=False)
         return maker.response
