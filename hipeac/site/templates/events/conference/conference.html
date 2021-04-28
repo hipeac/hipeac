@@ -13,7 +13,12 @@
     <q-space v-show="$q.screen.gt.sm"></q-space>
     <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
       <q-route-tab exact :to="{name: 'about'}" label="About"></q-route-tab>
-      <q-route-tab :to="{name: 'program'}" label="Program"></q-route-tab>
+      {% if event.is_ready %}
+        <q-route-tab :to="{name: 'program'}" label="Program"></q-route-tab>
+      {% else %}
+        <q-route-tab :to="{name: 'call-papers'}" label="Call for papers"></q-route-tab>
+        <q-route-tab :to="{name: 'call-sessions'}" label="Call for workshops"></q-route-tab>
+      {% endif %}
       {% if event.is_virtual %}
         <q-route-tab exact :to="{name: 'logistics'}" label="Logistics"></q-route-tab>
       {% else %}
@@ -52,6 +57,8 @@
 {% block vue_templates %}
   {% include './v-about.html' with id='v-about' %}
   {% include './v-attendees.html' %}
+  {% include './v-call-papers.html' %}
+  {% include './v-call-sessions.html' %}
   {% include './v-jobs.html' %}
   {% include './v-exhibition.html' %}
   {% include './v-logistics.html' %}
@@ -202,6 +209,20 @@
       created: function () {
         this.$store.commit('getRegistrations');
       }
+    };
+
+    var CallPapersView = {
+      template: '#v-call-papers',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      })
+    };
+
+    var CallSessionsView = {
+      template: '#v-call-sessions',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      })
     };
 
     var JobsView = {
@@ -620,6 +641,18 @@
           path: '/attendees/',
           pathToRegexpOptions: {strict: true},
           component: AttendeesView
+        },
+        {
+          name: 'call-papers',
+          path: '/call-for-papers/',
+          pathToRegexpOptions: {strict: true},
+          component: CallPapersView
+        },
+        {
+          name: 'call-sessions',
+          path: '/call/',
+          pathToRegexpOptions: {strict: true},
+          component: CallSessionsView
         },
         {
           name: 'jobs',

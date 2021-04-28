@@ -89,6 +89,7 @@ var Hipeac = {
       obj.startDate = make_local(obj.start_date);
       obj.endDate = make_local(obj.end_date);
       obj.days = obj.endDate.diff(obj.startDate, 'days') + 1;
+      obj.year = obj.startDate.year();
 
       if (obj.sessions && obj.sessions.length) {
         obj.sessions = obj.sessions.map(function (s) {
