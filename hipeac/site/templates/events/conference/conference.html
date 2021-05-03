@@ -10,7 +10,6 @@
 {% block submenu %}
   <q-toolbar class="container">
     <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
-    <q-space v-show="$q.screen.gt.sm"></q-space>
     <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
       <q-route-tab exact :to="{name: 'about'}" label="About"></q-route-tab>
       {% if event.is_ready %}
