@@ -22,6 +22,7 @@ class ProfileSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
 
     class Meta:
         model = Profile
+        read_only_fields = ("image",)
         exclude = ("user", "is_bouncing", "is_public", "is_subscribed")
 
     def get_membership_tags(self, obj):
