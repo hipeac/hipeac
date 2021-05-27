@@ -94,6 +94,7 @@ DATABASES = {
         "PORT": db.port,
     }
 }
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
 # Time zones
