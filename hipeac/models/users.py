@@ -30,10 +30,8 @@ def validate_membership_tags(value: str):
         "innovation",
         "industry",
         "stakeholder",
-        "female",
-        "male",
     ]
-    incompatible = [("member", "affiliated"), ("nms", "non-eu"), ("female", "male")]
+    incompatible = [("member", "affiliated"), ("nms", "non-eu")]
     tags = value.split(",")
     for tag in tags:
         if tag not in valid:
