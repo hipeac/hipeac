@@ -2,76 +2,98 @@
 {% load static %}
 
 
-<script type="text/x-template" id="{{ id }}">
+<script type="text/x-template" id="v-about">
 {% verbatim %}
   <div v-if="event">
-    <img v-if="!event.is_virtual && event.images" :src="event.images.lg" class="border border-bottom-0 rounded-top w-100">
-    <div class="hipeac-card mt-3">
-      <div class="row justify-content-between">
-        <div class="col-12 col-md-7 mb-3 mb-md-0">
-          <display-lg class="text-left mt-0 mb-4">{% endverbatim %}{{ year | add:"-2004" | ordinal }}{% verbatim %} International Summer School on Advanced Computer Architecture and Compilation for High-performance Embedded Systems</display-lg>
-          <marked :text="event.presentation" class="catchphrase-first mt-4"></marked>
+    <q-card class="hipeac__card q-my-lg">
+      <q-card-section class="text-center">
+        <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-lg q-mb-none text-body2 text-grey-9">
+          <!--<li><q-icon size="sm" name="today" color="grey-7"></q-icon> {{ event.datesStr.format("ddd, MMMM Do") }}</li>-->
+          <li v-if="event.is_virtual">
+            <router-link :to="{name: 'logistics'}" class="inherit">
+              <q-icon size="sm" name="desktop_windows" class="q-mr-sm"></q-icon>
+              <span>Free virtual event</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="{name: 'program'}" class="inherit">
+              <q-icon size="sm" name="date_range" class="q-mr-sm"></q-icon>
+              <span>{{ event.startDate.format('MMMM D') }} - {{ event.endDate.format('D, YYYY') }}</span>
+            </router-link>
+          </li>
+          <li v-if="courses.length">
+            <router-link :to="{name: 'courses'}" class="inherit">
+              <q-icon size="sm" name="category" class="q-mr-sm"></q-icon>
+              <span>{{ courses.length }} courses</span>
+            </router-link>
+          </li>
+          <!--<li v-if="event.registrations_count && user.registration">
+            <router-link :to="{name: 'attendees'}" class="inherit">
+              <q-icon size="sm" name="people" class="q-mr-sm"></q-icon>
+              <span>{{ event.registrations_round }}<span v-if="event.registrations_round < event.registrations_count">+</span> attendees</span>
+            </router-link>
+          </li>
+          <li v-else-if="event.is_open_for_registration" class="text-bold text-primary">
+            <router-link :to="{name: 'registration'}" class="inherit">
+              <q-icon size="sm" name="edit" color="primary" class="q-mr-sm"></q-icon>
+              <span>Register</span>
+            </router-link>
+          </li>
+          <li v-if="user.registration" class="text-bold text-green">
+            <router-link :to="{name: 'registration'}" class="inherit">
+              <q-icon size="sm" name="check" color="green" class="q-mr-sm"></q-icon>
+              <span>Registered</span>
+            </router-link>
+          </li>-->
+        </ul>
+      </q-card-section>
+      <q-separator class="q-mb-md"></q-separator>
+      <q-card-section class="q-ma-md q-mb-none">
+        <div class="row justify-between q-col-gutter-xl">
+          <div class="col-12 col-md-7 mb-3 mb-md-0">
+            <display-1 class="display-underline">{% endverbatim %}{{ year | add:"-2004" | ordinal }}{% verbatim %} International Summer School on Advanced Computer Architecture and Compilation for High-performance Embedded Systems</display-1>
+            <marked :text="event.presentation" class="catchphrase-first q-mt-lg"></marked>
+          </div>
+          <div class="col-12 col-md-4 mb-3 mb-md-0">
+            <p v-if="event.is_virtual" class="alert alert-warning text-center px-4" role="alert">
+              <i class="material-icons">timelapse</i><br>This <strong>virtual event</strong> will be held between {{ event.startDate.format('dddd') }}, <span class="text-nowrap">{{ event.startDate.format('MMMM D') }}</span> and {{ event.endDate.format('dddd') }}, <span class="text-nowrap">{{ event.endDate.format('MMMM D') }}</span>. See the <a is="router-link" :to="{name: 'logistics'}" class="inherit">"Logistics" tab</a> for more practical information.
+            </p>
+            <display-4 class="mb-2 mt-4">Steering Committee</display-4>
+            <ul class="q-pl-md text-body2">
+              <li>Koen De Bosschere, Ghent University, Belgium (Chair)</li>
+              <li>Emre Ozer, ARM, UK</li>
+              <li>Mateo Valero, BSC, Spain</li>
+              <li>Marc Duranton, CEA, France</li>
+              <li>Luca Fanucci, University of Pisa</li>
+              <li>Per Stenstrom, Chalmers, Sweden</li>
+              <li>Mike O'Boyle, University of Edinburgh, UK</li>
+              <li>Manolis Katevenis, FORTH, Greece</li>
+              <li>Olivier Zendra, INRIA, France</li>
+              <li>Rainer Leupers, RWTH Aachen, Germany</li>
+              <li>Daniel Gracia Perez, Thales R&T, France</li>
+            </ul>
+          </div>
         </div>
-        <div class="col-12 col-md-4 mb-3 mb-md-0">
-          <p v-if="event.is_virtual" class="alert alert-warning text-center px-4" role="alert">
-            <i class="material-icons">timelapse</i><br>This <strong>virtual event</strong> will be held between {{ event.startDate.format('dddd') }}, <span class="text-nowrap">{{ event.startDate.format('MMMM D') }}</span> and {{ event.endDate.format('dddd') }}, <span class="text-nowrap">{{ event.endDate.format('MMMM D') }}</span>. See the <a is="router-link" :to="{name: 'logistics'}" class="inherit">"Logistics" tab</a> for more practical information.
-          </p>
-          <ul class="list-group list-group-flush list-group-links bigger mb-5">
-            <router-link v-if="!event.fees.length" tag="li" :to="{name: 'program'}" class="list-group-item py-3">
-              <i class="material-icons mr-2">card_giftcard</i>
-              <i class="float-right material-icons ml-2">arrow_forward</i>
-              <span>Free event</span>
-            </router-link>
-            <router-link tag="li" :to="{name: 'program'}" class="list-group-item py-3">
-              <i class="material-icons mr-2">date_range</i>
-              <i class="float-right material-icons ml-2">arrow_forward</i>
-              <span>{{ event.datesStr }}</span>
-            </router-link>
-            <router-link v-if="courses && courses.length" tag="li" :to="{name: 'program'}" class="list-group-item py-3">
-              <i class="material-icons mr-2">view_week</i>
-              <i class="float-right material-icons ml-2">arrow_forward</i>
-              <span>{{ courses.length }} <span v-if="event.is_virtual">virtual </span>courses</span>
-            </router-link>
-            {% endverbatim %}{% if event.is_open_for_registration %}
-            <li class="list-group-item py-3 text-primary">
-              <a href="{% url 'acaces_registration' event.year %}" class="inherit d-block">
-                <i class="material-icons mr-2">create</i>
-                <i class="float-right material-icons ml-2">arrow_forward</i>
-                <span>Register now!</span>
-              </a>
-            </li>
-            {% endif %}{% verbatim %}
-          </ul>
-          <display-sm class="mb-2 mt-4">Steering Committee</display-sm>
-          <ul class="pl-3 text-sm">
-            <li>Koen De Bosschere, Ghent University, Belgium (Chair)</li>
-            <li>Emre Ozer, ARM, UK</li>
-            <li>Mateo Valero, BSC, Spain</li>
-            <li>Marc Duranton, CEA, France</li>
-            <li>Luca Fanucci, University of Pisa</li>
-            <li>Per Stenstrom, Chalmers, Sweden</li>
-            <li>Mike O'Boyle, University of Edinburgh, UK</li>
-            <li>Manolis Katevenis, FORTH, Greece</li>
-            <li>Olivier Zendra, INRIA, France</li>
-            <li>Rainer Leupers, RWTH Aachen, Germany</li>
-            <li>Daniel Gracia Perez, Thales R&T, France</li>
-          </ul>
+      </q-card-section>
+    </q-card>
+    <q-card class="hipeac__card q-mb-lg">
+      <q-card-section class="q-ma-md q-mb-none">
+        <div v-if="event && event.sponsors.length" class="row items-center justify-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
+          <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4 col-md-2">
+            <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
+              <img :src="sponsor.institution.images.lg" class="sponsor">
+            </a>
+            <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
+              <img :src="sponsor.project.images.lg" class="sponsor">
+            </a>
+          </div>
         </div>
-      </div>
-    </div>
-    <div v-if="event && event.sponsors.length" class="hipeac-card">
-      <ul class="logos">
-        <li v-for="sponsor in event.sponsors" :key="sponsor.id">
-          <a v-if="sponsor.institution" :href="sponsor.institution.href">
-            <img :src="sponsor.institution.images.sm">
-          </a>
-          <a v-if="sponsor.project" :href="sponsor.project.href">
-            <img :src="sponsor.project.images.sm">
-          </a>
-        </li>
-      </ul>
-    </div>
-    <quotes-carousel-row types="acaces"></quotes-carousel-row>
+      </q-card-section>
+      <q-card-section v-if="event.virtualExhibition" class="q-mx-sm q-pt-none text-center">
+        <q-btn outline no-caps :to="{name: 'exhibition'}" label="Meet our sponsors at the virtual exhibition!" color="orange-9" size="lg" class="q-my-lg"></q-btn>
+      </q-card-section>
+    </q-card>
+    <!--<quotes-carousel-row types="acaces"></quotes-carousel-row>-->
   </div>
 {% endverbatim %}
 </script>

@@ -4,7 +4,7 @@
 
 <script type="text/x-template" id="v-logistics">
 {% verbatim %}
-  <div class="row q-col-gutter-lg q-mt-none q-mb-lg">
+  <div v-if="links" class="row q-col-gutter-lg q-mt-none q-mb-lg">
     <div class="col-12 col-md-9" :class="{'items-stretch': !links.length}">
       <q-card class="hipeac__card full-height">
         <q-card-section class="q-ma-sm q-mb-none">

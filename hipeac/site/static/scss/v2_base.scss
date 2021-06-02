@@ -182,11 +182,18 @@ h6 {
   margin-bottom: .5rem;
 }
 
+.text-h4 {
+  font-size: 1.75rem;
+  line-height: 1.35;
+}
+
+.catchphrase-first p:first-child,
 .text-h5, .text-h6 {
   font-weight: $font-weight-light;
   line-height: 1.3;
 }
 
+.catchphrase-first p:first-child,
 .text-h6 {
   font-size: 1.1rem;
 }
@@ -303,4 +310,8 @@ img.jobs__logo {
 
 .display-inline {
   display: inline-block;
+}
+
+.display-underline span {
+  background: linear-gradient(to bottom, transparent 85%, #ffe800 1%, #ffe800);
 }

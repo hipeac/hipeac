@@ -1,4 +1,4 @@
-{% extends 'v2/layout.html' %}
+{% extends 'layout.html' %}
 
 {% load compress %}
 {% load hipeac %}
@@ -7,130 +7,96 @@
 
 {% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
 
+{% block subtitle %}{{ event }}{% endblock %}
+
 {% block submenu %}
-  <q-toolbar class="container">
-    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
-    <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
-      <q-route-tab exact :to="{name: 'about'}" label="About"></q-route-tab>
-      {% if event.is_ready %}
-        <q-route-tab :to="{name: (slots.length) ? 'courses' : 'program' }" label="Courses"></q-route-tab>
-      {% endif %}
-      {% if event.is_virtual %}
-        <q-route-tab exact :to="{name: 'logistics'}" label="Logistics"></q-route-tab>
-      {% else %}
-        <q-route-tab exact :to="{name: 'venue'}" label="Venue and travel"></q-route-tab>
-      {% endif %}
-      <!--{% if user.is_authenticated %}
-        <q-route-tab exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
-      {% endif %}
-      <q-route-tab v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>-->
-    </q-tabs>
-  </q-toolbar>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'about'}" class="nav-link" exact>About</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'program'}" class="nav-link">Program</a>
+  </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'logistics'}" class="nav-link">Logistics</a>
+  </li>
+  {% if user.is_authenticated %}
+    <li v-if="user.isRegistered" class="nav-item" v-cloak>
+      <a is="router-link" :to="{name: 'attendees'}" class="nav-link">Attendees</a>
+    </li>
+    {% if user.is_staff %}
+      <li class="nav-item">
+        <a href="{% url 'acaces_stats' event.year %}" class="nav-link">
+          <i class="material-icons">insert_chart_outlined</i>
+        </a>
+      </li>
+    {% endif %}
+    {% if event.is_open_for_registration or event.is_finished %}
+      <li class="nav-item">
+        <a href="{% url 'acaces_registration' event.year %}" class="nav-link"><i class="material-icons mr-1">edit</i>My registration</a>
+      </li>
+    {% endif %}
+  {% endif %}
+  {% if event.hashtag %}
+    <li class="nav-item">
+      <a href="https://twitter.com/search?q=%23{{ event.hashtag }}" class="nav-link" target="_blank">
+        <span is="twitter-icon" v-tooltip="'#{{ event.hashtag }}'"></span>
+      </a>
+    </li>
+  {% endif %}
 {% endblock %}
 
-{% block page %}
-  <div id="vars" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}"></div>
-  <router-view></router-view>
-  <q-page-sticky position="bottom-right" :offset="[18, 18]">
-    <q-fab v-if="!$q.screen.gt.sm" icon="menu" direction="up" vertical-actions-align="right" color="primary">
-      <q-fab-action exact :to="{name: 'about'}" color="white" text-color="dark" label="About"></q-fab-action>
-      {% if event.is_ready %}
-        <q-fab-action exact :to="{name: (slots.length) ? 'courses' : 'program' }" color="white" text-color="dark" label="Courses"></q-fab-action>
-      {% endif %}
-      {% if event.is_virtual %}
-        <q-fab-action exact :to="{name: 'logistics'}" color="white" text-color="dark" label="Logistics"></q-fab-action>
-      {% else %}
-        <q-fab-action exact :to="{name: 'venue'}" color="white" text-color="dark" label="Venue and travel"></q-fab-action>
-      {% endif %}
-      <!--{% if user.is_authenticated %}
-        <q-fab-action exact :to="{name: 'attendees'}" color="white" text-color="dark" label="Attendees"></q-fab-action>
-      {% endif %}
-      <q-fab-action exact :to="{name: 'registration'}" color="white" text-color="dark" :label="(user.registration) ? 'My registration' : 'Register'"></q-fab-action>-->
-    </q-fab>
-  </q-page-sticky>
+{% block content %}
+  <div id="urls" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" class="container">
+    <div is="router-view"></div>
+  </div>
 {% endblock %}
 
 {% block vue_templates %}
-  {% include './v-about.html' with event=event year=event.year %}
-  {% include './v-course.html' %}
-  {% include './v-program.html' %}
-  {% if event.slug == 'fiuggi' %}
-    {% include './v-venue-fiuggi.html' %}
-  {% endif %}
-  {% include '../_shared/v-attendees.html' %}
-  {% include '../_shared/v-logistics.html' %}
-  {% include '../_shared/v-session.html' %}
+  {% include './v-about.html' with id='v-about' event=event year=event.year %}
+  {% include './v-course.html' with id='v-course' %}
+  {% include './v-logistics.html' with id='v-logistics' %}
+  {% include './v-program.html' with id='v-program' %}
+  {% include './v-session.html' with id='v-session' %}
+  {% include '../event/v-attendees.html' with id='v-attendees' %}
 {% endblock %}
 
 {% block scripts %}
-{% compress js file events_acaces %}
-  <script src="{% static 'js_v2/components/program.js' %}"></script>
-  <script src="{% static 'js_v2/components/users.js' %}"></script>
+{% compress js file event %}
+  <script src="{% static 'js/components/v-lists-metadata.js' %}"></script>
+  <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
   <script>
-    var VARS = document.querySelector('#vars').dataset;
-
     var Store = new Vuex.Store({
       state: {
+        user: {
+          isAuthenticated: USER_IS_AUTHENTICATED,
+          isRegistered: false
+        },
         event: null,
         courses: [],
         attendees: [],
         course: null,
-        session: null,
-        user: {
-          isAuthenticated: USER_IS_AUTHENTICATED,
-          registration: undefined,
-          links: [],
-          tz: USER_TZ
-        }
-      },
-      getters: {
-        slots: function (state) {
-          var slots = {};
-          if (!state.courses.length) return [];
-          _.each(state.courses, function (course) {
-            try {
-              var s = course.custom_data.slot;
-              if (!_.has(slots, s) && s) {
-                slots[s] = [];
-              }
-              slots[s].push({
-                title: course.title,
-                teachers: course.teachers
-              });
-            } catch (err) {}
-          });
-
-          if (_.size(slots) == 0) return [];
-
-          return _.map(_.map(_.keys(slots), Number).sort(), function (k) {
-            return {
-              id: k,
-              color: ['white', 'blue', 'red', 'green', 'orange', 'purple', 'cyan'][k],
-              courses: _.sortBy(slots[k], 'title')
-            };
-          });
-        }
+        session: null
       },
       mutations: {
-        getEvent: function (state) {
-          Hipeac.api.get(VARS.eventUrl).then(function (res) {
-            state.event = Object.freeze(Hipeac.map.event(res.data));
+        fetchEvent: function (state) {
+          ajax().get($('#urls').data('event-url')).done(function (res) {
+            state.event = Object.freeze(mapper().events([res])[0]);
           });
         },
         fetchCourses: function (state) {
-          Hipeac.api.get(VARS.coursesUrl).then(function (res) {
-            state.courses = Object.freeze(res.data.map(function (obj) {
-              return Hipeac.map.course(obj);
+          ajax().get($('#urls').data('courses-url')).done(function (res) {
+            state.courses = Object.freeze(mapper().courses(res).sort(function (a, b) {
+              return sort().text(a.teachersStr, b.teachersStr);
             }));
           });
         },
-        getRegistrations: function (state) {
+        fetchRegistrations: function (state) {
           if (!USER_IS_AUTHENTICATED) return;
-
-          Hipeac.api.get(VARS.registrationsUrl).then(function (res) {
-            state.attendees = Object.freeze(res.data.map(function (obj) {
-              return Hipeac.map.user(obj.user);
-            }));
+          ajax().get($('#urls').data('registrations-url')).done(function (res) {
+            state.user.isRegistered = true;
+            state.attendees = Object.freeze(mapper().users(res.map(function (obj) {
+              return obj.user;
+            })));
           });
         },
         updateCourse: function (state, data) {
@@ -162,22 +128,8 @@
     var ProgramView = {
       template: '#v-program',
       computed: _.extend(
-        Vuex.mapGetters(['slots']),
         Vuex.mapState(['event', 'courses']), {
       })
-    };
-
-    var ProgramCoursesView = {
-      template: '#v-program-courses',
-      data: function () {
-        return {
-        }
-      },
-      computed: _.extend(
-        Vuex.mapGetters(['slots']),
-        Vuex.mapState(['user', 'event', 'courses']), {
-        }
-      )
     };
 
     var ProgramMainView = {
@@ -185,9 +137,6 @@
       data: function () {
         return {
           q: '',
-          dialog: false,
-          filtered: false,
-          conflicts: false,
           viewAllSessions: false,
           filters: {
             topics: []
@@ -195,7 +144,7 @@
         }
       },
       computed: _.extend(
-        Vuex.mapState(['user', 'event', 'courses']), {
+        Vuex.mapState(['event', 'courses']), {
         sessionsList: function () {
           if (!this.event) return [];
 
@@ -252,61 +201,54 @@
       methods: {
         updateQuery: function (val) {
           this.q = val;
-        }
-      }
-    };
-
-    var ProgramLecturersView = {
-      template: '#v-program-lecturers',
-      data: function () {
-        return {
-        }
-      },
-      computed: _.extend(
-        Vuex.mapState(['user', 'event', 'courses']), {
-        }
-      )
-    };
-
-    var CourseView = {
-      template: '#v-course',
-      props: ['id'],
-      data: function () {
-        return {
-          dialog: true,
-        }
-      },
-      computed: _.extend(
-        Vuex.mapState(['user', 'event', 'courses', 'course']),
-        Vuex.mapGetters(['links']), {
-        userIsRegistered: function () {
-          if (!this.user.registration) return false;
-          return _.contains(this.user.registration.courses, +this.id);
         },
-        userLink: function () {
-          if (!this.user.registration) return null;
-          return _.findWhere(this.links, {session: +this.id}) || null;
-        }
-      }),
-      methods: {
-        getCourse: function () {
-          var self = this;
-
-          if (!this.event) {
-            setTimeout(function () { self.getCourse() }, 25);
-            return;
-          };
-
-          var course = _.findWhere(this.courses, {id: +this.id});
-          this.$store.commit('updateCourse', course);
-        },
-        hideDialog: function () {
-          this.$router.push({name: 'program'});
-          this.$store.commit('updateCourse', null);
+        resetFilters: function () {
+          this.filters.applicationAreas = [];
+          this.filters.topics = [];
+          this.filters.sessionTypes = [];
         }
       },
       created: function () {
-        this.getCourse();
+        EventHub.$on('query-changed', this.updateQuery);
+        EventHub.$on('carousel-query-sent', this.updateQuery);
+      }
+    };
+
+    var CourseModalView = {
+      template: '#v-course',
+      props: ['sessionId'],
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'courses', 'course']), {
+      }),
+      methods: {
+        closeModal: function () {
+          $(this.$refs['modal']).modal('hide');
+        }
+      },
+      beforeRouteEnter: function (to, from, next) {
+        next(function (self) {
+          var ref = (from.name) ? from : {name: 'program', params: {}};
+          $(self.$refs['modal']).on('hide.bs.modal', function (e) {
+            self.$router.push(ref);
+          }).modal('show');
+        });
+      },
+      beforeRouteLeave: function (to, from, next) {
+        next();
+        var store = this.$store;
+        var modal = $(this.$refs['modal']);
+        setTimeout(function () {
+          if (modal.hasClass('show')) { modal.modal('hide') };
+          store.commit('updateCourse', null);
+        }, 50);
+      },
+      watch: {
+        'courses': function (val, oldVal) {
+          this.$store.commit('updateCourse', _.findWhere(val, {id: +this.sessionId}));
+        }
+      },
+      created: function () {
+        this.$store.commit('updateCourse', _.findWhere(this.courses, {id: +this.sessionId}));
       }
     };
 
@@ -464,22 +406,17 @@
       }),
     };
 
-    var VenueView = {
-      template: '#v-venue',
-      computed: _.extend(
-        Vuex.mapState(['event', 'courses']), {
-      })
-    };
-
     var Router = new VueRouter({
       linkActiveClass: 'active',
-      scrollBehavior: function (to, from) {
-        if (from.name.startsWith('course') || from.name.startsWith('session')) return;
-        return {x: 0, y: 0};
-      },
       routes: [
         {
           name: 'about',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'courses',
           path: '/',
           pathToRegexpOptions: {strict: true},
           component: AboutView
@@ -497,28 +434,10 @@
           component: LogisticsView
         },
         {
-          name: 'venue',
-          path: '/venue/',
-          pathToRegexpOptions: {strict: true},
-          component: VenueView
-        },
-        {
           path: '/program/',
           pathToRegexpOptions: {strict: true},
           component: ProgramView,
           children: [
-            {
-              name: 'courses',
-              path: 'courses/',
-              pathToRegexpOptions: {strict: true},
-              component: ProgramCoursesView
-            },
-            {
-              name: 'lecturers',
-              path: 'lecturers/',
-              pathToRegexpOptions: {strict: true},
-              component: ProgramLecturersView
-            },
             {
               name: 'program',
               path: '',
@@ -526,15 +445,15 @@
               component: ProgramMainView
             },
             {
-              path: 'courses/:id/',
+              path: 'courses/:sessionId/',
               pathToRegexpOptions: {strict: true},
               components: {
                 default: ProgramMainView,
-                dialog: CourseView
+                modal: CourseModalView
               },
               props: {
                 default: true,
-                dialog: true
+                modal: true
               },
               children: [
                 {
@@ -617,7 +536,6 @@
       store: Store,
       router: Router,
       computed: _.extend(
-        Vuex.mapGetters(['slots']),
         Vuex.mapState(['user', 'event']), {
       }),
       beforeCreate: function () {
@@ -626,9 +544,11 @@
         }
       },
       created: function () {
-        this.$store.commit('getEvent');
-        this.$store.commit('fetchCourses');
-        // this.$store.commit('getRegistrations');
+        $.when(
+          this.$store.commit('fetchEvent'),
+          this.$store.commit('fetchCourses'),
+          this.$store.commit('fetchRegistrations'),
+        );
       }
     });
   </script>

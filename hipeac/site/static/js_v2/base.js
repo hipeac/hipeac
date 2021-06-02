@@ -72,6 +72,26 @@ var Hipeac = {
     }
   },
   map: {
+    course: function (obj) {
+      var mapSession = this.session;
+
+      obj.sessions = obj.sessions.map(function (s) {
+        s.session_type = {
+          value: 'Course'
+        };
+        s.keywords = [];
+        s.application_areas = [];
+        s.topics = obj.topics;
+        return mapSession(s);
+      }).sort(function (a, b) {
+        return a.startAt.unix() - b.startAt.unix() || a.session_type.position - b.session_type.position;
+      });
+
+      obj.teachersStr = obj.teachers.map(function (o) {
+        return o.profile.name;
+      }).join(', ');
+      return obj;
+    },
     job: function (obj) {
       return obj;
     },
@@ -136,13 +156,14 @@ var Hipeac = {
       };
 
       obj.color = {
+        'Course': 'light-blue',
         'Keynote': 'primary',
         'Paper Track': 'light-blue',
         'Industrial Session': 'deep-purple',
         'Workshop': 'green',
         'Tutorial': 'teal',
         'Social Event': 'yellow'
-      }[obj.session_type.value ] || 'grey-7';
+      }[obj.session_type.value] || 'grey-7';
 
       obj.q = [
         obj.title,

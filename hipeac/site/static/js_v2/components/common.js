@@ -366,16 +366,20 @@ Vue.component('marked', {
   }
 });
 
+Vue.component('display-1', {
+  template: '<h2 class="text-h4 text-weight-light"><span><slot></slot></span></h2>'
+});
+
 Vue.component('display-2', {
-  template: '<h3 class="text-h5"><slot></slot></h3>'
+  template: '<h3 class="text-h5"><span><slot></slot></span></h3>'
 });
 
 Vue.component('display-3', {
-  template: '<h5 class="text-h6"><slot></slot></h5>'
+  template: '<h5 class="text-h6"><span><slot></slot></span></h5>'
 });
 
-Vue.component('display-5', {
-  template: '<h6><slot></slot></h6>'
+Vue.component('display-4', {
+  template: '<h6><span><slot></slot></span></h6>'
 });
 
 Vue.component('icon', {

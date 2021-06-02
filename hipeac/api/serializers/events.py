@@ -263,6 +263,7 @@ class CourseListSerializer(serializers.ModelSerializer):
     links = LinkSerializer(required=False, many=True, allow_null=True)
     private_files = PrivateFileSerializer(many=True, read_only=True)
     url_videos = serializers.HyperlinkedIdentityField(view_name="v1:course-videos", read_only=True)
+    custom_data = serializers.JSONField(required=False)
 
     class Meta:
         model = Course

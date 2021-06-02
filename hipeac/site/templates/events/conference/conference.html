@@ -55,19 +55,19 @@
 
 {% block vue_templates %}
   {% include './v-about.html' with id='v-about' %}
-  {% include './v-attendees.html' %}
   {% include './v-call-papers.html' %}
   {% include './v-call-sessions.html' %}
   {% include './v-jobs.html' %}
   {% include './v-exhibition.html' %}
-  {% include './v-logistics.html' %}
   {% include './v-program.html' %}
   {% include './v-registration.html' %}
-  {% include './v-session.html' %}
+  {% include '../_shared/v-attendees.html' %}
+  {% include '../_shared/v-logistics.html' %}
+  {% include '../_shared/v-session.html' %}
 {% endblock %}
 
 {% block scripts %}
-{% compress js file conference %}
+{% compress js file events_conference %}
   <script src="{% static 'js_v2/components/users.js' %}"></script>
   <script src="{% static 'js_v2/components/jobs.js' %}"></script>
   <script type="text/javascript">

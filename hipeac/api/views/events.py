@@ -82,7 +82,9 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         detail=True, pagination_class=None, serializer_class=CourseListSerializer,
     )
     def courses(self, request, *args, **kwargs):
-        self.queryset = self.get_object().courses.prefetch_related("teachers__profile__institution", "sessions")
+        self.queryset = self.get_object().courses.prefetch_related(
+            "teachers__profile__institution", "sessions", "private_files", "links"
+        )
         return super().list(request, *args, **kwargs)
 
     @action(
