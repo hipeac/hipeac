@@ -75,12 +75,19 @@ var Hipeac = {
     course: function (obj) {
       var mapSession = this.session;
 
+      var teachers = obj.teachers.map(function (o) {
+        return o.profile.name;
+      });
+
+      obj.teachersStr = teachers.join(', ');
       obj.color = ['white', 'blue', 'red', 'green', 'orange', 'purple', 'cyan'][obj.custom_data.slot || 1],
       obj.sessions = obj.sessions.map(function (s) {
         s.session_type = {
           value: 'Course'
         };
-        s.keywords = [];
+        s.keywords = teachers.map(function (o) {
+          return o.toLowerCase();
+        });
         s.application_areas = [];
         s.topics = obj.topics;
         return mapSession(s);
@@ -88,9 +95,6 @@ var Hipeac = {
         return a.startAt.unix() - b.startAt.unix() || a.session_type.position - b.session_type.position;
       });
 
-      obj.teachersStr = obj.teachers.map(function (o) {
-        return o.profile.name;
-      }).join(', ');
       return obj;
     },
     job: function (obj) {

@@ -167,8 +167,11 @@ Vue.component('hipeac-search-box', {
   watch: {
     'q': _.debounce(function (val, oldVal) {
       if (val != oldVal) {
-        if (val != '') this.$router.replace({query: {q: val}});
-        else this.$router.replace({name: this.$route.name});
+        if (val != '') {
+          if (val != this.$route.query.q) {
+            this.$router.replace({query: {q: val}});
+          }
+        } else this.$router.replace({name: this.$route.name});
 
         this.$root.$emit(this.eventName, val);
       }
