@@ -1,5 +1,19 @@
 Vue.component('hipeac-program', {
+  data: function () {
+    return {
+      q: '',
+      selectedDays: [],
+      now: moment()
+    }
+  },
   props: {
+    dates: {
+      required: true,
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
     courses: {
       type: Array,
       default: function () {
@@ -16,9 +30,26 @@ Vue.component('hipeac-program', {
       type: Boolean,
       default: false
     },
+    searchPlaceholder: {
+      type: String,
+      default: 'Search by type, title, speakers, project, topics...'
+    },
+    compactDateFormat: {
+      type: String,
+      default: 'MMM D'
+    }
   },
   template: `
     <div v-if="program">
+      <q-card-section class="q-mx-sm">
+        <hipeac-search-box :placeholder="searchPlaceholder" eventName="program-query-changed"></hipeac-search-box>
+      </q-card-section>
+      <q-card-actions class="q-mb-sm q-mx-sm text-body2">
+        <q-checkbox v-for="(date, idx) in dates" :key="idx" v-model="selectedDays" :val="date.format('L')" :label="($q.screen.gt.sm) ? date.format('dddd, MMM D') : date.format(compactDateFormat)" class="q-mr-md"></q-checkbox>
+        <q-space></q-space>
+        <!--<q-btn v-if="$q.screen.gt.xs" flat no-caps @click="dialog = true" icon="filter_list" class="float-right" label="Filters"></q-btn>-->
+      </q-card-actions>
+      <q-separator></q-separator>
       <q-card-section v-for="(data, day) in program" :key="day" class="q-ma-sm">
         <h3 class="q-mb-lg">{{ data.date.format('dddd, MMM D') }}</h3>
         <div v-if="data.sessions" v-for="session in data.sessions" :key="session.id" class="row">
@@ -114,10 +145,26 @@ Vue.component('hipeac-program', {
         return a.startAt - b.startAt;
       });
 
+      return output;
+    },
+    filteredSessions: function () {
+      if (!this.sessionsList.length) return null;
+
+      var days = this.selectedDays;
+      var filtered = this.sessionsList.filter(function (obj) {
+        return _.contains(days, obj.startAt.format('L'));
+      });
+
+      if (this.q) {
+        filtered = Hipeac.utils.filterMultiple(filtered, this.q);
+      }
+
+      // Add a showDate helper
+
       var day = null;
       var time = null;
 
-      _.each(output, function (obj) {
+      _.each(filtered, function (obj) {
         sDay = obj.startAt.format('YYYY-MM-DD');
         sTime = obj.startAt.format('LT');
         obj.showTime = (time != sTime || day != sDay);
@@ -125,15 +172,15 @@ Vue.component('hipeac-program', {
         day = sDay;
       });
 
-      return output;
+      return filtered;
     },
     program: function () {
       if (!this.sessionsList.length) return null;
 
-      var days = _.uniq(this.sessionsList.map(function (obj) {
+      var days = _.uniq(this.filteredSessions.map(function (obj) {
         return obj.isoDay;
       }));
-      var sessionsMap = _.groupBy(this.sessionsList, 'isoDay');
+      var sessionsMap = _.groupBy(this.filteredSessions, 'isoDay');
       var program = days.map(function (day) {
         return {
           day: day,
@@ -143,5 +190,31 @@ Vue.component('hipeac-program', {
       });
       return _.indexBy(program, 'day');
     }
+  },
+  methods: {
+    updateDays: function () {
+      var self = this;
+      var selectedDays = _.clone(this.dates.filter(function (obj) {
+        return obj.dayOfYear() >= self.now.dayOfYear();
+      })).map(function (date) {
+        return date.format('L');
+      });
+
+      this.selectedDays = (selectedDays.length)
+        ? selectedDays
+        : _.clone(this.dates).map(function (date) {
+          return date.format('L');
+        });
+    },
+    updateQuery: function (val) {
+      this.q = val;
+    }
+  },
+  created: function () {
+    this.updateDays();
+    this.$root.$on('program-query-changed', this.updateQuery);
+  },
+  beforeDestroy () {
+    this.$root.$off('program-query-changed');
   }
 });

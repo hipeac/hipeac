@@ -38,7 +38,7 @@
           <div v-for="slot in slots" :key="slot.id" class="col-12 col-md">
             <display-2>Slot {{ slot.id }}</display-2>
             <q-linear-progress :value="100" class="q-my-sm" :color="slot.color"></q-linear-progress>
-            <div v-for="(course, idx)  in slot.courses" :key="course.title">
+            <div v-for="(course, idx)  in slot.courses" :key="course.title" class="pointer" @click="$router.push({name: 'program', query: {q: course.title}})">
               <q-separator v-if="idx != 0" class="q-my-lg"></q-separator>
               <display-3 class="q-mt-lg q-mb-md">{{ course.title }}</display-3>
               <template v-if="course.teachers.length">
@@ -61,19 +61,15 @@
     </q-page-sticky>
 
     <q-card class="hipeac__card q-mb-lg">
-      <q-card-section class="q-mx-sm q-mt-sm">
-        <hipeac-search-box placeholder="Search by type, title, speakers, project, topics..."></hipeac-search-box>
-      </q-card-section>
-      <!--<q-card-actions class="q-mb-sm q-mx-sm text-body2">
-        <q-space v-if="!$q.screen.gt.xs"></q-space>
-        <q-btn v-if="$q.screen.gt.xs" flat no-caps @click="dialog = true" icon="filter_list" class="float-right" label="Filters"></q-btn>
-      </q-card-actions>-->
-      <q-separator></q-separator>
       <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
         <span v-if="filtered">. <a href="#" @click.prevent="clearFilters()" class="inherit">Showing filtered results... &times;</a></span>
       </q-banner>
-      <hipeac-program class="q-ma-sm" :courses="courses" :showSlots="!!slots.length"></hipeac-program>
+      <!--<q-card-actions class="q-mb-sm q-mx-sm text-body2">
+        <q-space v-if="!$q.screen.gt.xs"></q-space>
+        <q-btn v-if="$q.screen.gt.xs" flat no-caps @click="dialog = true" icon="filter_list" class="float-right" label="Filters"></q-btn>
+      </q-card-actions>-->
+      <hipeac-program class="q-ma-sm" :dates="event.dates" :courses="courses" :showSlots="!!slots.length" compactDateFormat="dddd" searchPlaceholder="Search by course title, teachers..."></hipeac-program>
       <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
       </q-banner>
