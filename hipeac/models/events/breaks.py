@@ -13,14 +13,13 @@ class Break(models.Model):
 
     event = models.ForeignKey("hipeac.Event", related_name="breaks", on_delete=models.CASCADE)
     type = models.CharField(max_length=16, choices=TYPE_CHOICES, default=COFFEE)
-    date = models.DateField()
-    start_at = models.TimeField()
-    end_at = models.TimeField()
+    start_at = models.DateTimeField(null=True, blank=True)
+    end_at = models.DateTimeField(null=True, blank=True)
     notes = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         db_table = "hipeac_event_break"
-        ordering = ["date", "start_at"]
+        ordering = ["start_at"]
 
     def clean(self) -> None:
-        validate_date(self.date, self.event)
+        validate_date(self.start_at.date(), self.event)

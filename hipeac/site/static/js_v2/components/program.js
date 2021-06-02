@@ -14,6 +14,12 @@ Vue.component('hipeac-program', {
         return [];
       }
     },
+    breaks: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
     courses: {
       type: Array,
       default: function () {
@@ -52,32 +58,52 @@ Vue.component('hipeac-program', {
       <q-separator></q-separator>
       <q-card-section v-for="(data, day) in program" :key="day" class="q-ma-sm">
         <h3 class="q-mb-lg">{{ data.date.format('dddd, MMM D') }}</h3>
-        <div v-if="data.sessions" v-for="session in data.sessions" :key="session.id" class="row">
-          <div v-if="session.showTime" class="col-12 border-top"></div>
-          <div class="col-2 q-py-lg q-pr-lg text-center">
-            <div v-show="session.showTime">
-              <h4 v-if="$q.screen.gt.sm" class="text-h5">{{ session.startAt.format('h:mm') }} <small>{{ session.startAt.format('A') }}</small></h4>
-              <span v-else>{{ session.startAt.format('h:mm') }} <small>{{ session.startAt.format('A') }}</small></span>
+        <div v-if="data.sessions" v-for="session in data.sessions" :key="session.id">
+          <div v-if="session.session_type == 'break'" class="row bg-grey-1 text-body2">
+            <div v-if="session.showTime" class="col-12 border-top"></div>
+            <div class="col-2 q-py-lg q-pr-lg text-center">
+              <q-icon size="sm" :name="session.icon" color="grey-7"></q-icon>
+            </div>
+            <div class="col-10 border-left q-py-lg q-pl-lg" :class="{'border-top': !session.showTime}">
+              <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
+                <li>
+                  <q-icon size="xs" name="lens" color="grey-7" class="q-mr-xs"></q-icon>
+                  <span>{{ session.title }}</span>
+                </li>
+                <li>
+                  <q-icon size="xs" name="schedule" color="grey-7" class="q-mr-xs"></q-icon>
+                  <span>{{ session.startAt.format('HH:mm') }} - {{ session.endAt.format('HH:mm') }}</span>
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="col-10 border-left q-py-lg q-pl-lg col-pointer" :class="{'border-top': !session.showTime}" @click="$router.push({name: session.route, params: {id: session.id}})">
-            <hipeac-avatar-item v-if="session.isKeynote && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" :profile="keynotesDict[session.id].main_speaker.profile" class="q-px-none q-pt-none q-mb-sm"></hipeac-avatar-item>
-            <display-3 class="q-mb-xs">{{ session.title }}</display-3>
-            <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
-              <li>
-                <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
-                <span v-if="showSlots">Slot {{ session.slot }}</span>
-                <span v-else>{{ session.session_type.value }}</span>
-              </li>
-              <li>
-                <q-icon size="xs" name="schedule" color="grey-7" class="q-mr-xs"></q-icon>
-                <span>{{ session.startAt.format('HH:mm') }} - {{ session.endAt.format('HH:mm') }}</span>
-              </li>
-              <!--<li v-if="sessionRegistered(session.id)">
-                <q-icon size="xs" name="check" color="green" class="q-mr-xs"></q-icon>
-                <span>Registered</span>
-              </li>-->
-            </ul>
+          <div v-else class="row">
+            <div v-if="session.showTime" class="col-12 border-top"></div>
+            <div class="col-2 q-py-lg q-pr-lg text-center">
+              <div v-show="session.showTime">
+                <h4 v-if="$q.screen.gt.sm" class="text-h5">{{ session.startAt.format('h:mm') }} <small>{{ session.startAt.format('A') }}</small></h4>
+                <span v-else>{{ session.startAt.format('h:mm') }} <small>{{ session.startAt.format('A') }}</small></span>
+              </div>
+            </div>
+            <div class="col-10 border-left q-py-lg q-pl-lg col-pointer" :class="{'border-top': !session.showTime}" @click="$router.push({name: session.route, params: {id: session.id}})">
+              <hipeac-avatar-item v-if="session.isKeynote && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" :profile="keynotesDict[session.id].main_speaker.profile" class="q-px-none q-pt-none q-mb-sm"></hipeac-avatar-item>
+              <display-3 class="q-mb-xs">{{ session.title }}</display-3>
+              <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
+                <li>
+                  <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
+                  <span v-if="showSlots && session.session_type.value == 'Course'">Slot {{ session.slot }}</span>
+                  <span v-else>{{ session.session_type.value }}</span>
+                </li>
+                <li>
+                  <q-icon size="xs" name="schedule" color="grey-7" class="q-mr-xs"></q-icon>
+                  <span>{{ session.startAt.format('HH:mm') }} - {{ session.endAt.format('HH:mm') }}</span>
+                </li>
+                <!--<li v-if="sessionRegistered(session.id)">
+                  <q-icon size="xs" name="check" color="green" class="q-mr-xs"></q-icon>
+                  <span>Registered</span>
+                </li>-->
+              </ul>
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -86,6 +112,24 @@ Vue.component('hipeac-program', {
   computed: {
     sessionsList: function () {
       var output = [];
+
+      if (this.breaks.length) {
+        _.each(this.breaks, function (br) {
+          output.push({
+            key: 'b-' + br.id,
+            id: br.id,
+            title: br.notes,
+            date: br.date,
+            isoDay: br.isoDay,
+            startAt: br.startAt,
+            endAt: br.endAt,
+            duration: br.duration,
+            session_type: 'break',
+            icon: br.icon,
+            q: []
+          });
+        });
+      }
 
       if (this.courses.length) {
         _.each(this.courses, function (course) {
@@ -102,7 +146,6 @@ Vue.component('hipeac-program', {
               startAt: session.startAt,
               endAt: session.endAt,
               duration: session.duration,
-              teachersStr: course.teachersStr,
               topics: course.topics,
               route: 'course',
               session_type: session.session_type,

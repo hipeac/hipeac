@@ -72,21 +72,27 @@ var Hipeac = {
     }
   },
   map: {
+    break: function (obj) {
+      obj.icon = {
+        'cofee': 'coffee',
+        'lunch': 'restaurant'
+      }[obj.type] || 'coffee';
+      obj.startAt = make_local(obj.start_at);
+      obj.endAt = make_local(obj.end_at);
+      obj.isoDay = obj.startAt.format('YYYY-MM-DD');;
+      obj.duration = moment.duration(obj.endAt.diff(obj.startAt));
+      return obj;
+    },
     course: function (obj) {
       var mapSession = this.session;
 
-      var teachers = obj.teachers.map(function (o) {
-        return o.profile.name;
-      });
-
-      obj.teachersStr = teachers.join(', ');
       obj.color = ['white', 'blue', 'red', 'green', 'orange', 'purple', 'cyan'][obj.custom_data.slot || 1],
       obj.sessions = obj.sessions.map(function (s) {
         s.session_type = {
           value: 'Course'
         };
-        s.keywords = teachers.map(function (o) {
-          return o.toLowerCase();
+        s.keywords = obj.teachers.map(function (o) {
+          return o.profile.name.toLowerCase();
         });
         s.application_areas = [];
         s.topics = obj.topics;
@@ -101,6 +107,7 @@ var Hipeac = {
       return obj;
     },
     event: function (obj) {
+      var mapBreak = this.break;
       var mapSession = this.session;
 
       obj.registrations_round = (obj.registrations_count)
@@ -115,6 +122,14 @@ var Hipeac = {
       obj.endDate = make_local(obj.end_date);
       obj.days = obj.endDate.diff(obj.startDate, 'days') + 1;
       obj.year = obj.startDate.year();
+
+      if (obj.breaks && obj.breaks.length) {
+        obj.breaks = obj.breaks.map(function (s) {
+          return mapBreak(s);
+        }).sort(function (a, b) {
+          return a.startAt.unix() - b.startAt.unix();
+        });
+      }
 
       if (obj.sessions && obj.sessions.length) {
         obj.sessions = obj.sessions.map(function (s) {
@@ -164,7 +179,7 @@ var Hipeac = {
         'Course': 'teal',
         'Keynote': 'primary',
         'Paper Track': 'light-blue',
-        'Poster Session': 'light-blue',
+        'Poster Session': 'cyan',
         'Industrial Session': 'deep-purple',
         'Workshop': 'green',
         'Tutorial': 'teal',

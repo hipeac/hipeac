@@ -106,7 +106,7 @@
           </li>
         </ul>
       </div>
-      <div v-if="course.teachers.length">
+      <div v-if="course.teachers.length && $q.screen.gt.sm">
         <display-4 class="q-mb-md">
           <span v-if="course.teachers.length > 1">Teachers</span><span v-else>Teacher</span>
         </display-4>
