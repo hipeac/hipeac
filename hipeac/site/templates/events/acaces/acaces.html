@@ -314,50 +314,48 @@
       }),
     };
 
-    var SessionModalView = {
+var SessionView = {
       template: '#v-session',
+      props: ['id'],
       data: function () {
         return {
-          active: true,
-        };
-      },
-      props: ['sessionId'],
-      computed: _.extend(
-        Vuex.mapState(['user', 'event', 'session']), {
-      }),
-      methods: {
-        fetchSession: function () {
-          var self = this;
-          if (this.event) {
-            self.$store.commit('updateSession', _.findWhere(this.event.sessions, {id: this.sessionId}));
-          }
-          api().getSession(this.sessionId).done(function (res) {
-            self.$store.commit('updateSession', mapper().sessions([res])[0]);
-          });
-        },
-        closeModal: function () {
-          $(this.$refs['modal']).modal('hide');
+          dialog: true,
         }
       },
-      beforeRouteEnter: function (to, from, next) {
-        next(function (self) {
-          var ref = (from.name) ? from : {name: 'program', params: {}};
-          $(self.$refs['modal']).on('hide.bs.modal', function (e) {
-            self.$router.push(ref);
-          }).modal('show');
-        });
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'session']),
+        Vuex.mapGetters(['links']), {
+        userIsRegistered: function () {
+          if (!this.user.registration) return false;
+          return _.contains(this.user.registration.sessions, +this.id);
+        },
+        userLink: function () {
+          if (!this.user.registration) return null;
+          return _.findWhere(this.links, {session: +this.id}) || null;
+        }
+      }),
+      methods: {
+        getSession: function () {
+          var self = this;
+
+          if (!this.event) {
+            setTimeout(function () { self.getSession() }, 25);
+            return;
+          };
+
+          var session = _.findWhere(this.event.sessions, {id: +this.id});
+          this.$store.commit('updateSession', session);
+          Hipeac.api.get(session.url).then(function (res) {
+            self.$store.commit('updateSession', Hipeac.map.session(res.data));
+          });
+        },
+        hideDialog: function () {
+          this.$router.push({name: 'program'});
+          this.$store.commit('updateSession', null);
+        }
       },
-      beforeRouteLeave: function (to, from, next) {
-        next();
-        var store = this.$store;
-        var modal = $(this.$refs['modal']);
-        setTimeout(function () {
-          if (modal.hasClass('show')) modal.modal('hide');
-          store.commit('updateSession', null);
-        }, 50);
-      },
-      mounted: function () {
-        this.fetchSession();
+      created: function () {
+        this.getSession();
       }
     };
 
@@ -366,6 +364,34 @@
       computed: _.extend(
         Vuex.mapState(['event', 'session']), {
       }),
+    };
+
+    var SessionAttendeesView = {
+      template: '#v-session-attendees',
+      data: function () {
+        return {
+          attendees: []
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['user', 'event', 'session']), {
+        institutions: function () {
+          return extractInstitutions(this.attendees);
+        }
+      }),
+      methods: {
+        getAttendees: function () {
+          var self = this;
+          Hipeac.api.get(this.session.url + 'attendees/').then(function (res) {
+            self.attendees = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.user(obj.user);
+            }));
+          });
+        }
+      },
+      created: function () {
+        this.getAttendees();
+      }
     };
 
     var SessionBioView = {
@@ -524,15 +550,15 @@
               ]
             },
             {
-              path: 'sessions/:sessionId/',
+              path: 'sessions/:id/',
               pathToRegexpOptions: {strict: true},
               components: {
                 default: ProgramMainView,
-                modal: SessionModalView
+                dialog: SessionView
               },
               props: {
                 default: true,
-                modal: true
+                dialog: true
               },
               children: [
                 {

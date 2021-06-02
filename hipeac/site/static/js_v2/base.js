@@ -161,9 +161,10 @@ var Hipeac = {
       };
 
       obj.color = {
-        'Course': 'light-blue',
+        'Course': 'teal',
         'Keynote': 'primary',
         'Paper Track': 'light-blue',
+        'Poster Session': 'light-blue',
         'Industrial Session': 'deep-purple',
         'Workshop': 'green',
         'Tutorial': 'teal',
