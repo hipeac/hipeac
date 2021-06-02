@@ -6,7 +6,7 @@
         <q-toolbar class="text-dark bg-grey-2">
           <q-tabs no-caps inline-label shrink>
             <q-route-tab exact :to="{name: 'course', params: {id: id}}">
-              <q-icon size="xs" name="lens" color="primary" class="q-mr-sm"></q-icon>
+              <q-icon size="xs" name="lens" :color="course.color" class="q-mr-sm"></q-icon>
               <div class="q-tab__label">Course</div>
             </q-route-tab>
             <q-route-tab :to="{name: 'courseTeachers', params: {id: id}}" :label="(course.teachers.length > 1) ? 'Teachers' : 'Teacher'"></q-route-tab>

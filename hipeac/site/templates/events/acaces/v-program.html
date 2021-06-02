@@ -73,7 +73,7 @@
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
         <span v-if="filtered">. <a href="#" @click.prevent="clearFilters()" class="inherit">Showing filtered results... &times;</a></span>
       </q-banner>
-      <hipeac-program-section class="q-ma-sm" :courses="courses"></hipeac-program-section>
+      <hipeac-program class="q-ma-sm" :courses="courses" :showSlots="!!slots.length"></hipeac-program>
       <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
       </q-banner>

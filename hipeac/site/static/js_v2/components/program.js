@@ -1,4 +1,4 @@
-Vue.component('hipeac-program-section', {
+Vue.component('hipeac-program', {
   props: {
     courses: {
       type: Array,
@@ -11,7 +11,11 @@ Vue.component('hipeac-program-section', {
       default: function () {
         return [];
       }
-    }
+    },
+    showSlots: {
+      type: Boolean,
+      default: false
+    },
   },
   template: `
     <div v-if="program">
@@ -31,7 +35,8 @@ Vue.component('hipeac-program-section', {
             <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
               <li>
                 <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
-                <span>{{ session.session_type.value }}</span>
+                <span v-if="showSlots">Slot {{ session.slot }}</span>
+                <span v-else>{{ session.session_type.value }}</span>
               </li>
               <li>
                 <q-icon size="xs" name="schedule" color="grey-7" class="q-mr-xs"></q-icon>
@@ -70,6 +75,8 @@ Vue.component('hipeac-program-section', {
               topics: course.topics,
               route: 'course',
               session_type: session.session_type,
+              color: course.color,
+              slot: course.custom_data.slot || null,
               q: [
                 course.title,
                 session.session_type.value,
@@ -95,6 +102,7 @@ Vue.component('hipeac-program-section', {
             topics: session.topics,
             route: 'session',
             session_type: session.session_type,
+            color: session.color,
             q: session.q
           });
         });
@@ -102,9 +110,12 @@ Vue.component('hipeac-program-section', {
 
       if (!output.length) return [];
 
+      output = output.sort(function (a, b) {
+        return a.startAt - b.startAt;
+      });
+
       var day = null;
       var time = null;
-      var sTime = null;
 
       _.each(output, function (obj) {
         sDay = obj.startAt.format('YYYY-MM-DD');

@@ -75,6 +75,7 @@ var Hipeac = {
     course: function (obj) {
       var mapSession = this.session;
 
+      obj.color = ['white', 'blue', 'red', 'green', 'orange', 'purple', 'cyan'][obj.custom_data.slot || 1],
       obj.sessions = obj.sessions.map(function (s) {
         s.session_type = {
           value: 'Course'

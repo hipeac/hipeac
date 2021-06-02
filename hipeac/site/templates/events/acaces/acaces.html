@@ -85,8 +85,9 @@
       },
       getters: {
         slots: function (state) {
-          var slots = {};
           if (!state.courses.length) return [];
+
+          var slots = {};
           _.each(state.courses, function (course) {
             try {
               var s = course.custom_data.slot;
@@ -195,55 +196,8 @@
         }
       },
       computed: _.extend(
+        Vuex.mapGetters(['slots']),
         Vuex.mapState(['user', 'event', 'courses']), {
-        sessionsList: function () {
-          if (!this.event) return [];
-
-          var output = [];
-
-          _.each(this.courses, function (course) {
-            var i = 0;
-
-            _.each(course.sessions, function (session) {
-              i++;
-              output.push({
-                key: 'c-' + course.id + '-' + session.id,
-                id: course.id,
-                title: course.title + ' (#' + i + ')',
-                date: session.date,
-                isoDay: session.isoDay,
-                startAt: session.startAt,
-                duration: session.duration,
-                teachersStr: course.teachersStr,
-                topics: course.topics,
-                route: 'course'
-              });
-            });
-          });
-
-          _.each(this.event.sessions, function (session) {
-            output.push({
-              key: 's-' + session.id,
-              id: session.id,
-              title: session.title,
-              date: session.date,
-              isoDay: session.isoDay,
-              startAt: session.startAt,
-              duration: session.duration,
-              teachersStr: '',
-              topics: session.topics,
-              route: 'session'
-            });
-          });
-
-          return _.groupBy(output.sort(function (a, b) {
-            return a.date - b.date;
-          }).sort(function (a, b) {
-            return a.startAt - b.startAt;
-          }), function (obj) {
-            return obj.isoDay;
-          });
-        },
         topics: function () {
           if (!this.event) return [];
           return extractMetadata(this.courses, 'topics');
@@ -424,6 +378,7 @@
     var SessionProgramView = {
       template: '#v-session-program',
       computed: _.extend(
+        Vuex.mapGetters(['slots']),
         Vuex.mapState(['event', 'session']), {
       }),
     };
