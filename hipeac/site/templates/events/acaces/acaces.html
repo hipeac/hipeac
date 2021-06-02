@@ -353,6 +353,13 @@
       }),
     };
 
+    var CourseTeachersView = {
+      template: '#v-course-teachers',
+      computed: _.extend(
+        Vuex.mapState(['event', 'course']), {
+      }),
+    };
+
     var SessionModalView = {
       template: '#v-session',
       data: function () {
@@ -514,12 +521,6 @@
               component: ProgramCoursesView
             },
             {
-              name: 'lecturers',
-              path: 'lecturers/',
-              pathToRegexpOptions: {strict: true},
-              component: ProgramLecturersView
-            },
-            {
               name: 'program',
               path: '',
               pathToRegexpOptions: {strict: true},
@@ -542,6 +543,13 @@
                   path: '',
                   pathToRegexpOptions: {strict: true},
                   component: CourseMainView,
+                  props: true
+                },
+                {
+                  name: 'courseTeachers',
+                  path: 'teachers/',
+                  pathToRegexpOptions: {strict: true},
+                  component: CourseTeachersView,
                   props: true
                 },
                 {

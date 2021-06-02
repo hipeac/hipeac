@@ -9,8 +9,8 @@
               <q-icon size="xs" name="lens" color="primary" class="q-mr-sm"></q-icon>
               <div class="q-tab__label">Course</div>
             </q-route-tab>
-            <!--<q-route-tab v-if="session.isKeynote && session.main_speaker" exact :to="{name: 'sessionBio', params: {id: id}}" label="Bio"></q-route-tab>
-            <q-route-tab v-if="session.program" exact :to="{name: 'sessionProgram', params: {id: id}}" label="Program"></q-route-tab>
+            <q-route-tab :to="{name: 'courseTeachers', params: {id: id}}" :label="(course.teachers.length > 1) ? 'Teachers' : 'Teacher'"></q-route-tab>
+            <!--<q-route-tab v-if="session.program" exact :to="{name: 'sessionProgram', params: {id: id}}" label="Program"></q-route-tab>
             <q-route-tab v-if="user.registration" :to="{name: 'sessionAttendees', params: {id: id}}" label="Attendees"></q-route-tab>-->
           </q-tabs>
           <q-space></q-space>
@@ -97,24 +97,21 @@
       <marked :text="course.overview"></marked>
     </div>
     <div class="col-12 col-md-5">
-      <metadata-badges v-if="course.topics.length" title="Topics" :items="course.topics"></metadata-badges>
       <div v-if="course.sessions && course.sessions.length">
-        <display-sm class="mb-2">Sessions</display-sm>
+        <display-4 class="q-mb-md">Sessions</display-4>
         <ul class="list-group list-group-compact mb-4">
           <li v-for="session in course.sessions" :key="session.id" class="list-group-item d-flex justify-content-between align-items-center">
             {{ session.startAt.format("ddd, MMMM Do H:mm") }}
-            <span class="badge badge-light badge-pill">{{ session.duration.asHours() }} hours</span>
+            <span class="badge badge-light badge-pill">{{ session.duration.asMinutes() }} minutes</span>
           </li>
         </ul>
       </div>
       <div v-if="course.teachers.length">
-        <display-4>
+        <display-4 class="q-mb-md">
           <span v-if="course.teachers.length > 1">Teachers</span><span v-else>Teacher</span>
         </display-4>
-        <div v-for="teacher in course.teachers" :key="teacher.id">
-          <hipeac-avatar-item :profile="teacher.profile" class="q-mb-md" :class="{'float-right q-ml-md': $q.screen.gt.sm}"></hipeac-avatar-item>
-          <marked :text="teacher.profile.bio" class="text-body2"></marked>
-        </div>
+        <hipeac-avatar-item v-for="teacher in course.teachers" :key="teacher.id" :profile="teacher.profile" class="q-mb-md"></hipeac-avatar-item>
+        <router-link :to="{name: 'courseTeachers', params: {id: course.id}}" class="text-caption">More info...</router-link>
       </div>
     </div>
   </div>
@@ -134,6 +131,17 @@
   <div>
     <attachments-table :attachments="course.private_files"></attachments-table>
     <videos-row :url="course.url_videos" class="mt-5"></videos-row>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-course-teachers">
+{% verbatim %}
+  <div v-if="course" class="row q-col-gutter-xl">
+    <div v-for="teacher in course.teachers" :key="teacher.id" class="col-12 col-md">
+      <hipeac-avatar-item :profile="teacher.profile" class="q-mb-md"></hipeac-avatar-item>
+      <marked :text="teacher.profile.bio"></marked>
+    </div>
   </div>
 {% endverbatim %}
 </script>
