@@ -54,6 +54,7 @@
   {% include './v-about.html' with event=event year=event.year %}
   {% include './v-course.html' %}
   {% include './v-program.html' %}
+  {% include './v-venue.html' %}
   {% if event.slug == 'fiuggi' %}
     {% include './v-venue-fiuggi.html' %}
   {% endif %}
@@ -459,7 +460,21 @@
     var VenueView = {
       template: '#v-venue',
       computed: _.extend(
-        Vuex.mapState(['event', 'courses']), {
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var VenueMainView = {
+      template: '#v-venue-main',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var VenueTravelView = {
+      template: '#v-venue-travel',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
       })
     };
 
@@ -487,12 +502,6 @@
           path: '/logistics/',
           pathToRegexpOptions: {strict: true},
           component: LogisticsView
-        },
-        {
-          name: 'venue',
-          path: '/venue/',
-          pathToRegexpOptions: {strict: true},
-          component: VenueView
         },
         {
           path: '/program/',
@@ -605,6 +614,25 @@
                   props: true
                 }
               ]
+            }
+          ]
+        },
+        {
+          path: '/venue/',
+          pathToRegexpOptions: {strict: true},
+          component: VenueView,
+          children: [
+            {
+              name: 'venue',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: VenueMainView
+            },
+            {
+              name: 'travel',
+              path: 'how-to-reach/',
+              pathToRegexpOptions: {strict: true},
+              component: VenueTravelView
             }
           ]
         }

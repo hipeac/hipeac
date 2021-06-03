@@ -1,9 +1,9 @@
 {% load static %}
 
 
-<script type="text/x-template" id="v-venue">
+<script type="text/x-template" id="v-venue-main">
 {% verbatim %}
-  <q-card class="hipeac__card q-my-lg q-pa-md">
+  <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
     <q-card-section>
       <div class="row q-col-gutter-xl q-mb-lg">
         <div class="col-12 col-md-6">
@@ -17,5 +17,55 @@
       <iframe class="rounded-borders" src="https://www.google.com/maps/d/embed?mid=1QXZmfimKETJWNFADIB9oZQS2KU8&hl=en" style="width:100%; height:400px; border: 0;" width="100%" height="400"></iframe>
     </q-card-section>
   </q-card>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-venue-travel">
+{% verbatim %}
+  <div v-if="event" class="row q-col-gutter-md">
+    <div class="col-12 col-md">
+      <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
+        <q-card-section>
+          <display-2 class="q-mb-lg">Summer School arrival</display-2>
+          <display-3 class="q-mb-md">On <strong>Sunday {{ event.startDate.format('MMM D') }}</strong>, we provide a shuttle service from Fiumicino airport to the summer school at Fiuggi.</display-3>
+          <p>Currently, we plan the following schedule:</p>
+          <ul>
+            <li>From Fiumicino: 14h, 16h, 18h (The busses at Fiumicino will be in the bus parking which is immediately outside the arrivals of Terminal 3. The busses will have the indication <em>ACACES {{ event.year }} - Fiuggi</em>)</li>
+            <li>From Downtown Rome (hotel Mediterraneo, near Roma Termini): 14h</li>
+          </ul>
+	        <display-4 class="q-mt-xl">Alternative 1:</display-4>
+	        <p>Train to Roma Termini, followed by the <strong>bus from Roma Termini to Fiuggi</strong>. Travel time is around 90 minutes. The bus leaves from Via Giolitti, which is the street which runs parallel along the station at the south side. The bus stop is clearly marked at the sidewalk (station side of the street). It is the same bus stop from where the busses for the Ciampino airport are leaving. The ticket cost 4.5 euro and you have to buy it in one of the newspaper shops inside the station.</p>
+          <p>On Sunday, the bus schedule from Roma Termini is:<br>
+            <em>7.00 - 8.00 - 10.00 - 12.30 - 15.00 - 19.00 - 22.30</em></p>
+	        <p>The busstop in Fiuggi is at walking distance from the Silva Splendid Hotel (piazzale XXIII giugno).</p>
+	        <display-4 class="q-mt-xl">Alternative 2:</display-4>
+	        <p>Train to Roma Termini, followed by the <strong>train from Roma Termini to Fiuggi Anagni</strong> (leaving around *:40). The train takes about 50 min. In Fiuggi Anagni, there is a bus continuing to Fiuggi Fonte (another 35 min). Normally, the bus waits for the train to arrive.</p>
+          <p>The timetable for busses on Sunday is:<br>
+            <em>Part. Bus Anagni 8:20 9:35 11:30 16:30 19:40 21:35</em><br>
+            <em>Arr. Bus Fiuggi 9:00 10:10 12:05 17:05 20:15 22:10</em></p>
+	        <p>Beware, there are fewer busses than trains on Sunday!</p>
+	        <p>If you end up in the Fiuggi Anagni, and there is no bus, you can call a taxi. It is possible to require a taxi by calling Mr. Piero Morini, whose mobile nr is: 339/6176934. He gives a service of transportation on request, and the cost is 35 € from Anagni station to Fiuggi.</p>
+          <p>Fiuggi is a very small town. Busses heading for Fiuggi Fonte, Fiuggi Terme or Fiuggi Cittá will all bring you very close to the hotel.</p>
+        </q-card-section>
+      </q-card>
+    </div>
+    <div class="col-12 col-md">
+      <q-card class="hipeac__card q-mb-md" :class="{'q-pa-md': $q.screen.gt.xs }">
+        <q-card-section>
+          <display-2 class="q-mb-lg">Departure</display-2>
+          <display-3 class="q-mb-md">On <strong>Saturday morning, {{ event.endDate.format('MMM D') }},</strong> we organize busses to Fiumicino, Ciampino and Roma Termini. There will definitely be busses leaving at 6am, 8am and 9am. The journey from Fiumicino to Fiuggi or back takes 1 hour and a half.</display-3>
+          <p>All the alternatives mentioned to get to Fiuggi, also work in the other direction. The hotels will be able to inform you about the options.</p>
+        </q-card-section>
+      </q-card>
+      <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
+        <q-card-section>
+          <display-2 class="q-mb-lg">How to reach Fiuggi from Ciampino Airport</display-2>
+          <p>There is a direct bus from Ciampino airport to Roma Termini (4.5 euro).</p>
+          <p>There are also buses from the Ciampino airport to the Ciampino train station (cost 1 euro, you can pay the driver on board). The ride to the station takes about 10 min. From Ciampino Train Station there is a direct train to Roma Termini, and to Anagni-Fiuggi.</p>
+          <p>The latter leaves at *:54 and takes about 35 min to Anagni-Fiuggi, where you can take the bus to downtown Fiuggi (see alternative 2 above, it is the same train).</p>
+        </q-card-section>
+      </q-card>
+    </div>
+  </div>
 {% endverbatim %}
 </script>

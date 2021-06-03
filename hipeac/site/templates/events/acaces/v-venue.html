@@ -1,0 +1,13 @@
+<script type="text/x-template" id="v-venue">
+{% verbatim %}
+  <div v-if="event">
+    <q-card class="hipeac__card q-mt-lg q-mb-md">
+      <q-tabs no-caps inline-label class="bg-white text-blue-9">
+        <q-route-tab :to="{name: 'venue'}" icon="place" label="Location"></q-route-tab>
+        <q-route-tab exact :to="{name: 'travel'}" icon="explore" label="How to reach"></q-route-tab>
+      </q-tabs>
+    </q-card>
+    <router-view></router-view>
+  </div>
+{% endverbatim %}
+</script>
