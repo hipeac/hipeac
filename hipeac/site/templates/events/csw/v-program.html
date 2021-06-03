@@ -86,22 +86,22 @@
         </q-card-actions>
         <q-card-section v-if="user.registration" class="bg-grey-2 rounded-borders q-px-md">
           <q-toggle v-model="myProgram" checked-icon="tick" color="primary" class="float-right"></q-toggle>
-          <display-5>My sessions</display-5>
+          <display-4>My sessions</display-4>
           <p class="text-caption q-ma-none">Only show the sessions I am registered for</p>
         </q-card-section>
         <q-card-section class="q-px-md">
-          <display-5>Track</display-5>
+          <display-4>Track</display-4>
           <div class="q-gutter-x-sm q-mt-md q-mb-lg">
             <q-checkbox v-for="track in tracks" :key="track.id" v-model="selectedTracks" :val="track.id" :label="track.name" :color="track.color"></q-checkbox>
           </div>
           <div v-if="tags.topics.length">
-            <display-5>Topics</display-5>
+            <display-4>Topics</display-4>
             <div class="q-gutter-x-sm q-mt-md q-mb-lg text-body2">
               <q-checkbox v-for="topic in tags.topics" :key="topic.id" v-model="filters" :val="topic.id" :label="topic.value" color="grey-7" size="xs"></q-checkbox>
             </div>
           </div>
           <div v-if="tags.areas.length">
-            <display-5>Application areas</display-5>
+            <display-4>Application areas</display-4>
             <div class="q-gutter-x-sm q-mt-md q-mb-lg text-body2">
               <q-checkbox v-for="area in tags.areas" :key="area.id" v-model="filters" :val="area.id" :label="area.value" color="grey-7" size="xs"></q-checkbox>
             </div>
@@ -109,37 +109,6 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-  </div>
-{% endverbatim %}
-</script>
-
-<script type="text/x-template" id="v-program-keynotes">
-{% verbatim %}
-  <div v-if="event">
-    <div v-if="keynotes.length" class="row q-col-gutter-md items-stretch">
-      <div v-for="keynote in keynotes" class="col-12 col-md">
-        <q-card class="hipeac__card column full-height pointer" @click="$router.push({name: 'session', params: {id: keynote.id}})">
-          <q-card-section>
-            <hipeac-avatar-item v-if="keynote.main_speaker" :profile="keynote.main_speaker.profile" class="q-mb-md"></hipeac-avatar-item>
-            <display-2 class="q-mt-sm q-mb-xs">{{ keynote.title }}</display-2>
-          </q-card-section>
-          <q-card-section>
-            <marked :text="keynote.excerpt"></marked>
-          </q-card-section>
-          <q-space></q-space>
-          <q-card-section>
-            <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9e">
-              <li><q-icon size="xs" name="today" color="grey-7"></q-icon> {{ keynote.startAt.format("ddd, MMMM Do") }}</li>
-              <li><q-icon size="xs" name="schedule" color="grey-7"></q-icon> {{ keynote.startAt.format('HH:mm') }} - {{ keynote.endAt.format('HH:mm') }}</li>
-            </ul>
-          </q-card-section>
-          <q-separator color="grey-2"></q-separator>
-          <q-card-actions>
-            <q-btn flat color="primary" :to="{name: 'session', params: {id: keynote.id}}">More info</q-btn>
-          </q-card-actions>
-        </q-card>
-      </div>
-    </div>
   </div>
 {% endverbatim %}
 </script>

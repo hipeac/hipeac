@@ -92,7 +92,7 @@
           <p v-if="event.is_virtual" class="text-body2 q-mb-none">Choose the sessions you want to attend. Once you save your registration Zoom links will be generated for your sessions: you can access these in the "Program" or "Logistics" tabs.</p>
         </q-card-section>
         <q-card-section v-for="(data, day) in program" :key="day" class="q-ma-sm">
-          <display-5 class="q-mb-sm">{{ data.date.format('dddd, MMM D') }}</display-5>
+          <display-4 class="q-mb-sm">{{ data.date.format('dddd, MMM D') }}</display-4>
           <q-list v-if="data.sessions">
             <q-item v-for="session in data.sessions" :key="session.id" tag="label" class="q-py-md">
               <q-item-section avatar top>

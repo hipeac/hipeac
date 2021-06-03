@@ -63,13 +63,15 @@
   {% include './v-registration.html' %}
   {% include '../_shared/v-attendees.html' %}
   {% include '../_shared/v-logistics.html' %}
+  {% include '../_shared/v-program-keynotes.html' %}
   {% include '../_shared/v-session.html' %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js file events_conference %}
-  <script src="{% static 'js_v2/components/users.js' %}"></script>
   <script src="{% static 'js_v2/components/jobs.js' %}"></script>
+  <script src="{% static 'js_v2/components/program.js' %}"></script>
+  <script src="{% static 'js_v2/components/users.js' %}"></script>
   <script type="text/javascript">
     var VARS = document.querySelector('#vars').dataset;
 
@@ -357,21 +359,6 @@
           });
 
           return filtered;
-        },
-        program: function () {
-          if (!this.sessions) return null;
-          var days = _.uniq(this.sessions.map(function (obj) {
-            return obj.isoDay;
-          }));
-          var sessionsMap = _.groupBy(this.sessions, 'isoDay');
-          var program = days.map(function (day) {
-            return {
-              day: day,
-              date: moment(day),
-              sessions: sessionsMap[day]
-            };
-          });
-          return _.indexBy(program, 'day');
         }
       }),
       methods: {

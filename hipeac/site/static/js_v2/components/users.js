@@ -117,18 +117,18 @@ Vue.component('user-viewer', {
         <div class="col-12 text-body2" :class="{'col-lg': showInColumns}">
           <display-2 v-if="embedSearch" v-html="overviewText" class="q-mb-lg"></display-2>
           <div class="q-mb-md">
-            <display-5 class="display-inline">Institution types</display-5>
+            <display-4 class="display-inline">Institution types</display-4>
             <q-checkbox v-for="(name, code) in institutionTypes" v-model="filters.institutionTypes" :key="code" :val="code" :label="name" size="xs"></q-checkbox>
           </div>
           <div v-if="showTopics && topics.length" class="q-mb-md">
-            <display-5 class="display-inline">Research topics</display-5>
+            <display-4 class="display-inline">Research topics</display-4>
             <q-checkbox v-for="topic in topics" v-model="filters.topics" :key="topic.id" :val="topic.id" :label="topic.value" size="xs"></q-checkbox>
           </div>
-          <display-5 class="display-inline">Countries</display-5>
+          <display-4 class="display-inline">Countries</display-4>
           <q-checkbox v-for="country in countries" v-model="filters.countries" :key="country.code" :val="country.code" :label="country.name" size="xs"></q-checkbox>
         </div>
         <div class="col-12" :class="{'col-lg': showInColumns}">
-          <display-5 v-if="!embedSearch" v-html="overviewText" class="mb-4"></display-5>
+          <display-4 v-if="!embedSearch" v-html="overviewText" class="mb-4"></display-4>
           <q-markup-table flat dense class="text-body-2">
             <tbody>
               <tr v-for="user in filteredUsers" :key="user.id">

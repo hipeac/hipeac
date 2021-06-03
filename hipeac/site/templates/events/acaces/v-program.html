@@ -25,7 +25,6 @@
           </div>
           <div class="col-12 col-md-6">
             <q-banner rounded class="bg-yellow-3">The courses have been allocated to slots in such a way that it is in any case possible to create a summer school program that matches your research interests.</q-banner>
-            <p></p>
           </div>
         </div>
       </q-card-section>
@@ -65,7 +64,7 @@
         <q-space v-if="!$q.screen.gt.xs"></q-space>
         <q-btn v-if="$q.screen.gt.xs" flat no-caps @click="dialog = true" icon="filter_list" class="float-right" label="Filters"></q-btn>
       </q-card-actions>-->
-      <hipeac-program :dates="event.dates" :breaks="event.breaks" :courses="courses" :keynotes="keynotes" :sessions="event.sessions" :showSlots="!!slots.length" compactDateFormat="dddd" searchPlaceholder="Search by course title, teachers, day of the week..."></hipeac-program>
+      <hipeac-program :dates="event.dates" :breaks="event.breaks" :keynotes="keynotes" :sessions="event.sessions" :showSlots="!!slots.length" searchPlaceholder="Search by course title, teachers, day of the week..."></hipeac-program>
       <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
       </q-banner>

@@ -45,10 +45,6 @@ Vue.component('hipeac-program', {
     searchPlaceholder: {
       type: String,
       default: 'Search by type, title, speakers, project, topics...'
-    },
-    compactDateFormat: {
-      type: String,
-      default: 'MMM D'
     }
   },
   template: `
@@ -227,8 +223,10 @@ Vue.component('hipeac-program', {
         sDay = obj.startAt.format('YYYY-MM-DD');
         sTime = obj.startAt.format('LT');
         obj.showTime = (time != sTime || day != sDay);
-        time = sTime;
-        day = sDay;
+        if (obj.session_type != 'break') {
+          time = sTime;
+          day = sDay;
+        }
       });
 
       return filtered;
@@ -275,5 +273,52 @@ Vue.component('hipeac-program', {
   },
   beforeDestroy () {
     this.$root.$off('program-query-changed');
+  }
+});
+
+Vue.component('hipeac-session-breaks', {
+  props: {
+    breaks: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
+    session: {
+      required: true,
+      type: Object
+    }
+  },
+  template: `
+    <div v-if="!!breaksInSession.length">
+      <display-4 class="q-mb-md text-grey-7">Breaks</display-4>
+      <q-list separator class="text-grey-7">
+        <q-item dense v-for="br in breaksInSession" :key="br.id" class="q-pa-xs">
+          <q-item-section avatar>
+            <q-icon size="xs" :name="br.icon"></q-icon>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="text-body2">{{ br.notes }}</q-item-label>
+          </q-item-section>
+          <q-item-section side center>
+            <q-item-label caption>{{ br.startAt.format('HH:mm') }} - {{ br.endAt.format('HH:mm') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
+  `,
+  computed: {
+    breaksInSession: function () {
+      var output = [];
+      var s = this.session;
+
+      _.each(this.breaks, function (br) {
+        if (br.startAt.isBetween(s.startAt, s.endAt)) {
+          output.push(br);
+        }
+      });
+
+      return output;
+    }
   }
 });

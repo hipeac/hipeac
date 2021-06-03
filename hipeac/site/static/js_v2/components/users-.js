@@ -150,7 +150,7 @@ Vue.component('user-viewer', {
         <div v-if="embedSearch && users.length > 10" class="border-top border-bottom py-2 mb-4">
           <search-box :eventName="eventName" placeholder="Search by name, affiliation, country..."></search-box>
         </div>
-        <display-5 v-if="embedSearch" v-html="overviewText" class="mb-4"></display-5>
+        <display-4 v-if="embedSearch" v-html="overviewText" class="mb-4"></display-4>
         <div class="mb-4">
           <h6 class="d-inline display-sm mr-2">Institution types</h6>
           <div v-for="(name, code) in institutionTypes" :key="code" class="form-check form-check-inline mr-2">
@@ -179,7 +179,7 @@ Vue.component('user-viewer', {
       </div>
       <div class="col-12 col-md">
         <hr class="d-md-none my-4">
-        <display-5 v-if="!embedSearch" v-html="overviewText" class="mb-4"></display-5>
+        <display-4 v-if="!embedSearch" v-html="overviewText" class="mb-4"></display-4>
         <table class="table table-sm">
           <tr v-for="user in filteredUsers" :key="user.id">
             <td v-if="selectedUser == user.id" @click="selectedUser = 0" class="pointer">
