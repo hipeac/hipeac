@@ -61,11 +61,13 @@
       </div>
       <div class="col-12 col-md-5">
         <hipeac-session-breaks :session="session" :breaks="event.breaks"></hipeac-session-breaks>
-        <div v-if="session.isKeynote && session.main_speaker">
+        <div v-if="session.main_speaker">
           <display-4 class="q-mb-md">Speaker</display-4>
           <hipeac-avatar-item :profile="session.main_speaker.profile" class="q-mb-md"></hipeac-avatar-item>
-          <router-link :to="{name: 'sessionBio', params: {id: session.id}}" class="text-caption text-grey-7 inherit">
+          <router-link v-if="session.isKeynote" :to="{name: 'sessionBio', params: {id: session.id}}" class="text-caption text-grey-7 inherit">
             <q-icon size="xs" name="add" class="q-mr-xs"></q-icon>More info...</router-link>
+          <a v-else class="text-caption text-grey-7 inherit" :href="session.main_speaker.href" target="_blank">
+            <q-icon size="xs" name="shortcut" class="q-mr-xs"></q-icon>View HiPEAC profile</a>
         </div>
       </div>
     </div>
