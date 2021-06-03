@@ -3,20 +3,57 @@
 
 <script type="text/x-template" id="v-venue-main">
 {% verbatim %}
-  <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
-    <q-card-section>
-      <div class="row q-col-gutter-xl q-mb-lg">
-        <div class="col-12 col-md-6">
-          <display-3>Fiuggi is located right in the centre of Italy: 70 km from Rome, 150 km from Naples, 650 km from Milan, 670 from Reggio Calabria, from Capri. Fiuggi is well known because of the healing water of the nearby Fiuggi springs. It gained fame in the 14th century when Pope Boniface VIII claimed his kidney stones had been healed by these mineral waters.</display-3>
+  <div v-if="event">
+    <q-card class="hipeac__card q-mb-md" :class="{'q-pa-md': $q.screen.gt.xs }">
+      <q-card-section>
+        <div class="row q-col-gutter-xl q-mb-lg">
+          <div class="col-12 col-md-6">
+            <display-3>Fiuggi is located right in the centre of Italy: 70 km from Rome, 150 km from Naples, 650 km from Milan, 670 from Reggio Calabria, from Capri. Fiuggi is well known because of the healing water of the nearby Fiuggi springs. It gained fame in the 14th century when Pope Boniface VIII claimed his kidney stones had been healed by these mineral waters.</display-3>
+          </div>
+          <div class="col-12 col-md-6">
+            <p>Even though the Fiuggi water is bottled and distributed throughout Italy, it should be drunk at the spring to make the most of its benefits. There are quite a few reasons for taking the waters “on the spot”, first of all the special life style that the Fiuggi guests love to adopt.</p>
+            <p>A walk in the picterousque old Fiuggi perched up on top of the hill is a must once you come to Fiuggi.</p>
+          </div>
         </div>
-        <div class="col-12 col-md-6">
-          <p>Even though the Fiuggi water is bottled and distributed throughout Italy, it should be drunk at the spring to make the most of its benefits. There are quite a few reasons for taking the waters “on the spot”, first of all the special life style that the Fiuggi guests love to adopt.</p>
-          <p>A walk in the picterousque old Fiuggi perched up on top of the hill is a must once you come to Fiuggi.</p>
-        </div>
+        <iframe class="rounded-borders" src="https://www.google.com/maps/d/embed?mid=1QXZmfimKETJWNFADIB9oZQS2KU8&hl=en" style="width:100%; height:400px; border: 0;" width="100%" height="400"></iframe>
+      </q-card-section>
+    </q-card>
+    <div class="row q-col-gutter-md items-stretch">
+      <div class="col-12 col-md">
+        <q-card class="hipeac__card full-height" :class="{'q-pa-md': $q.screen.gt.xs }">
+          <q-card-section>
+            <display-2 class="q-mb-lg">Accomodation</display-2>
+            <display-3 class="q-mb-md"><strong class="text-negative">Please do not book a room by yourself, we will take care of all lodging arrangements.</strong></display-3>
+            <div class="text-body2">
+              <display-4>Silva Hotel Splendid</display-4>
+              <p><a href="http://www.silvasplendid.it/" rel="noopener" target="_blank">Silva Splendid Spa Hotel</a> welcomes you in a heavenly atmosphere. This Congress Centre — 1200 m2 wide — offers 5 meeting rooms with seating capacity from 10 to 320 seats.</p>
+              <display-4>Ambasciatori Place Hotel</display-4>
+              <p>More info on <a href="http://www.ambasciatoriplacehotel.com/" rel="noopener" target="_blank">http://www.ambasciatoriplacehotel.com/</a></p>
+              <display-4>Hotel San Marco</display-4>
+              <p>More info on <a href="http://www.hotelsanmarcofiuggi.it/" rel="noopener" target="_blank">http://www.hotelsanmarcofiuggi.it/</a></p>
+              <display-4>Hotel San Giorgio</display-4>
+              <p>More info on <a href="http://www.hotel-sangiorgio.it/" rel="noopener" target="_blank">http://www.hotel-sangiorgio.it/</a></p>
+              <display-4>Hotel Touring</display-4>
+              <p>More info on <a href="http://www.hoteltouringfiuggi.it/" rel="noopener" target="_blank">http://www.hoteltouringfiuggi.it/</a></p>
+          </div>
+          </q-card-section>
+        </q-card>
       </div>
-      <iframe class="rounded-borders" src="https://www.google.com/maps/d/embed?mid=1QXZmfimKETJWNFADIB9oZQS2KU8&hl=en" style="width:100%; height:400px; border: 0;" width="100%" height="400"></iframe>
-    </q-card-section>
-  </q-card>
+      <div class="col-12 col-md">
+        <q-card class="hipeac__card full-height" :class="{'q-pa-md': $q.screen.gt.xs }">
+          <q-card-section>
+            <display-2 class="q-mb-lg">Local sights and activities</display-2>
+            <p>Some interesting local sights are:</p>
+            <ul class="bullets separated">
+              <li>The <strong>Cathedral of Anagni</strong> was built between 1071 and 1105. Its façade preserves nearly unchanged its Romanesque-Lombard style. Noteworthy are the round arch of the “Matron portal” framed by Byzantine braids, and the impressive structure of the apses on the North side. It is 20 min. away from Fiuggi.</li>
+              <li><strong>Fumone Castle</strong>. The structure of the Fumone castle is a typical military fortress of the Middle Ages. Set on top of a mountain, it is surrounded by mountainous chains and woods. Being inaccessible, the fortress sheltered for five centuries within its walls the enemies of the church. It is 20 min away from Fiuggi.</li>
+              <li>The <strong>Casamari</strong> Abbey was built on the ruins of the ancient Roman municipium called Cereatae, being dedicated to the goddess Ceres. Casamari is a name of Latin origin and means “Mario's house”, the home of the Roman Consul Caius Marius, a famous leader and Silla’s enemy. It is nearly 30 min. away from Fiuggi.</li>
+            </ul>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+  </div>
 {% endverbatim %}
 </script>
 

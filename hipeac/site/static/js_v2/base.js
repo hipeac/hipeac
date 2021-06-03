@@ -163,6 +163,7 @@ var Hipeac = {
       obj.startAt = make_local(obj.start_at);
       obj.endAt = make_local(obj.end_at);
       obj.isoDay = obj.startAt.format('YYYY-MM-DD');
+      obj.isPast = obj.endAt.isBefore(moment());
       obj.duration = moment.duration(obj.endAt.diff(obj.startAt));
       obj.isKeynote = obj.session_type.value == 'Keynote';
       obj.metadata = _.union(
