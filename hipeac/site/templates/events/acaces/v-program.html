@@ -7,9 +7,9 @@
   <div v-if="event && courses && courses.length">
     <q-card class="hipeac__card q-mt-lg q-mb-md">
       <q-tabs no-caps inline-label class="bg-white text-blue-9">
-        <q-route-tab v-show="slots.length" exact :to="{name: 'courses'}" icon="category" label="Overview"></q-route-tab>
-        <q-route-tab :to="{name: 'program'}" icon="view_week" label="Program"></q-route-tab>
-        <!--<q-route-tab exact :to="{name: 'lecturers'}" icon="group" label="Lecturers"></q-route-tab>-->
+        <q-route-tab :to="{name: 'program'}" icon="category" label="All sessions"></q-route-tab>
+        <q-route-tab v-show="slots.length" exact :to="{name: 'courses'}" icon="view_week" label="Courses"></q-route-tab>
+        <q-route-tab exact :to="{name: 'keynotes'}" icon="stars" label="Keynotes"></q-route-tab>
       </q-tabs>
     </q-card>
     <router-view></router-view>
@@ -21,8 +21,8 @@
 <script type="text/x-template" id="v-program-courses">
 {% verbatim %}
   <div v-if="event && slots.length">
-    <q-card class="hipeac__card q-mb-lg">
-      <q-card-section class="q-mx-sm q-mt-sm">
+    <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
+      <q-card-section>
         <div class="row q-col-gutter-x-xl q-col-gutter-y-md">
           <div class="col-12 col-md-6">
             <p>The summer school consists of {{ courses.length }} courses spread over {{ slots.length }} slots. Per slot there are parallel courses of which you can take only one. When applying for admission, you will be asked to indicate your preference.</p>
@@ -33,7 +33,7 @@
           </div>
         </div>
       </q-card-section>
-      <q-card-section class="q-mx-sm q-mt-sm q-mb-md">
+      <q-card-section>
         <div class="row q-col-gutter-x-xl q-col-gutter-y-lg">
           <div v-for="slot in slots" :key="slot.id" class="col-12 col-md">
             <display-2>Slot {{ slot.id }}</display-2>
@@ -60,7 +60,7 @@
       <q-btn rounded icon="filter_list" label="Filters" color="grey-1" text-color="dark" @click="dialog = true"></q-btn>
     </q-page-sticky>
 
-    <q-card class="hipeac__card q-mb-lg">
+    <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
       <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
         <span v-if="filtered">. <a href="#" @click.prevent="clearFilters()" class="inherit">Showing filtered results... &times;</a></span>
@@ -69,7 +69,7 @@
         <q-space v-if="!$q.screen.gt.xs"></q-space>
         <q-btn v-if="$q.screen.gt.xs" flat no-caps @click="dialog = true" icon="filter_list" class="float-right" label="Filters"></q-btn>
       </q-card-actions>-->
-      <hipeac-program class="q-ma-sm" :dates="event.dates" :breaks="event.breaks" :courses="courses" :sessions="event.sessions" :showSlots="!!slots.length" compactDateFormat="dddd" searchPlaceholder="Search by course title, teachers..."></hipeac-program>
+      <hipeac-program :dates="event.dates" :breaks="event.breaks" :courses="courses" :keynotes="keynotes" :sessions="event.sessions" :showSlots="!!slots.length" compactDateFormat="dddd" searchPlaceholder="Search by course title, teachers, day of the week..."></hipeac-program>
       <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
       </q-banner>
@@ -84,37 +84,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-  </div>
-{% endverbatim %}
-</script>
-
-<script type="text/x-template" id="v-program-lecturers">
-{% verbatim %}
-  <div v-if="event">
-    <div v-if="keynotes.length" class="row q-col-gutter-md items-stretch">
-      <div v-for="keynote in keynotes" class="col-12 col-md">
-        <q-card class="hipeac__card column full-height pointer" @click="$router.push({name: 'session', params: {id: keynote.id}})">
-          <q-card-section>
-            <hipeac-avatar-item v-if="keynote.main_speaker" :profile="keynote.main_speaker.profile" class="q-mb-md"></hipeac-avatar-item>
-            <display-2 class="q-mt-sm q-mb-xs">{{ keynote.title }}</display-2>
-          </q-card-section>
-          <q-card-section>
-            <marked :text="keynote.excerpt"></marked>
-          </q-card-section>
-          <q-space></q-space>
-          <q-card-section>
-            <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9e">
-              <li><q-icon size="xs" name="today" color="grey-7"></q-icon> {{ keynote.startAt.format("ddd, MMMM Do") }}</li>
-              <li><q-icon size="xs" name="schedule" color="grey-7"></q-icon> {{ keynote.startAt.format('HH:mm') }} - {{ keynote.endAt.format('HH:mm') }}</li>
-            </ul>
-          </q-card-section>
-          <q-separator color="grey-2"></q-separator>
-          <q-card-actions>
-            <q-btn flat color="primary" :to="{name: 'session', params: {id: keynote.id}}">More info</q-btn>
-          </q-card-actions>
-        </q-card>
-      </div>
-    </div>
   </div>
 {% endverbatim %}
 </script>

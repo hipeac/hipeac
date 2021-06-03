@@ -5,9 +5,9 @@
 <script type="text/x-template" id="v-about">
 {% verbatim %}
   <div v-if="event">
-    <q-card class="hipeac__card q-my-lg">
+    <q-card class="hipeac__card q-my-lg" :class="{'q-pa-md': $q.screen.gt.xs }">
       <q-card-section class="text-center">
-        <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-lg q-mb-none text-body2 text-grey-9">
+        <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-lg q-my-none text-body2 text-grey-9">
           <!--<li><q-icon size="sm" name="today" color="grey-7"></q-icon> {{ event.datesStr.format("ddd, MMMM Do") }}</li>-->
           <li v-if="event.is_virtual">
             <router-link :to="{name: 'logistics'}" class="inherit">
@@ -47,8 +47,8 @@
           </li>-->
         </ul>
       </q-card-section>
-      <q-separator class="q-mb-md"></q-separator>
-      <q-card-section class="q-ma-md q-mb-none">
+      <q-separator class="q-mb-md" :class="{'q-mt-md': $q.screen.gt.xs }"></q-separator>
+      <q-card-section>
         <div class="row justify-between q-col-gutter-xl">
           <div class="col-12 col-md-7 mb-3 mb-md-0">
             <display-1 class="display-underline">{% endverbatim %}{{ year | add:"-2004" | ordinal }}{% verbatim %} International Summer School on Advanced Computer Architecture and Compilation for High-performance Embedded Systems</display-1>
@@ -80,17 +80,14 @@
       <q-card-section class="q-ma-md q-mb-none">
         <div v-if="event && event.sponsors.length" class="row items-center justify-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
           <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4 col-md-2">
-            <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
+            <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href" target="_blank">
               <img :src="sponsor.institution.images.lg" class="sponsor">
             </a>
-            <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
+            <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href" target="_blank">
               <img :src="sponsor.project.images.lg" class="sponsor">
             </a>
           </div>
         </div>
-      </q-card-section>
-      <q-card-section v-if="event.virtualExhibition" class="q-mx-sm q-pt-none text-center">
-        <q-btn outline no-caps :to="{name: 'exhibition'}" label="Meet our sponsors at the virtual exhibition!" color="orange-9" size="lg" class="q-my-lg"></q-btn>
       </q-card-section>
     </q-card>
     <!--<quotes-carousel-row types="acaces"></quotes-carousel-row>-->

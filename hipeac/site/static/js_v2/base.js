@@ -93,7 +93,7 @@ var Hipeac = {
         };
         s.keywords = obj.teachers.map(function (o) {
           return o.profile.name.toLowerCase();
-        });
+        }).concat([obj.title]);
         s.application_areas = [];
         s.topics = obj.topics;
         return mapSession(s);

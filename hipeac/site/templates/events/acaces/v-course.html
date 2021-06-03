@@ -16,7 +16,7 @@
           <q-space></q-space>
           <q-btn flat round @click="dialog = false" icon="close"></q-btn>
         </q-toolbar>
-        <div class="q-pa-md" :class="{'q-pa-lg': $q.screen.gt.sm}">
+        <div :class="{'q-pa-md': $q.screen.gt.sm}">
           <!--<q-card-section class="q-pt-none text-center">
             <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
               <li>
@@ -48,7 +48,6 @@
   </div>
 {% endverbatim %}
 </script>
-
 
 <script type="text/x-template" id="v-course--old">
 {% verbatim %}
@@ -91,30 +90,32 @@
 
 <script type="text/x-template" id="v-course-main">
 {% verbatim %}
-  <div v-if="course" class="row q-col-gutter-xl">
-    <div class="col-12 col-md-7">
-      <display-2 class="q-mb-md">{{ course.title }}</display-2>
-      <marked :text="course.overview"></marked>
-    </div>
-    <div class="col-12 col-md-5">
-      <div v-if="course.sessions && course.sessions.length">
-        <display-4 class="q-mb-md">Sessions</display-4>
-        <ul class="list-group list-group-compact mb-4">
-          <li v-for="session in course.sessions" :key="session.id" class="list-group-item d-flex justify-content-between align-items-center">
-            {{ session.startAt.format("ddd, MMMM Do H:mm") }}
-            <span class="badge badge-light badge-pill">{{ session.duration.asMinutes() }} minutes</span>
-          </li>
-        </ul>
+  <q-card-section v-if="course">
+    <div class="row q-col-gutter-xl">
+      <div class="col-12 col-md-7">
+        <display-2 class="q-mb-md">{{ course.title }}</display-2>
+        <marked :text="course.overview"></marked>
       </div>
-      <div v-if="course.teachers.length && $q.screen.gt.sm">
-        <display-4 class="q-mb-md">
-          <span v-if="course.teachers.length > 1">Teachers</span><span v-else>Teacher</span>
-        </display-4>
-        <hipeac-avatar-item v-for="teacher in course.teachers" :key="teacher.id" :profile="teacher.profile" class="q-mb-md"></hipeac-avatar-item>
-        <router-link :to="{name: 'courseTeachers', params: {id: course.id}}" class="text-caption">More info...</router-link>
+      <div class="col-12 col-md-5">
+        <div v-if="course.sessions && course.sessions.length">
+          <display-4 class="q-mb-md">Sessions</display-4>
+          <ul class="list-group list-group-compact mb-4">
+            <li v-for="session in course.sessions" :key="session.id" class="list-group-item d-flex justify-content-between align-items-center">
+              <span>{{ session.startAt.format("ddd, MMMM Do H:mm") }}</span>
+              <span class="badge badge-light badge-pill">{{ session.duration.asMinutes() }} minutes</span>
+            </li>
+          </ul>
+        </div>
+        <div v-if="course.teachers.length && $q.screen.gt.sm" class="q-mt-lg">
+          <display-4 class="q-mb-md">
+            <span v-if="course.teachers.length > 1">Teachers</span><span v-else>Teacher</span>
+          </display-4>
+          <hipeac-avatar-item v-for="teacher in course.teachers" :key="teacher.id" :profile="teacher.profile" class="q-mb-md"></hipeac-avatar-item>
+          <router-link :to="{name: 'courseTeachers', params: {id: course.id}}" class="text-caption">More info...</router-link>
+        </div>
       </div>
     </div>
-  </div>
+  </q-card-section>
 {% endverbatim %}
 </script>
 
@@ -128,20 +129,23 @@
 
 <script type="text/x-template" id="v-course-downloads">
 {% verbatim %}
-  <div>
+  <q-card-section v-if="course">
     <attachments-table :attachments="course.private_files"></attachments-table>
     <videos-row :url="course.url_videos" class="mt-5"></videos-row>
-  </div>
+  </q-card-section>
 {% endverbatim %}
 </script>
 
 <script type="text/x-template" id="v-course-teachers">
 {% verbatim %}
-  <div v-if="course" class="row q-col-gutter-xl">
-    <div v-for="teacher in course.teachers" :key="teacher.id" class="col-12 col-md">
-      <hipeac-avatar-item :profile="teacher.profile" class="q-mb-md"></hipeac-avatar-item>
-      <marked :text="teacher.profile.bio"></marked>
+  <q-card-section v-if="course">
+    <div class="row q-col-gutter-xl">
+      <div v-for="teacher in course.teachers" :key="teacher.id" class="col-12 col-md">
+        <hipeac-avatar-item :profile="teacher.profile" class="q-mb-md"></hipeac-avatar-item>
+        <marked :text="teacher.profile.bio"></marked>
+        <q-btn outline no-caps type="a" :href="teacher.href" size="sm" label="Open HiPEAC profile" target="_blank"></q-btn>
+      </div>
     </div>
-  </div>
+  </q-card-section>
 {% endverbatim %}
 </script>

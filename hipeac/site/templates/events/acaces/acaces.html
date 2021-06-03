@@ -13,7 +13,7 @@
     <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
       <q-route-tab exact :to="{name: 'about'}" label="About"></q-route-tab>
       {% if event.is_ready %}
-        <q-route-tab :to="{name: (slots.length) ? 'courses' : 'program' }" label="Courses"></q-route-tab>
+        <q-route-tab :to="{name: 'program'}" label="Program"></q-route-tab>
       {% endif %}
       {% if event.is_virtual %}
         <q-route-tab exact :to="{name: 'logistics'}" label="Logistics"></q-route-tab>
@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}"></div>
+  <div id="vars" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
   <router-view></router-view>
   <q-page-sticky position="bottom-right" :offset="[18, 18]">
     <q-fab v-if="!$q.screen.gt.sm" icon="menu" direction="up" vertical-actions-align="right" color="primary">
@@ -59,6 +59,7 @@
   {% endif %}
   {% include '../_shared/v-attendees.html' %}
   {% include '../_shared/v-logistics.html' %}
+  {% include '../_shared/v-program-keynotes.html' %}
   {% include '../_shared/v-session.html' %}
 {% endblock %}
 
@@ -73,6 +74,7 @@
       state: {
         event: null,
         courses: [],
+        keynotes: [],
         attendees: [],
         course: null,
         session: null,
@@ -118,10 +120,17 @@
             state.event = Object.freeze(Hipeac.map.event(res.data));
           });
         },
-        fetchCourses: function (state) {
+        getCourses: function (state) {
           Hipeac.api.get(VARS.coursesUrl).then(function (res) {
             state.courses = Object.freeze(res.data.map(function (obj) {
               return Hipeac.map.course(obj);
+            }));
+          });
+        },
+        getKeynotes: function (state) {
+          Hipeac.api.get(VARS.sessionsUrl, {session_type: 69}).then(function (res) {
+            state.keynotes = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.session(obj);
             }));
           });
         },
@@ -197,7 +206,7 @@
       },
       computed: _.extend(
         Vuex.mapGetters(['slots']),
-        Vuex.mapState(['user', 'event', 'courses']), {
+        Vuex.mapState(['user', 'event', 'courses', 'keynotes']), {
         topics: function () {
           if (!this.event) return [];
           return extractMetadata(this.courses, 'topics');
@@ -210,16 +219,11 @@
       }
     };
 
-    var ProgramLecturersView = {
-      template: '#v-program-lecturers',
-      data: function () {
-        return {
-        }
-      },
+    var ProgramKeynotesView = {
+      template: '#v-program-keynotes',
       computed: _.extend(
-        Vuex.mapState(['user', 'event', 'courses']), {
-        }
-      )
+        Vuex.mapState(['event', 'keynotes']), {
+      })
     };
 
     var CourseView = {
@@ -314,7 +318,7 @@
       }),
     };
 
-var SessionView = {
+    var SessionView = {
       template: '#v-session',
       props: ['id'],
       data: function () {
@@ -502,6 +506,12 @@ var SessionView = {
               component: ProgramCoursesView
             },
             {
+              name: 'keynotes',
+              path: 'keynotes/',
+              pathToRegexpOptions: {strict: true},
+              component: ProgramKeynotesView
+            },
+            {
               name: 'program',
               path: '',
               pathToRegexpOptions: {strict: true},
@@ -616,7 +626,8 @@ var SessionView = {
       },
       created: function () {
         this.$store.commit('getEvent');
-        this.$store.commit('fetchCourses');
+        this.$store.commit('getCourses');
+        this.$store.commit('getKeynotes');
         // this.$store.commit('getRegistrations');
       }
     });
