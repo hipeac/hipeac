@@ -1,7 +1,7 @@
 {% extends 'email.'|add:email_format %}
 
 
-{% block header %}We have received your application for {{ event_name }}.{% endblock %}
+{% block header %}We have received your application for<br>{{ event_name }}.{% endblock %}
 
 {% block body %}
 **Application number: {{ registration_id }}**
@@ -10,7 +10,7 @@ Dear {{ user_name }},
 
 We have just received your application form for the International Summer School on Advanced Computer Architecture and Compilation for High-performance Embedded Systems.
 
-Thank you for your interest in the HiPEAC Summer School (#event_hashtag).
+Thank you for your interest in the HiPEAC Summer School (#{{ event_hashtag }}).
 
 You will be notified as soon as possible whether you are accepted or not.
 

@@ -189,6 +189,7 @@ def registration_post_save(sender, instance, created, *args, **kwargs):
                 "event_name": instance.event.name,
                 "registration_id": instance.id,
                 "registration_url": instance.get_absolute_url(),
+                "user_name": instance.user.profile.name,
                 "visa_requested": instance.visa_requested,
             },
         )
