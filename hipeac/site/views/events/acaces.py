@@ -1,9 +1,8 @@
-import json
-
 from collections import namedtuple
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django_countries import countries
 from django.db import connection
 from django.utils.decorators import method_decorator
 
@@ -26,6 +25,11 @@ class AcacesDetail(EventDetail):
         if not hasattr(self, "object"):
             self.object = self.get_queryset().get(type="acaces", start_date__year=self.kwargs.get("year"))
         return self.object
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["countries"] = dict(countries)
+        return context
 
 
 class AcacesRegistration(AcacesDetail):

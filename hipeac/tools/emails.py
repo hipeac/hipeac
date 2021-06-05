@@ -5,11 +5,13 @@ from typing import List
 
 JOBS_DIGEST_EMAIL = "HiPEAC Jobs <jobs@hipeac.net>"
 RECRUITMENT_EMAIL = "HiPEAC Recruitment <recruitment@hipeac.net>"
+ACACES_EMAIL = "ACACES <acaces@hipeac.net>"
 TEMPLATE_PATHS = {
     "awards.tech_transfer_applications.created": "_emails/awards/tech_transfer_applications_created.md.html",
     "events.acaces.poster_abstracts_reminder": "_emails/events/acaces_poster_abstracts_reminder.md.html",
     "events.no_shows": "_emails/events/no_shows.md.html",
     "events.registrations.created": "_emails/events/registrations_created.md.html",
+    "events.registrations.created_acaces": "_emails/events/registrations_created_acaces.md.html",
     "events.registrations.payment_reminder": "_emails/events/registrations_payment_reminder.md.html",
     "events.registrations.reminder": "_emails/events/registrations_reminder.md.html",
     "events.session_proposals.created": "_emails/events/session_proposals_created.md.html",
@@ -40,6 +42,9 @@ class TemplateEmail:
 
         if template.startswith("recruitment."):
             to.append(RECRUITMENT_EMAIL)
+
+        if "acaces" in template:
+            to.append(ACACES_EMAIL)
 
         self.message = AnymailMessage(subject=subject, from_email=from_email, to=to, body=text_content)
         self.message.attach_alternative(html_content, "text/html")

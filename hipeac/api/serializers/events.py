@@ -107,14 +107,14 @@ class AuthRegistrationSerializer(WritableNestedModelSerializer):
     # poster_abstract = AcacesPosterAbstractSerializer(read_only=True)
     courses = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), many=True, allow_empty=True)
     sessions = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all(), many=True, allow_empty=True)
-    posters = PosterSerializer(many=True)
+    posters = PosterSerializer(many=True, allow_empty=True)
     custom_data = serializers.JSONField(required=False)
 
     class Meta:
         model = Registration
         exclude = ("user", "paid", "paid_via_invoice")
         write_only_fields = ("event",)
-        read_only_fields = ("base_fee", "extra_fees", "saldo", "invoice_sent", "visa_sent")
+        read_only_fields = ("base_fee", "extra_fees", "saldo", "invoice_sent", "visa_sent", "status")
 
 
 class SessionNestedSerializer(WritableNestedModelSerializer):

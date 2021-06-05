@@ -110,7 +110,9 @@ def get_h2020_associated_countries():
 
 
 def send_task(*args, **kwargs):
-    if not settings.TEST:
+    if settings.DEBUG:
+        print(*args, **kwargs)
+    else:
         celery_send_task(*args, **kwargs)
 
 

@@ -18,34 +18,34 @@
       {% if event.is_virtual %}
         <q-route-tab exact :to="{name: 'logistics'}" label="Logistics"></q-route-tab>
       {% else %}
-        <q-route-tab exact :to="{name: 'venue'}" label="Venue and travel"></q-route-tab>
+        <q-route-tab :to="{name: 'venue'}" label="Venue and travel"></q-route-tab>
       {% endif %}
       <!--{% if user.is_authenticated %}
         <q-route-tab exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
-      {% endif %}
-      <q-route-tab v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>-->
+      {% endif %}-->
+      <q-route-tab v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>
     </q-tabs>
   </q-toolbar>
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
+  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
   <router-view></router-view>
   <q-page-sticky position="bottom-right" :offset="[18, 18]">
     <q-fab v-if="!$q.screen.gt.sm" icon="menu" direction="up" vertical-actions-align="right" color="primary">
       <q-fab-action exact :to="{name: 'about'}" color="white" text-color="dark" label="About"></q-fab-action>
       {% if event.is_ready %}
-        <q-fab-action exact :to="{name: (slots.length) ? 'courses' : 'program' }" color="white" text-color="dark" label="Courses"></q-fab-action>
+        <q-fab-action :to="{name: 'program'}" color="white" text-color="dark" label="Program"></q-fab-action>
       {% endif %}
       {% if event.is_virtual %}
         <q-fab-action exact :to="{name: 'logistics'}" color="white" text-color="dark" label="Logistics"></q-fab-action>
       {% else %}
-        <q-fab-action exact :to="{name: 'venue'}" color="white" text-color="dark" label="Venue and travel"></q-fab-action>
+        <q-fab-action :to="{name: 'venue'}" color="white" text-color="dark" label="Venue and travel"></q-fab-action>
       {% endif %}
       <!--{% if user.is_authenticated %}
         <q-fab-action exact :to="{name: 'attendees'}" color="white" text-color="dark" label="Attendees"></q-fab-action>
-      {% endif %}
-      <q-fab-action exact :to="{name: 'registration'}" color="white" text-color="dark" :label="(user.registration) ? 'My registration' : 'Register'"></q-fab-action>-->
+      {% endif %}-->
+      <q-fab-action v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" color="white" text-color="dark" :label="(user.registration) ? 'My registration' : 'Register'"></q-fab-action>
     </q-fab>
   </q-page-sticky>
 {% endblock %}
@@ -54,6 +54,11 @@
   {% include './v-about.html' with event=event year=event.year %}
   {% include './v-course.html' %}
   {% include './v-program.html' %}
+  {% if event.is_virtual %}
+    {% include './v-registration-virtual.html' %}
+  {% else %}
+    {% include './v-registration.html' %}
+  {% endif %}
   {% include './v-venue.html' %}
   {% if event.slug == 'fiuggi' %}
     {% include './v-venue-fiuggi.html' %}
@@ -65,6 +70,7 @@
 {% endblock %}
 
 {% block scripts %}
+  {{ countries | json_script:"countries-data" }}
 {% compress js file events_acaces %}
   <script src="{% static 'js_v2/components/program.js' %}"></script>
   <script src="{% static 'js_v2/components/users.js' %}"></script>
@@ -73,6 +79,7 @@
 
     var Store = new Vuex.Store({
       state: {
+        countries: JSON.parse(document.getElementById('countries-data').textContent),
         event: null,
         courses: [],
         keynotes: [],
@@ -98,8 +105,12 @@
                 slots[s] = [];
               }
               slots[s].push({
+                id: course.id,
                 title: course.title,
-                teachers: course.teachers
+                teachers: course.teachers,
+                teachers_str: course.teachers.map(function (o) {
+                  return o.profile.name;
+                }).join(', ')
               });
             } catch (err) {}
           });
@@ -135,6 +146,19 @@
             }));
           });
         },
+        getRegistration: function (state) {
+          if (!USER_IS_AUTHENTICATED) return;
+          var self = this;
+
+          Hipeac.api.get(VARS.registrationUrl, {event_id: +VARS.eventId}).then(function (res) {
+            if (res.data.results.length == 1) {
+              var reg = res.data.results[0];
+              state.user.registration = Object.freeze(Hipeac.map.registration(reg));
+            } else {
+              state.user.registration = null;
+            }
+          });
+        },
         getRegistrations: function (state) {
           if (!USER_IS_AUTHENTICATED) return;
 
@@ -146,6 +170,9 @@
         },
         updateCourse: function (state, data) {
           state.course = Object.freeze(data);
+        },
+        updateRegistration: function (state, data) {
+          state.user.registration = Object.freeze(Hipeac.map.registration(data));
         },
         updateSession: function (state, data) {
           state.session = Object.freeze(data);
@@ -167,64 +194,10 @@
         institutions: function () {
           return extractInstitutions(this.attendees);
         }
-      })
-    };
-
-    var ProgramView = {
-      template: '#v-program',
-      computed: _.extend(
-        Vuex.mapGetters(['slots']),
-        Vuex.mapState(['event', 'courses']), {
-      })
-    };
-
-    var ProgramCoursesView = {
-      template: '#v-program-courses',
-      data: function () {
-        return {
-        }
-      },
-      computed: _.extend(
-        Vuex.mapGetters(['slots']),
-        Vuex.mapState(['user', 'event', 'courses']), {
-        }
-      )
-    };
-
-    var ProgramMainView = {
-      template: '#v-program-main',
-      data: function () {
-        return {
-          q: '',
-          dialog: false,
-          filtered: false,
-          conflicts: false,
-          viewAllSessions: false,
-          filters: {
-            topics: []
-          }
-        }
-      },
-      computed: _.extend(
-        Vuex.mapGetters(['slots']),
-        Vuex.mapState(['user', 'event', 'courses', 'keynotes']), {
-        topics: function () {
-          if (!this.event) return [];
-          return extractMetadata(this.courses, 'topics');
-        }
       }),
-      methods: {
-        updateQuery: function (val) {
-          this.q = val;
-        }
+      created: function () {
+        this.$store.commit('getRegistrations');
       }
-    };
-
-    var ProgramKeynotesView = {
-      template: '#v-program-keynotes',
-      computed: _.extend(
-        Vuex.mapState(['event', 'keynotes']), {
-      })
     };
 
     var CourseView = {
@@ -317,6 +290,191 @@
       computed: _.extend(
         Vuex.mapState(['event', 'course']), {
       }),
+    };
+
+    var LogisticsView = {
+      template: '#v-logistics',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+      }),
+    };
+
+    var ProgramView = {
+      template: '#v-program',
+      computed: _.extend(
+        Vuex.mapGetters(['slots']),
+        Vuex.mapState(['event', 'courses']), {
+      })
+    };
+
+    var ProgramCoursesView = {
+      template: '#v-program-courses',
+      data: function () {
+        return {
+        }
+      },
+      computed: _.extend(
+        Vuex.mapGetters(['slots']),
+        Vuex.mapState(['user', 'event', 'courses']), {
+        }
+      )
+    };
+
+    var ProgramMainView = {
+      template: '#v-program-main',
+      data: function () {
+        return {
+          q: '',
+          dialog: false,
+          filtered: false,
+          viewAllSessions: false,
+          filters: {
+            topics: []
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapGetters(['slots']),
+        Vuex.mapState(['user', 'event', 'courses', 'keynotes']), {
+        topics: function () {
+          if (!this.event) return [];
+          return extractMetadata(this.courses, 'topics');
+        }
+      }),
+      methods: {
+        updateQuery: function (val) {
+          this.q = val;
+        }
+      }
+    };
+
+    var ProgramKeynotesView = {
+      template: '#v-program-keynotes',
+      computed: _.extend(
+        Vuex.mapState(['event', 'keynotes']), {
+      })
+    };
+
+    var RegistrationView = {
+      template: '#v-registration',
+      data: function () {
+        return {
+          obj: null
+        }
+      },
+      computed: _.extend(
+        Vuex.mapGetters(['slots']),
+        Vuex.mapState(['countries', 'user', 'event', 'courses']), {
+        countryOptions: function () {
+          var c = this.countries;
+          return _.keys(c).map(function (code) {
+            return {
+              label: c[code],
+              value: code
+            };
+          });
+        },
+        requestType: function () {
+          if (!this.obj) return 'Registration';
+          return {
+            0: 'Application',
+            1: 'Application',
+            2: 'Registration',
+            9: 'Application'
+          }[this.obj.status];
+        },
+        incompleteForm: function () {
+          if (!this.obj) return true;
+          return this.obj.courses.length < this.slots.length
+              || !this.obj.custom_data.profile.country
+              || !this.obj.custom_data.profile.gender
+              || !this.obj.custom_data.profile.institution
+              || !this.obj.custom_data.motivation;
+        },
+        years: function () {
+          return _.range(2005, moment().year());
+        }
+      }),
+      methods: {
+        syncRegistration: function () {
+          var self = this;
+
+          if (!this.event || this.user.registration === undefined) {
+            setTimeout(function () { self.syncRegistration() }, 25);
+            return;
+          };
+
+          if (this.user.registration) {
+            this.obj = _.clone(this.user.registration);
+          } else {
+            this.obj = _.clone({
+              status: (this.event.is_virtual) ? 2 : 0,
+              event: this.event.id,
+              visa_requested: false,
+              courses: [],
+              sessions: [],
+              posters: []
+            });
+          }
+
+          if (!_.has(this.obj, 'custom_data')) { this.$set(this.obj, 'custom_data', {}); }
+
+          if (!this.event.is_virtual) {
+            // Update extra fields
+            if (!_.has(this.obj.custom_data, 'selection')) { this.$set(this.obj.custom_data, 'selection', {}); }
+            if (!_.has(this.obj.custom_data, 'history')) { this.$set(this.obj.custom_data, 'history', []); }
+            if (!_.has(this.obj.custom_data, 'motivation')) { this.$set(this.obj.custom_data, 'motivation', null); }
+            if (!_.has(this.obj.custom_data, 'grant_requested')) { this.$set(this.obj.custom_data, 'grant_requested', false); }
+            if (!_.has(this.obj.custom_data, 'room')) { this.$set(this.obj.custom_data, 'room', {
+              'share': false,
+              'mate': null
+            }); }
+            if (!_.has(this.obj.custom_data, 'profile')) { this.$set(this.obj.custom_data, 'profile', {
+              'student': false,
+              'industry': false,
+              'member_institution': false,
+              'institution': null,
+              'country': null,
+              'advisor': null,
+              'gender': null
+            }); }
+            if (!_.has(this.obj.custom_data, 'poster')) { this.$set(this.obj.custom_data, 'poster', {
+              'present': false,
+              'title': null,
+              'authors': null,
+              'institution': null
+            }); }
+            if (!_.has(this.obj.custom_data, 'visa')) { this.$set(this.obj.custom_data, 'visa', {
+              'birthdate': null,
+              'birthplace': null,
+              'nationality': null,
+              'passport_number': null,
+              'passport_expiration_date': null
+            }); }
+          }
+        },
+        save: function () {
+          var self = this;
+          var method = (this.user.registration) ? 'put' : 'post';
+          var url = (this.user.registration) ? this.user.registration.url : VARS.registrationUrl;
+
+          var rt = this.requestType;
+
+          Hipeac.api.request(method, url, this.obj).then(function (res) {
+            Hipeac.utils.notifySuccess(rt + ' updated.');
+            self.$store.commit('updateRegistration', res.data);
+            self.syncRegistration();
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
+        },
+        updateCourses: function (model) {
+          this.obj.courses = _.values(model);
+        }
+      },
+      created: function () {
+        this.syncRegistration();
+      }
     };
 
     var SessionView = {
@@ -447,13 +605,6 @@
       template: '#v-session-downloads',
       computed: _.extend(
         Vuex.mapState(['event', 'session']), {
-      }),
-    };
-
-    var LogisticsView = {
-      template: '#v-logistics',
-      computed: _.extend(
-        Vuex.mapState(['user', 'event']), {
       }),
     };
 
@@ -618,6 +769,12 @@
           ]
         },
         {
+          name: 'registration',
+          path: '/registration/',
+          pathToRegexpOptions: {strict: true},
+          component: RegistrationView
+        },
+        {
           path: '/venue/',
           pathToRegexpOptions: {strict: true},
           component: VenueView,
@@ -656,7 +813,7 @@
         this.$store.commit('getEvent');
         this.$store.commit('getCourses');
         this.$store.commit('getKeynotes');
-        // this.$store.commit('getRegistrations');
+        this.$store.commit('getRegistration');
       }
     });
   </script>

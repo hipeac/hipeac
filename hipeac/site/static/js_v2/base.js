@@ -247,7 +247,7 @@ var Hipeac = {
     },
     notifySuccess: function (msg) {
       Quasar.plugins.Notify.create({
-        position: 'bottom-left',
+        position: 'bottom',
         timeout: 2500,
         message: msg,
         icon: null

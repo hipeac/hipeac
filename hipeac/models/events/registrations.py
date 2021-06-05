@@ -7,9 +7,9 @@ from django.db import models
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from django.urls import reverse
-from django.utils import timezone
 
 from hipeac.functions import send_task
+from .events import Event
 from .fees import Fee
 
 
@@ -44,6 +44,23 @@ class Registration(models.Model):
     """
     A conference registration for a User.
     """
+
+    STATUS_PENDING = 0
+    STATUS_ACCEPTED_INTERNALLY = 1
+    STATUS_ACCEPTED = 2
+    STATUS_REJECTED = 9
+    STATUS_CHOICES = (
+        (STATUS_PENDING, "Pending"),
+        (STATUS_ACCEPTED_INTERNALLY, "Accepted internally"),
+        (STATUS_ACCEPTED, "Accepted"),
+        (STATUS_REJECTED, "Rejected"),
+    )
+
+    status = models.PositiveSmallIntegerField(
+        choices=STATUS_CHOICES,
+        default=STATUS_ACCEPTED,
+        help_text="Status is only used for physical Summer Schools were grants need to be distributed.",
+    )
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     event = models.ForeignKey("hipeac.Event", on_delete=models.CASCADE, related_name="registrations")
@@ -91,6 +108,9 @@ class Registration(models.Model):
         `base_fee` is only calculated when the registration is created.
         `extra_fees` are recalculated every time.
         """
+        if not self.pk and self.event.type == Event.ACACES and not self.event.is_virtual:
+            self.status = self.STATUS_PENDING
+
         is_early = self.is_early() if self.pk else self.event.is_early()
         if self.fee_type == Fee.STUDENT:
             fee_type = Fee.EARLY_STUDENT if is_early else Fee.LATE_STUDENT
@@ -109,8 +129,6 @@ class Registration(models.Model):
         return self.user_id == user.id
 
     def get_absolute_url(self) -> str:
-        if self.event.type == self.event.ACACES:
-            return reverse("acaces_registration", args=[self.event.year])
         return "".join([self.event.get_absolute_url(), "#/registration/"])
 
     def get_payment_url(self) -> str:
@@ -122,6 +140,10 @@ class Registration(models.Model):
     def get_receipt_url(self) -> str:
         return reverse("registration_receipt", args=[self.id])
 
+    @property
+    def is_accepted(self) -> bool:
+        return self.status == self.STATUS_ACCEPTED
+
     def is_early(self) -> bool:
         if not self.event.registration_early_deadline:
             return False
@@ -129,7 +151,7 @@ class Registration(models.Model):
 
     @property
     def is_paid(self) -> bool:
-        return self.saldo >= 0
+        return self.saldo >= 0 and self.is_accepted
 
     @property
     def remaining_fee(self):
@@ -152,10 +174,14 @@ def registration_post_save(sender, instance, created, *args, **kwargs):
 
         RegistrationPendingNotificator().deleteOne(user_id=instance.user_id, event_id=event.id)
 
+        template, rt, from_email = "events.registrations.created", "registration", "management@hipeac.net"
+        if event.type == Event.ACACES and instance.status == Registration.STATUS_PENDING:
+            template, rt, from_email = "events.registrations.created_acaces", "application", "acaces@hipeac.net"
+
         email = (
-            "events.registrations.created",
-            f"[HiPEAC] Your registration for #{instance.event.hashtag} / {instance.id}",
-            "HiPEAC <management@hipeac.net>",
+            template,
+            f"[HiPEAC] Your {rt} for #{instance.event.hashtag} / {instance.id}",
+            f"HiPEAC <{from_email}>",
             [instance.user.email],
             {
                 "event_city": instance.event.city,
