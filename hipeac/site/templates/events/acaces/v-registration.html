@@ -137,7 +137,7 @@
 
         <div class="text-center">
           <q-btn unelevated size="16px" @click.prevent="save" :color="(obj.id) ? 'primary' : 'positive'" :disabled="incompleteForm" class="q-my-xl"><span v-if="obj.id">Update</span><span v-else>Submit</span>&nbsp;{{ requestType }}</q-btn>
-          <p v-if="incompleteForm" class="text-caption text-orange">Make sure you have made your course selection and filled the required information.</p>
+          <p v-if="incompleteForm" class="text-body2 text-red">Make sure you have included all required information.<br><strong>Missing:</strong><span v-if="!this.obj.custom_data.profile.country"> - country</span><span v-if="!this.obj.custom_data.profile.institution"> - affiliation</span><span v-if="!this.obj.custom_data.profile.gender"> - gender</span><span v-if="!this.obj.custom_data.motivation"> - motivation</span><span v-if="this.obj.courses.length < this.slots.length"> - course selection</span></p>
         </div>
       </div>
 
