@@ -308,11 +308,24 @@ Vue.component('skeleton-text', {
   }
 });
 
-Vue.component('hipeac-avatar-item', {
-  props: ['profile'],
+Vue.component('hipeac-profile-item', {
+  props: {
+    profile: {
+      required: true,
+      type: Object
+    },
+    dense: {
+      type: Boolean,
+      default: false
+    },
+    showAvatar: {
+      type: Boolean,
+      default: true
+    }
+  },
   template: `
-    <q-item class="q-pa-none">
-      <q-item-section avatar>
+    <q-item :dense="dense" class="q-pa-none">
+      <q-item-section avatar v-if="showAvatar">
         <q-avatar v-if="profile.avatar_url" size="64px">
           <img :src="profile.avatar_url">
         </q-avatar>

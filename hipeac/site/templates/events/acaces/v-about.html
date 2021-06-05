@@ -57,20 +57,7 @@
             <p v-if="event.is_virtual" class="alert alert-warning text-center px-4" role="alert">
               <i class="material-icons">timelapse</i><br>This <strong>virtual event</strong> will be held between {{ event.startDate.format('dddd') }}, <span class="text-nowrap">{{ event.startDate.format('MMMM D') }}</span> and {{ event.endDate.format('dddd') }}, <span class="text-nowrap">{{ event.endDate.format('MMMM D') }}</span>. See the <a is="router-link" :to="{name: 'logistics'}" class="inherit">"Logistics" tab</a> for more practical information.
             </p>
-            <display-4 class="mb-2 mt-4">Steering Committee</display-4>
-            <ul class="q-pl-md text-body2">
-              <li>Koen De Bosschere, Ghent University, Belgium (Chair)</li>
-              <li>Emre Ozer, ARM, UK</li>
-              <li>Mateo Valero, BSC, Spain</li>
-              <li>Marc Duranton, CEA, France</li>
-              <li>Luca Fanucci, University of Pisa</li>
-              <li>Per Stenstrom, Chalmers, Sweden</li>
-              <li>Mike O'Boyle, University of Edinburgh, UK</li>
-              <li>Manolis Katevenis, FORTH, Greece</li>
-              <li>Olivier Zendra, INRIA, France</li>
-              <li>Rainer Leupers, RWTH Aachen, Germany</li>
-              <li>Daniel Gracia Perez, Thales R&T, France</li>
-            </ul>
+            <hipeac-committees :committees="committees"></hipeac-committees>
           </div>
         </div>
       </q-card-section>

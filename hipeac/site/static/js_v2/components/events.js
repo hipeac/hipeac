@@ -90,7 +90,7 @@ Vue.component('hipeac-program', {
               </div>
             </div>
             <div class="col-10 border-left q-py-md q-pl-lg col-pointer" :class="{'border-top': !session.showTime}" @click="$router.push({name: session.route, params: {id: session.id}})">
-              <hipeac-avatar-item v-if="session.route == 'session' && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" :profile="keynotesDict[session.id].main_speaker.profile" class="q-px-none q-pt-none q-mb-sm"></hipeac-avatar-item>
+              <hipeac-profile-item v-if="session.route == 'session' && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" :profile="keynotesDict[session.id].main_speaker.profile" class="q-px-none q-pt-none q-mb-sm"></hipeac-profile-item>
               <display-3 class="q-mb-xs">{{ session.title }}</display-3>
               <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
                 <li>
@@ -319,6 +319,41 @@ Vue.component('hipeac-session-breaks', {
       });
 
       return output;
+    }
+  }
+});
+
+Vue.component('hipeac-committees', {
+  props: {
+    committees: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
+    showAvatar: {
+      type: Boolean,
+      default: false
+    }
+  },
+  template: `
+    <div v-if="committees.length">
+      <div v-for="committee in sortedCommittees" :key="committee.id" class="q-mb-lg">
+        <display-4>{{ committee.name }}</display-4>
+        <q-list>
+          <hipeac-profile-item v-for="user in committee.members" :key="user.id" :profile="user.profile" :showAvatar="showAvatar"></hipeac-profile-item>
+        </q-list>
+      </div>
+    </div>
+  `,
+  computed: {
+    sortedCommittees: function () {
+      return this.committees.map(function (obj) {
+        obj.members = obj.members.sort(function (a, b) {
+          return Hipeac.utils.sortText(a.profile.name, b.profile.name);
+        });
+        return obj;
+      });
     }
   }
 });

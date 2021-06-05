@@ -53,7 +53,7 @@
 <script type="text/x-template" id="v-session-main">
 {% verbatim %}
   <q-card-section>
-    <hipeac-avatar-item v-if="session.isKeynote && session.main_speaker" :profile="session.main_speaker.profile" class="q-mb-md" :class="{'float-right q-ml-md': $q.screen.gt.sm}"></hipeac-avatar-item>
+    <hipeac-profile-item v-if="session.isKeynote && session.main_speaker" :profile="session.main_speaker.profile" class="q-mb-md" :class="{'float-right q-ml-md': $q.screen.gt.sm}"></hipeac-profile-item>
     <display-2 class="q-mb-md">{{ session.title }}</display-2>
     <marked v-if="session.summary" :text="session.summary"></marked>
     <skeleton-text v-else :lines="5"></skeleton-text>
@@ -72,7 +72,7 @@
 <script type="text/x-template" id="v-session-bio">
 {% verbatim %}
   <q-card-section>
-    <hipeac-avatar-item v-if="session.isKeynote && session.main_speaker" :profile="session.main_speaker.profile" class="q-mb-md" :class="{'float-right q-ml-md': $q.screen.gt.sm}"></hipeac-avatar-item>
+    <hipeac-profile-item v-if="session.isKeynote && session.main_speaker" :profile="session.main_speaker.profile" class="q-mb-md" :class="{'float-right q-ml-md': $q.screen.gt.sm}"></hipeac-profile-item>
     <marked :text="session.main_speaker.profile.bio"></marked>
   </q-card-section>
 {% endverbatim %}

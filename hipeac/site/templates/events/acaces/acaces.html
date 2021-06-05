@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
+  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
   <router-view></router-view>
   <q-page-sticky position="bottom-right" :offset="[18, 18]">
     <q-fab v-if="!$q.screen.gt.sm" icon="menu" direction="up" vertical-actions-align="right" color="primary">
@@ -72,7 +72,7 @@
 {% block scripts %}
   {{ countries | json_script:"countries-data" }}
 {% compress js file events_acaces %}
-  <script src="{% static 'js_v2/components/program.js' %}"></script>
+  <script src="{% static 'js_v2/components/events.js' %}"></script>
   <script src="{% static 'js_v2/components/users.js' %}"></script>
   <script>
     var VARS = document.querySelector('#vars').dataset;
@@ -81,6 +81,7 @@
       state: {
         countries: JSON.parse(document.getElementById('countries-data').textContent),
         event: null,
+        committees: [],
         courses: [],
         keynotes: [],
         attendees: [],
@@ -127,6 +128,11 @@
         }
       },
       mutations: {
+        getCommittees: function (state) {
+          Hipeac.api.get(VARS.committeesUrl).then(function (res) {
+            state.committees = Object.freeze(res.data);
+          });
+        },
         getEvent: function (state) {
           Hipeac.api.get(VARS.eventUrl).then(function (res) {
             state.event = Object.freeze(Hipeac.map.event(res.data));
@@ -183,8 +189,11 @@
     var AboutView = {
       template: '#v-about',
       computed: _.extend(
-        Vuex.mapState(['user', 'event', 'courses']), {
-      })
+        Vuex.mapState(['user', 'event', 'committees', 'courses']), {
+      }),
+      created: function () {
+        this.$store.commit('getCommittees');
+      }
     };
 
     var AttendeesView = {

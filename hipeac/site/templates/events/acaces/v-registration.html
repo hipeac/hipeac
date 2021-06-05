@@ -145,7 +145,7 @@
 
     <q-card-section v-if="obj && obj.id" class="text-caption">
       <q-separator class="q-mb-lg"></q-separator>
-      <strong>{{ requestType }} ID:</strong> {{ obj.uuid }}<br>
+      <strong>{{ requestType }} number:</strong> {{ obj.id }}<br>
       <strong>{{ requestType }} date:</strong> {{ obj.createdAt.format('LLLL') }}<br>
       <strong>Last updated:</strong> {{ obj.updatedAt.format('LLLL') }}<br>
       <span v-if="obj.status == 0"><strong>Appplication status:</strong>&nbsp;<q-badge color="yellow" text-color="black" label="Well received"></q-badge><br>

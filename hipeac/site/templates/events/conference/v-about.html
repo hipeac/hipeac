@@ -100,19 +100,7 @@
       </div>
       <div class="col-12 col-md-6">
         <q-card class="hipeac__card text-sm" v-if="committees.length">
-          <h5 class="text-h6 q-mb-md">Committees</h5>
-          <q-separator></q-separator>
-          <div class="row">
-            <div v-for="committee in committees" class="col-12 col-md-6">
-              <strong>{{ committee.name }}</strong>
-              <ul class="list-unstyled">
-                <li v-for="user in committee.members">
-                  <span>{{ user.profile.name }}</span>
-                  <em v-if="user.profile.institution">, {{ user.profile.institution.short_name }}</em>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <hipeac-committees :committees="committees"></hipeac-committees>
         </q-card>
       </div>
     </div>

@@ -37,7 +37,7 @@
               <q-separator v-if="idx != 0" class="q-my-lg"></q-separator>
               <display-3 class="q-mt-lg q-mb-md">{{ course.title }}</display-3>
               <template v-if="course.teachers.length">
-                <hipeac-avatar-item v-for="teacher in course.teachers" :key="teacher.id" :profile="teacher.profile" class="q-mb-md"></hipeac-avatar-item>
+                <hipeac-profile-item v-for="teacher in course.teachers" :key="teacher.id" :profile="teacher.profile" class="q-mb-md"></hipeac-profile-item>
               </template>
             </div>
           </div>

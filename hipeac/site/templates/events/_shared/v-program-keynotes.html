@@ -5,7 +5,7 @@
       <div v-for="keynote in keynotes" class="col-12 col-md">
         <q-card class="hipeac__card column full-height pointer" @click="$router.push({name: 'session', params: {id: keynote.id}})" :class="{'q-pa-md': $q.screen.gt.xs }">
           <q-card-section>
-            <hipeac-avatar-item v-if="keynote.main_speaker" :profile="keynote.main_speaker.profile" class="q-mb-md"></hipeac-avatar-item>
+            <hipeac-profile-item v-if="keynote.main_speaker" :profile="keynote.main_speaker.profile" class="q-mb-md"></hipeac-profile-item>
             <display-2 class="q-mt-sm q-mb-xs">{{ keynote.title }}</display-2>
           </q-card-section>
           <q-card-section>

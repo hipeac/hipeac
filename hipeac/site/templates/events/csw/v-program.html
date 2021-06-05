@@ -53,7 +53,7 @@
             </div>
           </div>
           <div class="col-10 border-left q-py-lg q-pl-lg col-pointer" :class="{'border-top': !session.showTime}" @click="$router.push({name: 'session', params: {id: session.id}})">
-            <hipeac-avatar-item v-if="session.isKeynote && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" :profile="keynotesDict[session.id].main_speaker.profile" class="q-px-none q-pt-none q-mb-sm"></hipeac-avatar-item>
+            <hipeac-profile-item v-if="session.isKeynote && _.has(keynotesDict, session.id) && keynotesDict[session.id].main_speaker" :profile="keynotesDict[session.id].main_speaker.profile" class="q-px-none q-pt-none q-mb-sm"></hipeac-profile-item>
             <display-3 class="q-mb-xs">{{ session.title }}</display-3>
             <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
               <li>
