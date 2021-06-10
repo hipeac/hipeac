@@ -329,3 +329,7 @@ img.jobs__logo {
 .display-underline span {
   background: linear-gradient(to bottom, transparent 85%, #ffe800 1%, #ffe800);
 }
+
+.q-toggle.transparent.disabled {
+  opacity: 0.2 !important;
+}

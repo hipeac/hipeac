@@ -14,7 +14,7 @@
         <q-toolbar class="container wide">
           <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
           <q-tabs stretch inline-label no-caps mobile-arrows>
-            <q-route-tab exact :to="{name: 'registrations'}" label="Registrations"></q-route-tab>
+            <q-route-tab :to="{name: 'registrations'}" label="Registrations"></q-route-tab>
             <q-route-tab :to="{name: 'grants'}" label="Grants"></q-route-tab>
             <!--<q-route-tab :to="{name: 'emails'}" label="Emails"></q-route-tab>-->
             <q-route-tab :to="{name: 'stats'}" label="Stats"></q-route-tab>
@@ -39,7 +39,7 @@
 {% block scripts %}
   {{ countries | json_script:"countries-data" }}
 {% compress js file events_acaces_management %}
-  <script src="{% static 'js_v2/components/registrations.js' %}"></script>
+  <script src="{% static 'js_v2/components/acaces.js' %}"></script>
   <script>
     var VARS = document.querySelector('#vars').dataset;
 
@@ -51,41 +51,57 @@
         registrations: []
       },
       getters: {
-        slots: function (state) {
-          if (!state.courses.length) return [];
+        grantsPerCountry: function (state) {
+          var countries = {};
 
-          var slots = {};
-          _.each(state.courses, function (course) {
+          if (!state.registrations.length || !state.event) return countries;
+
+          _.each(state.registrations, function (obj) {
             try {
-              var s = course.custom_data.slot;
-              if (!_.has(slots, s) && s) {
-                slots[s] = [];
+              var c = obj.user.profile.institution.country.code || obj.user.custom_data.profile.country;
+              if (!_.has(countries, c)) {
+                countries[c] = {
+                  applicants: 1,
+                  grants: state.event.custom_data.grants_per_country[c],
+                  grants_requested: (obj.custom_data.grant_requested) ? 1 : 0,
+                  grants_assigned: (_.contains(state.event.custom_data.granted_ids, obj.id)) ? 1 : 0,
+                  country: {
+                    code: c,
+                    name: state.countries[c]
+                  }
+                };
+              } else {
+                countries[c].applicants++;
+                if (obj.custom_data.grant_requested) {
+                  countries[c].grants_requested++;
+                }
+                if (_.contains(state.event.custom_data.granted_ids, obj.id)) {
+                  countries[c].grants_assigned++;
+                }
               }
-              slots[s].push({
-                id: course.id,
-                title: course.title,
-                teachers: course.teachers,
-                teachers_str: course.teachers.map(function (o) {
-                  return o.profile.name;
-                }).join(', ')
-              });
-            } catch (err) {}
+            } catch (err) {
+            }
           });
 
-          if (_.size(slots) == 0) return [];
-
-          return _.map(_.map(_.keys(slots), Number).sort(), function (k) {
-            return {
-              id: k,
-              color: ['white', 'blue', 'red', 'green', 'orange', 'purple', 'cyan'][k],
-              courses: _.sortBy(slots[k], 'title')
-            };
-          });
+          return countries;
         }
       },
       mutations: {
         getEvent: function (state) {
           Hipeac.api.get(VARS.eventUrl).then(function (res) {
+            if (!_.has(res.data, 'custom_data')) {
+              res.data.custom_data = {
+                granted: [],
+                grants_per_country: {}
+              };
+            }
+
+            _.each(state.countries, function (value, key, list) {
+              if (!_.has(res.data.custom_data.grants_per_country, key)) {
+                res.data.custom_data.grants_per_country[key] = 0;
+              }
+            });
+
             state.event = Object.freeze(Hipeac.map.event(res.data));
           });
         },
@@ -124,48 +140,20 @@
         }
       },
       computed: _.extend(
+        Vuex.mapGetters(['grantsPerCountry']),
         Vuex.mapState(['countries', 'event', 'registrations']), {
-        countriesWithReg: function () {
-          var countries = {};
-          var self = this;
-
-          if (!this.registrations.length) return countries;
-
-          _.each(this.registrations, function (obj) {
-            try {
-              var c = obj.user.profile.institution.country.code || obj.user.custom_data.profile.country;
-              if (!_.has(countries, c)) {
-                countries[c] = {
-                  count: 1,
-                  country: {
-                    code: c,
-                    name: self.countries[c]
-                  }
-                };
-              } else {
-                countries[c].count++;
-              }
-            } catch (err) {
-            }
-          });
-
-          return _.values(countries).sort(function(a, b) {
-            return b.count - a.count || Hipeac.utils.sortText(a.country.name, b.country.name);
-          });
+        stats: function () {
+          var data = _.values(this.grantsPerCountry);
+          if (!data.length) return null;
+          return {
+            applicants: data.reduce(function (s, f) { return s + f.applicants }, 0),
+            grants_available: data.reduce(function (s, f) { return s + f.grants }, 0),
+            grants_requested: data.reduce(function (s, f) { return s + f.grants_requested }, 0),
+            grants_assigned: data.reduce(function (s, f) { return s + f.grants_assigned }, 0)
+          };
         }
       }),
       methods: {
-        save: function () {
-          var self = this;
-
-          Hipeac.api.request('put', VARS.eventUrl, this.obj).then(function (res) {
-            Hipeac.utils.notifySuccess('Grants updated.');
-            self.$store.commit('updateEvent', res.data);
-            self.syncEvent();
-          }).catch(function (error) {
-            Hipeac.utils.notifyApiError(error);
-          });
-        },
         syncEvent: function () {
           var self = this;
 
@@ -175,20 +163,30 @@
           };
 
           this.obj = _.clone(this.event);
+        },
+        updateEvent: _.debounce(function () {
+          var self = this;
 
-          if (!_.has(this.obj, 'custom_data')) {
-            this.$set(this.obj, 'custom_data', {});
-          }
-
-          if (!_.has(this.obj.custom_data, 'max_grants_per_country')) {
-            this.$set(this.obj.custom_data, 'max_grants_per_country', {});
-          }
-
-          _.each(this.countries, function (value, key, list) {
-            if (!_.has(self.obj.custom_data.max_grants_per_country, key)) {
-              self.$set(self.obj.custom_data.max_grants_per_country, key, 0);
-            }
+          Hipeac.api.request('put', VARS.eventUrl, this.obj).then(function (res) {
+            Hipeac.utils.notifySuccess('Grants updated.');
+            self.$store.commit('updateEvent', res.data);
+            self.syncEvent();
+          }).catch(function (error) {
+            console.log(error);
+            Hipeac.utils.notifyApiError(error);
           });
+        }, 750),
+        updateGrants: function (code, operator) {
+          if (operator == '+') this.obj.custom_data.grants_per_country[code]++;
+          else if (this.obj.custom_data.grants_per_country[code] == this.grantsPerCountry[code].grants_assigned) return
+          else this.obj.custom_data.grants_per_country[code]--;
+
+          this.updateEvent();
+        },
+        clickable: function (code) {
+          return this.obj
+              && this.grantsPerCountry
+              && this.obj.custom_data.grants_per_country[code] > this.grantsPerCountry[code].grants_assigned;
         }
       },
       created: function () {
@@ -206,7 +204,7 @@
         }
       },
       computed: _.extend(
-        Vuex.mapGetters(['slots']),
+        Vuex.mapGetters(['grantsPerCountry']),
         Vuex.mapState(['event', 'registrations']), {
         items: function () {
           if (this.query == '') return this.registrations;
@@ -219,11 +217,29 @@
           });
         }
       }),
+      methods: {
+        updateGrants: function (data) {
+          var self = this;
+          this.$set(this.event.custom_data, 'granted_ids', data);
+          Hipeac.api.request('put', VARS.eventUrl, this.event).then(function (res) {
+            Hipeac.utils.notifySuccess('Grants updated.');
+            self.$store.commit('updateEvent', res.data);
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
+        }
+      },
       watch: {
         query: function (val, oldVal) {
           if (val != '') this.$router.replace({query: {q: val}});
           else this.$router.replace({query: {q: undefined}});
         }
+      },
+      created: function () {
+        this.$root.$on('granted-ids-updated', this.updateGrants);
+      },
+      beforeDestroy () {
+        this.$root.$off('granted-ids-updated');
       }
     };
 
