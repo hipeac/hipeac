@@ -3,6 +3,8 @@ $hipeac-yellow: #ffe800;
 $hipeac-light-yellow: #fef9ab;
 $hipeac-light-blue: lightblue;
 
+$management-color: darkslategrey;
+
 $primary-color: $hipeac-blue;
 $header-color: #0b0b0b;
 $text-color: var(--q-color-dark) !important;
@@ -72,6 +74,10 @@ html, body {
       padding: 0;
     }
   }
+
+  .container.wide {
+    max-width: 99.5%;
+  }
 }
 
 .hipeac__header.q-header--bordered {
@@ -98,7 +104,7 @@ html, body {
   }
 }
 
-.hipeac__submenu {
+.hipeac__submenu, .hipeac__submenu__management {
   background-color: $primary-color;
   z-index: 1000;
 
@@ -115,6 +121,14 @@ html, body {
 
   .q-tab--active .q-tab__label {
     font-weight: $font-weight-bold;
+  }
+}
+
+.hipeac__submenu__management {
+  background-color: $management-color;
+
+  .q-toolbar {
+    background-color: $management-color;
   }
 }
 

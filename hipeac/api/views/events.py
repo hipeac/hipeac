@@ -6,7 +6,13 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
 from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import B2b, Course, Event, Registration, Roadshow, Session, SessionAccessLink
-from ..permissions import B2bPermission, HasAdminPermissionOrReadOnly, HasRegistrationForEvent, RegistrationPermission
+from ..permissions import (
+    B2bPermission,
+    HasAdminPermissionOrReadOnly,
+    HasManagementPermission,
+    HasRegistrationForEvent,
+    RegistrationPermission,
+)
 from ..serializers import (
     ArticleListSerializer,
     AuthRegistrationSerializer,
@@ -14,9 +20,11 @@ from ..serializers import (
     CommitteeListSerializer,
     CourseListSerializer,
     EventListSerializer,
+    EventManagementSerializer,
     EventSerializer,
     JobNestedSerializer,
     RegistrationListSerializer,
+    RegistrationManagementSerializer,
     RoadshowListSerializer,
     RoadshowSerializer,
     SessionListSerializer,
@@ -126,6 +134,39 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
     def videos(self, request, *args, **kwargs):
         self.queryset = self.get_object().videos.all()
+        return super().list(request, *args, **kwargs)
+
+
+class EventManagementViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Event.objects.all()
+    permission_classes = (HasManagementPermission,)
+    serializer_class = EventManagementSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        self.queryset = self.queryset.select_related("coordinating_institution").prefetch_related(
+            "breaks",
+            "fees",
+            "links",
+            "venues__rooms",
+            "sponsors__institution",
+            "sponsors__project",
+            "sessions__session_type",
+        )
+        return super().retrieve(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        serializer_class=RegistrationManagementSerializer,
+    )
+    def registrations(self, request, *args, **kwargs):
+        self.queryset = (
+            self.get_object()
+            .registrations.select_related("user__profile")
+            .prefetch_related("user__profile__institution", "user__profile__second_institution")
+            .prefetch_related("user__profile__projects")
+        )
+
         return super().list(request, *args, **kwargs)
 
 

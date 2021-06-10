@@ -143,12 +143,14 @@ var Hipeac = {
         });
       }
 
-      obj.sortedSponsors = _.sortBy(obj.sponsors.map(function (o) {
-        return {
-          id: o.id,
-          name: (o.institution) ? o.institution.name : o.project.acronym + ' (EU project)'
-        };
-      }), 'name');
+      if (obj.sessions && obj.sessions.length) {
+        obj.sortedSponsors = _.sortBy(obj.sponsors.map(function (o) {
+          return {
+            id: o.id,
+            name: (o.institution) ? o.institution.name : o.project.acronym + ' (EU project)'
+          };
+        }), 'name');
+      }
 
       return obj;
     },

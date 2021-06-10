@@ -1,0 +1,302 @@
+{% extends 'v2/layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+
+{% block page_container %}
+  <q-page-container>
+    <q-page style="padding-top: 56px">
+      <q-page-sticky expand position="top" class="hipeac__submenu__management">
+        <q-toolbar class="container wide">
+          <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
+          <q-tabs stretch inline-label no-caps mobile-arrows>
+            <q-route-tab exact :to="{name: 'registrations'}" label="Registrations"></q-route-tab>
+            <q-route-tab :to="{name: 'grants'}" label="Grants"></q-route-tab>
+            <!--<q-route-tab :to="{name: 'emails'}" label="Emails"></q-route-tab>-->
+            <q-route-tab :to="{name: 'stats'}" label="Stats"></q-route-tab>
+          </q-tabs>
+        </q-toolbar>
+      </q-page-sticky>
+      <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-management-detail' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registrations-url="{% url 'v1:event-management-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
+      <div class="container wide">
+        <router-view ></router-view>
+      </div>
+    </q-page>
+  </q-page-container>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-emails.html' %}
+  {% include './v-grants.html' %}
+  {% include './v-registrations.html' %}
+  {% include './v-stats.html' %}
+{% endblock %}
+
+{% block scripts %}
+  {{ countries | json_script:"countries-data" }}
+{% compress js file events_acaces_management %}
+  <script src="{% static 'js_v2/components/registrations.js' %}"></script>
+  <script>
+    var VARS = document.querySelector('#vars').dataset;
+
+    var Store = new Vuex.Store({
+      state: {
+        countries: JSON.parse(document.getElementById('countries-data').textContent),
+        event: null,
+        courses: [],
+        registrations: []
+      },
+      getters: {
+        slots: function (state) {
+          if (!state.courses.length) return [];
+
+          var slots = {};
+          _.each(state.courses, function (course) {
+            try {
+              var s = course.custom_data.slot;
+              if (!_.has(slots, s) && s) {
+                slots[s] = [];
+              }
+              slots[s].push({
+                id: course.id,
+                title: course.title,
+                teachers: course.teachers,
+                teachers_str: course.teachers.map(function (o) {
+                  return o.profile.name;
+                }).join(', ')
+              });
+            } catch (err) {}
+          });
+
+          if (_.size(slots) == 0) return [];
+
+          return _.map(_.map(_.keys(slots), Number).sort(), function (k) {
+            return {
+              id: k,
+              color: ['white', 'blue', 'red', 'green', 'orange', 'purple', 'cyan'][k],
+              courses: _.sortBy(slots[k], 'title')
+            };
+          });
+        }
+      },
+      mutations: {
+        getEvent: function (state) {
+          Hipeac.api.get(VARS.eventUrl).then(function (res) {
+            state.event = Object.freeze(Hipeac.map.event(res.data));
+          });
+        },
+        getCourses: function (state) {
+          Hipeac.api.get(VARS.coursesUrl).then(function (res) {
+            state.courses = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.course(obj);
+            }));
+          });
+        },
+        getRegistrations: function (state) {
+          if (!USER_IS_AUTHENTICATED) return;
+
+          Hipeac.api.get(VARS.registrationsUrl).then(function (res) {
+            state.registrations = Object.freeze(res.data);
+          });
+        },
+        updateEvent: function (state, data) {
+          state.event = Object.freeze(data);
+        }
+      }
+    });
+
+    var EmailsView = {
+      template: '#v-emails',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var GrantsView = {
+      template: '#v-grants',
+      data: function () {
+        return {
+          obj: null
+        }
+      },
+      computed: _.extend(
+        Vuex.mapState(['countries', 'event', 'registrations']), {
+        countriesWithReg: function () {
+          var countries = {};
+          var self = this;
+
+          if (!this.registrations.length) return countries;
+
+          _.each(this.registrations, function (obj) {
+            try {
+              var c = obj.user.profile.institution.country.code || obj.user.custom_data.profile.country;
+              if (!_.has(countries, c)) {
+                countries[c] = {
+                  count: 1,
+                  country: {
+                    code: c,
+                    name: self.countries[c]
+                  }
+                };
+              } else {
+                countries[c].count++;
+              }
+            } catch (err) {
+            }
+          });
+
+          return _.values(countries).sort(function(a, b) {
+            return b.count - a.count || Hipeac.utils.sortText(a.country.name, b.country.name);
+          });
+        }
+      }),
+      methods: {
+        save: function () {
+          var self = this;
+
+          Hipeac.api.request('put', VARS.eventUrl, this.obj).then(function (res) {
+            Hipeac.utils.notifySuccess('Grants updated.');
+            self.$store.commit('updateEvent', res.data);
+            self.syncEvent();
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
+        },
+        syncEvent: function () {
+          var self = this;
+
+          if (!this.event) {
+            setTimeout(function () { self.syncEvent() }, 25);
+            return;
+          };
+
+          this.obj = _.clone(this.event);
+
+          if (!_.has(this.obj, 'custom_data')) {
+            this.$set(this.obj, 'custom_data', {});
+          }
+
+          if (!_.has(this.obj.custom_data, 'max_grants_per_country')) {
+            this.$set(this.obj.custom_data, 'max_grants_per_country', {});
+          }
+
+          _.each(this.countries, function (value, key, list) {
+            if (!_.has(self.obj.custom_data.max_grants_per_country, key)) {
+              self.$set(self.obj.custom_data.max_grants_per_country, key, 0);
+            }
+          });
+        }
+      },
+      created: function () {
+        this.syncEvent();
+      }
+    };
+
+    var RegistrationsView = {
+      template: '#v-registrations',
+      props: ['q', 'uuid'],
+      data: function () {
+        return {
+          dialogVisible: false,
+          query: this.q || ''
+        }
+      },
+      computed: _.extend(
+        Vuex.mapGetters(['slots']),
+        Vuex.mapState(['event', 'registrations']), {
+        items: function () {
+          if (this.query == '') return this.registrations;
+          var qs = this.query.toLowerCase().split(' ');
+
+          return this.registrations.filter(function (obj) {
+            return _.every(qs, function (q) {
+              return obj.q.indexOf(q) !== -1;
+            });
+          });
+        }
+      }),
+      watch: {
+        query: function (val, oldVal) {
+          if (val != '') this.$router.replace({query: {q: val}});
+          else this.$router.replace({query: {q: undefined}});
+        }
+      }
+    };
+
+    var StatsView = {
+      template: '#v-stats',
+      computed: _.extend(
+        Vuex.mapGetters(['slots']),
+        Vuex.mapState(['event']), {
+      })
+    };
+
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      scrollBehavior: function (to, from) {
+        if (from.name.startsWith('course') || from.name.startsWith('session')) return;
+        return {x: 0, y: 0};
+      },
+      routes: [
+        {
+            path: '/',
+            redirect: {name: 'registrations'}
+        },
+        {
+          name: 'registrations',
+          path: '/r/:uuid?/',
+          pathToRegexpOptions: {strict: true},
+          component: RegistrationsView,
+          props: function (route) {
+            return {
+              q: route.query.q,
+              uuid: route.params.uuid
+            };
+          }
+        },
+        {
+          name: 'emails',
+          path: '/emails/',
+          pathToRegexpOptions: {strict: true},
+          component: EmailsView
+        },
+        {
+          name: 'grants',
+          path: '/grants/',
+          pathToRegexpOptions: {strict: true},
+          component: GrantsView
+        },
+        {
+          name: 'stats',
+          path: '/stats/',
+          pathToRegexpOptions: {strict: true},
+          component: StatsView
+        }
+      ]
+    });
+
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      }),
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      },
+      created: function () {
+        this.$store.commit('getEvent');
+        this.$store.commit('getRegistrations');
+        this.$store.commit('getCourses');
+      }
+    });
+  </script>
+{% endcompress %}
+{% endblock %}

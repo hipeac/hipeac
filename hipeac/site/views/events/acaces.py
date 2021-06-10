@@ -32,11 +32,15 @@ class AcacesDetail(EventDetail):
         return context
 
 
-class AcacesRegistration(AcacesDetail):
-    template_name = "events/acaces/registration.html"
+class AcacesManagement(AcacesDetail):
+    template_name = "events/acaces/management/management.html"
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.groups.filter(name="Management").exists():
+            messages.error(request, "You don't have the necessary permissions to view this page.")
+            raise PermissionDenied
+
         return super().dispatch(request, *args, **kwargs)
 
 

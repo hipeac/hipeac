@@ -24,12 +24,13 @@
         <q-route-tab exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
       {% endif %}-->
       <q-route-tab v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>
+      <private-btn v-if="managementUrl" :url="managementUrl" icon="admin_panel_settings" target="acaces_management"></private-btn>
     </q-tabs>
   </q-toolbar>
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
+  <div id="vars" data-management-url="{% url 'acaces_management' event.year %}" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
   <router-view></router-view>
   <q-page-sticky position="bottom-right" :offset="[18, 18]">
     <q-fab v-if="!$q.screen.gt.sm" icon="menu" direction="up" vertical-actions-align="right" color="primary">
@@ -807,6 +808,11 @@
 
     new Vue({
       el: '#vue',
+      data: function () {
+        return {
+          managementUrl: VARS.managementUrl,
+        }
+      },
       store: Store,
       router: Router,
       computed: _.extend(

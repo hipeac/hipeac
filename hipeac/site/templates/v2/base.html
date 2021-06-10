@@ -10,6 +10,7 @@
     {% compress css file quasar %}
       <link href="{% static 'vendor_v2/quasar@1.14.7/quasar.min.css' %}" type="text/css" rel="stylesheet">
       <link href="{% static 'scss/v2_base.scss' %}" type="text/x-scss" rel="stylesheet">
+      <link href="{% static 'css/flags.css' %}" type="text/css" rel="stylesheet">
     {% endcompress %}
     {% block styles %}{% endblock %}
     <title>{% block head_title %}HiPEAC{% endblock %}</title>

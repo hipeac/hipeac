@@ -24,7 +24,7 @@ from hipeac.models import (
 from .generic import LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
-from .users import UserPublicMiniSerializer, UserPublicSerializer
+from .users import UserManagementSerializer, UserPublicMiniSerializer, UserPublicSerializer
 
 
 """
@@ -114,6 +114,15 @@ class AuthRegistrationSerializer(WritableNestedModelSerializer):
         model = Registration
         exclude = ("user", "paid", "paid_via_invoice")
         write_only_fields = ("event",)
+        read_only_fields = ("base_fee", "extra_fees", "saldo", "invoice_sent", "visa_sent", "status")
+
+
+class RegistrationManagementSerializer(AuthRegistrationSerializer):
+    user = UserManagementSerializer()
+
+    class Meta:
+        model = Registration
+        exclude = ("event",)
         read_only_fields = ("base_fee", "extra_fees", "saldo", "invoice_sent", "visa_sent", "status")
 
 
@@ -209,11 +218,18 @@ class EventNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        exclude = ("coordinating_institution", "venues", "logistics", "image")
+        exclude = ("coordinating_institution", "venues", "logistics", "image", "custom_data")
 
 
 class EventListSerializer(EventNestedSerializer):
     pass
+
+
+class EventManagementSerializer(EventNestedSerializer):
+
+    class Meta:
+        model = Event
+        exclude = ("coordinating_institution", "venues", "logistics", "image")
 
 
 class EventSerializer(EventNestedSerializer):

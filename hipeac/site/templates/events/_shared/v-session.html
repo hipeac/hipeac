@@ -14,7 +14,7 @@
             <q-route-tab v-if="user.registration" :to="{name: 'sessionAttendees', params: {id: id}}" label="Attendees"></q-route-tab>
           </q-tabs>
           <q-space></q-space>
-          <editor-btn v-if="session.editor_href" :url="session.editor_href" target="_blank"></editor-btn>
+          <private-btn v-if="session.editor_href" :url="session.editor_href" target="_blank"></private-btn>
           <q-btn flat round @click="dialog = false" icon="close"></q-btn>
         </q-toolbar>
         <div :class="{'q-pa-md': $q.screen.gt.sm}">

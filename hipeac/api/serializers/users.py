@@ -131,3 +131,14 @@ class AuthUserSerializer(NestedUpdateMixin, serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         exclude = ("password", "is_active", "is_staff", "is_superuser", "groups", "user_permissions")
+
+
+class UserManagementSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(read_only=True)
+    date_joined = serializers.DateTimeField(read_only=True)
+    last_login = serializers.DateTimeField(read_only=True)
+    profile = ProfileMiniSerializer()
+
+    class Meta:
+        model = get_user_model()
+        exclude = ("password", "is_active", "is_staff", "is_superuser", "groups", "user_permissions")

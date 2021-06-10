@@ -1,0 +1,9 @@
+<script type="text/x-template" id="v-registrations">
+{% verbatim %}
+  <q-card v-if="event && registrations.length" class="hipeac__card q-my-lg">
+    <q-card-section>
+      <acaces-registrations-table :data="items" :uuid="uuid"></acaces-registrations-table>
+    </q-card-section>
+  </q-card>
+{% endverbatim %}
+</script>

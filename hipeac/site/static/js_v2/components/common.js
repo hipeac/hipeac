@@ -136,8 +136,14 @@ Vue.component('editor-link', EditLink.extend({
   ''
 }));
 
-Vue.component('editor-btn', EditLink.extend({
-  template: '<q-btn v-if="show" flat round icon="edit" type="a" :href="url"></q-btn>'
+Vue.component('private-btn', EditLink.extend({
+  props: {
+    icon: {
+      type: String,
+      default: 'edit'
+    }
+  },
+  template: '<q-btn v-if="show" flat round :icon="icon" type="a" :href="url"></q-btn>'
 }));
 
 Vue.component('hipeac-search-box', {
@@ -416,6 +422,25 @@ Vue.component('institution-icon', {
         sme: 'business',
         other: 'scatter_plot',
       }[this.type];
+    }
+  }
+});
+
+Vue.component('country-flag', {
+  props: {
+    code: {
+      type: String
+    }
+  },
+  template: '<i :class="css"></i>',
+  computed: {
+    css: function () {
+      if (!this.code) return '';
+      return [
+        "flag-sprite",
+        "flag-" + this.code[0],
+        "flag-_" + this.code[1],
+      ].join(' ').toLowerCase()
     }
   }
 });

@@ -1,0 +1,15 @@
+<script type="text/x-template" id="v-grants">
+{% verbatim %}
+  <q-card v-if="event && event.custom_data && event.custom_data.max_grants_per_country" class="hipeac__card q-my-lg" :class="{'q-pa-md': $q.screen.gt.xs }">
+    <q-card-section>
+      <div class="row q-col-gutter-xl">
+        <div v-for="c in countriesWithReg" :key="c.country.code" class="col-6 col-sm-3 col-md-2">
+          <country-flag :code="c.country.code"></country-flag>
+          <q-input dense v-model.number="obj.custom_data.max_grants_per_country[c.country.code]" type="number" :label="c.country.name"></q-input>
+        </div>
+      </div>
+      <q-btn unelevated size="16px" @click.prevent="save" color="primary" class="q-mt-xl">Update</q-btn>
+    </q-card-section>
+  </q-card>
+{% endverbatim %}
+</script>

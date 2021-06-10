@@ -38,6 +38,8 @@ class Router(DefaultRouter):
         self.register(r"users", views.UserViewSet, basename="user")
         self.register(r"vision", views.VisionViewSet, basename="vision")
 
+        self.register(r"m/events/events", views.EventManagementViewSet, basename="event-management")
+
         self.register(r"steering/action-points", views.ActionPointViewSet, basename="sc-action-point")
         self.register(r"steering/meetings", views.MeetingViewSet, basename="sc-meeting")
         self.register(r"steering/membership-requests", views.MembershipRequestViewSet, basename="sc-membership-request")
