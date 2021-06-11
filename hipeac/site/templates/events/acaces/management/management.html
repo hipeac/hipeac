@@ -17,7 +17,7 @@
             <q-route-tab :to="{name: 'registrations'}" label="Registrations"></q-route-tab>
             <q-route-tab :to="{name: 'grants'}" label="Grants"></q-route-tab>
             <!--<q-route-tab :to="{name: 'emails'}" label="Emails"></q-route-tab>-->
-            <q-route-tab :to="{name: 'stats'}" label="Stats"></q-route-tab>
+            <!--<q-route-tab :to="{name: 'stats'}" label="Stats"></q-route-tab>-->
           </q-tabs>
         </q-toolbar>
       </q-page-sticky>
@@ -61,7 +61,8 @@
               var c = obj.user.profile.institution.country.code || obj.user.custom_data.profile.country;
               if (!_.has(countries, c)) {
                 countries[c] = {
-                  applicants: 1,
+                  registrations: 1,
+                  accepted: (_.contains(state.event.custom_data.accepted_ids, obj.id)) ? 1 : 0,
                   grants: state.event.custom_data.grants_per_country[c],
                   grants_requested: (obj.custom_data.grant_requested) ? 1 : 0,
                   grants_assigned: (_.contains(state.event.custom_data.granted_ids, obj.id)) ? 1 : 0,
@@ -71,7 +72,10 @@
                   }
                 };
               } else {
-                countries[c].applicants++;
+                countries[c].registrations++;
+                if (_.contains(state.event.custom_data.accepted_ids, obj.id)) {
+                  countries[c].accepted++;
+                }
                 if (obj.custom_data.grant_requested) {
                   countries[c].grants_requested++;
                 }
@@ -147,7 +151,8 @@
           var data = _.values(this.grantsPerCountry);
           if (!data.length) return null;
           return {
-            applicants: data.reduce(function (s, f) { return s + f.applicants }, 0),
+            registrations: data.reduce(function (s, f) { return s + f.registrations }, 0),
+            accepted: data.reduce(function (s, f) { return s + f.accepted }, 0),
             grants_available: data.reduce(function (s, f) { return s + f.grants }, 0),
             grants_requested: data.reduce(function (s, f) { return s + f.grants_requested }, 0),
             grants_assigned: data.reduce(function (s, f) { return s + f.grants_assigned }, 0)
@@ -215,11 +220,11 @@
         }
       }),
       methods: {
-        updateGrants: function (data) {
+        updateData: function (field, data) {
           var self = this;
-          this.$set(this.event.custom_data, 'granted_ids', data);
+          this.$set(this.event.custom_data, field, data);
           Hipeac.api.request('put', VARS.eventUrl, this.event).then(function (res) {
-            Hipeac.utils.notifySuccess('Grants updated.');
+            Hipeac.utils.notifySuccess('Registrations updated.');
             self.$store.commit('updateEvent', res.data);
           }).catch(function (error) {
             Hipeac.utils.notifyApiError(error);
@@ -233,10 +238,10 @@
         }
       },
       created: function () {
-        this.$root.$on('granted-ids-updated', this.updateGrants);
+        this.$root.$on('acaces-ids-updated', this.updateData);
       },
       beforeDestroy () {
-        this.$root.$off('granted-ids-updated');
+        this.$root.$off('acaces-ids-updated');
       }
     };
 

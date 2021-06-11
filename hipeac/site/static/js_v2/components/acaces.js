@@ -3,7 +3,10 @@ Vue.component('acaces-registrations-table', {
     return {
       togglePlaceholder: false,
       dialogVisible: false,
-      mutableGrantedIds: [],
+      mutableLists: {
+        accepted: [],
+        granted: []
+      },
       columns: [
         {
           name: 'id',
@@ -13,8 +16,14 @@ Vue.component('acaces-registrations-table', {
           align: 'left',
         },
         {
-          name: 'grant',
-          field: 'has_grant',
+          name: 'accepted',
+          field: 'id',
+          label: 'Accept',
+          align: 'center',
+        },
+        {
+          name: 'granted',
+          field: 'id',
           label: 'Grant',
           align: 'center',
         },
@@ -75,6 +84,12 @@ Vue.component('acaces-registrations-table', {
       type: Array,
       required: true
     },
+    acceptedIds: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
     grantedIds: {
       type: Array,
       default: function () {
@@ -100,9 +115,12 @@ Vue.component('acaces-registrations-table', {
         <template v-slot:body="props">
           <q-tr :props="props" class="cursor-pointer" @click="$router.replace({params: {uuid: props.row.uuid}})" :class="{'bg-orange-1': props.row.uuid == uuid}">
             <q-td key="id" :props="props"><samp><small>{{ props.row.id }}</small></samp></q-td>
-            <q-td key="grant" :props="props">
-              <q-toggle v-if="props.row.custom_data.grant_requested" size="xs" v-model="mutableGrantedIds" :val="props.row.id" color="green" :disable="disableToggle(props.row)" checked-icon="check" :unchecked-icon="(disableToggle(props.row)) ? null : 'arrow_forward_ios'" />
-              <q-toggle v-else size="xs" v-model="togglePlaceholder" :val="false" color="green" disable class="transparent" unchecked-icon="remove" />
+            <q-td key="accepted" :props="props">
+              <q-toggle size="xs" v-model="mutableLists['accepted']" :val="props.row.id" color="green" checked-icon="check" unchecked-icon="arrow_forward_ios" />
+            </q-td>
+            <q-td key="granted" :props="props">
+              <q-toggle v-if="props.row.custom_data.grant_requested" size="xs" v-model="mutableLists['granted']" :val="props.row.id" color="green" :disable="disableToggle(props.row)" checked-icon="check" :unchecked-icon="(disableToggle(props.row)) ? 'null' : 'arrow_forward_ios'" />
+              <q-toggle v-else size="xs" v-model="togglePlaceholder" :val="false" color="green" disable class="transparent" />
             </q-td>
             <q-td key="user_gender" :props="props">
               <q-icon :name="{'male': 'male', 'female': 'female', 'non_binary': 'toll', null: 'toll'}[props.row.user_gender]"></q-icon>
@@ -194,8 +212,7 @@ Vue.component('acaces-registrations-table', {
               </q-item>
             </q-list>
           </q-card-section>
-          <q-card-section v-show="registration.custom_data.grant_requested" >
-            <q-toggle size="xs" v-model="mutableGrantedIds" :val="registration.id" color="green" />
+          <q-card-section v-show="registration.custom_data.grant_requested">
           </q-card-section>
           <q-card-actions align="right" class="q-pa-md">
             <q-btn flat label="Close" color="grey" v-close-popup></q-btn>
@@ -206,7 +223,6 @@ Vue.component('acaces-registrations-table', {
   `,
   computed: {
     registrations: function () {
-      var grantedIds = this.grantedIds;
       return this.data.map(function (obj) {
         obj.date = moment(obj.created_at);
         obj.country_code = obj.user.profile.institution.country.code || obj.custom_data.profile.country.code;
@@ -217,7 +233,6 @@ Vue.component('acaces-registrations-table', {
         }[obj.user.profile.gender_id] || null;
         obj.user_name = obj.user.profile.name;
         obj.user_affiliation = obj.user.profile.institution.name;
-        obj.has_grant = _.has(grantedIds, obj.id);
         return obj;
       });
     },
@@ -242,19 +257,28 @@ Vue.component('acaces-registrations-table', {
     disableToggle: function (row) {
       return this.grantsPerCountry
           && (this.grantsPerCountry[row.country_code].grants_assigned >= this.grantsPerCountry[row.country_code].grants)
-          && this.mutableGrantedIds.indexOf(row.id) < 0;
+          && this.mutableLists['granted'].indexOf(row.id) < 0;
     }
   },
   watch: {
-    'mutableGrantedIds': _.debounce(function (val, oldVal) {
-      if (val != this.grantedIds) {
-        this.$root.$emit('granted-ids-updated', val);
-      }
-    }, 250)
+    'mutableLists': {
+      deep: true,
+      handler: _.debounce(function (val, oldVal) {
+        if (!_.isEqual(val['accepted'], this.acceptedIds)) {
+          this.$root.$emit('acaces-ids-updated', 'accepted_ids', val['accepted']);
+        }
+        if (!_.isEqual(val['granted'], this.grantedIds)) {
+          this.$root.$emit('acaces-ids-updated', 'granted_ids', val['granted']);
+        }
+      }, 250)
+    }
   },
   created: function () {
+    if (this.acceptedIds) {
+      this.mutableLists['accepted'] = this.acceptedIds;
+    }
     if (this.grantedIds) {
-      this.mutableGrantedIds = this.grantedIds;
+      this.mutableLists['granted'] = this.grantedIds;
     }
   }
 });
@@ -297,23 +321,23 @@ Vue.component('acaces-countries-table', {
           align: 'center'
         },
         {
-          name: 'applicants',
-          field: 'applicants',
-          label: 'Applicants',
+          name: 'registrations',
+          field: 'registrations',
+          label: 'Registrations',
           sortable: true,
           align: 'center'
         },
         {
-          name: 'admitted',
-          field: 'admitted',
-          label: 'Admitted',
+          name: 'accepted',
+          field: 'accepted',
+          label: 'Accepted',
           sortable: true,
           align: 'center'
         }
       ],
       initialPagination: {
         rowsPerPage: 0,
-        sortBy: 'applicants',
+        sortBy: 'registrations',
         descending: true
       }
     }
@@ -346,8 +370,8 @@ Vue.component('acaces-countries-table', {
               <span>{{ props.row.grants_assigned }}</span>
               <q-icon name="circle" size="10px" :color="(props.row.grants_assigned < props.row.grants) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
             </q-td>
-            <q-td key="applicants" :props="props">{{ props.row.applicants }}</q-td>
-            <q-td key="admitted" :props="props">{{ props.row.admitted }}</q-td>
+            <q-td key="registrations" :props="props">{{ props.row.registrations }}</q-td>
+            <q-td key="accepted" :props="props">{{ props.row.accepted }}</q-td>
           </q-tr>
         </template>
       </q-table>

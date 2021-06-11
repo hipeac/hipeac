@@ -2,7 +2,7 @@
 {% verbatim %}
   <q-card v-if="event && registrations.length" class="hipeac__card q-my-lg">
     <q-card-section>
-      <acaces-registrations-table :data="items" :uuid="uuid" :grantedIds="event.custom_data.granted_ids" :grantsPerCountry="grantsPerCountry"></acaces-registrations-table>
+      <acaces-registrations-table :data="items" :uuid="uuid" :acceptedIds="event.custom_data.accepted_ids" :grantedIds="event.custom_data.granted_ids" :grantsPerCountry="grantsPerCountry"></acaces-registrations-table>
     </q-card-section>
   </q-card>
 {% endverbatim %}
