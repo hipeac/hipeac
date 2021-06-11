@@ -375,6 +375,8 @@ Vue.component('acaces-countries-table', {
         obj.country_code = obj.country.code;
         obj.country_name = obj.country.name;
         return obj;
+      }).sort(function (a, b) {
+        return Hipeac.utils.sortText(a.country_name, b.country_name);
       });
     }
   }

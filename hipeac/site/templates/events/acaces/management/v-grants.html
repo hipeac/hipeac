@@ -3,8 +3,44 @@
   <div v-if="event && event.custom_data.grants_per_country" class="q-my-lg">
     <div class="row q-col-gutter-lg">
       <div class="col-12 col-md-3">
-        <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
-          {{ stats }}
+        <q-card class="hipeac__card" :class="{'q-pa-sm': $q.screen.gt.xs }">
+          <q-card-section>
+            <display-4>Grant overview</display-4>
+          </q-card-section>
+          <q-list class="text-body2 q-mb-md">
+            <q-item class="q-py-xs">
+              <q-item-section avatar>
+                <q-circular-progress show-value size="lg" :value="100" color="primary">
+                  <strong>{{ stats.applicants }}</strong>
+                </q-circular-progress>
+              </q-item-section>
+              <q-item-section>Applicants</q-item-section>
+            </q-item>
+            <q-item class="q-py-xs">
+              <q-item-section avatar>
+                <q-circular-progress show-value size="lg" :value="(stats.grants_requested / stats.applicants) * 100" color="blue">
+                  <strong>{{ stats.grants_requested }}</strong>
+                </q-circular-progress>
+              </q-item-section>
+              <q-item-section>Grants requested</q-item-section>
+            </q-item>
+            <q-item class="q-py-xs">
+              <q-item-section avatar>
+                <q-circular-progress show-value size="lg" :value="(stats.grants_available / stats.applicants) * 100" :color="(stats.grants_available < stats.grants_requested) ? 'orange' : 'green'">
+                  <strong>{{ stats.grants_available }}</strong>
+                </q-circular-progress>
+              </q-item-section>
+              <q-item-section>Grants available</q-item-section>
+            </q-item>
+            <q-item class="q-py-xs">
+              <q-item-section avatar>
+                <q-circular-progress show-value size="lg" :value="(stats.grants_assigned / stats.applicants) * 100" :color="(stats.grants_assigned < stats.grants_available) ? 'orange' : 'green'">
+                  <strong>{{ stats.grants_assigned }}</strong>
+                </q-circular-progress>
+              </q-item-section>
+              <q-item-section>Grants assigned</q-item-section>
+            </q-item>
+          </q-list>
         </q-card>
       </div>
       <div class="col-12 col-md-9">
