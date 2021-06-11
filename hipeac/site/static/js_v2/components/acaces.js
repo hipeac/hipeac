@@ -63,8 +63,10 @@ Vue.component('acaces-registrations-table', {
           label: 'Payment'
         }
       ],
-      pagination: {
-        rowsPerPage: 0
+      initialPagination: {
+        rowsPerPage: 0,
+        sortBy: 'date',
+        descending: true
       }
     }
   },
@@ -94,7 +96,7 @@ Vue.component('acaces-registrations-table', {
   },
   template: `
     <div>
-      <q-table flat dense row-key="uuid" :data="registrations" :columns="columns" :pagination.sync="pagination">
+      <q-table flat dense row-key="uuid" :data="registrations" :columns="columns" :pagination="initialPagination">
         <template v-slot:body="props">
           <q-tr :props="props" class="cursor-pointer" @click="$router.replace({params: {uuid: props.row.uuid}})" :class="{'bg-orange-1': props.row.uuid == uuid}">
             <q-td key="id" :props="props"><samp><small>{{ props.row.id }}</small></samp></q-td>
@@ -253,6 +255,127 @@ Vue.component('acaces-registrations-table', {
   created: function () {
     if (this.grantedIds) {
       this.mutableGrantedIds = this.grantedIds;
+    }
+  }
+});
+
+
+Vue.component('acaces-countries-table', {
+  data: function () {
+    return {
+      columns: [
+        {
+          name: 'country_code',
+          field: 'country_code',
+        },
+        {
+          name: 'country_name',
+          field: 'country_name',
+          label: 'Country',
+          sortable: true,
+          align: 'left'
+        },
+        {
+          name: 'grants',
+          field: 'grants',
+          label: 'Grants available',
+          sortable: true,
+          align: 'center'
+        },
+        {
+          name: 'grants_requested',
+          field: 'grants_requested',
+          label: 'Grants requested',
+          sortable: true,
+          align: 'center'
+        },
+        {
+          name: 'grants_assigned',
+          field: 'grants_assigned',
+          label: 'Grants assigned',
+          sortable: true,
+          align: 'center'
+        },
+        {
+          name: 'applicants',
+          field: 'applicants',
+          label: 'Applicants',
+          sortable: true,
+          align: 'center'
+        },
+        {
+          name: 'admitted',
+          field: 'admitted',
+          label: 'Admitted',
+          sortable: true,
+          align: 'center'
+        }
+      ],
+      initialPagination: {
+        rowsPerPage: 0,
+        sortBy: 'applicants',
+        descending: true
+      }
+    }
+  },
+  props: {
+    grantsPerCountry: {
+      type: Object,
+      required: true
+    }
+  },
+  template: `
+    <div>
+      <q-table flat dense row-key="uuid" :data="countries" :columns="columns" :pagination="initialPagination">
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td key="country_code" :props="props">
+              <country-flag :code="props.row.country_code"></country-flag>
+            </q-td>
+            <q-td key="country_name" :props="props">{{ props.row.country_name }}</q-td>
+            <q-td key="grants" :props="props">
+              <q-icon name="indeterminate_check_box" size="xs" :color="(clickable(props.row.country_code)) ? 'grey-5' : 'grey-3'" class="q-mr-sm" @click="updateGrants(props.row.country_code, '-')" :class="{'cursor-pointer': clickable(props.row.country_code) }"></q-icon>
+              <span>{{ props.row.grants }}</span>
+              <q-icon name="add_box" size="xs" color="grey-5" class="q-ml-sm cursor-pointer" @click="updateGrants(props.row.country_code, '+')"></q-icon>
+            </q-td>
+            <q-td key="grants_requested" :props="props">
+              <span>{{ props.row.grants_requested }}</span>
+              <q-icon name="circle" size="10px" :color="(props.row.grants_requested > props.row.grants) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
+            </q-td>
+            <q-td key="grants_assigned" :props="props">
+              <span>{{ props.row.grants_assigned }}</span>
+              <q-icon name="circle" size="10px" :color="(props.row.grants_assigned < props.row.grants) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
+            </q-td>
+            <q-td key="applicants" :props="props">{{ props.row.applicants }}</q-td>
+            <q-td key="admitted" :props="props">{{ props.row.admitted }}</q-td>
+          </q-tr>
+        </template>
+      </q-table>
+    </div>
+  `,
+  methods: {
+    clickable: function (code) {
+      return this.grantsPerCountry
+          && _.has(this.grantsPerCountry, code)
+          && this.grantsPerCountry[code].grants > this.grantsPerCountry[code].grants_assigned;
+    },
+    updateGrants: function (code, operator) {
+      var g = _.clone(this.grantsPerCountry[code].grants);
+      if (operator == '+') g++;
+      else if (g == this.grantsPerCountry[code].grants_assigned) return
+      else g--;
+
+      this.$root.$emit('country-grants-updated', code, g);
+    }
+  },
+  computed: {
+    countries: function () {
+      if (!this.grantsPerCountry) return [];
+      return _.values(this.grantsPerCountry).map(function (obj) {
+        obj.country_code = obj.country.code;
+        obj.country_name = obj.country.name;
+        return obj;
+      });
     }
   }
 });

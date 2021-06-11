@@ -1,52 +1,19 @@
 <script type="text/x-template" id="v-grants">
 {% verbatim %}
-  <div v-if="event && event.custom_data.grants_per_country" class="row q-col-gutter-lg q-my-lg">
-    <div class="col-12 col-md-3">
-      <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
-        {{ stats }}
-      </q-card>
-    </div>
-    <div class="col-12 col-md-9">
-      <q-card class="hipeac__card">
-        <q-card-section>
-          <q-markup-table dense flat>
-            <thead>
-              <tr>
-                <th></th>
-                <th class="text-left">Country</th>
-                <th class="text-center">Grants available</th>
-                <th class="text-center">Grants requested</th>
-                <th class="text-center">Grants assigned</th>
-                <th class="text-center">Applicants</th>
-                <th class="text-center">Admitted</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(c, code) in grantsPerCountry" :key="code" class="col-6 col-sm-3 col-md-2">
-                <td class="text-center"><country-flag :code="code"></country-flag></td>
-                <td class="text-left">{{ c.country.name }}</td>
-                <td class="text-center">
-                  <q-icon name="indeterminate_check_box" size="xs" :color="(clickable(code)) ? 'grey-5' : 'grey-3'" class="q-mr-sm" @click="updateGrants(code, '-')" :class="{'cursor-pointer': clickable(code) }"></q-icon>
-                  <span>{{ obj.custom_data.grants_per_country[code] }}</span>
-                  <q-icon name="add_box" size="xs" color="grey-5" class="q-ml-sm cursor-pointer" @click="updateGrants(code, '+')"></q-icon>
-                </td>
-                <td class="text-center">
-                  <span>{{ c.grants_requested }}</span>
-                  <q-icon name="circle" size="10px" :color="(c.grants_requested > c.grants) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
-                </td>
-                <td class="text-center">
-                  <span>{{ c.grants_assigned }}</span>
-                  <q-icon name="circle" size="10px" :color="(c.grants_assigned < c.grants) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
-                </td>
-                <td class="text-center">{{ c.applicants }}</td>
-                <td class="text-center"></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </q-markup-table>
-        </q-card-section>
-      </q-card>
+  <div v-if="event && event.custom_data.grants_per_country" class="q-my-lg">
+    <div class="row q-col-gutter-lg">
+      <div class="col-12 col-md-3">
+        <q-card class="hipeac__card" :class="{'q-pa-md': $q.screen.gt.xs }">
+          {{ stats }}
+        </q-card>
+      </div>
+      <div class="col-12 col-md-9">
+        <q-card class="hipeac__card">
+          <q-card-section>
+            <acaces-countries-table :grantsPerCountry="grantsPerCountry"></acaces-countries-table>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
   </div>
 {% endverbatim %}

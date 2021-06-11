@@ -91,7 +91,8 @@
           Hipeac.api.get(VARS.eventUrl).then(function (res) {
             if (!_.has(res.data, 'custom_data')) {
               res.data.custom_data = {
-                granted: [],
+                accepted_ids: [],
+                granted_ids: [],
                 grants_per_country: {}
               };
             }
@@ -176,21 +177,17 @@
             Hipeac.utils.notifyApiError(error);
           });
         }, 750),
-        updateGrants: function (code, operator) {
-          if (operator == '+') this.obj.custom_data.grants_per_country[code]++;
-          else if (this.obj.custom_data.grants_per_country[code] == this.grantsPerCountry[code].grants_assigned) return
-          else this.obj.custom_data.grants_per_country[code]--;
-
+        updateCountryGrants: function (code, grants) {
+          this.obj.custom_data.grants_per_country[code] = grants;
           this.updateEvent();
-        },
-        clickable: function (code) {
-          return this.obj
-              && this.grantsPerCountry
-              && this.obj.custom_data.grants_per_country[code] > this.grantsPerCountry[code].grants_assigned;
         }
       },
       created: function () {
         this.syncEvent();
+        this.$root.$on('country-grants-updated', this.updateCountryGrants);
+      },
+      beforeDestroy () {
+        this.$root.$off('country-grants-updated');
       }
     };
 
