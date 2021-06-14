@@ -1215,7 +1215,6 @@ Vue.component('user-notifications', {
     watch: {
         'hiddenNs': {
             handler: function (val) {
-                console.log(val);
                 storage().set('hipeac_hidden_notifications', val, 90);
             },
             deep: true

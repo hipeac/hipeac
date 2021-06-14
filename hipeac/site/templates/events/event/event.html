@@ -536,9 +536,7 @@
           ajax().get(this.endpoint, {event_id: this.event.id}).done(function (res) {
             if (res.results.length == 1) {
               self.registration = mapper().registrations(res.results)[0];
-              console.log(self.registration.url);
               ajax().get(self.registration.url + 'access_links/').done(function (r) {
-                console.log(r);
                 self.links = r;
               });
             }

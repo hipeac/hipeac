@@ -182,7 +182,6 @@
             self.$store.commit('updateEvent', res.data);
             self.syncEvent();
           }).catch(function (error) {
-            console.log(error);
             Hipeac.utils.notifyApiError(error);
           });
         }, 750),
