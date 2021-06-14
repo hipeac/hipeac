@@ -18,7 +18,7 @@ Vue.component('acaces-registrations-table', {
         {
           name: 'admitted',
           field: 'id',
-          label: 'Accept',
+          label: 'Admit',
           align: 'center',
         },
         {
