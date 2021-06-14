@@ -4,7 +4,7 @@ Vue.component('acaces-registrations-table', {
       togglePlaceholder: false,
       dialogVisible: false,
       mutableLists: {
-        accepted: [],
+        admitted: [],
         granted: []
       },
       columns: [
@@ -16,7 +16,7 @@ Vue.component('acaces-registrations-table', {
           align: 'left',
         },
         {
-          name: 'accepted',
+          name: 'admitted',
           field: 'id',
           label: 'Accept',
           align: 'center',
@@ -84,7 +84,7 @@ Vue.component('acaces-registrations-table', {
       type: Array,
       required: true
     },
-    acceptedIds: {
+    admittedIds: {
       type: Array,
       default: function () {
         return [];
@@ -115,8 +115,8 @@ Vue.component('acaces-registrations-table', {
         <template v-slot:body="props">
           <q-tr :props="props" class="cursor-pointer" @click="$router.replace({params: {uuid: props.row.uuid}})" :class="{'bg-orange-1': props.row.uuid == uuid}">
             <q-td key="id" :props="props"><samp><small>{{ props.row.id }}</small></samp></q-td>
-            <q-td key="accepted" :props="props">
-              <q-toggle size="xs" v-model="mutableLists['accepted']" :val="props.row.id" color="green" checked-icon="check" unchecked-icon="arrow_forward_ios" />
+            <q-td key="admitted" :props="props">
+              <q-toggle size="xs" v-model="mutableLists['admitted']" :val="props.row.id" color="green" checked-icon="check" unchecked-icon="arrow_forward_ios" />
             </q-td>
             <q-td key="granted" :props="props">
               <q-toggle v-if="props.row.custom_data.grant_requested" size="xs" v-model="mutableLists['granted']" :val="props.row.id" color="green" :disable="disableToggle(props.row)" checked-icon="check" :unchecked-icon="(disableToggle(props.row)) ? 'null' : 'arrow_forward_ios'" />
@@ -264,8 +264,8 @@ Vue.component('acaces-registrations-table', {
     'mutableLists': {
       deep: true,
       handler: _.debounce(function (val, oldVal) {
-        if (!_.isEqual(val['accepted'], this.acceptedIds)) {
-          this.$root.$emit('acaces-ids-updated', 'accepted_ids', val['accepted']);
+        if (!_.isEqual(val['admitted'], this.admittedIds)) {
+          this.$root.$emit('acaces-ids-updated', 'admitted_ids', val['admitted']);
         }
         if (!_.isEqual(val['granted'], this.grantedIds)) {
           this.$root.$emit('acaces-ids-updated', 'granted_ids', val['granted']);
@@ -274,8 +274,8 @@ Vue.component('acaces-registrations-table', {
     }
   },
   created: function () {
-    if (this.acceptedIds) {
-      this.mutableLists['accepted'] = this.acceptedIds;
+    if (this.admittedIds) {
+      this.mutableLists['admitted'] = this.admittedIds;
     }
     if (this.grantedIds) {
       this.mutableLists['granted'] = this.grantedIds;
@@ -328,9 +328,9 @@ Vue.component('acaces-countries-table', {
           align: 'center'
         },
         {
-          name: 'accepted',
-          field: 'accepted',
-          label: 'Accepted',
+          name: 'admitted',
+          field: 'admitted',
+          label: 'Admitted',
           sortable: true,
           align: 'center'
         }
@@ -371,7 +371,7 @@ Vue.component('acaces-countries-table', {
               <q-icon name="circle" size="10px" :color="(props.row.grants_assigned < props.row.grants) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
             </q-td>
             <q-td key="registrations" :props="props">{{ props.row.registrations }}</q-td>
-            <q-td key="accepted" :props="props">{{ props.row.accepted }}</q-td>
+            <q-td key="admitted" :props="props">{{ props.row.admitted }}</q-td>
           </q-tr>
         </template>
       </q-table>

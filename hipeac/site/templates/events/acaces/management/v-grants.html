@@ -10,40 +10,40 @@
           <q-list class="text-body2 q-mb-md">
             <q-item class="q-py-xs">
               <q-item-section avatar>
-                <q-circular-progress show-value size="lg" :value="100" color="primary">
-                  <strong>{{ stats.registrations }}</strong>
+                <q-circular-progress show-value size="lg" font-size="12px" :value="100" color="primary" track-color="grey-3">
+                  <samp><strong>{{ stats.registrations }}</strong></samp>
                 </q-circular-progress>
               </q-item-section>
               <q-item-section>Registrations</q-item-section>
             </q-item>
             <q-item class="q-py-xs">
               <q-item-section avatar>
-                <q-circular-progress show-value size="lg" :value="(stats.accepted / stats.registrations) * 100" color="green">
-                  <strong>{{ stats.accepted }}</strong>
+                <q-circular-progress show-value size="lg" font-size="12px" :value="(stats.admitted / stats.registrations) * 100" color="green" track-color="grey-3">
+                  <samp><strong>{{ stats.admitted }}</strong></samp>
                 </q-circular-progress>
               </q-item-section>
-              <q-item-section>Accepted applicants</q-item-section>
+              <q-item-section>Admitted applicants</q-item-section>
             </q-item>
             <q-item class="q-py-xs">
               <q-item-section avatar>
-                <q-circular-progress show-value size="lg" :value="(stats.grants_requested / stats.registrations) * 100" color="blue">
-                  <strong>{{ stats.grants_requested }}</strong>
+                <q-circular-progress show-value size="lg" font-size="12px" :value="(stats.grants_requested / stats.registrations) * 100" color="blue" track-color="grey-3">
+                  <samp><strong>{{ stats.grants_requested }}</strong></samp>
                 </q-circular-progress>
               </q-item-section>
               <q-item-section>Grants requested</q-item-section>
             </q-item>
             <q-item class="q-py-xs">
               <q-item-section avatar>
-                <q-circular-progress show-value size="lg" :value="(stats.grants_available / stats.registrations) * 100" :color="(stats.grants_available < stats.grants_requested) ? 'orange' : 'green'">
-                  <strong>{{ stats.grants_available }}</strong>
+                <q-circular-progress show-value size="lg" font-size="12px" :value="(stats.grants_available / stats.registrations) * 100" :color="(stats.grants_available < stats.grants_requested) ? 'orange' : 'green'" track-color="grey-3">
+                  <samp><strong>{{ stats.grants_available }}</strong></samp>
                 </q-circular-progress>
               </q-item-section>
               <q-item-section>Grants available</q-item-section>
             </q-item>
             <q-item class="q-py-xs">
               <q-item-section avatar>
-                <q-circular-progress show-value size="lg" :value="(stats.grants_assigned / stats.registrations) * 100" :color="(stats.grants_assigned < stats.grants_available) ? 'orange' : 'green'">
-                  <strong>{{ stats.grants_assigned }}</strong>
+                <q-circular-progress show-value size="lg" font-size="12px" :value="(stats.grants_assigned / stats.registrations) * 100" :color="(stats.grants_assigned < stats.grants_available) ? 'orange' : 'green'" track-color="grey-3">
+                  <samp><strong>{{ stats.grants_assigned }}</strong></samp>
                 </q-circular-progress>
               </q-item-section>
               <q-item-section>Grants assigned</q-item-section>

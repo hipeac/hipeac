@@ -62,7 +62,7 @@
               if (!_.has(countries, c)) {
                 countries[c] = {
                   registrations: 1,
-                  accepted: (_.contains(state.event.custom_data.accepted_ids, obj.id)) ? 1 : 0,
+                  admitted: (_.contains(state.event.custom_data.admitted_ids, obj.id)) ? 1 : 0,
                   grants: state.event.custom_data.grants_per_country[c],
                   grants_requested: (obj.custom_data.grant_requested) ? 1 : 0,
                   grants_assigned: (_.contains(state.event.custom_data.granted_ids, obj.id)) ? 1 : 0,
@@ -73,8 +73,8 @@
                 };
               } else {
                 countries[c].registrations++;
-                if (_.contains(state.event.custom_data.accepted_ids, obj.id)) {
-                  countries[c].accepted++;
+                if (_.contains(state.event.custom_data.admitted_ids, obj.id)) {
+                  countries[c].admitted++;
                 }
                 if (obj.custom_data.grant_requested) {
                   countries[c].grants_requested++;
@@ -95,7 +95,7 @@
           Hipeac.api.get(VARS.eventUrl).then(function (res) {
             if (!_.has(res.data, 'custom_data')) {
               res.data.custom_data = {
-                accepted_ids: [],
+                admitted_ids: [],
                 granted_ids: [],
                 grants_per_country: {}
               };
@@ -152,7 +152,7 @@
           if (!data.length) return null;
           return {
             registrations: data.reduce(function (s, f) { return s + f.registrations }, 0),
-            accepted: data.reduce(function (s, f) { return s + f.accepted }, 0),
+            admitted: data.reduce(function (s, f) { return s + f.admitted }, 0),
             grants_available: data.reduce(function (s, f) { return s + f.grants }, 0),
             grants_requested: data.reduce(function (s, f) { return s + f.grants_requested }, 0),
             grants_assigned: data.reduce(function (s, f) { return s + f.grants_assigned }, 0)
