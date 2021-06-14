@@ -8,7 +8,7 @@
   <head>
     <link href="//fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&family=Material+Icons&display=swap" rel="stylesheet">
     {% compress css file quasar %}
-      <link href="{% static 'vendor_v2/quasar@1.14.7/quasar.min.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static 'vendor_v2/quasar@1.15.20/quasar.min.css' %}" type="text/css" rel="stylesheet">
       <link href="{% static 'scss/v2_base.scss' %}" type="text/x-scss" rel="stylesheet">
       <link href="{% static 'css/flags.css' %}" type="text/css" rel="stylesheet">
     {% endcompress %}
@@ -20,7 +20,7 @@
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta name="twitter:site" content="@hipeac">
     {% block structured_data %}{% endblock %}
-    <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.ie.polyfills.umd.min.js' %}"></script>
+    <script src="{% static 'vendor_v2/quasar@1.15.20/quasar.ie.polyfills.umd.min.js' %}"></script>
     {% if not debug %}
       <!-- Google tag manager -->
     {% endif %}
@@ -43,12 +43,12 @@
         <script src="{% static 'vendor_v2/vue@2.6.14/vue.js' %}"></script>
         <script src="{% static 'vendor_v2/vuex@3.6.2/vuex.js' %}"></script>
         <script src="{% static 'vendor_v2/vue-router@3.5.1/vue-router.js' %}"></script>
-        <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.umd.js' %}"></script>
+        <script src="{% static 'vendor_v2/quasar@1.15.20/quasar.umd.js' %}"></script>
       {% else %}
         <script src="{% static 'vendor_v2/vue@2.6.14/vue.min.js' %}"></script>
         <script src="{% static 'vendor_v2/vuex@3.6.2/vuex.min.js' %}"></script>
         <script src="{% static 'vendor_v2/vue-router@3.5.1/vue-router.min.js' %}"></script>
-        <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.umd.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/quasar@1.15.20/quasar.umd.min.js' %}"></script>
       {%endif %}
     {% endcompress %}
     {% compress js file hipeac %}
