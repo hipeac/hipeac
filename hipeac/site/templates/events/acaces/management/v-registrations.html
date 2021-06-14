@@ -1,9 +1,14 @@
 <script type="text/x-template" id="v-registrations">
 {% verbatim %}
-  <q-card v-if="event && registrations.length" class="hipeac__card q-my-lg">
-    <q-card-section>
-      <acaces-registrations-table :data="items" :uuid="uuid" :admittedIds="event.custom_data.admitted_ids" :grantedIds="event.custom_data.granted_ids" :grantsPerCountry="grantsPerCountry"></acaces-registrations-table>
-    </q-card-section>
-  </q-card>
+  <div v-if="event && registrations.length">
+    <q-card class="hipeac__card q-mt-lg q-pa-xs">
+      <hipeac-search-box eventName="acaces-reg-query"></hipeac-search-box>
+    </q-card>
+    <q-card class="hipeac__card q-mt-sm q-mb-lg">
+      <q-card-section>
+        <acaces-registrations-table :data="items" :uuid="uuid" :admittedIds="event.custom_data.admitted_ids" :grantedIds="event.custom_data.granted_ids" :grantsPerCountry="grantsPerCountry"></acaces-registrations-table>
+      </q-card-section>
+    </q-card>
+  </div>
 {% endverbatim %}
 </script>

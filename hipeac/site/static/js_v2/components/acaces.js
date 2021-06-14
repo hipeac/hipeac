@@ -346,6 +346,10 @@ Vue.component('acaces-countries-table', {
     grantsPerCountry: {
       type: Object,
       required: true
+    },
+    regRoute: {
+      type: String,
+      default: 'registrations'
     }
   },
   template: `
@@ -359,19 +363,26 @@ Vue.component('acaces-countries-table', {
             <q-td key="country_name" :props="props">{{ props.row.country_name }}</q-td>
             <q-td key="grants" :props="props">
               <q-icon name="indeterminate_check_box" size="xs" :color="(clickable(props.row.country_code)) ? 'grey-5' : 'grey-3'" class="q-mr-sm" @click="updateGrants(props.row.country_code, '-')" :class="{'cursor-pointer': clickable(props.row.country_code) }"></q-icon>
-              <span>{{ props.row.grants }}</span>
+              <samp>{{ props.row.grants }}</samp>
               <q-icon name="add_box" size="xs" color="grey-5" class="q-ml-sm cursor-pointer" @click="updateGrants(props.row.country_code, '+')"></q-icon>
             </q-td>
             <q-td key="grants_requested" :props="props">
-              <span>{{ props.row.grants_requested }}</span>
+              <samp>{{ props.row.grants_requested }}</samp>
               <q-icon name="circle" size="10px" :color="(props.row.grants_requested > props.row.grants) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
             </q-td>
             <q-td key="grants_assigned" :props="props">
-              <span>{{ props.row.grants_assigned }}</span>
+              <samp>{{ props.row.grants_assigned }}</samp>
               <q-icon name="circle" size="10px" :color="(props.row.grants_assigned < props.row.grants) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
             </q-td>
-            <q-td key="registrations" :props="props">{{ props.row.registrations }}</q-td>
-            <q-td key="admitted" :props="props">{{ props.row.admitted }}</q-td>
+            <q-td key="registrations" :props="props">
+              <samp>{{ props.row.registrations }}</samp>
+              <router-link :to="{name: 'registrations', query: {q: props.row.country_name}}" class="q-ml-xs">
+                <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+              </router-link>
+            </q-td>
+            <q-td key="admitted" :props="props">
+              <samp>{{ props.row.admitted }}</samp>
+            </q-td>
           </q-tr>
         </template>
       </q-table>

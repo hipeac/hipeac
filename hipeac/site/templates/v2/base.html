@@ -20,7 +20,7 @@
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta name="twitter:site" content="@hipeac">
     {% block structured_data %}{% endblock %}
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise"></script>
+    <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.ie.polyfills.umd.min.js' %}"></script>
     {% if not debug %}
       <!-- Google tag manager -->
     {% endif %}
@@ -34,21 +34,20 @@
         <script src="{% static 'vendor_v2/moment-timezone@0.5.32/moment-timezone-with-data-10-year-range.min.js' %}"></script>
     {% endcompress %}
     {% compress js file helpers %}
-      <script src="{% static 'vendor_v2/axios@0.21.0/axios.min.js' %}"></script>
+      <script src="{% static 'vendor_v2/axios@0.21.1/axios.min.js' %}"></script>
       <script src="{% static 'vendor_v2/commonmark@0.29.3/commonmark.min.js' %}"></script>
       <script src="{% static 'vendor_v2/underscore@1.12.0/underscore.min.js' %}"></script>
     {% endcompress %}
     {% compress js file vue %}
       {% if debug %}
-        <script src="{% static 'vendor_v2/vue@2.6.12/vue.js' %}"></script>
-        <script src="{% static 'vendor_v2/vuex@3.6.0/vuex.js' %}"></script>
-        <script src="{% static 'vendor_v2/vue-router@3.4.9/vue-router.js' %}"></script>
+        <script src="{% static 'vendor_v2/vue@2.6.14/vue.js' %}"></script>
+        <script src="{% static 'vendor_v2/vuex@3.6.2/vuex.js' %}"></script>
+        <script src="{% static 'vendor_v2/vue-router@3.5.1/vue-router.js' %}"></script>
         <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.umd.js' %}"></script>
       {% else %}
-        <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.ie.polyfills.umd.min.js' %}"></script>
-        <script src="{% static 'vendor_v2/vue@2.6.12/vue.min.js' %}"></script>
-        <script src="{% static 'vendor_v2/vuex@3.6.0/vuex.min.js' %}"></script>
-        <script src="{% static 'vendor_v2/vue-router@3.4.9/vue-router.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/vue@2.6.14/vue.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/vuex@3.6.2/vuex.min.js' %}"></script>
+        <script src="{% static 'vendor_v2/vue-router@3.5.1/vue-router.min.js' %}"></script>
         <script src="{% static 'vendor_v2/quasar@1.14.7/quasar.umd.min.js' %}"></script>
       {%endif %}
     {% endcompress %}

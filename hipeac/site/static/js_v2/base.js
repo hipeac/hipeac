@@ -159,6 +159,17 @@ var Hipeac = {
       obj.updatedAt = make_local(obj.updated_at);
       obj.fee = obj.base_fee + obj.extra_fees + obj.manual_extra_fees;
       obj.isPaid = obj.saldo >= 0;
+
+      console.log(obj.user.profile.institution);
+
+      obj.q = [
+        obj.user.profile.name,
+        (obj.user.profile.institution) ? obj.user.profile.institution.name : '',
+        ((obj.user.profile.institution && obj.user.profile.institution.country)
+          ? obj.user.profile.institution.country.name
+          : '')
+      ].join(' ').toLowerCase();
+
       return obj;
     },
     session: function (obj) {

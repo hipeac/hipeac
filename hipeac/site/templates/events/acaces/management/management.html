@@ -58,7 +58,9 @@
 
           _.each(state.registrations, function (obj) {
             try {
-              var c = obj.user.profile.institution.country.code || obj.user.custom_data.profile.country;
+              var c = (obj.user.profile.institution && obj.user.profile.institution.country)
+                        ? obj.user.profile.institution.country.code
+                        : obj.user.custom_data.profile.country.value;
               if (!_.has(countries, c)) {
                 countries[c] = {
                   registrations: 1,
@@ -121,7 +123,9 @@
           if (!USER_IS_AUTHENTICATED) return;
 
           Hipeac.api.get(VARS.registrationsUrl).then(function (res) {
-            state.registrations = Object.freeze(res.data);
+            state.registrations = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.registration(obj);
+            }));
           });
         },
         updateEvent: function (state, data) {
@@ -222,26 +226,32 @@
       methods: {
         updateData: function (field, data) {
           var self = this;
-          this.$set(this.event.custom_data, field, data);
+          this.$set(this.event.custom_data, field, data.sort());
           Hipeac.api.request('put', VARS.eventUrl, this.event).then(function (res) {
             Hipeac.utils.notifySuccess('Registrations updated.');
             self.$store.commit('updateEvent', res.data);
           }).catch(function (error) {
             Hipeac.utils.notifyApiError(error);
           });
+        },
+        updateQuery: function (val) {
+          this.query = val;
         }
       },
       watch: {
         query: function (val, oldVal) {
-          if (val != '') this.$router.replace({query: {q: val}});
+          if (val == this.$route.query.q) return;
+          if (val != '' && val != oldVal) this.$router.replace({query: {q: val}});
           else this.$router.replace({query: {q: undefined}});
         }
       },
       created: function () {
         this.$root.$on('acaces-ids-updated', this.updateData);
+        this.$root.$on('acaces-reg-query', this.updateQuery);
       },
       beforeDestroy () {
         this.$root.$off('acaces-ids-updated');
+        this.$root.$off('acaces-reg-query');
       }
     };
 

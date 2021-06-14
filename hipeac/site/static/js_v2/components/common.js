@@ -159,7 +159,7 @@ Vue.component('hipeac-search-box', {
     },
     placeholder: {
       type: String,
-      default: ''
+      default: 'Search...'
     }
   },
   template: `
