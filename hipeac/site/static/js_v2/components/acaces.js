@@ -111,7 +111,7 @@ Vue.component('acaces-registrations-table', {
   },
   template: `
     <div>
-      <q-table flat dense loading row-key="id" :data="registrations" :columns="columns" :pagination="initialPagination">
+      <q-table flat dense row-key="id" :data="registrations" :columns="columns" :pagination="initialPagination">
         <template v-slot:body="props">
           <q-tr :props="props" class="cursor-pointer" @click="$router.replace({params: {uuid: props.row.uuid}})" :class="{'bg-orange-1': props.row.uuid == uuid}">
             <q-td key="id" :props="props"><samp><small>{{ props.row.id }}</small></samp></q-td>
@@ -354,7 +354,7 @@ Vue.component('acaces-countries-table', {
   },
   template: `
     <div>
-      <q-table flat dense loading row-key="country_code" :data="countries" :columns="columns" :pagination="initialPagination">
+      <q-table flat dense row-key="country_code" :data="countries" :columns="columns" :pagination="initialPagination">
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="country_code" :props="props">
