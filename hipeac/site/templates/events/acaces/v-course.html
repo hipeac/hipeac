@@ -121,6 +121,12 @@
           <router-link :to="{name: 'courseTeachers', params: {id: course.id}}" class="text-caption text-grey-7 inherit">
             <q-icon size="xs" name="add" class="q-mr-xs"></q-icon>More info...</router-link>
         </div>
+        <div v-if="course.custom_data.track && tracks[course.custom_data.track.project_id]" class="q-mt-lg">
+          <display-4 class="q-mb-md">Track</display-4>
+          <a v-if="tracks[course.custom_data.track.project_id].project.images" :href="tracks[course.custom_data.track.project_id].project.href" target="_blank">
+            <img :src="tracks[course.custom_data.track.project_id].project.images.lg" class="sponsor">
+          </a>
+        </div>
       </div>
     </div>
   </q-card-section>

@@ -12,6 +12,12 @@
           <p>The summer school is open to anybody (members of HiPEAC institutions, and others). There is a limited number of grants that cover the full registration fee for PhD students from HiPEAC institutions. If you are a member of a HiPEAC institution and you want to apply for such a grant, please indicate this in the application form.</p>
           <p>For special questions about the admission procedure, please contact <a href="mailto:acaces@hipeac.net">acaces@hipeac.net</a></p>
         </div>
+        <div v-if="trackList.length" class="col-12 q-mb-lg">
+          <q-banner v-for="t in trackList" :key="t.project.id" class="bg-yellow-2">
+            <div class="q-mb-xs">If you choose to attend all {{ t.track.name }} track courses, you can qualify for a {{ t.project.acronym }} grant:</div>
+            <div v-for="c in t.courses" class="text-caption">- {{ c.title }}</div>
+          </q-banner>
+        </div>
       </div>
     </q-card-section>
 
@@ -148,8 +154,8 @@
       <strong>{{ requestType }} number:</strong> {{ obj.id }}<br>
       <strong>{{ requestType }} date:</strong> {{ obj.createdAt.format('LLLL') }}<br>
       <strong>Last updated:</strong> {{ obj.updatedAt.format('LLLL') }}<br>
-      <span v-if="obj.status == 0"><strong>Appplication status:</strong>&nbsp;<q-badge color="yellow" text-color="black" label="Well received"></q-badge><br>
-      <span v-if="obj.custom_data.grant_requested"><strong>Grant status:</strong>&nbsp;<q-badge color="yellow" text-color="black" label="Pending decision"></q-badge><br>
+      <span v-if="obj.status == 0"><strong>Appplication status:</strong>&nbsp;<q-badge color="yellow" text-color="black" label="Well received"></q-badge></span><br>
+      <span v-if="obj.custom_data.grant_requested"><strong>Grant status:</strong>&nbsp;<q-badge color="yellow" text-color="black" label="Pending decision"></q-badge></span><br>
     </q-card-section>
 
   </q-card>

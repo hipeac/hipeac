@@ -126,6 +126,39 @@
               courses: _.sortBy(slots[k], 'title')
             };
           });
+        },
+        tracks: function (state) {
+          var tracks = {};
+          if (!state.event || !state.event.sponsors.length || !state.courses.length) return tracks;
+
+          _.each(state.courses, function (c) {
+            if (c.custom_data.track && c.custom_data.track.project_id) {
+              if (!_.has(tracks, c.custom_data.track.project_id)) {
+                tracks[c.custom_data.track.project_id] = {
+                  track: c.custom_data.track,
+                  courses: [],
+                  project: null
+                };
+              }
+
+              tracks[c.custom_data.track.project_id].courses.push({
+                id: c.id,
+                title: c.title
+              });
+            }
+          });
+
+          _.each(state.event.sponsors, function (s) {
+            if (s.project && _.has(tracks, s.project.id)) {
+              tracks[s.project.id].project = s.project;
+            }
+          });
+
+          return tracks;
+        },
+        trackList: function (state, getters) {
+          if (!getters.tracks) return [];
+          return _.values(getters.tracks);
         }
       },
       mutations: {
@@ -219,8 +252,8 @@
         }
       },
       computed: _.extend(
-        Vuex.mapState(['user', 'event', 'courses', 'course']),
-        Vuex.mapGetters(['links']), {
+        Vuex.mapGetters(['tracks']),
+        Vuex.mapState(['user', 'event', 'courses', 'course']), {
         userIsRegistered: function () {
           if (!this.user.registration) return false;
           return _.contains(this.user.registration.courses, +this.id);
@@ -255,6 +288,7 @@
     var CourseMainView = {
       template: '#v-course-main',
       computed: _.extend(
+        Vuex.mapGetters(['tracks']),
         Vuex.mapState(['event', 'course']), {
       }),
     };
@@ -373,7 +407,7 @@
         }
       },
       computed: _.extend(
-        Vuex.mapGetters(['slots']),
+        Vuex.mapGetters(['slots', 'trackList']),
         Vuex.mapState(['countries', 'user', 'event', 'courses']), {
         countryOptions: function () {
           var c = this.countries;

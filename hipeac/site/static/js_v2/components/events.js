@@ -102,6 +102,10 @@ Vue.component('hipeac-program', {
                   <q-icon size="xs" name="schedule" color="grey-7" class="q-mr-xs"></q-icon>
                   <span>{{ session.startAt.format('HH:mm') }} - {{ session.endAt.format('HH:mm') }}</span>
                 </li>
+                <li v-if="session.track">
+                  <q-icon size="xs" name="label_important" :color="session.track.color" class="q-mr-xs"></q-icon>
+                  <span>{{ session.track.name }}</span>
+                </li>
                 <!--<li v-if="sessionRegistered(session.id)">
                   <q-icon size="xs" name="check" color="green" class="q-mr-xs"></q-icon>
                   <span>Registered</span>
@@ -167,6 +171,7 @@ Vue.component('hipeac-program', {
               session_type: session.session_type,
               color: course.color,
               slot: course.custom_data.slot || null,
+              track: course.custom_data.track || null,
               q: session.q
             });
           });
