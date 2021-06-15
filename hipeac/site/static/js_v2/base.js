@@ -160,12 +160,14 @@ var Hipeac = {
       obj.fee = obj.base_fee + obj.extra_fees + obj.manual_extra_fees;
       obj.isPaid = obj.saldo >= 0;
 
+      obj.country = (obj.user.profile.institution && obj.user.profile.institution.country)
+        ? obj.user.profile.institution.country
+        : obj.user.profile.country;
+
       obj.q = [
         obj.user.profile.name,
-        (obj.user.profile.institution) ? obj.user.profile.institution.name : '',
-        ((obj.user.profile.institution && obj.user.profile.institution.country)
-          ? obj.user.profile.institution.country.name
-          : '')
+        (obj.country) ? obj.country.name : '',
+        (obj.user.profile.institution) ? obj.user.profile.institution.name : ''
       ].join(' ').toLowerCase();
 
       return obj;

@@ -201,7 +201,7 @@
 
     var RegistrationsView = {
       template: '#v-registrations',
-      props: ['q', 'uuid'],
+      props: ['q', 'id'],
       data: function () {
         return {
           dialogVisible: false,
@@ -265,7 +265,7 @@
     var Router = new VueRouter({
       linkActiveClass: 'active',
       scrollBehavior: function (to, from) {
-        if (from.name.startsWith('course') || from.name.startsWith('session')) return;
+        if (from.name.startsWith('registrations') && from.params.id) return;
         return {x: 0, y: 0};
       },
       routes: [
@@ -275,13 +275,13 @@
         },
         {
           name: 'registrations',
-          path: '/r/:uuid?/',
+          path: '/r/:id?/',
           pathToRegexpOptions: {strict: true},
           component: RegistrationsView,
           props: function (route) {
             return {
               q: route.query.q,
-              uuid: route.params.uuid
+              id: +route.params.id
             };
           }
         },

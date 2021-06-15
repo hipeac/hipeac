@@ -96,8 +96,8 @@ Vue.component('acaces-registrations-table', {
         return [];
       }
     },
-    uuid: {
-      type: String,
+    id: {
+      type: Number,
       default: null
     },
     showUser: {
@@ -113,7 +113,7 @@ Vue.component('acaces-registrations-table', {
     <div>
       <q-table flat dense row-key="id" :data="registrations" :columns="columns" :pagination="initialPagination">
         <template v-slot:body="props">
-          <q-tr :props="props" class="cursor-pointer" @click="$router.replace({params: {uuid: props.row.uuid}})" :class="{'bg-orange-1': props.row.uuid == uuid}">
+          <q-tr :props="props" class="cursor-pointer" @click="$router.replace({params: {id: props.row.id}})" :class="{'bg-orange-1': props.row.id == id}">
             <q-td key="id" :props="props"><samp><small>{{ props.row.id }}</small></samp></q-td>
             <q-td key="admitted" :props="props">
               <q-toggle size="xs" v-model="mutableLists['admitted']" :val="props.row.id" color="green" checked-icon="check" unchecked-icon="arrow_forward_ios" />
@@ -160,7 +160,7 @@ Vue.component('acaces-registrations-table', {
         </template>
       </q-table>
       <q-dialog v-model="showDialog" @show="dialogVisible = true">
-        <q-card v-if="registration" style="width: 500px">
+        <q-card v-if="registration" style="width: 600px">
           <q-card-section>
             <display-4 class="q-mb-lg">Registration #{{ registration.id }}</display-4>
             <q-list dense>
@@ -171,7 +171,7 @@ Vue.component('acaces-registrations-table', {
               <q-separator inset="item"></q-separator>
               <q-item>
                 <q-item-section avatar><q-icon name="accessibility_new"></q-icon></q-item-section>
-                <q-item-section>{{ registration.user_name }}</q-item-section>
+                <q-item-section><strong>{{ registration.user_name }}</strong></q-item-section>
               </q-item>
               <q-separator inset="item"></q-separator>
               <q-item>
@@ -188,14 +188,30 @@ Vue.component('acaces-registrations-table', {
                 <q-item-section avatar><q-icon name="business"></q-icon></q-item-section>
                 <q-item-section>{{ registration.user_affiliation }}</q-item-section>
               </q-item>
-              <q-separator v-if="registration.user.profile.country" inset="item"></q-separator>
-              <q-item v-if="registration.user.profile.country">
+              <q-separator v-if="registration.country" inset="item"></q-separator>
+              <q-item v-if="registration.country">
                 <q-item-section avatar>
-                  <country-flag :code="registration.user.profile.country.code"></country-flag>
+                  <country-flag :code="registration.country.code"></country-flag>
                 </q-item-section>
-                <q-item-section>{{ registration.user.profile.country.name }}</q-item-section>
+                <q-item-section>{{ registration.country.name }}</q-item-section>
               </q-item>
-              <q-separator v-if="registration.invoice_requested" inset="item"></q-separator>
+              <q-separator v-if="registration.custom_data.profile.advisor" inset="item"></q-separator>
+              <q-item v-if="registration.custom_data.profile.advisor">
+                <q-item-section avatar><q-icon name="supervised_user_circle"></q-icon></q-item-section>
+                <q-item-section>{{ registration.custom_data.profile.advisor }}</q-item-section>
+                <q-item-section side class="text-caption">Advisor</q-item-section>
+              </q-item>
+              <q-separator inset="item"></q-separator>
+              <q-item>
+                <q-item-section avatar><q-icon name="article" class="q-mb-md"></q-icon></q-item-section>
+                <q-item-section class="q-py-lg">
+                  <marked :text="registration.custom_data.motivation" class="text-body2"></marked>
+                  <div class="q-gutter-x-xs q-gutter-y-md text-grey-7 text-caption q-mt-none">
+                    <span v-for="h in registration.custom_data.history" :key="h">#{{ h }} </span>
+                  </div>
+                </q-item-section>
+              </q-item>
+              <!--<q-separator v-if="registration.invoice_requested" inset="item"></q-separator>
               <q-item v-if="registration.invoice_requested">
                 <q-item-section avatar><q-icon name="grading" :color="(registration.invoice_sent) ? 'positive' : 'orange-7'"></q-icon></q-item-section>
                 <q-item-section v-if="registration.invoice_sent" class="text-positive text-bold">Invoice sent</q-item-section>
@@ -209,7 +225,7 @@ Vue.component('acaces-registrations-table', {
               <q-item v-else>
                 <q-item-section avatar><q-icon name="radio_button_unchecked" color="orange-7"></q-icon></q-item-section>
                 <q-item-section class="text-orange-7 text-bold">Pending payment</q-item-section>
-              </q-item>
+              </q-item>-->
             </q-list>
           </q-card-section>
           <q-card-section v-show="registration.custom_data.grant_requested">
@@ -237,8 +253,8 @@ Vue.component('acaces-registrations-table', {
       });
     },
     registration: function () {
-      if (this.data.length && this.uuid) {
-        return _.findWhere(this.data, {uuid: this.uuid});
+      if (this.data.length && this.id) {
+        return _.findWhere(this.data, {id: this.id});
       } else return null;
     },
     showDialog: {
@@ -247,7 +263,7 @@ Vue.component('acaces-registrations-table', {
       },
       set: function (val) {
         if (this.dialogVisible) {
-          this.$router.replace({params: {uuid: undefined}});
+          this.$router.replace({params: {id: undefined}});
           this.dialogVisible = false;
         }
       }
