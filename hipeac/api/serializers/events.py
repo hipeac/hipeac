@@ -105,7 +105,7 @@ class AuthRegistrationSerializer(WritableNestedModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     # poster_abstract = AcacesPosterAbstractSerializer(read_only=True)
-    user = UserPublicMiniSerializer()
+    user = UserPublicMiniSerializer(read_only=True)
     courses = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), many=True, allow_empty=True)
     sessions = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all(), many=True, allow_empty=True)
     posters = PosterSerializer(many=True, allow_empty=True)
