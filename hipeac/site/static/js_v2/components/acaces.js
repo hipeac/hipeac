@@ -207,7 +207,7 @@ Vue.component('acaces-registrations-table', {
                 <q-item-section class="q-py-lg">
                   <marked :text="registration.custom_data.motivation" class="text-body2"></marked>
                   <div class="q-gutter-x-xs q-gutter-y-md text-grey-7 text-caption q-mt-none">
-                    <span v-for="h in registration.custom_data.history" :key="h">#{{ h }} </span>
+                    <span v-for="y in years" :key="y">#{{ y }} </span>
                   </div>
                 </q-item-section>
               </q-item>
@@ -267,6 +267,10 @@ Vue.component('acaces-registrations-table', {
           this.dialogVisible = false;
         }
       }
+    },
+    years: function () {
+      if (!this.registration) return [];
+      return this.registration.custom_data.history.sort() || [];
     }
   },
   methods: {

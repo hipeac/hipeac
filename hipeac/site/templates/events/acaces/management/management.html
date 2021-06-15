@@ -94,6 +94,8 @@
       },
       mutations: {
         getEvent: function (state) {
+          var self = this;
+
           Hipeac.api.get(VARS.eventUrl).then(function (res) {
             if (!_.has(res.data, 'custom_data')) {
               res.data.custom_data = {
@@ -110,6 +112,10 @@
             });
 
             state.event = Object.freeze(Hipeac.map.event(res.data));
+
+            setTimeout(function () {
+              self.commit('getEvent');
+            }, 66000);
           });
         },
         getCourses: function (state) {
@@ -122,10 +128,16 @@
         getRegistrations: function (state) {
           if (!USER_IS_AUTHENTICATED) return;
 
+          var self = this;
+
           Hipeac.api.get(VARS.registrationsUrl).then(function (res) {
             state.registrations = Object.freeze(res.data.map(function (obj) {
               return Hipeac.map.registration(obj);
             }));
+
+            setTimeout(function () {
+              self.commit('getRegistrations');
+            }, 44000);
           });
         },
         updateEvent: function (state, data) {
