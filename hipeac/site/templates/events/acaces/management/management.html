@@ -14,10 +14,10 @@
         <q-toolbar class="container wide">
           <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
           <q-tabs stretch inline-label no-caps mobile-arrows>
+            <q-route-tab :to="{name: 'stats'}" label="Stats"></q-route-tab>
             <q-route-tab :to="{name: 'registrations'}" label="Registrations"></q-route-tab>
             <q-route-tab :to="{name: 'grants'}" label="Grants"></q-route-tab>
             <!--<q-route-tab :to="{name: 'emails'}" label="Emails"></q-route-tab>-->
-            <!--<q-route-tab :to="{name: 'stats'}" label="Stats"></q-route-tab>-->
           </q-tabs>
         </q-toolbar>
       </q-page-sticky>
@@ -90,6 +90,37 @@
           });
 
           return countries;
+        },
+        grantStats: function (state, getters) {
+          var data = _.values(getters.grantsPerCountry);
+          if (!data.length) return null;
+          return {
+            registrations: data.reduce(function (s, f) { return s + f.registrations }, 0),
+            admitted: data.reduce(function (s, f) { return s + f.admitted }, 0),
+            grants_available: data.reduce(function (s, f) { return s + f.grants }, 0),
+            grants_requested: data.reduce(function (s, f) { return s + f.grants_requested }, 0),
+            grants_assigned: data.reduce(function (s, f) { return s + f.grants_assigned }, 0)
+          };
+        },
+        simpleTracks: function (state) {
+          var tracks = {};
+
+          if (!state.courses.length) return [];
+
+          _.each(state.courses, function (c) {
+            if (c.custom_data.track && c.custom_data.track.project_id) {
+              if (!_.has(tracks, c.custom_data.track.project_id)) {
+                tracks[c.custom_data.track.project_id] = {
+                  track: c.custom_data.track,
+                  courses: []
+                };
+              }
+
+              tracks[c.custom_data.track.project_id].courses.push(c.id);
+            }
+          });
+
+          return _.values(tracks);
         }
       },
       mutations: {
@@ -157,19 +188,8 @@
         }
       },
       computed: _.extend(
-        Vuex.mapGetters(['grantsPerCountry']),
+        Vuex.mapGetters(['grantsPerCountry', 'grantStats']),
         Vuex.mapState(['countries', 'event', 'registrations']), {
-        stats: function () {
-          var data = _.values(this.grantsPerCountry);
-          if (!data.length) return null;
-          return {
-            registrations: data.reduce(function (s, f) { return s + f.registrations }, 0),
-            admitted: data.reduce(function (s, f) { return s + f.admitted }, 0),
-            grants_available: data.reduce(function (s, f) { return s + f.grants }, 0),
-            grants_requested: data.reduce(function (s, f) { return s + f.grants_requested }, 0),
-            grants_assigned: data.reduce(function (s, f) { return s + f.grants_assigned }, 0)
-          };
-        }
       }),
       methods: {
         syncEvent: function () {
@@ -217,8 +237,8 @@
         }
       },
       computed: _.extend(
-        Vuex.mapGetters(['grantsPerCountry']),
-        Vuex.mapState(['event', 'registrations']), {
+        Vuex.mapGetters(['grantsPerCountry', 'simpleTracks']),
+        Vuex.mapState(['event', 'courses', 'registrations']), {
         items: function () {
           if (this.query == '') return this.registrations;
           var qs = this.query.toLowerCase().split(' ');
@@ -265,7 +285,7 @@
     var StatsView = {
       template: '#v-stats',
       computed: _.extend(
-        Vuex.mapGetters(['slots']),
+        Vuex.mapGetters(['grantStats', 'simpleTracks']),
         Vuex.mapState(['event']), {
       })
     };
@@ -279,7 +299,7 @@
       routes: [
         {
             path: '/',
-            redirect: {name: 'registrations'}
+            redirect: {name: 'stats'}
         },
         {
           name: 'registrations',

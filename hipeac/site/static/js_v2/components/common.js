@@ -444,3 +444,29 @@ Vue.component('country-flag', {
     }
   }
 });
+
+Vue.component('stats-progress', {
+  props: {
+    size: {
+      type: String,
+      default: 'lg'
+    },
+    fontSize: {
+      type: String,
+      default: '12px'
+    },
+    color: {
+      type: String,
+      default: 'primary'
+    },
+    value: {
+      type: Number,
+      required: true
+    }
+  },
+  template: `
+    <q-circular-progress show-value :size="size" :font-size="fontSize" :value="value" :color="color" track-color="grey-3">
+      <samp><strong><slot></slot></strong></samp>
+    </q-circular-progress>
+  `
+});

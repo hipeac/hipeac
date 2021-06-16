@@ -6,7 +6,7 @@
     </q-card>
     <q-card class="hipeac__card q-mt-sm q-mb-lg">
       <q-card-section>
-        <acaces-registrations-table :data="items" :id="id" :admittedIds="event.custom_data.admitted_ids" :grantedIds="event.custom_data.granted_ids" :grantsPerCountry="grantsPerCountry"></acaces-registrations-table>
+        <acaces-registrations-table :data="items" :id="id" :admittedIds="event.custom_data.admitted_ids" :grantedIds="event.custom_data.granted_ids" :grantsPerCountry="grantsPerCountry" :tracks="simpleTracks" :courses="courses"></acaces-registrations-table>
       </q-card-section>
     </q-card>
   </div>

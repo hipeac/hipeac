@@ -107,6 +107,18 @@ Vue.component('acaces-registrations-table', {
     grantsPerCountry: {
       type: [Boolean, Object],
       default: false
+    },
+    courses: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
+    tracks: {
+      type: Array,
+      default: function () {
+        return [];
+      }
     }
   },
   template: `
@@ -160,8 +172,9 @@ Vue.component('acaces-registrations-table', {
         </template>
       </q-table>
       <q-dialog v-model="showDialog" @show="dialogVisible = true">
-        <q-card v-if="registration" style="width: 600px">
+        <q-card v-if="registration" style="width: 800px; max-width: 95vw;">
           <q-card-section>
+            <q-btn flat round v-close-popup icon="close" class="float-right"></q-btn>
             <display-4 class="q-mb-lg">Registration #{{ registration.id }}</display-4>
             <q-list dense>
               <q-item>
@@ -203,10 +216,25 @@ Vue.component('acaces-registrations-table', {
               </q-item>
               <q-separator inset="item"></q-separator>
               <q-item>
+                <q-item-section avatar><q-icon name="view_week"></q-icon></q-item-section>
+                <q-item-section class="q-py-lg text-body2">
+                  <p v-for="course in registrationCourses" :key="course.id" class="q-mb-xs">
+                    <small>Slot #{{ course.slot }}:</small> {{ course.title }}
+                  </p>
+                  <ul v-if="registrationTracks.length" class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9 q-mt-xs">
+                    <li v-for="t in registrationTracks" :key="t.track.project_id">
+                      <q-icon size="xs" name="label_important" :color="t.track.color" class="q-mr-xs"></q-icon>
+                      <span>{{ t.track.name }}</span>
+                    </li>
+                  </ul>
+                </q-item-section>
+              </q-item>
+              <q-separator inset="item"></q-separator>
+              <q-item>
                 <q-item-section avatar><q-icon name="article" class="q-mb-md"></q-icon></q-item-section>
-                <q-item-section class="q-py-lg">
+                <q-item-section class="q-pt-lg q-pb-md">
                   <marked :text="registration.custom_data.motivation" class="text-body2"></marked>
-                  <div class="q-gutter-x-xs q-gutter-y-md text-grey-7 text-caption q-mt-none">
+                  <div class="q-gutter-x-xs q-gutter-y-md text-grey-9 text-caption q-mt-none">
                     <span v-for="y in years" :key="y">#{{ y }} </span>
                   </div>
                 </q-item-section>
@@ -228,11 +256,6 @@ Vue.component('acaces-registrations-table', {
               </q-item>-->
             </q-list>
           </q-card-section>
-          <q-card-section v-show="registration.custom_data.grant_requested">
-          </q-card-section>
-          <q-card-actions align="right" class="q-pa-md">
-            <q-btn flat label="Close" color="grey" v-close-popup></q-btn>
-          </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
@@ -256,6 +279,22 @@ Vue.component('acaces-registrations-table', {
       if (this.data.length && this.id) {
         return _.findWhere(this.data, {id: this.id});
       } else return null;
+    },
+    registrationCourses: function () {
+      if (!this.registration || !this.courses.length) return [];
+      var courses = this.registration.courses;
+      return this.courses.filter(function (course) {
+        return courses.indexOf(course.id) > -1;
+      }).sort(function (a, b) {
+        return a.slot - b.slot;
+      });
+    },
+    registrationTracks: function () {
+      if (!this.registration || !this.tracks.length) return [];
+      var courses = this.registration.courses;
+      return this.tracks.filter(function (track) {
+        return _.intersection(track.courses, courses).length == track.courses.length;
+      });
     },
     showDialog: {
       get: function () {
@@ -302,7 +341,6 @@ Vue.component('acaces-registrations-table', {
     }
   }
 });
-
 
 Vue.component('acaces-countries-table', {
   data: function () {
@@ -435,4 +473,62 @@ Vue.component('acaces-countries-table', {
       });
     }
   }
+});
+
+Vue.component('acaces-grant-stats-card', {
+  props: {
+    data: {
+      type: Object
+    },
+    title: {
+      type: String,
+      default: 'Grant overview'
+    },
+    showTotals: {
+      type: Boolean,
+      default: true
+    }
+  },
+  template: `
+    <q-card v-if="data" class="hipeac__card">
+      <div :class="{'q-pa-sm': $q.screen.gt.xs }">
+        <q-card-section>
+          <display-4>{{ title }}</display-4>
+        </q-card-section>
+        <q-list class="text-body2 q-mb-md">
+          <q-item v-if="showTotals" class="q-py-xs">
+            <q-item-section avatar>
+              <stats-progress :value="100" color="primary">{{ data.registrations }}</stats-progress>
+            </q-item-section>
+            <q-item-section>Registrations</q-item-section>
+          </q-item>
+          <q-item class="q-py-xs">
+            <q-item-section avatar>
+              <stats-progress :value="(data.admitted / data.registrations) * 100" color="green">{{ data.admitted }}</stats-progress>
+            </q-item-section>
+            <q-item-section>Admitted applicants</q-item-section>
+          </q-item>
+          <q-item class="q-py-xs">
+            <q-item-section avatar>
+              <stats-progress :value="(data.grants_requested / data.registrations) * 100" color="blue">{{ data.grants_requested }}</stats-progress>
+            </q-item-section>
+            <q-item-section>Grants requested</q-item-section>
+          </q-item>
+          <q-item class="q-py-xs">
+            <q-item-section avatar>
+              <stats-progress :value="(data.grants_available / data.registrations) * 100" :color="(data.grants_available < data.grants_requested) ? 'orange' : 'green'">{{ data.grants_available }}</stats-progress>
+            </q-item-section>
+            <q-item-section>Grants available</q-item-section>
+          </q-item>
+          <q-item class="q-py-xs">
+            <q-item-section avatar>
+              <stats-progress :value="(data.grants_assigned / data.registrations) * 100" :color="(data.grants_assigned < data.grants_available) ? 'orange' : 'green'">{{ data.grants_assigned }}</stats-progress>
+            </q-item-section>
+            <q-item-section>Grants assigned</q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+      <slot></slot>
+    </q-card>
+  `
 });
