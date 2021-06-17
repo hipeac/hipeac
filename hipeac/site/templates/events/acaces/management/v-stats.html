@@ -2,25 +2,25 @@
 {% verbatim %}
   <div class="q-my-lg">
     <div class="row q-col-gutter-lg">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-5">
         <div class="row q-col-gutter-lg">
           <div class="col-12 col-md-6 items-stretch">
-            <q-card v-if="grantStats" class="hipeac__card column full-height">
+            <q-card v-if="mainStats" class="hipeac__card column full-height">
               <div :class="{'q-pa-sm': $q.screen.gt.xs }">
                 <q-card-section>
                   <display-4>Overview</display-4>
                 </q-card-section>
-                <q-list class="text-body2 q-mb-md">
+                <q-list class="text-body2">
                   <q-item class="q-py-xs">
                     <q-item-section avatar>
-                      <stats-progress :value="100" color="primary">{{ grantStats.registrations }}</stats-progress>
+                      <stats-progress :value="100" color="primary">{{ mainStats.registrations }}</stats-progress>
                     </q-item-section>
                     <q-item-section><strong>Registrations</strong></q-item-section>
                   </q-item>
                   <q-item-label header>Gender</q-item-label>
                   <q-item class="q-py-xs">
                     <q-item-section avatar>
-                      <stats-progress :value="(grantStats.gender.female / grantStats.registrations) * 100" color="blue">{{ grantStats.gender.female }}</stats-progress>
+                      <stats-progress :value="(mainStats.gender.female / mainStats.registrations) * 100" color="blue">{{ mainStats.gender.female }}</stats-progress>
                     </q-item-section>
                     <q-item-section>Female students</q-item-section>
                     <q-item-section side>
@@ -31,7 +31,7 @@
                   </q-item>
                   <q-item class="q-py-xs">
                     <q-item-section avatar>
-                      <stats-progress :value="(grantStats.gender.male / grantStats.registrations) * 100" color="blue">{{ grantStats.gender.male }}</stats-progress>
+                      <stats-progress :value="(mainStats.gender.male / mainStats.registrations) * 100" color="blue">{{ mainStats.gender.male }}</stats-progress>
                     </q-item-section>
                     <q-item-section>Male students</q-item-section>
                     <q-item-section side>
@@ -43,7 +43,7 @@
                   <q-item-label header v-if="simpleTracks.length">Tracks</q-item-label>
                   <q-item v-for="t in simpleTracks" :key="t.track.project_id" class="q-py-xs">
                     <q-item-section avatar>
-                      <stats-progress :value="(grantStats.tracks[t.track.name] / grantStats.registrations) * 100" :color="t.track.color">{{ grantStats.tracks[t.track.name] }}</stats-progress>
+                      <stats-progress :value="(mainStats.tracks[t.track.name] / mainStats.registrations) * 100" :color="t.track.color">{{ mainStats.tracks[t.track.name] }}</stats-progress>
                     </q-item-section>
                     <q-item-section>{{ t.track.name }}</q-item-section>
                     <q-item-section side>
@@ -62,7 +62,7 @@
             </q-card>
           </div>
           <div class="col-12 col-md-6">
-            <acaces-grant-stats-card :data="grantStats" :show-totals="false" title="Grants" class="column full-height">
+            <acaces-grant-stats-card :data="mainStats" :show-totals="false" title="Grants" class="column full-height">
               <q-space></q-space>
               <q-separator></q-separator>
               <q-card-actions :class="{'q-px-md': $q.screen.gt.xs }">
@@ -73,15 +73,15 @@
         </div>
       </div>
       <div class="col-12 col-md-3">
-        <q-card v-if="grantStats && countries.length" class="hipeac__card column full-height">
+        <q-card v-if="mainStats && countries.length" class="hipeac__card">
           <div :class="{'q-pa-sm': $q.screen.gt.xs }">
             <q-card-section>
               <display-4>{{ countries.length }} countries</display-4>
             </q-card-section>
-            <q-list class="text-body2 q-mb-md">
+            <q-list class="text-body2">
               <q-item v-for="data in countries" :key="data.country.code" class="q-py-xs">
                 <q-item-section avatar>
-                  <stats-progress :value="(data.registrations / grantStats.registrations) * 100" color="primary">{{ data.registrations }}</stats-progress>
+                  <stats-progress :value="(data.registrations / mainStats.registrations) * 100" color="primary">{{ data.registrations }}</stats-progress>
                 </q-item-section>
                 <q-item-section>{{ data.country.name }}</q-item-section>
                 <q-item-section side>
@@ -90,6 +90,26 @@
                   </router-link>
                 </q-item-section>
               </q-item>
+            </q-list>
+          </div>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-4">
+        <q-card v-if="mainStats && courses.length" class="hipeac__card">
+          <div :class="{'q-pa-sm': $q.screen.gt.xs }">
+            <q-card-section class="q-pb-none">
+              <display-4>Courses</display-4>
+            </q-card-section>
+            <q-list class="text-body2">
+              <div v-for="(cs, slot) in coursesBySlot" >
+                <q-item-label header>Slot {{ slot }}</q-item-label>
+                <q-item v-for="course in cs" :key="course.id" class="q-py-xs">
+                  <q-item-section avatar>
+                    <stats-progress :value="(mainStats.courses[course.id] / mainStats.registrations) * 100" :color="course.color">{{ mainStats.courses[course.id] }}</stats-progress>
+                  </q-item-section>
+                  <q-item-section>{{ course.title }}</q-item-section>
+                </q-item>
+              </div>
             </q-list>
           </div>
         </q-card>

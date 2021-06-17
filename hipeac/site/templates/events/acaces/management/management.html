@@ -91,7 +91,7 @@
 
           return countries;
         },
-        grantStats: function (state, getters) {
+        mainStats: function (state, getters) {
           var data = _.values(getters.grantsPerCountry);
           var regs = getters.remappedRegistrations;
 
@@ -99,6 +99,7 @@
 
           out = {
             tracks: {},
+            courses: {},
             registrations: data.reduce(function (i, o) { return i + o.registrations }, 0),
             admitted: data.reduce(function (i, o) { return i + o.admitted }, 0),
             grants_available: data.reduce(function (i, o) { return i + o.grants }, 0),
@@ -113,7 +114,16 @@
 
           _.each(getters.simpleTracks, function (t) {
             out.tracks[t.track.name] = regs.reduce(function (i, o) { return i + o.in_track[t.track.name] }, 0)
-          })
+          });
+
+          _.each(regs, function (r) {
+            _.each(r.courses, function (c) {
+              if (!_.has(out.courses, c)) {
+                out.courses[c] = 0;
+              }
+              out.courses[c]++;
+            });
+          });
 
           return out;
         },
@@ -189,7 +199,9 @@
         },
         getCourses: function (state) {
           Hipeac.api.get(VARS.coursesUrl).then(function (res) {
-            state.courses = Object.freeze(res.data.map(function (obj) {
+            state.courses = Object.freeze(res.data.sort(function (a, b) {
+            return Hipeac.utils.sortText(a.title, b.title);
+          }).map(function (obj) {
               return Hipeac.map.course(obj);
             }));
           });
@@ -230,7 +242,7 @@
         }
       },
       computed: _.extend(
-        Vuex.mapGetters(['grantsPerCountry', 'grantStats']),
+        Vuex.mapGetters(['grantsPerCountry', 'mainStats']),
         Vuex.mapState(['countries', 'event', 'registrations']), {
       }),
       methods: {
@@ -327,12 +339,15 @@
     var StatsView = {
       template: '#v-stats',
       computed: _.extend(
-        Vuex.mapGetters(['grantsPerCountry', 'grantStats', 'simpleTracks']),
-        Vuex.mapState(['event']), {
+        Vuex.mapGetters(['grantsPerCountry', 'mainStats', 'simpleTracks']),
+        Vuex.mapState(['courses']), {
         countries: function () {
           return _.values(this.grantsPerCountry).sort(function (a, b) {
             return b.registrations - a.registrations;
           });
+        },
+        coursesBySlot: function () {
+          return _.groupBy(this.courses, 'slot');
         }
       })
     };
