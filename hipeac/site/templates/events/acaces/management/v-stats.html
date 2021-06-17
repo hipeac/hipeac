@@ -10,7 +10,7 @@
                 <q-card-section>
                   <display-4>Overview</display-4>
                 </q-card-section>
-                <q-list class="text-body2">
+                <q-list class="text-body2 q-mb-md">
                   <q-item class="q-py-xs">
                     <q-item-section avatar>
                       <stats-progress :value="100" color="primary">{{ mainStats.registrations }}</stats-progress>
@@ -76,7 +76,7 @@
                 <q-card-section>
                   <display-4>{{ countries.length }} countries</display-4>
                 </q-card-section>
-                <q-list class="text-body2">
+                <q-list class="text-body2 q-mb-md">
                   <q-item v-for="data in countries" :key="data.country.code" class="q-py-xs">
                     <q-item-section avatar>
                       <stats-progress :value="(data.registrations / mainStats.registrations) * 100" color="primary">{{ data.registrations }}</stats-progress>
@@ -100,7 +100,7 @@
             <q-card-section class="q-pb-none">
               <display-4>Courses</display-4>
             </q-card-section>
-            <q-list class="text-body2">
+            <q-list class="text-body2 q-mb-md">
               <div v-for="(cs, slot) in coursesBySlot" >
                 <q-item-label header>Slot {{ slot }}</q-item-label>
                 <q-item v-for="course in cs" :key="course.id" class="q-py-xs">
