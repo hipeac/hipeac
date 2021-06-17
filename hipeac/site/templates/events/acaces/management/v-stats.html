@@ -22,7 +22,7 @@
                     <q-item-section avatar>
                       <stats-progress :value="(mainStats.gender.female / mainStats.registrations) * 100" color="blue">{{ mainStats.gender.female }}</stats-progress>
                     </q-item-section>
-                    <q-item-section>Female students</q-item-section>
+                    <q-item-section>Female applicants</q-item-section>
                     <q-item-section side>
                       <router-link :to="{name: 'registrations', query: {q: 'gender:female'}}" class="q-ml-xs">
                         <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
@@ -33,7 +33,7 @@
                     <q-item-section avatar>
                       <stats-progress :value="(mainStats.gender.male / mainStats.registrations) * 100" color="blue">{{ mainStats.gender.male }}</stats-progress>
                     </q-item-section>
-                    <q-item-section>Male students</q-item-section>
+                    <q-item-section>Male applicants</q-item-section>
                     <q-item-section side>
                       <router-link :to="{name: 'registrations', query: {q: 'gender:male'}}" class="q-ml-xs">
                         <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
