@@ -221,12 +221,9 @@ Vue.component('acaces-registrations-table', {
                   <p v-for="course in registrationCourses" :key="course.id" class="q-mb-xs">
                     <small>Slot #{{ course.slot }}:</small> {{ course.title }}
                   </p>
-                  <ul v-if="registrationTracks.length" class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9 q-mt-xs">
-                    <li v-for="t in registrationTracks" :key="t.track.project_id">
-                      <q-icon size="xs" name="label_important" :color="t.track.color" class="q-mr-xs"></q-icon>
-                      <span>{{ t.track.name }}</span>
-                    </li>
-                  </ul>
+                  <div v-if="registrationTracks.length" class="q-gutter-x-xs q-mt-sm">
+                    <q-badge v-for="t in registrationTracks" :key="t.track.project_id" :color="t.track.color" >#{{ t.track.name }}</q-badge>
+                  </div>
                 </q-item-section>
               </q-item>
               <q-separator inset="item"></q-separator>
@@ -234,8 +231,8 @@ Vue.component('acaces-registrations-table', {
                 <q-item-section avatar><q-icon name="article" class="q-mb-md"></q-icon></q-item-section>
                 <q-item-section class="q-pt-lg q-pb-md">
                   <marked :text="registration.custom_data.motivation" class="text-body2"></marked>
-                  <div class="q-gutter-x-xs q-gutter-y-md text-grey-9 text-caption q-mt-none">
-                    <span v-for="y in years" :key="y">#{{ y }} </span>
+                  <div class="q-gutter-xs q-mt-none">
+                    <q-badge v-for="y in years" :key="y" color="grey-2" text-color="grey-7">#{{ y }}</q-badge>
                   </div>
                 </q-item-section>
               </q-item>
@@ -262,18 +259,7 @@ Vue.component('acaces-registrations-table', {
   `,
   computed: {
     registrations: function () {
-      return this.data.map(function (obj) {
-        obj.date = moment(obj.created_at);
-        obj.country_code = obj.user.profile.institution.country.code || obj.custom_data.profile.country.code;
-        obj.user_gender = obj.custom_data.profile.gender || {
-          1: 'female',
-          2: 'male',
-          96: 'non_binary'
-        }[obj.user.profile.gender_id] || null;
-        obj.user_name = obj.user.profile.name;
-        obj.user_affiliation = obj.user.profile.institution.name;
-        return obj;
-      });
+      return this.data;
     },
     registration: function () {
       if (this.data.length && this.id) {
@@ -434,7 +420,7 @@ Vue.component('acaces-countries-table', {
             </q-td>
             <q-td key="registrations" :props="props">
               <samp>{{ props.row.registrations }}</samp>
-              <router-link :to="{name: 'registrations', query: {q: props.row.country_name}}" class="q-ml-xs">
+              <router-link :to="{name: 'registrations', query: {q: props.row.country_name.toLowerCase()}}" class="q-ml-xs">
                 <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
               </router-link>
             </q-td>
@@ -500,7 +486,7 @@ Vue.component('acaces-grant-stats-card', {
             <q-item-section avatar>
               <stats-progress :value="100" color="primary">{{ data.registrations }}</stats-progress>
             </q-item-section>
-            <q-item-section>Registrations</q-item-section>
+            <q-item-section><strong>Registrations</strong></q-item-section>
           </q-item>
           <q-item class="q-py-xs">
             <q-item-section avatar>

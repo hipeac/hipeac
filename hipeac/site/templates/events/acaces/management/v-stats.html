@@ -2,32 +2,93 @@
 {% verbatim %}
   <div class="q-my-lg">
     <div class="row q-col-gutter-lg">
-      <div class="col-12 col-md-3">
-        <acaces-grant-stats-card :data="grantStats" :show-totals="false" title="Grants">
-          <q-separator></q-separator>
-          <q-card-actions :class="{'q-px-md': $q.screen.gt.xs }">
-            <q-btn flat :to="{'name': 'grants'}" color="primary">Manage grants</q-btn>
-          </q-card-actions>
-        </acaces-grant-stats-card>
+      <div class="col-12 col-md-6">
+        <div class="row q-col-gutter-lg">
+          <div class="col-12 col-md-6 items-stretch">
+            <q-card v-if="grantStats" class="hipeac__card column full-height">
+              <div :class="{'q-pa-sm': $q.screen.gt.xs }">
+                <q-card-section>
+                  <display-4>Overview</display-4>
+                </q-card-section>
+                <q-list class="text-body2 q-mb-md">
+                  <q-item class="q-py-xs">
+                    <q-item-section avatar>
+                      <stats-progress :value="100" color="primary">{{ grantStats.registrations }}</stats-progress>
+                    </q-item-section>
+                    <q-item-section><strong>Registrations</strong></q-item-section>
+                  </q-item>
+                  <q-item-label header>Gender</q-item-label>
+                  <q-item class="q-py-xs">
+                    <q-item-section avatar>
+                      <stats-progress :value="(grantStats.gender.female / grantStats.registrations) * 100" color="blue">{{ grantStats.gender.female }}</stats-progress>
+                    </q-item-section>
+                    <q-item-section>Female students</q-item-section>
+                    <q-item-section side>
+                      <router-link :to="{name: 'registrations', query: {q: 'gender:female'}}" class="q-ml-xs">
+                        <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+                      </router-link>
+                    </q-item-section>
+                  </q-item>
+                  <q-item class="q-py-xs">
+                    <q-item-section avatar>
+                      <stats-progress :value="(grantStats.gender.male / grantStats.registrations) * 100" color="blue">{{ grantStats.gender.male }}</stats-progress>
+                    </q-item-section>
+                    <q-item-section>Male students</q-item-section>
+                    <q-item-section side>
+                      <router-link :to="{name: 'registrations', query: {q: 'gender:male'}}" class="q-ml-xs">
+                        <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+                      </router-link>
+                    </q-item-section>
+                  </q-item>
+                  <q-item-label header v-if="simpleTracks.length">Tracks</q-item-label>
+                  <q-item v-for="t in simpleTracks" :key="t.track.project_id" class="q-py-xs">
+                    <q-item-section avatar>
+                      <stats-progress :value="(grantStats.tracks[t.track.name] / grantStats.registrations) * 100" :color="t.track.color">{{ grantStats.tracks[t.track.name] }}</stats-progress>
+                    </q-item-section>
+                    <q-item-section>{{ t.track.name }}</q-item-section>
+                    <q-item-section side>
+                      <router-link :to="{name: 'registrations', query: {q: 'track:' + t.track.name.toLowerCase()}}" class="q-ml-xs">
+                        <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+                      </router-link>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+              <q-space></q-space>
+              <q-separator></q-separator>
+              <q-card-actions :class="{'q-px-md': $q.screen.gt.xs }">
+                <q-btn flat :to="{'name': 'registrations'}" color="primary">View registrations</q-btn>
+              </q-card-actions>
+            </q-card>
+          </div>
+          <div class="col-12 col-md-6">
+            <acaces-grant-stats-card :data="grantStats" :show-totals="false" title="Grants" class="column full-height">
+              <q-space></q-space>
+              <q-separator></q-separator>
+              <q-card-actions :class="{'q-px-md': $q.screen.gt.xs }">
+                <q-btn flat :to="{'name': 'grants'}" color="primary">Manage grants</q-btn>
+              </q-card-actions>
+            </acaces-grant-stats-card>
+          </div>
+        </div>
       </div>
-      <div class="col-12 col-md-9">
-        <q-card v-if="grantStats" class="hipeac__card">
+      <div class="col-12 col-md-3">
+        <q-card v-if="grantStats && countries.length" class="hipeac__card column full-height">
           <div :class="{'q-pa-sm': $q.screen.gt.xs }">
             <q-card-section>
-              <display-4>Overview</display-4>
+              <display-4>{{ countries.length }} countries</display-4>
             </q-card-section>
             <q-list class="text-body2 q-mb-md">
-              <q-item class="q-py-xs">
+              <q-item v-for="data in countries" :key="data.country.code" class="q-py-xs">
                 <q-item-section avatar>
-                  <stats-progress :value="100" color="primary">{{ grantStats.registrations }}</stats-progress>
+                  <stats-progress :value="(data.registrations / grantStats.registrations) * 100" color="primary">{{ data.registrations }}</stats-progress>
                 </q-item-section>
-                <q-item-section>Registrations</q-item-section>
-              </q-item>
-              <q-item class="q-py-xs">
-                <q-item-section avatar>
-                  <stats-progress :value="(grantStats.admitted / grantStats.registrations) * 100" color="green">{{ grantStats.admitted }}</stats-progress>
+                <q-item-section>{{ data.country.name }}</q-item-section>
+                <q-item-section side>
+                  <router-link :to="{name: 'registrations', query: {q: data.country.name.toLowerCase()}}" class="q-ml-xs">
+                    <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+                  </router-link>
                 </q-item-section>
-                <q-item-section>Admitted applicants</q-item-section>
               </q-item>
             </q-list>
           </div>

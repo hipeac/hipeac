@@ -51,7 +51,7 @@
         registrations: []
       },
       getters: {
-        grantsPerCountry: function (state) {
+        grantsPerCountry: function (state, getters) {
           var countries = {};
 
           if (!state.registrations.length || !state.event) return countries;
@@ -93,14 +93,56 @@
         },
         grantStats: function (state, getters) {
           var data = _.values(getters.grantsPerCountry);
+          var regs = getters.remappedRegistrations;
+
           if (!data.length) return null;
-          return {
-            registrations: data.reduce(function (s, f) { return s + f.registrations }, 0),
-            admitted: data.reduce(function (s, f) { return s + f.admitted }, 0),
-            grants_available: data.reduce(function (s, f) { return s + f.grants }, 0),
-            grants_requested: data.reduce(function (s, f) { return s + f.grants_requested }, 0),
-            grants_assigned: data.reduce(function (s, f) { return s + f.grants_assigned }, 0)
+
+          out = {
+            tracks: {},
+            registrations: data.reduce(function (i, o) { return i + o.registrations }, 0),
+            admitted: data.reduce(function (i, o) { return i + o.admitted }, 0),
+            grants_available: data.reduce(function (i, o) { return i + o.grants }, 0),
+            grants_requested: data.reduce(function (i, o) { return i + o.grants_requested }, 0),
+            grants_assigned: data.reduce(function (i, o) { return i + o.grants_assigned }, 0),
+            gender: {
+              female: regs.reduce(function (i, o) { return i + (o.user_gender == 'female') }, 0),
+              male: regs.reduce(function (i, o) { return i + (o.user_gender == 'male') }, 0),
+              non_binary: regs.reduce(function (i, o) { return i + (o.user_gender == 'non_binary') }, 0)
+            }
           };
+
+          _.each(getters.simpleTracks, function (t) {
+            out.tracks[t.track.name] = regs.reduce(function (i, o) { return i + o.in_track[t.track.name] }, 0)
+          })
+
+          return out;
+        },
+        remappedRegistrations: function (state, getters) {
+          var t = getters.simpleTracks;
+          return state.registrations.map(function (obj) {
+            obj.in_track = {};
+            obj.date = moment(obj.created_at);
+            obj.country_code = obj.user.profile.institution.country.code || obj.custom_data.profile.country.code;
+            obj.user_gender = obj.custom_data.profile.gender || {
+              1: 'female',
+              2: 'male',
+              96: 'non_binary'
+            }[obj.user.profile.gender_id] || null;
+            obj.user_name = obj.user.profile.name;
+            obj.user_affiliation = obj.user.profile.institution.name;
+
+            var extraq = t.filter(function (t) {
+              var in_track = _.intersection(t.courses, obj.courses).length == t.courses.length;
+              obj.in_track[t.track.name] = in_track;
+              return in_track;
+            }).map(function (o) {
+              return 'track:' + o.track.name;
+            });
+
+            obj.q = obj.q + ' gender:' + obj.user_gender + ' ' +extraq.join(' ').toLowerCase();
+
+            return obj;
+          })
         },
         simpleTracks: function (state) {
           var tracks = {};
@@ -237,13 +279,13 @@
         }
       },
       computed: _.extend(
-        Vuex.mapGetters(['grantsPerCountry', 'simpleTracks']),
+        Vuex.mapGetters(['grantsPerCountry', 'remappedRegistrations', 'simpleTracks']),
         Vuex.mapState(['event', 'courses', 'registrations']), {
         items: function () {
-          if (this.query == '') return this.registrations;
+          if (this.query == '') return this.remappedRegistrations;
           var qs = this.query.toLowerCase().split(' ');
 
-          return this.registrations.filter(function (obj) {
+          return this.remappedRegistrations.filter(function (obj) {
             return _.every(qs, function (q) {
               return obj.q.indexOf(q) !== -1;
             });
@@ -285,8 +327,13 @@
     var StatsView = {
       template: '#v-stats',
       computed: _.extend(
-        Vuex.mapGetters(['grantStats', 'simpleTracks']),
+        Vuex.mapGetters(['grantsPerCountry', 'grantStats', 'simpleTracks']),
         Vuex.mapState(['event']), {
+        countries: function () {
+          return _.values(this.grantsPerCountry).sort(function (a, b) {
+            return b.registrations - a.registrations;
+          });
+        }
       })
     };
 
