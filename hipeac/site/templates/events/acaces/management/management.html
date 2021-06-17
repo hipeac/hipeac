@@ -129,6 +129,8 @@
         },
         remappedRegistrations: function (state, getters) {
           var t = getters.simpleTracks;
+          if (!state.event) return [];
+
           return state.registrations.map(function (obj) {
             obj.in_track = {};
             obj.date = moment(obj.created_at);
@@ -149,7 +151,15 @@
               return 'track:' + o.track.name;
             });
 
-            obj.q = obj.q + ' gender:' + obj.user_gender + ' ' +extraq.join(' ').toLowerCase();
+            obj.q = [
+              obj.q,
+              'admit:' + (state.event.custom_data.admitted_ids.includes(obj.id) ? 'yes' : 'no'),
+              'grant:' + (state.event.custom_data.granted_ids.includes(obj.id) ? 'yes' : 'no'),
+              'grant_requested:' + (obj.custom_data.grant_requested ? 'yes' : 'no'),
+              'visa_requested:' + (obj.visa_requested ? 'yes' : 'no'),
+              'gender:' + obj.user_gender,
+              extraq.join(' ')
+            ].join(' ').toLowerCase();
 
             return obj;
           })

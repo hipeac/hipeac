@@ -493,12 +493,22 @@ Vue.component('acaces-grant-stats-card', {
               <stats-progress :value="(data.admitted / data.registrations) * 100" color="green">{{ data.admitted }}</stats-progress>
             </q-item-section>
             <q-item-section>Admitted applicants</q-item-section>
+            <q-item-section side>
+              <router-link :to="{name: 'registrations', query: {q: 'admit:yes'}}" class="q-ml-xs">
+                <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+              </router-link>
+            </q-item-section>
           </q-item>
           <q-item class="q-py-xs">
             <q-item-section avatar>
               <stats-progress :value="(data.grants_requested / data.registrations) * 100" color="blue">{{ data.grants_requested }}</stats-progress>
             </q-item-section>
             <q-item-section>Grants requested</q-item-section>
+            <q-item-section side>
+              <router-link :to="{name: 'registrations', query: {q: 'grant_requested:yes'}}" class="q-ml-xs">
+                <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+              </router-link>
+            </q-item-section>
           </q-item>
           <q-item class="q-py-xs">
             <q-item-section avatar>
@@ -511,6 +521,11 @@ Vue.component('acaces-grant-stats-card', {
               <stats-progress :value="(data.grants_assigned / data.registrations) * 100" :color="(data.grants_assigned < data.grants_available) ? 'orange' : 'green'">{{ data.grants_assigned }}</stats-progress>
             </q-item-section>
             <q-item-section>Grants assigned</q-item-section>
+            <q-item-section side>
+              <router-link :to="{name: 'registrations', query: {q: 'grant:yes'}}" class="q-ml-xs">
+                <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+              </router-link>
+            </q-item-section>
           </q-item>
         </q-list>
       </div>
