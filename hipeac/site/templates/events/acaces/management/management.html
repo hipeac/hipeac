@@ -134,14 +134,18 @@
           return state.registrations.map(function (obj) {
             obj.in_track = {};
             obj.date = moment(obj.created_at);
-            obj.country_code = obj.user.profile.institution.country.code || obj.custom_data.profile.country.code;
+            obj.country_code = (obj.user.profile.institution)
+              ? obj.user.profile.institution.country.code
+              : undefined || obj.custom_data.profile.country.value;
             obj.user_gender = obj.custom_data.profile.gender || {
               1: 'female',
               2: 'male',
               96: 'non_binary'
             }[obj.user.profile.gender_id] || null;
             obj.user_name = obj.user.profile.name;
-            obj.user_affiliation = obj.user.profile.institution.name;
+            obj.user_affiliation = (obj.user.profile.institution)
+              ? obj.user.profile.institution.name
+              : undefined || obj.custom_data.profile.institution;
 
             var extraq = t.filter(function (t) {
               var in_track = _.intersection(t.courses, obj.courses).length == t.courses.length;
