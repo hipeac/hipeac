@@ -272,4 +272,5 @@ CRISPY_FAIL_SILENTLY = False
 COUNTRIES_OVERRIDE = {
     "CZ": "Czech Republic",  # EURAXESS value
     "US": "United States",
+    "XK": "Kosovo",
 }
