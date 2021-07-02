@@ -42,6 +42,7 @@
   <script src="{% static 'js_v2/components/acaces.js' %}"></script>
   <script>
     var VARS = document.querySelector('#vars').dataset;
+    var VIRTUAL_ACACES = 2020;
 
     var Store = new Vuex.Store({
       state: {
@@ -133,8 +134,11 @@
           if (!state.event) return [];
 
           return state.registrations.map(function (obj) {
+            var w = _.without(obj.custom_data.history, VIRTUAL_ACACES);
             obj.in_track = {};
             obj.date = moment(obj.created_at);
+            obj.acaces_count = obj.custom_data.history.length;
+            obj.acaces_last = (w.length) ? _.max(w) : null;
             obj.country_code = (obj.user.profile.institution)
               ? obj.user.profile.institution.country.code
               : obj.custom_data.profile.country.value;
@@ -147,6 +151,7 @@
             obj.user_affiliation = (obj.user.profile.institution)
               ? obj.user.profile.institution.name
               : obj.custom_data.profile.institution;
+            obj.advisor = obj.custom_data.profile.advisor || '-';
 
             var extraq = t.filter(function (t) {
               var in_track = _.intersection(t.courses, obj.courses).length == t.courses.length;

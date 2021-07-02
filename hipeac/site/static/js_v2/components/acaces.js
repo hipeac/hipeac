@@ -55,16 +55,18 @@ Vue.component('acaces-registrations-table', {
           label: 'Affiliation'
         },
         {
-          name: 'date',
-          field: 'created_at',
+          name: 'advisor',
+          field: 'advisor',
           sortable: true,
           align: 'left',
-          label: 'Date'
+          label: 'Advisor'
         },
         {
-          name: 'visa_status',
-          align: 'center',
-          label: 'Visa'
+          name: 'acaces_last',
+          field: 'acaces_last',
+          sortable: true,
+          align: 'right',
+          label: 'Last physical'
         },
         {
           name: 'payment_status',
@@ -73,9 +75,7 @@ Vue.component('acaces-registrations-table', {
         }
       ],
       initialPagination: {
-        rowsPerPage: 0,
-        sortBy: 'date',
-        descending: true
+        rowsPerPage: 0
       }
     }
   },
@@ -142,17 +142,8 @@ Vue.component('acaces-registrations-table', {
               <country-flag :code="props.row.country_code"></country-flag>
             </q-td>
             <q-td key="user_affiliation" :props="props" class="full-width">{{ props.row.user_affiliation }}</q-td>
-            <q-td key="date" :props="props"><small>{{ props.row.date.format('LLLL') }}</small></q-td>
-            <q-td key="visa_status" :props="props">
-              <span v-if="props.row.visa_requested">
-                <q-badge v-if="props.row.visa_sent" color="positive">
-                  <q-icon name="done" class="q-mr-xs"></q-icon>Yes</q-badge>
-                <q-badge v-else color="orange-5">
-                  <q-icon name="radio_button_unchecked" class="q-mr-xs"></q-icon>Yes</q-badge>
-              </span>
-              <q-badge v-else outline color="grey">
-                <q-icon name="close" class="q-mr-xs"></q-icon>No</q-badge>
-            </q-td>
+            <q-td key="advisor" :props="props"><small>{{ props.row.advisor }}</small></q-td>
+            <q-td key="acaces_last" :props="props"><small>{{ props.row.acaces_last || '-' }} ({{ props.row.acaces_count }})</small></q-td>
             <q-td key="invoice_status" :props="props">
               <span v-if="props.row.invoice_requested">
                 <q-badge v-if="props.row.invoice_sent" color="positive">
