@@ -220,10 +220,10 @@ Vue.component('acaces-registrations-table', {
                 <q-item-section>{{ registration.custom_data.profile.advisor }}</q-item-section>
                 <q-item-section side class="text-caption">Advisor</q-item-section>
               </q-item>
-              <q-separator inset="item"></q-separator>
+              <q-separator inset="item" class="q-mb-md"></q-separator>
               <q-item>
                 <q-item-section avatar><q-icon name="view_week"></q-icon></q-item-section>
-                <q-item-section class="q-py-lg text-body2">
+                <q-item-section class="text-body2">
                   <p v-for="course in registrationCourses" :key="course.id" class="q-mb-xs">
                     <small>Slot #{{ course.slot }}:</small> {{ course.title }}
                   </p>
@@ -232,25 +232,25 @@ Vue.component('acaces-registrations-table', {
                   </div>
                 </q-item-section>
               </q-item>
-              <q-separator inset="item"></q-separator>
+              <q-separator v-if="registration.custom_data.poster.present" inset="item" class="q-my-md"></q-separator>
+              <q-item v-if="registration.custom_data.poster.present">
+                <q-item-section avatar><q-icon name="amp_stories"></q-icon></q-item-section>
+                <q-item-section>
+                  <p class="text-body2 q-mb-xs">{{ registration.custom_data.poster.title }}</p>
+                  <p class="text-caption text-grey-8 q-mb-none">{{ registration.custom_data.poster.authors }}</p>
+                </q-item-section>
+              </q-item>
+              <q-separator inset="item" class="q-my-md"></q-separator>
               <q-item>
                 <q-item-section avatar><q-icon name="article" class="q-mb-md"></q-icon></q-item-section>
-                <q-item-section class="q-pt-lg q-pb-md">
+                <q-item-section>
                   <marked :text="registration.custom_data.motivation" class="text-body2"></marked>
                   <div class="q-gutter-xs q-mt-none">
                     <q-badge v-for="y in years" :key="y" color="grey-2" text-color="grey-7">#{{ y }}</q-badge>
                   </div>
                 </q-item-section>
               </q-item>
-              <q-separator v-if="registration.custom_data.poster.present" inset="item"></q-separator>
-              <q-item v-if="registration.custom_data.poster.present">
-                <q-item-section avatar><q-icon name="amp_stories"></q-icon></q-item-section>
-                <q-item-section class="q-py-lg">
-                  <p class="text-body2 q-mb-xs">{{ registration.custom_data.poster.title }}</p>
-                  <p class="text-caption text-grey-8">{{ registration.custom_data.poster.authors }}</p>
-                </q-item-section>
-              </q-item>
-              <!--<q-separator v-if="registration.invoice_requested" inset="item"></q-separator>
+              <!--<q-separator v-if="registration.invoice_requested" inset="item" class="q-my-md"></q-separator>
               <q-item v-if="registration.invoice_requested">
                 <q-item-section avatar><q-icon name="grading" :color="(registration.invoice_sent) ? 'positive' : 'orange-7'"></q-icon></q-item-section>
                 <q-item-section v-if="registration.invoice_sent" class="text-positive text-bold">Invoice sent</q-item-section>

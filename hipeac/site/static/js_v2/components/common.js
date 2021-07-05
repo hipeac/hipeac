@@ -164,7 +164,7 @@ Vue.component('hipeac-search-box', {
   },
   template: `
     <q-input filled v-model="q" :placeholder="placeholder" :dense="true">
-      <template v-slot:append>
+      <template v-slot:prepend>
         <q-icon v-if="q !== ''" name="clear" @click="q = ''" class="cursor-pointer"></q-icon>
         <q-icon name="search"></q-icon>
       </template>
