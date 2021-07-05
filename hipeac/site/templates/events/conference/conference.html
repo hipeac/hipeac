@@ -16,7 +16,7 @@
         <q-route-tab :to="{name: 'program'}" label="Program"></q-route-tab>
       {% else %}
         <q-route-tab :to="{name: 'call-papers'}" label="Call for papers"></q-route-tab>
-        <q-route-tab :to="{name: 'call-sessions'}" label="Call for workshops"></q-route-tab>
+        <q-route-tab :to="{name: 'call-sessions'}" :label="callTitle"></q-route-tab>
       {% endif %}
       {% if event.is_virtual %}
         <q-route-tab exact :to="{name: 'logistics'}" label="Logistics"></q-route-tab>
@@ -215,14 +215,30 @@
     var CallPapersView = {
       template: '#v-call-papers',
       computed: _.extend(
-        Vuex.mapState(['user', 'event']), {
+        Vuex.mapState(['event']), {
       })
     };
 
     var CallSessionsView = {
       template: '#v-call-sessions',
       computed: _.extend(
-        Vuex.mapState(['user', 'event']), {
+        Vuex.mapState(['event']), {
+        tutorials: function () {
+          if (!this.event.sessions.length) return [];
+          return this.event.sessions.filter(function (obj) {
+            return obj.session_type.value == 'Tutorial';
+          }).sort(function (a, b) {
+            return Hipeac.utils.sortText(a.title, b.title);
+          });
+        },
+        workshops: function () {
+          if (!this.event.sessions.length) return [];
+          return this.event.sessions.filter(function (obj) {
+            return obj.session_type.value == 'Workshop';
+          }).sort(function (a, b) {
+            return Hipeac.utils.sortText(a.title, b.title);
+          });
+        }
       })
     };
 
@@ -540,6 +556,13 @@
       }),
     };
 
+    var VenueView = {
+      template: '#v-venue',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
     var RegistrationView = {
       template: '#v-registration',
       data: function () {
@@ -725,6 +748,12 @@
           ]
         },
         {
+          name: 'venue',
+          path: '/venue/',
+          pathToRegexpOptions: {strict: true},
+          component: VenueView
+        },
+        {
           name: 'registration',
           path: '/registration/',
           pathToRegexpOptions: {strict: true},
@@ -739,6 +768,10 @@
       store: Store,
       computed: _.extend(
         Vuex.mapState(['user', 'event']), {
+        callTitle: function () {
+          if (!this.event || !this.event.sessions.length) return "Call for workshops";
+          return "Workshops & tutorials";
+        }
       }),
       created: function () {
         this.$store.commit('updateNow');

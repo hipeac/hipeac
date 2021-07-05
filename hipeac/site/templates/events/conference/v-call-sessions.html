@@ -4,13 +4,39 @@
 <script type="text/x-template" id="v-call-sessions">
 {% verbatim %}
   <div v-if="event">
-    <q-card class="hipeac__card q-my-lg">
+
+    <q-card v-if="workshops.length" class="hipeac__card q-my-lg">
+      <div class="row q-col-gutter-sm q-pa-sm">
+        <div class="col-12 col-md-4">
+          <q-card-section>
+            <display-3 class="q-mb-md">In conjunction with the {{ event.year - 2005 }}th HiPEAC Conference in {{ event.city }}, {{ event.country.name }}, {{ event.datesStr }} we will again organize comprehensive parallel workshop and tutorial tracks. During the 3-day event you will be able to attend the following workshops and tutorials.</display-3>
+            <p class="text-caption text-grey-8">Still planning on organizing a workshop or a tutorial? Contact us at &lt;workshops@hipeac.net&gt; for a last minute proposal.</p>
+          </q-card-section>
+        </div>
+        <div class="col-12 col-md-8">
+          <q-card-section>
+            <display-4>Workshops</display-4>
+            <ul>
+              <li v-for="s in workshops" :key="s.id">{{ s.title }}</li>
+            </ul>
+            <div v-if="tutorials.length" class="q-mt-md">
+              <display-4>Tutorials</display-4>
+              <ul>
+                <li v-for="s in tutorials" :key="s.id">{{ s.title }}</li>
+              </ul>
+            </div>
+          </q-card-section>
+        </div>
+      </div>
+    </q-card>
+
+    <q-card v-else class="hipeac__card q-my-lg">
       <div class="row q-col-gutter-sm q-pa-sm">
         <div class="col-12 col-md-4">
           <q-card-section>
             <display-3>The success of the workshops and tutorials of the previous years' HiPEAC Conferences with more than 30 events each encouraged the HiPEAC {{ event.year }} organizers aiming at this success story again. Hence, in conjunction with the {{ event.year - 2005 }}th HiPEAC Conference in {{ event.city }}, {{ event.country.name }}, {{ event.datesStr }} we will again organize comprehensive parallel workshop and tutorial tracks.</display-3>
             <q-btn unelevated color="primary" type="a" href="{% endverbatim %}{% url 'session_proposals' event.id %}{% verbatim %}" target="_blank" class="q-my-lg full-width">Submit your proposal</q-btn>
-            <small>Please submit your proposal not later than <strong>June 18, {{ event.year - 1 }}</strong>.</small>
+            <p class="text-caption">Please submit your proposal not later than <strong>June 18, {{ event.year - 1 }}</strong>.</p>
           </q-card-section>
         </div>
         <div class="col-12 col-md-8">
@@ -35,6 +61,7 @@
         </div>
       </div>
     </q-card>
+
   </div>
 </script>
 {% endverbatim %}
