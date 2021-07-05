@@ -30,6 +30,7 @@ Vue.component('acaces-registrations-table', {
         {
           name: 'user_gender',
           field: 'user_gender',
+          sortable: true,
           align: 'center',
           label: 'Gender'
         },
@@ -67,6 +68,13 @@ Vue.component('acaces-registrations-table', {
           sortable: true,
           align: 'right',
           label: 'Last physical'
+        },
+        {
+          name: 'presents_poster',
+          field: 'presents_poster',
+          sortable: true,
+          align: 'right',
+          label: 'Poster'
         },
         {
           name: 'payment_status',
@@ -154,8 +162,15 @@ Vue.component('acaces-registrations-table', {
               <q-badge v-else outline color="grey">
                 <q-icon name="close" class="q-mr-xs"></q-icon>No</q-badge>
             </q-td>
+            <q-td key="presents_poster" :props="props">
+              <q-badge v-if="props.row.presents_poster" color="positive">
+                <q-icon name="done" class="q-mr-xs" />Yes</q-badge>
+              <q-badge v-else outline color="grey">
+                <q-icon name="close" class="q-mr-xs"></q-icon>No</q-badge>
+            </q-td>
             <q-td key="payment_status" :props="props">
-              <q-badge v-if="props.row.is_paid" color="positive"><q-icon name="done" class="q-mr-xs" />Paid</q-badge>
+              <q-badge v-if="props.row.is_paid" color="positive">
+                <q-icon name="done" class="q-mr-xs" />Paid</q-badge>
               <q-badge v-else color="orange-5">
                 <q-icon name="radio_button_unchecked" class="q-mr-xs" />Pending</q-badge>
             </q-td>
@@ -164,7 +179,7 @@ Vue.component('acaces-registrations-table', {
       </q-table>
       <q-dialog v-model="showDialog" @show="dialogVisible = true">
         <q-card v-if="registration" style="width: 800px; max-width: 95vw;">
-          <q-card-section>
+          <q-card-section class="q-pb-lg">
             <q-btn flat round v-close-popup icon="close" class="float-right"></q-btn>
             <display-4 class="q-mb-lg">Registration #{{ registration.id }}</display-4>
             <q-list dense>
@@ -225,6 +240,14 @@ Vue.component('acaces-registrations-table', {
                   <div class="q-gutter-xs q-mt-none">
                     <q-badge v-for="y in years" :key="y" color="grey-2" text-color="grey-7">#{{ y }}</q-badge>
                   </div>
+                </q-item-section>
+              </q-item>
+              <q-separator v-if="registration.custom_data.poster.present" inset="item"></q-separator>
+              <q-item v-if="registration.custom_data.poster.present">
+                <q-item-section avatar><q-icon name="amp_stories"></q-icon></q-item-section>
+                <q-item-section class="q-py-lg">
+                  <p class="text-body2 q-mb-xs">{{ registration.custom_data.poster.title }}</p>
+                  <p class="text-caption text-grey-8">{{ registration.custom_data.poster.authors }}</p>
                 </q-item-section>
               </q-item>
               <!--<q-separator v-if="registration.invoice_requested" inset="item"></q-separator>
@@ -411,7 +434,7 @@ Vue.component('acaces-countries-table', {
             </q-td>
             <q-td key="registrations" :props="props">
               <samp>{{ props.row.registrations }}</samp>
-              <router-link :to="{name: 'registrations', query: {q: props.row.country_name.toLowerCase()}}" class="q-ml-xs">
+              <router-link :to="{name: 'registrations', query: {q: 'country:' + props.row.country_code}}" class="q-ml-xs">
                 <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
               </router-link>
             </q-td>

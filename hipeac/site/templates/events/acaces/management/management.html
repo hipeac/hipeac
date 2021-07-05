@@ -152,6 +152,7 @@
               ? obj.user.profile.institution.name
               : obj.custom_data.profile.institution;
             obj.advisor = obj.custom_data.profile.advisor || '-';
+            obj.presents_poster = obj.custom_data.poster.present;
 
             var extraq = t.filter(function (t) {
               var in_track = _.intersection(t.courses, obj.courses).length == t.courses.length;
@@ -164,10 +165,12 @@
             obj.q = [
               obj.q,
               'admit:' + (state.event.custom_data.admitted_ids.includes(obj.id) ? 'yes' : 'no'),
+              'country:' + obj.country_code,
+              'gender:' + obj.user_gender,
               'grant:' + (state.event.custom_data.granted_ids.includes(obj.id) ? 'yes' : 'no'),
               'grant_requested:' + (obj.custom_data.grant_requested ? 'yes' : 'no'),
+              'poster:' + (obj.custom_data.poster.present ? 'yes' : 'no'),
               'visa_requested:' + (obj.visa_requested ? 'yes' : 'no'),
-              'gender:' + obj.user_gender,
               extraq.join(' ')
             ].join(' ').toLowerCase();
 

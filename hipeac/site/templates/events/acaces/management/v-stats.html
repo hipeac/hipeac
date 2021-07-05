@@ -83,7 +83,7 @@
                     </q-item-section>
                     <q-item-section>{{ data.country.name }}</q-item-section>
                     <q-item-section side>
-                      <router-link :to="{name: 'registrations', query: {q: data.country.name.toLowerCase()}}" class="q-ml-xs">
+                      <router-link :to="{name: 'registrations', query: {q: 'country:' + data.country.code}}" class="q-ml-xs">
                         <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
                       </router-link>
                     </q-item-section>
