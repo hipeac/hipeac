@@ -366,7 +366,7 @@
         Vuex.mapState(['courses']), {
         countries: function () {
           return _.values(this.grantsPerCountry).sort(function (a, b) {
-            return b.registrations - a.registrations;
+            return b.registrations - a.registrations || Hipeac.utils.sortText(a.country.name, b.country.name);
           });
         },
         coursesBySlot: function () {
