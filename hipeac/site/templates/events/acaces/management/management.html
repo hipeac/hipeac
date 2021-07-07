@@ -153,6 +153,7 @@
               : obj.custom_data.profile.institution;
             obj.advisor = obj.custom_data.profile.advisor || '-';
             obj.presents_poster = obj.custom_data.poster.present;
+            obj.shares_room = obj.custom_data.room.share;
 
             var extraq = t.filter(function (t) {
               var in_track = _.intersection(t.courses, obj.courses).length == t.courses.length;
@@ -170,6 +171,7 @@
               'grant:' + (state.event.custom_data.granted_ids.includes(obj.id) ? 'yes' : 'no'),
               'grant_requested:' + (obj.custom_data.grant_requested ? 'yes' : 'no'),
               'poster:' + (obj.custom_data.poster.present ? 'yes' : 'no'),
+              'room:' + (obj.custom_data.room.share ? 'yes' : 'no'),
               'visa_requested:' + (obj.visa_requested ? 'yes' : 'no'),
               extraq.join(' ')
             ].join(' ').toLowerCase();

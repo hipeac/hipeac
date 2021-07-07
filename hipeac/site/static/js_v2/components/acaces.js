@@ -77,6 +77,13 @@ Vue.component('acaces-registrations-table', {
           label: 'Poster'
         },
         {
+          name: 'shares_room',
+          field: 'shares_room',
+          sortable: true,
+          align: 'right',
+          label: 'Share room'
+        },
+        {
           name: 'payment_status',
           align: 'center',
           label: 'Payment'
@@ -164,6 +171,12 @@ Vue.component('acaces-registrations-table', {
             </q-td>
             <q-td key="presents_poster" :props="props">
               <q-badge v-if="props.row.presents_poster" color="positive">
+                <q-icon name="done" class="q-mr-xs" />Yes</q-badge>
+              <q-badge v-else outline color="grey">
+                <q-icon name="close" class="q-mr-xs"></q-icon>No</q-badge>
+            </q-td>
+            <q-td key="shares_room" :props="props">
+              <q-badge v-if="props.row.shares_room" color="positive">
                 <q-icon name="done" class="q-mr-xs" />Yes</q-badge>
               <q-badge v-else outline color="grey">
                 <q-icon name="close" class="q-mr-xs"></q-icon>No</q-badge>
