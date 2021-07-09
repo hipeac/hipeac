@@ -12,12 +12,6 @@
           <p>The summer school is open to anybody (members of HiPEAC institutions, and others). There is a limited number of grants that cover the full registration fee for PhD students from HiPEAC institutions. If you are a member of a HiPEAC institution and you want to apply for such a grant, please indicate this in the application form.</p>
           <p>For special questions about the admission procedure, please contact <a href="mailto:acaces@hipeac.net">acaces@hipeac.net</a></p>
         </div>
-        <div v-if="trackList.length" class="col-12 q-mb-lg">
-          <q-banner v-for="t in trackList" :key="t.project.id" class="bg-yellow-2">
-            <div class="q-mb-xs">If you choose to attend all {{ t.track.name }} track courses, you can qualify for a {{ t.project.acronym }} grant:</div>
-            <div v-for="c in t.courses" class="text-caption">- {{ c.title }}</div>
-          </q-banner>
-        </div>
       </div>
     </q-card-section>
 
@@ -32,6 +26,31 @@
 
     <q-card-section v-else-if="obj !== undefined">
       <div v-if="obj">
+
+        <q-banner v-if="obj.id && obj.status == 1 && admitted(obj.id)" rounded class="bg-light-blue-1 q-mb-xl">
+          <template v-slot:avatar>
+            <q-icon name="check" />
+          </template>
+          You have been admitted into the summer school, but in order to complete your registration you need to accept your invitation first. You can also reject the invitation, of course. <span v-if="obj.custom_data.grant_requested"><strong>Please note that you requested a grant, </strong><strong v-if="granted(obj.id)">and a grant has been assigned to you.</strong><strong v-else>but we couldn't assign you any.</strong></span>
+          <template v-slot:action>
+            <q-btn @click="accept" flat label="Accept" />
+            <q-btn @click="reject" flat label="Reject" />
+          </template>
+        </q-banner>
+
+        <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id)" rounded class="bg-light-green-1 q-mb-xl">
+          <template v-slot:avatar>
+            <q-icon name="check" />
+          </template>
+          You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}!
+        </q-banner>
+
+        <q-banner v-if="obj.id && obj.status == 9 && admitted(obj.id)" rounded class="bg-red-1 q-mb-xl">
+          <template v-slot:avatar>
+            <q-icon name="close" />
+          </template>
+          You have rejected your invitation to the HiPEAC Summer School. Contact us if you change your mind.
+        </q-banner>
 
         <display-4>Personal information</display-4>
         <p class="q-mb-sm">Tell us a little bit about you: <span class="text-red">*</span></p>
@@ -63,7 +82,17 @@
 
         <div v-if="courses.length">
           <display-4 class="q-mt-xl">Course selection</display-4>
-          <p class="q-mb-sm">The summer school consists of {{ courses.length }} courses spread over two morning slots and two afternoon slots. Per slot there are three parallel courses of which you can take only one.</p>
+          <div class="row q-col-gutter-x-xl q-col-gutter-y-md q-mb-lg">
+            <div class="col-12 col-md-6">
+              <p class="q-mb-sm">The summer school consists of {{ courses.length }} courses spread over two morning slots and two afternoon slots. Per slot there are three parallel courses of which you can take only one.</p>
+            </div>
+            <div v-if="trackList.length" class="col-12 col-md-6">
+              <q-banner rounded v-for="t in trackList" :key="t.project.id" class="bg-yellow-2">
+                <div class="q-mb-xs text-caption">If you choose to attend all <strong>{{ t.track.name }}</strong> track courses, you can qualify for a {{ t.project.acronym }} grant:</div>
+                <div v-for="c in t.courses" class="text-caption">- {{ c.title }}</div>
+              </q-banner>
+            </div>
+          </div>
           <div class="row q-col-gutter-lg">
             <div v-for="slot in slots" :key="slot.id" class="col-12 col-md-6">
               <q-list>
@@ -154,8 +183,8 @@
       <strong>{{ requestType }} number:</strong> {{ obj.id }}<br>
       <strong>{{ requestType }} date:</strong> {{ obj.createdAt.format('LLLL') }}<br>
       <strong>Last updated:</strong> {{ obj.updatedAt.format('LLLL') }}<br>
-      <span v-if="obj.status == 0"><strong>Appplication status:</strong>&nbsp;<q-badge color="yellow" text-color="black" label="Well received"></q-badge></span><br>
-      <span v-if="obj.custom_data.grant_requested"><strong>Grant status:</strong>&nbsp;<q-badge color="yellow" text-color="black" label="Pending decision"></q-badge></span><br>
+      <strong>Appplication status:</strong>&nbsp;<q-badge v-if="obj.status == 0" color="yellow" text-color="dark" label="Well received"></q-badge><q-badge v-else-if="obj.status == 1" color="yellow" text-color="dark" label="Witing for an answer from the student"></q-badge><q-badge v-else-if="obj.status == 2" color="positive" text-color="white" label="Accepted by student"></q-badge><q-badge v-else-if="obj.status == 9" color="negative" text-color="white" label="Rejected by student"></q-badge><br>
+      <strong>Grant status:</strong>&nbsp;<span v-if="obj.custom_data.grant_requested"><q-badge v-if="!granted(obj.id)" color="yellow" text-color="dark" label="Pending decision"></q-badge><q-badge v-else color="positive" text-color="white" label="Assigned"></q-badge></span><q-badge v-else color="light-blue-1" text-color="dark" label="No grant requested"></q-badge>
     </q-card-section>
 
   </q-card>

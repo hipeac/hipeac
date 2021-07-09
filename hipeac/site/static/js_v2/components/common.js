@@ -401,7 +401,7 @@ Vue.component('display-3', {
 });
 
 Vue.component('display-4', {
-  template: '<h6><span><slot></slot></span></h6>'
+  template: '<h6 class="q-mb-md"><span><slot></slot></span></h6>'
 });
 
 Vue.component('icon', {

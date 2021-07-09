@@ -163,6 +163,7 @@ class EventManagementViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixi
         self.queryset = (
             self.get_object()
             .registrations.select_related("user__profile")
+            .prefetch_related("courses", "sessions", "posters")
             .prefetch_related("user__profile__institution", "user__profile__second_institution")
             .prefetch_related("user__profile__projects")
         )
@@ -277,6 +278,28 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
         self.pagination_class = None
         self.serializer_class = SessionAccessLinkSerializer
         return super().list(request, *args, **kwargs)
+
+    @action(detail=True, methods=["POST"])
+    def accept(self, request, *args, **kwargs):
+        registration = self.get_object()
+
+        if not registration.status == Registration.STATUS_ACCEPTED_INTERNALLY:
+            raise ValidationError({"message": ["Registration status cannot be updated."]})
+
+        registration.status = Registration.STATUS_ACCEPTED
+        registration.save()
+        return super().retrieve(request, *args, **kwargs)
+
+    @action(detail=True, methods=["POST"])
+    def reject(self, request, *args, **kwargs):
+        registration = self.get_object()
+
+        if not registration.status == Registration.STATUS_ACCEPTED_INTERNALLY:
+            raise ValidationError({"message": ["Registration status cannot be updated."]})
+
+        registration.status = Registration.STATUS_REJECTED
+        registration.save()
+        return super().retrieve(request, *args, **kwargs)
 
     """
     @action(

@@ -440,6 +440,30 @@
         }
       }),
       methods: {
+        admitted: function (id) {
+          if (!this.event) return false;
+          return this.event.custom_data.admitted_ids.indexOf(id) != -1;
+        },
+        granted: function (id) {
+          if (!this.event) return false;
+          return this.event.custom_data.granted_ids.indexOf(id) != -1;
+        },
+        acceptOrReject: function (action) {
+          var self = this;
+          Hipeac.api.request('post', this.obj.url + action + '/').then(function (res) {
+            Hipeac.utils.notifySuccess('You have ' + action + 'ed.');
+            self.$store.commit('updateRegistration', res.data);
+            self.syncRegistration();
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
+        },
+        accept: function () {
+          this.acceptOrReject('accept');
+        },
+        reject: function () {
+          this.acceptOrReject('reject');
+        },
         syncRegistration: function () {
           var self = this;
 
