@@ -184,7 +184,7 @@
       <strong>{{ requestType }} date:</strong> {{ obj.createdAt.format('LLLL') }}<br>
       <strong>Last updated:</strong> {{ obj.updatedAt.format('LLLL') }}<br>
       <strong>Appplication status:</strong>&nbsp;<q-badge v-if="obj.status == 0" color="yellow" text-color="dark" label="Well received"></q-badge><q-badge v-else-if="obj.status == 1" color="yellow" text-color="dark" label="Waiting for an answer from the student"></q-badge><q-badge v-else-if="obj.status == 2" color="positive" text-color="white" label="Accepted by student"></q-badge><q-badge v-else-if="obj.status == 9" color="negative" text-color="white" label="Rejected by student"></q-badge><br>
-      <strong>Grant status:</strong>&nbsp;<span v-if="obj.custom_data.grant_requested"><q-badge v-if="!granted(obj.id)" color="yellow" text-color="dark" label="Pending decision"></q-badge><q-badge v-else color="positive" text-color="white" label="Assigned"></q-badge></span><q-badge v-else color="light-blue-1" text-color="dark" label="No grant requested"></q-badge>
+      <strong>Grant status:</strong>&nbsp;<span v-if="obj.custom_data.grant_requested"><q-badge v-if="!granted(obj.id)" color="yellow" text-color="dark" label="No grant assigned"></q-badge><q-badge v-else color="positive" text-color="white" label="Assigned"></q-badge></span><q-badge v-else color="light-blue-1" text-color="dark" label="No grant requested"></q-badge>
     </q-card-section>
 
   </q-card>
