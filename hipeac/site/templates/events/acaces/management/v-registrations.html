@@ -29,7 +29,7 @@
           </template>
           <template v-slot:body-cell-grant_assigned="props">
             <q-td auto-width :props="props">
-              <q-toggle v-if="props.row.custom_data.grant_requested" size="xs" v-model="event.custom_data.granted_ids" :val="props.row.id" @input="updateData" color="green" checked-icon="check" /><!-- :disable="disableToggle(props.row)" :unchecked-icon="(disableToggle(props.row)) ? 'null' : 'arrow_forward_ios'" -->
+              <q-toggle v-if="props.row.custom_data.grant_requested" size="xs" v-model="event.custom_data.granted_ids" :val="props.row.id" @input="updateData" color="green" checked-icon="check" :disable="disableToggle(props.row)" :unchecked-icon="(disableToggle(props.row)) ? 'null' : 'arrow_forward_ios'" />
               <q-toggle v-else size="xs" v-model="togglePlaceholder" :val="false" color="green" disable class="transparent" />
             </q-td>
           </template>

@@ -534,6 +534,12 @@
         }
       }),
       methods: {
+        disableToggle: function (row) {
+          if (!this.event) return true;
+          return this.grantsPerCountry
+              && (this.grantsPerCountry[row.country_code].grants_assigned >= this.grantsPerCountry[row.country_code].grants)
+              && this.event.custom_data.granted_ids.indexOf(row.id) < 0;
+        },
         customFilter: function (rows, terms, cols, getCellValue) {
           return Hipeac.utils.filterMultiple(rows, terms);
         },
