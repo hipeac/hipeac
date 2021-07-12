@@ -468,7 +468,7 @@
               }
             ],
             pagination: {
-              rowsPerPage: 50
+              rowsPerPage: 0
             }
           }
         }
@@ -568,7 +568,10 @@
         Vuex.mapGetters(['grantsPerCountry', 'mainStats', 'simpleTracks']),
         Vuex.mapState(['courses']), {
         countries: function () {
-          return _.values(this.grantsPerCountry).sort(function (a, b) {
+          return _.values(this.grantsPerCountry).map(function (c) {
+            c.slug = slugify(c.country.name).toLowerCase();
+            return c;
+          }).sort(function (a, b) {
             return b.registrations - a.registrations || Hipeac.utils.sortText(a.country.name, b.country.name);
           });
         },

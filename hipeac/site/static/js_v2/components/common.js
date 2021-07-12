@@ -502,12 +502,8 @@ Vue.component('hipeac-search-bar', {
           <q-icon name="search" />
         </template>
         <template v-slot:append>
-          <q-icon v-show="q !== ''" @click="q = ''" name="close" class="cursor-pointer">
-            <q-tooltip>Clear search</q-tooltip>
-          </q-icon>
-          <q-icon v-if="filters.length" @click="dialogVisible = true" name="tune" class="cursor-pointer q-ml-sm">
-            <q-tooltip>Show search builder</q-tooltip>
-          </q-icon>
+          <q-icon v-show="q !== ''" @click="q = ''" name="close" class="cursor-pointer" />
+          <q-icon v-if="filters.length" @click="dialogVisible = true" name="tune" class="cursor-pointer q-ml-sm" />
         </template>
       </q-input>
       <q-dialog v-model="dialogVisible" position="right" @before-show="updateFilters" @before-hide="updateQuery">
