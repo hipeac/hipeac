@@ -38,14 +38,13 @@ canvas {
   display: none !important;
 }
 
-.pointer {
+.pointer, .cursor-pointer {
   cursor: pointer;
 }
 
-.help {
+.help, .cursor-help {
   cursor: help;
 }
-
 
 /* Layout */
 
@@ -194,6 +193,12 @@ h6 {
   text-transform: uppercase;
   font-size: .9rem;
   margin-bottom: .5rem;
+}
+
+code, kbd, pre, samp,
+.text-mono {
+  font-family: monospace;
+  font-size: .9em;
 }
 
 .text-h4 {

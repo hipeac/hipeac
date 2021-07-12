@@ -139,14 +139,13 @@
             obj.date = moment(obj.created_at);
             obj.acaces_count = obj.custom_data.history.length;
             obj.acaces_last = (w.length) ? _.max(w) : null;
+            obj.country = (obj.user.profile.institution)
+              ? obj.user.profile.institution.country
+              : obj.custom_data.profile.country;
             obj.country_code = (obj.user.profile.institution)
               ? obj.user.profile.institution.country.code
               : obj.custom_data.profile.country.value;
-            obj.user_gender = obj.custom_data.profile.gender || {
-              1: 'female',
-              2: 'male',
-              96: 'non_binary'
-            }[obj.user.profile.gender_id] || null;
+            obj.user_gender = obj.custom_data.profile.gender || 'unknown';
             obj.user_name = obj.user.profile.name;
             obj.user_affiliation = (obj.user.profile.institution)
               ? obj.user.profile.institution.name
@@ -154,6 +153,9 @@
             obj.advisor = obj.custom_data.profile.advisor || '-';
             obj.presents_poster = obj.custom_data.poster.present;
             obj.shares_room = obj.custom_data.room.share;
+
+            obj.admitted = state.event.custom_data.admitted_ids.indexOf(obj.id) != -1;
+            obj.grant_assigned = state.event.custom_data.granted_ids.indexOf(obj.id) != -1;
 
             var extraq = t.filter(function (t) {
               var in_track = _.intersection(t.courses, obj.courses).length == t.courses.length;
@@ -163,16 +165,18 @@
               return 'track:' + o.track.name;
             });
 
-            obj.q = [
-              obj.q,
-              'admit:' + (state.event.custom_data.admitted_ids.includes(obj.id) ? 'yes' : 'no'),
-              'country:' + obj.country_code,
+            obj._q = [
+              obj._q,
               'gender:' + obj.user_gender,
-              'grant:' + (state.event.custom_data.granted_ids.includes(obj.id) ? 'yes' : 'no'),
-              'grant_requested:' + (obj.custom_data.grant_requested ? 'yes' : 'no'),
+              'admitted:' + (obj.admitted ? 'yes' : 'no'),
+              (obj.status == 0) ? 'accepted:pending' : '',
+              (obj.status == 1) ? 'accepted:pending' : '',
+              (obj.status == 2) ? 'accepted:yes' : '',
+              (obj.status == 9) ? 'accepted:no' : '',
+              'grant.requested:' + (obj.custom_data.grant_requested ? 'yes' : 'no'),
+              'grant.assigned:' + (obj.grant_assigned ? 'yes' : 'no'),
               'poster:' + (obj.custom_data.poster.present ? 'yes' : 'no'),
-              'room:' + (obj.custom_data.room.share ? 'yes' : 'no'),
-              'visa_requested:' + (obj.visa_requested ? 'yes' : 'no'),
+              'room.shared:' + (obj.custom_data.room.share ? 'yes' : 'no'),
               extraq.join(' ')
             ].join(' ').toLowerCase();
 
@@ -219,7 +223,7 @@
               }
             });
 
-            state.event = Object.freeze(Hipeac.map.event(res.data));
+            state.event = Hipeac.map.event(res.data);
           });
         },
         getCourses: function (state) {
@@ -247,7 +251,7 @@
           });
         },
         updateEvent: function (state, data) {
-          state.event = Object.freeze(data);
+          state.event = data;
         }
       }
     });
@@ -312,37 +316,236 @@
       data: function () {
         return {
           dialogVisible: false,
-          query: this.q || ''
+          togglePlaceholder: false,
+          query: this.q || '',
+          search: {
+            filters: [
+              {
+                name: 'gender',
+                options: ['female', 'male', 'non-binary', 'unknown']
+              },
+              {
+                name: 'admitted',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'accepted',
+                options: ['pending', 'yes', 'no']
+              },
+              {
+                name: 'grant.requested',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'grant.assigned',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'poster',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'room.shared',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'track',
+                options: ['tetramax']
+              },
+              {
+                name: 'paid',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'invoice.requested',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'invoice.sent',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'visa.requested',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'visa.sent',
+                options: ['yes', 'no']
+              }
+            ]
+          },
+          table: {
+            columns: [
+              {
+                name: 'idx',
+                label: '#'
+              },
+              {
+                name: 'accepted',
+                field: 'accepted',
+                sortable: true,
+                label: 'Accept',
+                align: 'center',
+              },
+              {
+                name: 'admitted',
+                field: 'admitted',
+                sortable: true,
+                label: 'Admit',
+                align: 'center',
+              },
+              {
+                name: 'grant_assigned',
+                field: 'grant_assigned',
+                sortable: true,
+                label: 'Grant',
+                align: 'center',
+              },
+              {
+                name: 'user_gender',
+                field: 'user_gender',
+                sortable: true,
+                align: 'center',
+                label: 'Gender'
+              },
+              {
+                name: 'user_name',
+                field: 'user_name',
+                sortable: true,
+                align: 'left',
+                label: 'Student'
+              },
+              {
+                name: 'country_code',
+                field: 'country_code',
+                sortable: true,
+                align: 'center',
+                label: 'Country'
+              },
+              {
+                name: 'user_affiliation',
+                field: 'user_affiliation',
+                sortable: true,
+                align: 'left',
+                label: 'Affiliation',
+                classes:'text-caption'
+              },
+              {
+                name: 'advisor',
+                field: 'advisor',
+                sortable: true,
+                align: 'left',
+                label: 'Advisor',
+                classes:'text-caption'
+              },
+              {
+                name: 'acaces_last',
+                field: 'acaces_last',
+                sortable: true,
+                align: 'right',
+                label: 'Last'
+              },
+              {
+                name: 'presents_poster',
+                field: 'presents_poster',
+                sortable: true,
+                align: 'center',
+                label: 'Poster'
+              },
+              {
+                name: 'shares_room',
+                field: 'shares_room',
+                sortable: true,
+                align: 'center',
+                label: 'Room'
+              },
+              {
+                name: 'payment_status',
+                field: 'paid',
+                sortable: true,
+                align: 'center',
+                label: 'Paid'
+              }
+            ],
+            pagination: {
+              rowsPerPage: 50
+            }
+          }
         }
       },
       computed: _.extend(
         Vuex.mapGetters(['grantsPerCountry', 'remappedRegistrations', 'simpleTracks']),
-        Vuex.mapState(['event', 'courses', 'registrations']), {
-        items: function () {
-          if (this.query == '') return this.remappedRegistrations;
-          var qs = this.query.toLowerCase().split(' ');
+        Vuex.mapState(['event', 'courses', 'countries', 'registrations']), {
+        filtersWithCountries: function () {
+          var countryFilters = [];
 
-          return this.remappedRegistrations.filter(function (obj) {
-            return _.every(qs, function (q) {
-              return obj.q.indexOf(q) !== -1;
-            });
+          if (this.remappedRegistrations.length) {
+            var cs = this.countries;
+            var codes = _.uniq(_.pluck(this.remappedRegistrations, 'country_code'));
+            countryFilters = [
+              {
+                name: 'country',
+                options: _.keys(cs).filter(function (c) {
+                  return codes.indexOf(c) != -1;
+                }).map(function (c) {
+                  return slugify(cs[c]).toLowerCase();
+                })
+              }
+            ];
+          }
+
+          return _.union(countryFilters, this.search.filters);
+        },
+        obj: function () {
+          if (this.registrations.length && this.id) {
+            return _.findWhere(this.registrations, {id: this.id});
+          } else return null;
+        },
+        showDialog: {
+          get: function () {
+            return this.obj != null;
+          },
+          set: function (val) {
+            if (this.dialogVisible) {
+              this.$router.replace({params: {id: undefined}});
+              this.dialogVisible = false;
+            }
+          }
+        },
+        registrationCourses: function () {
+          if (!this.obj || !this.courses.length) return [];
+          var courses = this.obj.courses;
+          return this.courses.filter(function (course) {
+            return courses.indexOf(course.id) > -1;
+          }).sort(function (a, b) {
+            return a.slot - b.slot;
           });
+        },
+        registrationTracks: function () {
+          if (!this.obj || !this.simpleTracks.length) return [];
+          var courses = this.obj.courses;
+          return this.simpleTracks.filter(function (track) {
+            return _.intersection(track.courses, courses).length == track.courses.length;
+          });
+        },
+        years: function () {
+          if (!this.obj) return [];
+          return this.obj.custom_data.history.sort() || [];
         }
       }),
       methods: {
-        updateData: function (field, data) {
+        customFilter: function (rows, terms, cols, getCellValue) {
+          return Hipeac.utils.filterMultiple(rows, terms);
+        },
+        updateData: _.debounce(function () {
           var self = this;
-          this.$set(this.event.custom_data, field, data.sort());
           Hipeac.api.request('put', VARS.eventUrl, this.event).then(function (res) {
             Hipeac.utils.notifySuccess('Registrations updated.');
             self.$store.commit('updateEvent', res.data);
           }).catch(function (error) {
             Hipeac.utils.notifyApiError(error);
           });
-        },
-        updateQuery: function (val) {
-          this.query = val;
-        }
+        }, 50)
       },
       watch: {
         query: function (val, oldVal) {
@@ -350,14 +553,6 @@
           if (val != '' && val != oldVal) this.$router.replace({query: {q: val}});
           else this.$router.replace({query: {q: undefined}});
         }
-      },
-      created: function () {
-        this.$root.$on('acaces-ids-updated', this.updateData);
-        this.$root.$on('acaces-reg-query', this.updateQuery);
-      },
-      beforeDestroy () {
-        this.$root.$off('acaces-ids-updated');
-        this.$root.$off('acaces-reg-query');
       }
     };
 

@@ -2,6 +2,33 @@
 {% verbatim %}
   <q-card class="hipeac__card q-my-lg" :class="{'q-pa-md': $q.screen.gt.xs }">
 
+    <q-card-section v-if="obj" class="q-mb-md">
+      <q-banner v-if="obj.id && obj.status == 1 && admitted(obj.id)" rounded class="bg-deep-orange text-white">
+        <template v-slot:avatar>
+          <q-icon name="check" />
+        </template>
+        You have been admitted into the HiPEAC Summer School, but in order to complete your registration you need to accept your invitation first. You can also reject the invitation, of course. <span v-if="obj.custom_data.grant_requested"><strong v-if="granted(obj.id)">Please note that your grant request has been <u>accepted</u>.</strong><strong v-else>Please note that your grant request has been <u>rejected</u>.</strong></span>
+        <template v-slot:action>
+          <q-btn @click="accept" flat label="Accept invitation" color="white" />
+          <q-btn @click="reject" flat label="Reject" color="white" />
+        </template>
+      </q-banner>
+
+      <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id)" rounded class="bg-positive text-white">
+        <template v-slot:avatar>
+          <q-icon name="check" />
+        </template>
+        You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}!
+      </q-banner>
+
+      <q-banner v-if="obj.id && obj.status == 9 && admitted(obj.id)" rounded class="bg-red text-white">
+        <template v-slot:avatar>
+          <q-icon name="close" />
+        </template>
+        You have rejected your invitation to the HiPEAC Summer School. Contact us if you change your mind.
+      </q-banner>
+    </q-card-section>
+
     <q-card-section>
       <div class="row q-col-gutter-x-xl q-col-gutter-y-md">
         <div class="col-12 col-md-6">
@@ -26,31 +53,6 @@
 
     <q-card-section v-else-if="obj !== undefined">
       <div v-if="obj">
-
-        <q-banner v-if="obj.id && obj.status == 1 && admitted(obj.id)" rounded class="bg-light-blue-1 q-mb-xl">
-          <template v-slot:avatar>
-            <q-icon name="check" />
-          </template>
-          You have been admitted into the summer school, but in order to complete your registration you need to accept your invitation first. You can also reject the invitation, of course. <span v-if="obj.custom_data.grant_requested"><strong>Please note that you requested a grant, </strong><strong v-if="granted(obj.id)">and a grant has been assigned to you.</strong><strong v-else>but we couldn't assign you any.</strong></span>
-          <template v-slot:action>
-            <q-btn @click="accept" flat label="Accept" />
-            <q-btn @click="reject" flat label="Reject" />
-          </template>
-        </q-banner>
-
-        <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id)" rounded class="bg-light-green-1 q-mb-xl">
-          <template v-slot:avatar>
-            <q-icon name="check" />
-          </template>
-          You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}!
-        </q-banner>
-
-        <q-banner v-if="obj.id && obj.status == 9 && admitted(obj.id)" rounded class="bg-red-1 q-mb-xl">
-          <template v-slot:avatar>
-            <q-icon name="close" />
-          </template>
-          You have rejected your invitation to the HiPEAC Summer School. Contact us if you change your mind.
-        </q-banner>
 
         <display-4>Personal information</display-4>
         <p class="q-mb-sm">Tell us a little bit about you: <span class="text-red">*</span></p>
@@ -184,7 +186,7 @@
       <strong>{{ requestType }} date:</strong> {{ obj.createdAt.format('LLLL') }}<br>
       <strong>Last updated:</strong> {{ obj.updatedAt.format('LLLL') }}<br>
       <strong>Appplication status:</strong>&nbsp;<q-badge v-if="obj.status == 0" color="yellow" text-color="dark" label="Well received"></q-badge><q-badge v-else-if="obj.status == 1" color="yellow" text-color="dark" label="Waiting for an answer from the student"></q-badge><q-badge v-else-if="obj.status == 2" color="positive" text-color="white" label="Accepted by student"></q-badge><q-badge v-else-if="obj.status == 9" color="negative" text-color="white" label="Rejected by student"></q-badge><br>
-      <strong>Grant status:</strong>&nbsp;<span v-if="obj.custom_data.grant_requested"><q-badge v-if="!granted(obj.id)" color="yellow" text-color="dark" label="No grant assigned"></q-badge><q-badge v-else color="positive" text-color="white" label="Assigned"></q-badge></span><q-badge v-else color="light-blue-1" text-color="dark" label="No grant requested"></q-badge>
+      <strong>Grant status:</strong>&nbsp;<span v-if="obj.custom_data.grant_requested"><q-badge v-if="!granted(obj.id)" color="yellow" text-color="dark" label="No grant assigned"></q-badge><q-badge v-else color="positive" text-color="white" label="Accepted"></q-badge></span><q-badge v-else color="light-blue-1" text-color="dark" label="No grant requested"></q-badge>
     </q-card-section>
 
   </q-card>

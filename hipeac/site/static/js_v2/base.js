@@ -165,11 +165,19 @@ var Hipeac = {
         ? obj.user.profile.institution.country
         : obj.user.profile.country;
 
-      obj.q = [
+      obj._q = [
         obj.user.profile.name,
-        (obj.country) ? obj.country.name : '',
-        (obj.user.profile.institution) ? obj.user.profile.institution.name : ''
+        (obj.user.profile.institution) ? obj.user.profile.institution.name : '',
+        (obj.country) ? 'country:' + slugify(obj.country.name) : 'country:unknown'
       ].join(' ').toLowerCase();
+
+      this.qBooleans(obj, [
+        ['paid', 'isPaid'],
+        ['invoice.requested', 'invoice_requested'],
+        ['invoice.sent', 'invoice_sent'],
+        ['visa.requested', 'visa_requested'],
+        ['visa.sent', 'visa_sent'],
+      ]);
 
       return obj;
     },
@@ -226,19 +234,27 @@ var Hipeac = {
       ].join(' ').toLowerCase();
 
       return obj;
+    },
+    qBooleans: function (obj, fields) {
+      if (!obj._q) obj._q = '';
+      var qs = [];
+      _.each(fields, function (f) {
+        qs.push(f[0] + ':' + (obj[f[1]] ? 'yes' : 'no'));
+      });
+      obj._q +=  (' ' + qs.join(' ')).toLowerCase();
     }
   },
   utils: {
-    filterMultiple: function (data, q, separator) {
+    filterMultiple: function (data, q) {
       if (q == '') return data;
-      var queries = q.toLowerCase().split(separator || ' ');
+      var queries = q.toLowerCase().split(' ');
 
       return data.filter(function (obj) {
-          var matches = 0;
-          _.each(queries, function (q) {
-              if (obj.q.indexOf(q) !== -1) matches++;
-          });
-          return matches == queries.length;
+        var matches = 0;
+        _.each(queries, function (q) {
+          if (obj._q.indexOf(q) !== -1) matches++;
+        });
+        return matches == queries.length;
       });
     },
     notifyApiError: function (error) {

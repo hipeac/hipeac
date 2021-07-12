@@ -447,7 +447,7 @@ Vue.component('acaces-countries-table', {
             </q-td>
             <q-td key="registrations" :props="props">
               <samp>{{ props.row.registrations }}</samp>
-              <router-link :to="{name: 'registrations', query: {q: 'country:' + props.row.country_code}}" class="q-ml-xs">
+              <router-link :to="{name: 'registrations', query: {q: 'country:' + props.row.key}}" class="q-ml-xs">
                 <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
               </router-link>
             </q-td>
@@ -480,6 +480,7 @@ Vue.component('acaces-countries-table', {
       return _.values(this.grantsPerCountry).map(function (obj) {
         obj.country_code = obj.country.code;
         obj.country_name = obj.country.name;
+        obj.key = slugify(obj.country.name).toLowerCase();
         return obj;
       }).sort(function (a, b) {
         return Hipeac.utils.sortText(a.country_name, b.country_name);
@@ -521,7 +522,7 @@ Vue.component('acaces-grant-stats-card', {
             </q-item-section>
             <q-item-section>Admitted applicants</q-item-section>
             <q-item-section side>
-              <router-link :to="{name: 'registrations', query: {q: 'admit:yes'}}" class="q-ml-xs">
+              <router-link :to="{name: 'registrations', query: {q: 'admitted:yes'}}" class="q-ml-xs">
                 <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
               </router-link>
             </q-item-section>
@@ -532,7 +533,7 @@ Vue.component('acaces-grant-stats-card', {
             </q-item-section>
             <q-item-section>Grants requested</q-item-section>
             <q-item-section side>
-              <router-link :to="{name: 'registrations', query: {q: 'grant_requested:yes'}}" class="q-ml-xs">
+              <router-link :to="{name: 'registrations', query: {q: 'grant.requested:yes'}}" class="q-ml-xs">
                 <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
               </router-link>
             </q-item-section>
@@ -549,7 +550,7 @@ Vue.component('acaces-grant-stats-card', {
             </q-item-section>
             <q-item-section>Grants assigned</q-item-section>
             <q-item-section side>
-              <router-link :to="{name: 'registrations', query: {q: 'grant:yes'}}" class="q-ml-xs">
+              <router-link :to="{name: 'registrations', query: {q: 'grant.assigned:yes'}}" class="q-ml-xs">
                 <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
               </router-link>
             </q-item-section>
