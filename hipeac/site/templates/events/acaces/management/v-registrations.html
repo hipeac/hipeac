@@ -15,7 +15,7 @@
               <samp>{{ props.rowIndex + 1 }}</samp>
             </q-td>
           </template>
-          <template v-slot:body-cell-accepted="props">
+          <template v-slot:body-cell-status="props">
             <q-td auto-width :props="props">
               <q-icon v-if="props.row.status == 1" name="check_circle_outline" color="positive" size="16px" />
               <q-icon v-else-if="props.row.status == 2" name="check_circle" color="positive" size="16px" />
