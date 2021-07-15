@@ -169,8 +169,9 @@
               obj._q,
               'gender:' + obj.user_gender,
               'admitted:' + (obj.admitted ? 'yes' : 'no'),
-              (obj.status == 1) ? 'accepted:pending' : '',
-              (obj.status == 2) ? 'accepted:yes' : '',
+              (obj.status == 0) ? 'accepted:waiting' : '',
+              (obj.status == 1) ? 'accepted:yes.internally' : '',
+              (obj.status == 2) ? 'accepted:yes.final' : '',
               (obj.status == 9) ? 'accepted:no' : '',
               'grant.requested:' + (obj.custom_data.grant_requested ? 'yes' : 'no'),
               'grant.assigned:' + (obj.grant_assigned ? 'yes' : 'no'),
@@ -329,7 +330,7 @@
               },
               {
                 name: 'accepted',
-                options: ['pending', 'yes', 'no']
+                options: ['waiting', 'yes.internally', 'yes.final', 'no']
               },
               {
                 name: 'grant.requested',
