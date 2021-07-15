@@ -17,7 +17,8 @@
           </template>
           <template v-slot:body-cell-accepted="props">
             <q-td auto-width :props="props">
-              <q-icon v-if="props.row.status == 2" name="check_circle" color="positive" size="16px" />
+              <q-icon v-if="props.row.status == 1" name="check_circle_outline" color="positive" size="16px" />
+              <q-icon v-else-if="props.row.status == 2" name="check_circle" color="positive" size="16px" />
               <q-icon v-else-if="props.row.status == 9" name="cancel" color="negative" size="16px" />
               <q-icon v-else name="help" color="grey-4" size="16px" />
             </q-td>
