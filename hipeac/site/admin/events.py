@@ -269,6 +269,7 @@ class RegistrationAdmin(admin.ModelAdmin):
         "send_reminder",
         "send_payment_reminder",
         "send_profile_update_reminder",
+        "send_visa_reminder",
         "send_no_show_reminder",
         "send_acaces_poster_abstract_reminder",
     )
@@ -361,6 +362,24 @@ class RegistrationAdmin(admin.ModelAdmin):
         admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
 
     send_profile_update_reminder.short_description = "[Mailer] Send profile update reminder"
+
+    def send_visa_reminder(self, request, queryset):
+        for instance in queryset:
+            email = (
+                "events.registrations.visa_reminder",
+                f"[HiPEAC] Visa reminder #{instance.event.hashtag} / {instance.id}",
+                "HiPEAC <management@hipeac.net>",
+                [instance.user.email],
+                {
+                    "user_name": instance.user.profile.name,
+                    "event_name": instance.event.name,
+                    "registration_id": instance.id,
+                },
+            )
+            send_task("hipeac.tasks.emails.send_from_template", email)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    send_visa_reminder.short_description = "[Mailer] Send visa reminder"
 
     def send_acaces_poster_abstract_reminder(self, request, queryset):
         for instance in queryset:

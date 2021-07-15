@@ -14,6 +14,7 @@ TEMPLATE_PATHS = {
     "events.registrations.created_acaces": "_emails/events/registrations_created_acaces.md.html",
     "events.registrations.payment_reminder": "_emails/events/registrations_payment_reminder.md.html",
     "events.registrations.reminder": "_emails/events/registrations_reminder.md.html",
+    "events.registrations.visa_reminder": "_emails/events/registrations_visa_reminder.md.html",
     "events.session_proposals.created": "_emails/events/session_proposals_created.md.html",
     "events.sessions.proceedings": "_emails/events/sessions_proceedings.md.html",
     "events.sessions.reminder": "_emails/events/sessions_reminder.md.html",
