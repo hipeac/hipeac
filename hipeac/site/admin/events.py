@@ -238,6 +238,7 @@ class RegistrationAdmin(admin.ModelAdmin):
         "with_booth",
         "visa_requested",
         "visa_sent",
+        "status",
         "event",
     )
     search_fields = ("id", "user__email", "user__username", "user__first_name", "user__last_name")
