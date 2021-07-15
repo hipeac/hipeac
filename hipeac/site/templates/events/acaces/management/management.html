@@ -171,8 +171,8 @@
               'admitted:' + (obj.admitted ? 'yes' : 'no'),
               (obj.status == 0) ? 'accepted:waiting' : '',
               (obj.status == 1) ? 'accepted:yes.internally' : '',
-              (obj.status == 2) ? 'accepted:yes.final' : '',
-              (obj.status == 9) ? 'accepted:no' : '',
+              (obj.status == 2) ? 'accepted:yes.confirmed' : '',
+              (obj.status == 9) ? 'accepted:no rejected:yes' : '',
               'grant.requested:' + (obj.custom_data.grant_requested ? 'yes' : 'no'),
               'grant.assigned:' + (obj.grant_assigned ? 'yes' : 'no'),
               'poster:' + (obj.custom_data.poster.present ? 'yes' : 'no'),
@@ -330,7 +330,7 @@
               },
               {
                 name: 'accepted',
-                options: ['waiting', 'yes.internally', 'yes.final', 'no']
+                options: ['waiting', 'yes', 'yes.internally', 'yes.confirmed', 'no']
               },
               {
                 name: 'grant.requested',
