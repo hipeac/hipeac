@@ -364,6 +364,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     send_profile_update_reminder.short_description = "[Mailer] Send profile update reminder"
 
     def send_visa_reminder(self, request, queryset):
+        queryset = queryset.exclude(visa_requested=False)  # check if `registration.visa_requested` = True
         for instance in queryset:
             email = (
                 "events.registrations.visa_reminder",
