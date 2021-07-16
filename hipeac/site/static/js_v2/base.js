@@ -155,7 +155,7 @@ var Hipeac = {
 
       obj.google_mid = null;
 
-      if (obj.links.length) {
+      if (obj.links && obj.links.length) {
         var gmaps = _.findWhere(obj.links, {type: "google_maps"});
         obj.google_mid = (gmaps) ? gmaps.url.match(/id=([^&]+)/)[1] : null;
       }
