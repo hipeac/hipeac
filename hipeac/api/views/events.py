@@ -3,9 +3,10 @@ from django.views.decorators.cache import never_cache
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.parsers import FileUploadParser
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import B2b, Course, Event, Registration, Roadshow, Session, SessionAccessLink
+from hipeac.models import B2b, Course, Event, File, Registration, Roadshow, Session, SessionAccessLink
 from ..permissions import (
     B2bPermission,
     HasAdminPermissionOrReadOnly,
@@ -155,9 +156,7 @@ class EventManagementViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixi
         return super().retrieve(request, *args, **kwargs)
 
     @action(
-        detail=True,
-        pagination_class=None,
-        serializer_class=RegistrationManagementSerializer,
+        detail=True, pagination_class=None, serializer_class=RegistrationManagementSerializer,
     )
     def registrations(self, request, *args, **kwargs):
         self.queryset = (
@@ -311,3 +310,25 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
         abstract.save()
         return Response(status=201)
     """
+
+    @action(
+        detail=True,
+        methods=["post"],
+        pagination_class=None,
+        serializer_class=AuthRegistrationSerializer,
+        parser_classes=[FileUploadParser],
+    )
+    @never_cache
+    def files(self, request, *args, **kwargs):
+        registration = self.get_object()
+
+        try:
+            max_files = 1
+            if registration.files.count() >= max_files:
+                raise ValidationError({"files": [f"You have reached the limit on number of files ({max_files})."]})
+        except KeyError:
+            raise ValidationError({"files": ["Registration is not accepting files."]})
+
+        File(content_object=registration, type=File.PUBLIC, file=request.data["file"]).save()
+
+        return RetrieveModelMixin.retrieve(self, request, *args, **kwargs)

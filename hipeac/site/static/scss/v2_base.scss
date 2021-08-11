@@ -258,6 +258,10 @@ code, kbd, pre, samp,
   }
 }
 
+.marked p:last-child {
+  margin: 0;
+}
+
 ul {
   .hipeac__footer & {
     list-style: none;

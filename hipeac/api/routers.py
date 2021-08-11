@@ -19,6 +19,7 @@ class Router(DefaultRouter):
         self.register(r"events/courses", views.CourseViewSet, basename="course")
         self.register(r"events/roadshows", views.RoadshowViewSet, basename="roadshow")
         self.register(r"events/sessions", views.SessionViewSet, basename="session")
+        self.register(r"files", views.FileViewSet, basename="file")
         self.register(r"open-events", views.OpenEventViewSet, basename="open-event")
         self.register(r"open-registrations", views.OpenRegistrationViewSet, basename="open-registration")
         self.register(r"jobs", views.JobViewSet, basename="job")

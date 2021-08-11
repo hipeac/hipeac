@@ -1,6 +1,7 @@
 import uuid
 
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -86,6 +87,7 @@ class Registration(models.Model):
     visa_sent = models.BooleanField(default=False)
 
     custom_data = models.JSONField(default=dict)
+    files = GenericRelation("hipeac.File")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -127,6 +129,9 @@ class Registration(models.Model):
 
     def can_be_managed_by(self, user) -> bool:
         return self.user_id == user.id
+
+    def editable_by_user(self, user) -> bool:
+        return self.can_be_managed_by(user)
 
     def get_absolute_url(self) -> str:
         return "".join([self.event.get_absolute_url(), "#/registration/"])

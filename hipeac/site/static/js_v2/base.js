@@ -8,6 +8,8 @@ var USER_TZ = moment.tz.guess(true);
 var CommonMarkReader = new commonmark.Parser({safe: true, smart: true});
 var CommonMarkWriter = new commonmark.HtmlRenderer();
 
+var EventEmitter = new TinyEmitter();
+
 var make_local = function (dt) {
   return moment.utc(dt).local();
 };
@@ -27,6 +29,14 @@ var Hipeac = {
         url: url,
         headers: headers
       }));
+    },
+    remove: function (obj, callbackFn, customMsg) {
+      this.request('delete', obj.self).then(function (res) {
+        if (callbackFn) callbackFn(res);
+        Hipeac.utils.notifySuccess((customMsg) ? customMsg : 'Deleted.');
+      }).catch(function (error) {
+        Hipeac.utils.notifyApiError(error);
+      });
     },
     get: function (url, data, headers) {
       return this.request('get', url, data, headers);

@@ -21,6 +21,7 @@ from hipeac.models import (
     Sponsor,
     Venue,
 )
+from .files import FileSerializer
 from .generic import LinkSerializer, MetadataFieldWithPosition, MetadataListField, PrivateFileSerializer
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
@@ -110,6 +111,8 @@ class AuthRegistrationSerializer(WritableNestedModelSerializer):
     sessions = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all(), many=True, allow_empty=True)
     posters = PosterSerializer(many=True, allow_empty=True)
     custom_data = serializers.JSONField(required=False)
+    rel_files = serializers.HyperlinkedIdentityField(view_name="v1:auth-registration-files")
+    files = FileSerializer(many=True, read_only=True)
 
     class Meta:
         model = Registration
@@ -227,7 +230,6 @@ class EventListSerializer(EventNestedSerializer):
 
 
 class EventManagementSerializer(EventNestedSerializer):
-
     class Meta:
         model = Event
         exclude = ("coordinating_institution", "venues", "logistics", "image")

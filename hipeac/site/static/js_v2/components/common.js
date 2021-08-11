@@ -567,3 +567,58 @@ Vue.component('hipeac-search-bar', {
     }
   }
 });
+
+
+Vue.component('hipeac-file-list', {
+  props: {
+    files: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
+    icon: {
+      type: String,
+      default: 'file_present'
+    },
+    confirmRemoveMsg: {
+      type: String,
+      default: 'Are you sure you want to delete this file?'
+    },
+    removeEventName: {
+      type: String,
+      default: 'hipeac-file-removed'
+    }
+  },
+  template: `
+    <q-list dense class="q-gutter-y-xs">
+      <q-item v-for="item in items" :key="item.self" class="bg-grey-2 rounded-borders">
+        <q-item-section class="text-caption">
+          <q-item-label :lines="1">{{ item.filename }}</q-item-label>
+        </q-item-section>
+        <q-item-section side>
+          <div class="text-grey-8 q-gutter-sm">
+            <q-btn flat dense icon="visibility" size="sm" type="a" :href="item.url" target="_blank" />
+            <q-btn flat dense icon="backspace" color="red-12" size="sm" @click.prevent="remove(item)" />
+          </div>
+        </q-item-section>
+      </q-item>
+    </q-list>
+  `,
+  computed: {
+    items: function () {
+      return this.files.map(function (obj) {
+        obj.filename = obj.url.split('\\').pop().split('/').pop();
+        return obj;
+      });
+    }
+  },
+  methods: {
+    remove: function (obj) {
+      var eventName = this.removeEventName;
+      Hipeac.api.remove(obj, function (res) {
+        EventEmitter.emit(eventName, obj);
+      });
+    }
+  }
+});

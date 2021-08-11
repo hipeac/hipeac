@@ -2,4 +2,5 @@
 
 from .generic import *
 from .events import *
+from .files import *
 from .steering import *

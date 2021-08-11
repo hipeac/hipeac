@@ -120,6 +120,15 @@
           <q-input filled v-model="obj.custom_data.poster.title" type="text" :label="'What would be the ' + ((requestType == 'Application') ? 'preliminary' : '') + ' poster title?'" class="q-mb-md"></q-input>
           <q-input filled v-model="obj.custom_data.poster.authors" type="text" :label="'Who are the ' + ((requestType == 'Application') ? 'preliminary' : '') + ' authors?'" class="q-mb-md"></q-input>
           <q-input filled v-model="obj.custom_data.poster.institution" type="text" label="Author affiliation" class="q-mb-md"></q-input>
+
+          <div v-if="obj.files.length">
+            <h6 class="q-mt-lg q-mb-md">Files</h6>
+            <hipeac-file-list :files="obj.files" />
+          </div>
+
+          <div v-else>
+            <q-uploader ref="uploader" flat auto-upload no-thumbnails :factory="uploaderFactory" accept=".pdf" :max-files="1" @failed="uploadFailed" @rejected="uploadRejected" @uploaded="uploaded" label="Upload postyer abstract in PDF" color="grey-7" class="full-width bg-grey-2" />
+          </div>
         </div>
 
         <display-4 class="q-mt-xl">Accomodation and visum</display-4>
