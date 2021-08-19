@@ -10,7 +10,7 @@ class VisionArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VisionArticle
-        exclude = ("vision", "position", "file")
+        exclude = ("vision", "position")
 
 
 class VisionSerializer(serializers.ModelSerializer):

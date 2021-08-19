@@ -1,0 +1,191 @@
+{% extends 'v2/layout.html' %}
+
+{% load compress %}
+{% load static %}
+
+
+{% block head_title %}Vision - {{ block.super }}{% endblock %}
+
+{% block submenu %}
+  <q-toolbar class="container">
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ flatpage.title }}</q-toolbar-title>
+    <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
+      <q-route-tab exact :to="{name: 'latest'}" label="Latest"></q-route-tab>
+      <q-route-tab exact :to="{name: 'archive'}" label="Archive"></q-route-tab>
+    </q-tabs>
+  </q-toolbar>
+{% endblock %}
+
+{% block page %}
+  <div id="vars" data-vision-list="{% url 'v1:vision-list' %}"></div>
+  <div is="router-view"></div>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-archive.html' with id='v-archive' %}
+  {% include './v-latest.html' with tbs=flatpage.page.tbs %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+  <script src="{% static 'js_v2/mixins/query.js' %}"></script>
+  <script>
+    var VARS = document.querySelector('#vars').dataset;
+
+    var Store = new Vuex.Store({
+      state: {
+        visions: null
+      },
+      getters: {
+        vision: function (state) {
+          if (state.visions) return state.visions[0];
+          else return null;
+        },
+        articles: function (state, getters) {
+          if (!getters.vision) return {};
+          return getters.vision.articles.map(function (obj) {
+            obj._q = [
+              obj.title,
+              obj.authors,
+              obj.dimension,
+              'dimension:' + slugify(obj.dimension).replace('-dimension', '')
+            ].join(' ').toLowerCase();
+            return obj;
+          });
+        },
+        groupedArticles: function (state, getters) {
+          if (!getters.vision) return {};
+          return _.groupBy(getters.articles, 'dimension');
+        },
+        dimensions: function (state, getters) {
+          return _.keys(getters.groupedArticles).map(function (k) {
+            return {
+              name: k,
+              key: (k.indexOf('Dimension') > -1)
+                ? 'dimension:' + slugify(k).toLowerCase().replace('-dimension', '')
+                : slugify(k).toLowerCase(),
+              color: {
+                'Technical Dimension': 'primary',
+                'Societal Dimension': 'green-8',
+                'European Dimension': 'purple-8',
+                'Business Dimension': 'orange-8'
+              }[k] || 'grey-8'
+            };
+          });
+        }
+      },
+      mutations: {
+        getVisions: function (state) {
+          Hipeac.api.get(VARS.visionList).then(function (res) {
+            state.visions = Object.freeze(res.data);
+          });
+        }
+      }
+    });
+
+    var ArchiveView = {
+      template: '#v-archive',
+      computed: _.extend(
+        Vuex.mapState(['visions']), {
+        pastVisions: function () {
+          return _.rest(this.visions);
+        }
+      })
+    };
+
+    var LatestWrapperView = {
+      template: '#v-latest-wrapper',
+      computed: _.extend(
+        Vuex.mapState(['visions']),
+        Vuex.mapGetters(['vision']), {
+      })
+    };
+
+    var LatestView = {
+      template: '#v-latest',
+      computed: _.extend(
+        Vuex.mapState(['visions']),
+        Vuex.mapGetters(['vision', 'groupedArticles', 'dimensions']), {
+        dimensionData: function () {
+          return _.indexBy(this.dimensions, 'name');
+        }
+      })
+    };
+
+    var VisionArticleView = {
+      template: '#v-articles',
+      mixins: [QueryMixin],
+      data: function () {
+        return {
+          search: {
+            filters: [
+              {
+                name: 'dimension',
+                options: ['technical', 'societal', 'european', 'business']
+              }
+            ]
+          }
+        };
+      },
+      computed: _.extend(
+        Vuex.mapGetters(['vision', 'articles', 'groupedArticles', 'dimensions']), {
+        filteredArticles: function () {
+          return Hipeac.utils.filterMultiple(this.articles || [], this.query);
+        },
+        dimensionData: function () {
+          return _.indexBy(this.dimensions, 'name');
+        }
+      })
+    };
+
+    var Router = new VueRouter({
+      linkActiveClass: 'active',
+      routes: [
+        {
+          path: '/',
+          redirect: { name: 'latest' }
+        },
+        {
+          path: '/latest/',
+          pathToRegexpOptions: {strict: true},
+          component: LatestWrapperView,
+          children: [
+            {
+              name: 'latest',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: LatestView
+            },
+            {
+              name: 'articles',
+              path: 'articles/',
+              pathToRegexpOptions: {strict: true},
+              component: VisionArticleView
+            }
+          ]
+        },
+        {
+          name: 'archive',
+          path: '/archive/',
+          pathToRegexpOptions: {strict: true},
+          component: ArchiveView
+        }
+      ]
+    });
+
+    new Vue({
+      el: '#vue',
+      store: Store,
+      router: Router,
+      beforeCreate: function () {
+        if (this.$route.path.substr(-1) != '/') {
+          this.$router.push({'path': this.$route.path + '/'});
+        }
+      },
+      created: function () {
+        this.$store.commit('getVisions');
+      }
+    });
+  </script>
+{% endcompress %}
+{% endblock %}
