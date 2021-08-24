@@ -185,10 +185,10 @@
           <display-4 class="q-mt-xl">Travel and COVID-19 related information</display-4>
           <p class="q-mb-sm">Are you fully vaccinated, recovered from COVID-19 or will you come to Italy after taking a test? <a @click="obj.custom_data.travel.covid = null" class="cursor-pointer q-ml-md"><small>CLEAR</small></a></p>
           <q-option-group inline v-model="obj.custom_data.travel.covid" type="radio" :options="[{label: 'Fully vaccinated', value: 'full_cycle'}, {label: 'Recovered from COVID-19', value: 'recovered'}, {label: 'I will take a test before traveling to Italy', value: 'test'}]"></q-option-group>
-          <p class="q-my-sm">What flights will you take?</p>
+          <p class="q-my-sm">What flights/trains will you take?</p>
           <div class="row q-col-gutter-md">
-            <q-input filled v-model="obj.custom_data.travel.flight" type="text" label="Flight to Rome (airport & arrival date and time)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
-            <q-input filled v-model="obj.custom_data.travel.flight_return" type="text" label="Return flight (airport & departure date and time)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
+            <q-input filled v-model="obj.custom_data.travel.flight" type="text" label="Flight/train to Rome (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
+            <q-input filled v-model="obj.custom_data.travel.flight_return" type="text" label="Return (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
           </div>
         </div>
 
