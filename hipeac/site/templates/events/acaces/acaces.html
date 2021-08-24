@@ -529,6 +529,13 @@
               'passport_number': null,
               'passport_expiration_date': null
             }); }
+            if (!_.has(this.obj.custom_data, 'travel')) { this.$set(this.obj.custom_data, 'travel', {
+              'covid': null,
+              'flight': null,
+              'flight_return': null,
+              'bus': null,
+              'bus_return': null,
+            }); }
           }
         },
         save: function () {

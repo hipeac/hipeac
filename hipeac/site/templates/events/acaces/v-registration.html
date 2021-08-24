@@ -181,6 +181,17 @@
           <q-checkbox v-for="y in years" :key="y" v-model="obj.custom_data.history" :val="y" :label="'' + y"></q-checkbox>
         </div>
 
+        <div v-if="obj.id && obj.status == 2 && admitted(obj.id)">
+          <display-4 class="q-mt-xl">Travel and COVID-19 related information</display-4>
+          <p class="q-mb-sm">Are you fully vaccinated, recovered from COVID-19 or will you come to Italy after taking a test? <a @click="obj.custom_data.travel.covid = null" class="cursor-pointer q-ml-md"><small>CLEAR</small></a></p>
+          <q-option-group inline v-model="obj.custom_data.travel.covid" type="radio" :options="[{label: 'Fully vaccinated', value: 'full_cycle'}, {label: 'Recovered from COVID-19', value: 'recovered'}, {label: 'I will take a test before traveling to Italy', value: 'test'}]"></q-option-group>
+          <p class="q-my-sm">What flights will you take?</p>
+          <div class="row q-col-gutter-md">
+            <q-input filled v-model="obj.custom_data.travel.flight" type="text" label="Flight to Rome (airport & arrival date and time)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
+            <q-input filled v-model="obj.custom_data.travel.flight_return" type="text" label="Return flight (airport & departure date and time)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
+          </div>
+        </div>
+
         <div class="text-center">
           <q-btn unelevated size="16px" @click.prevent="save" :color="(obj.id) ? 'primary' : 'positive'" :disabled="incompleteForm" class="q-my-xl"><span v-if="obj.id">Update</span><span v-else>Submit</span>&nbsp;{{ requestType }}</q-btn>
           <p v-if="incompleteForm" class="text-body2 text-red">Make sure you have included all required information.<br><strong>Missing:</strong><span v-if="!this.obj.custom_data.profile.country"> - country</span><span v-if="!this.obj.custom_data.profile.institution"> - affiliation</span><span v-if="!this.obj.custom_data.profile.gender"> - gender</span><span v-if="!this.obj.custom_data.motivation"> - motivation</span><span v-if="this.obj.courses.length < this.slots.length"> - course selection</span></p>
