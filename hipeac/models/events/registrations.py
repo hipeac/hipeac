@@ -102,7 +102,7 @@ class Registration(models.Model):
         unique_together = ("event", "user")
 
     def clean(self) -> None:
-        if not self.event.is_open_for_registration():
+        if not self.pk and not self.event.is_open_for_registration():
             raise ValidationError("Registrations are closed for this event.")
 
     def save(self, *args, **kwargs):
