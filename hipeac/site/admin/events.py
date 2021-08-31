@@ -298,7 +298,7 @@ class RegistrationAdmin(admin.ModelAdmin):
         )
 
     def fee(self, obj):
-        return format_html(f"{obj.base_fee}&nbsp;+&nbsp;{obj.extra_fees}")
+        return obj.total_fee
 
     def is_paid(self, obj) -> bool:
         return obj.is_paid
