@@ -39,6 +39,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterUniqueTogether(
-            name="registrationlog", unique_together={("registration", "course"), ("registration", "session")},
+            name="registrationlog",
+            unique_together={("registration", "course"), ("registration", "session")},
         ),
     ]

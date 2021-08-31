@@ -5,7 +5,7 @@
     <q-card-section v-if="obj" class="q-mb-md">
       <q-banner v-if="obj.id && obj.status == 1 && admitted(obj.id)" rounded class="bg-deep-orange text-white">
         <template v-slot:avatar>
-          <q-icon name="check" />
+          <q-icon name="check" size="md" />
         </template>
         You have been admitted into the HiPEAC Summer School, but in order to complete your registration you need to accept your invitation first. You can also reject the invitation, of course. <span v-if="obj.custom_data.grant_requested"><strong v-if="granted(obj.id)">Please note that your grant request has been <u>accepted</u>.</strong><strong v-else>Please note that your grant request has been <u>rejected</u>.</strong></span>
         <template v-slot:action>
@@ -16,20 +16,43 @@
 
       <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id)" rounded class="bg-positive text-white">
         <template v-slot:avatar>
-          <q-icon name="check" />
+          <q-icon name="check" size="md" />
         </template>
         You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}!
       </q-banner>
 
       <q-banner v-if="obj.id && obj.status == 9 && admitted(obj.id)" rounded class="bg-red text-white">
         <template v-slot:avatar>
-          <q-icon name="close" />
+          <q-icon name="close" size="md" />
         </template>
         You have rejected your invitation to the HiPEAC Summer School. Contact us if you change your mind.
       </q-banner>
+
+      <div class="row q-col-gutter-md">
+        <div class="col-12 col-md-6">
+          <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id) && event.custom_data.hotel_distribution[obj.id]" rounded class="bg-grey-3 text-dark q-mt-md">
+            <template v-slot:avatar>
+              <q-icon name="meeting_room" size="md" />
+            </template>
+            Your hotel:
+            <strong v-if="event.custom_data.hotel_distribution[obj.id] == 'SS'">Silva Splendid Spa Hotel</strong>
+            <strong v-if="event.custom_data.hotel_distribution[obj.id] == 'AM'">Hotel Ambasciatori</strong>
+            <strong v-if="event.custom_data.hotel_distribution[obj.id] == 'SG'">San Giorgio</strong>
+            <strong v-if="event.custom_data.hotel_distribution[obj.id] == 'IM'">Imperiale</strong>
+          </q-banner>
+        </div>
+        <div class="col-12 col-md-6">
+          <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id) && event.custom_data.lunch_distribution[obj.id]" rounded class="bg-grey-3 text-dark q-mt-md col-12 col-md-6">
+            <template v-slot:avatar>
+              <q-icon name="restaurant" size="md" />
+            </template>
+            Meal group: <strong>{{ event.custom_data.lunch_distribution[obj.id] }}</strong>
+          </q-banner>
+        </div>
+      </div>
     </q-card-section>
 
-    <q-card-section>
+    <!--<q-card-section>
       <div class="row q-col-gutter-x-xl q-col-gutter-y-md">
         <div class="col-12 col-md-6">
           <display-3>To stimulate maximum interaction between lecturers and participants, the steering committee of the Summer School will only admit a <strong>limited number of participants</strong>. All applications will be reviewed to find a fair distribution of the available places among all qualified applicants from the various countries and institutions. In case of conflict, preference will be given to the participants who filed their application earlier. Applications are due <strong>June 30, 2021</strong>. Their participation is guaranteed after the organizers have received the registration fee. They will then receive detailed information about the summer school (detailed schedule, list of participants, important addresses and phone numbers, procedure to submit a poster, etc.).</display-3>
@@ -40,7 +63,7 @@
           <p>For special questions about the admission procedure, please contact <a href="mailto:acaces@hipeac.net">acaces@hipeac.net</a></p>
         </div>
       </div>
-    </q-card-section>
+    </q-card-section>-->
 
     <div v-if="!user.isAuthenticated" class="row justify-center q-my-lg">
       <div class="col-12 col-md-4">
@@ -53,6 +76,29 @@
 
     <q-card-section v-else-if="obj !== undefined">
       <div v-if="obj">
+
+        <div v-if="obj.id && obj.status == 2 && admitted(obj.id)">
+          <display-2 class="q-my-lg">Travel information</display-2>
+          <display-4>COVID-19 related information</display-4>
+          <p class="q-mb-sm">Are you fully vaccinated, recovered from COVID-19 or will you come to Italy after taking a test? <a @click="obj.custom_data.travel.covid = null" class="cursor-pointer q-ml-md"><small>CLEAR</small></a></p>
+          <q-option-group inline v-model="obj.custom_data.travel.covid" type="radio" :options="[{label: 'Fully vaccinated', value: 'full_cycle'}, {label: 'Recovered from COVID-19', value: 'recovered'}, {label: 'I will take a test before traveling to Italy', value: 'test'}]" @input="save"></q-option-group>
+          <!--<display-4 class="q-mt-lg">Arriving to Fiuggi</display-4>
+          <p class="q-my-sm">What flights/trains to Rome will you take? Bus to Fiuggi?</p>
+          <div class="row q-col-gutter-md">
+            <q-input filled v-model="obj.custom_data.travel.flight" type="text" label="Flight/train to Rome (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
+            <q-select filled v-model="obj.custom_data.travel.bus" :options="['Hotel Mediterraneo 14:00 (Rome)', 'Fiumicino 14:00', 'Fiumicino 16:00', 'Fiumicino 18:00', 'Ciampino 14:30', 'Ciampino 18:30', 'I will take care of my own transportation']" label="Bus to Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
+            <q-input filled v-model="obj.custom_data.travel.phone" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
+          </div>-->
+          <display-4 class="q-mt-lg">Returning home</display-4>
+          <p class="q-my-sm">What flights/trains will you take? What bus would you need to take?</p>
+          <div class="row q-col-gutter-md">
+            <q-input filled v-model="obj.custom_data.travel.flight_return" type="text" label="Return (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
+            <q-select filled v-model="obj.custom_data.travel.bus_return" :options="['5am to FCO', '6am to FCO (via CIA)', '8am to FCO', '9am to FCO (via CIA)', '9am to Roma Termini', 'I will take care of my own transportation']" label="Bus from Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
+            <q-input filled v-model="obj.custom_data.travel.phone" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
+          </div>
+        </div>
+
+        <display-2 class="q-my-lg">Your application</display-2>
 
         <display-4>Personal information</display-4>
         <p class="q-mb-sm">Tell us a little bit about you: <span class="text-red">*</span></p>
@@ -76,14 +122,14 @@
         <p class="q-mb-sm">Gender:</p>
         <q-option-group inline v-model="obj.custom_data.profile.gender" type="radio" :options="[{label: 'Male', value: 'male'}, {label: 'Female', value: 'female'}, {label: 'Non-binary', value: 'non_binary'}]"></q-option-group>
 
-        <display-4 class="q-mt-xl">Motivation</display-4>
+        <display-4 class="q-mt-lg">Motivation</display-4>
         <p class="q-mb-sm">What is your main motivation to follow the summer school? <span class="text-red">*</span></p>
         <q-input filled autogrow v-model="obj.custom_data.motivation" type="textarea" class="q-mt-sm q-mb-md"></q-input>
         <p class="q-mb-sm">Are you requesting a grant?</p>
         <q-option-group inline v-model="obj.custom_data.grant_requested" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]"></q-option-group>
 
         <div v-if="courses.length">
-          <display-4 class="q-mt-xl">Course selection</display-4>
+          <display-4 class="q-mt-lg">Course selection</display-4>
           <div class="row q-col-gutter-x-xl q-col-gutter-y-md q-mb-lg">
             <div class="col-12 col-md-6">
               <p class="q-mb-sm">The summer school consists of {{ courses.length }} courses spread over two morning slots and two afternoon slots. Per slot there are three parallel courses of which you can take only one.</p>
@@ -113,7 +159,7 @@
           </div>
         </div>
 
-        <display-4 class="q-mt-xl">Poster session</display-4>
+        <display-4 class="q-mt-lg">Poster session</display-4>
         <p class="q-mb-sm">You can present your research (ideas) to the other participants and to the teachers and other senior people at the conference.<br>Are you planning to present a poster?</p>
         <q-option-group inline v-model="obj.custom_data.poster.present" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]" class="q-mt-sm q-mb-md"></q-option-group>
         <div v-show="obj.custom_data.poster.present">
@@ -131,7 +177,7 @@
           </div>
         </div>
 
-        <display-4 class="q-mt-xl">Accomodation and visum</display-4>
+        <display-4 class="q-mt-lg">Accomodation and visum</display-4>
         <p class="q-mb-sm">You can have a 200 euro reduction if you are willing to share a room with somebody else.<br>Are you willing to share a room? <em>(200 euro reduction)</em></p>
         <q-option-group inline v-model="obj.custom_data.room.share" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]" class="q-mt-sm q-mb-md"></q-option-group>
         <div v-show="obj.custom_data.room.share">
@@ -175,21 +221,16 @@
           </div>
         </div>
 
-        <display-4 class="q-mt-xl">ACACES veteran</display-4>
+        <display-4 class="q-mt-lg">ACACES veteran</display-4>
         <p class="q-mb-sm">Tell us if you have been in any previous ACACES editions.</p>
         <div class="q-gutter-sm q-mt-sm q-mb-md"">
           <q-checkbox v-for="y in years" :key="y" v-model="obj.custom_data.history" :val="y" :label="'' + y"></q-checkbox>
         </div>
 
-        <div v-if="obj.id && obj.status == 2 && admitted(obj.id)">
-          <display-4 class="q-mt-xl">Travel and COVID-19 related information</display-4>
-          <p class="q-mb-sm">Are you fully vaccinated, recovered from COVID-19 or will you come to Italy after taking a test? <a @click="obj.custom_data.travel.covid = null" class="cursor-pointer q-ml-md"><small>CLEAR</small></a></p>
-          <q-option-group inline v-model="obj.custom_data.travel.covid" type="radio" :options="[{label: 'Fully vaccinated', value: 'full_cycle'}, {label: 'Recovered from COVID-19', value: 'recovered'}, {label: 'I will take a test before traveling to Italy', value: 'test'}]"></q-option-group>
-          <p class="q-my-sm">What flights/trains will you take?</p>
-          <div class="row q-col-gutter-md">
-            <q-input filled v-model="obj.custom_data.travel.flight" type="text" label="Flight/train to Rome (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
-            <q-input filled v-model="obj.custom_data.travel.flight_return" type="text" label="Return (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
-          </div>
+        <display-4 class="q-mt-lg">Accompanying persons</display-4>
+        <p class="q-mb-sm">Tell us if you have been in any previous ACACES editions.</p>
+        <div class="q-gutter-sm q-mt-sm q-mb-md"">
+          <q-checkbox v-for="y in years" :key="y" v-model="obj.custom_data.history" :val="y" :label="'' + y"></q-checkbox>
         </div>
 
         <div class="text-center">

@@ -10,8 +10,22 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterModelOptions(name="coursesession", options={"ordering": ["start_at"]},),
-        migrations.RemoveField(model_name="coursesession", name="date",),
-        migrations.AlterField(model_name="coursesession", name="end_at", field=models.DateTimeField(),),
-        migrations.AlterField(model_name="coursesession", name="start_at", field=models.DateTimeField(),),
+        migrations.AlterModelOptions(
+            name="coursesession",
+            options={"ordering": ["start_at"]},
+        ),
+        migrations.RemoveField(
+            model_name="coursesession",
+            name="date",
+        ),
+        migrations.AlterField(
+            model_name="coursesession",
+            name="end_at",
+            field=models.DateTimeField(),
+        ),
+        migrations.AlterField(
+            model_name="coursesession",
+            name="start_at",
+            field=models.DateTimeField(),
+        ),
     ]

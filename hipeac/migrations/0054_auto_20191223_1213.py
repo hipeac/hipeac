@@ -10,6 +10,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterModelOptions(name="b2b", options={"ordering": ["date", "room", "start_at"]},),
-        migrations.AlterModelTable(name="b2b", table="hipeac_event_b2b",),
+        migrations.AlterModelOptions(
+            name="b2b",
+            options={"ordering": ["date", "room", "start_at"]},
+        ),
+        migrations.AlterModelTable(
+            name="b2b",
+            table="hipeac_event_b2b",
+        ),
     ]

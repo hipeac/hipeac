@@ -36,7 +36,7 @@ class ProfileMiniSerializer(ProfileSerializer):
 
     class Meta:
         model = Profile
-        fields = ("name", "country", "institution", "avatar_url", "topics")
+        fields = ("name", "country", "institution", "avatar_url", "topics", "meal_preference_id")
 
     def get_topics(self, obj):
         return [int(t) for t in obj.topics.split(",")] if obj.topics else []

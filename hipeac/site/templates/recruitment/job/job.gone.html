@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+
+
+{% block head_title %}410 Gone - Jobs - {{ block.super }}{% endblock %}
+
+{% block subtitle %}Position @ {{ job.institution }}{% endblock %}
+
+{% block submenu %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'jobs' %}"><i class="material-icons mr-1">arrow_back</i>Back to jobs portal</a>
+  </li>
+  {% if user.is_authenticated %}
+    <li is="editor-link" url="{{ job.get_editor_url }}"></li>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-2 d-none d-md-block">
+        {% if job.institution.images %}
+          <a href="{{ job.institution.get_absolute_url }}" class="d-none d-md-block mt-md-4 mb-5">
+            <img src="{{ job.institution.images.md }}" title="{{ job.institution.short_name }}" class="max-90">
+          </a>
+        {% endif %}
+      </div>
+      <div class="col-12 col-md-10">
+        <div class="hipeac-card">
+          <div class="row">
+            <div class="col-12 col-md-8 pr-md-5">
+              <p class="text-sm">
+              {% if job.institution %}
+                <a href="{{ job.institution.get_absolute_url }}" class="inherit">
+                  <i is="institution-icon" type="{{ job.institution.type }}" class="sm mr-2"></i>{{ job.institution.name }}</a>
+              {% endif %}
+              </p>
+              <h2 class="display-lg mb-4">{{ job.title }}</h2>
+              <div class="marked">
+                This job position has expired.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+  <script>
+    new Vue({
+      el: '#vue'
+    });
+  </script>
+{% endcompress %}
+{% endblock %}

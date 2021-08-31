@@ -20,8 +20,14 @@ class Migration(migrations.Migration):
             ],
             options={"ordering": ["position"]},
         ),
-        migrations.RemoveField(model_name="track", name="event",),
-        migrations.RemoveField(model_name="venue", name="url",),
+        migrations.RemoveField(
+            model_name="track",
+            name="event",
+        ),
+        migrations.RemoveField(
+            model_name="venue",
+            name="url",
+        ),
         migrations.AlterField(
             model_name="sponsor",
             name="event",
@@ -51,7 +57,9 @@ class Migration(migrations.Migration):
                 to="hipeac.Project",
             ),
         ),
-        migrations.DeleteModel(name="Track",),
+        migrations.DeleteModel(
+            name="Track",
+        ),
         migrations.AddField(
             model_name="room",
             name="venue",

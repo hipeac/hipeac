@@ -10,8 +10,13 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="techtransferapplication", name="status",),
+        migrations.RemoveField(
+            model_name="techtransferapplication",
+            name="status",
+        ),
         migrations.AddField(
-            model_name="techtransferapplication", name="awarded", field=models.BooleanField(default=None, null=True),
+            model_name="techtransferapplication",
+            name="awarded",
+            field=models.BooleanField(default=None, null=True),
         ),
     ]

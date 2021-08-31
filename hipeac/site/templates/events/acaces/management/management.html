@@ -17,6 +17,8 @@
             <q-route-tab :to="{name: 'stats'}" label="Stats"></q-route-tab>
             <q-route-tab :to="{name: 'registrations'}" label="Registrations"></q-route-tab>
             <q-route-tab :to="{name: 'grants'}" label="Grants"></q-route-tab>
+            <q-route-tab :to="{name: 'hotels'}" label="Hotels"></q-route-tab>
+            <q-route-tab v-if="event && event.custom_data.lunch_groups.length" :to="{name: 'lunch'}" label="Lunch"></q-route-tab>
             <!--<q-route-tab :to="{name: 'emails'}" label="Emails"></q-route-tab>-->
           </q-tabs>
         </q-toolbar>
@@ -32,6 +34,8 @@
 {% block vue_templates %}
   {% include './v-emails.html' %}
   {% include './v-grants.html' %}
+  {% include './v-hotels.html' %}
+  {% include './v-lunch.html' %}
   {% include './v-registrations.html' %}
   {% include './v-stats.html' %}
 {% endblock %}
@@ -40,6 +44,7 @@
   {{ countries | json_script:"countries-data" }}
 {% compress js file events_acaces_management %}
   <script src="{% static 'js_v2/components/acaces.js' %}"></script>
+  <script src="{% static 'js_v2/mixins/query.js' %}"></script>
   <script>
     var VARS = document.querySelector('#vars').dataset;
     var VIRTUAL_ACACES = 2020;
@@ -134,6 +139,8 @@
           if (!state.event) return [];
 
           return state.registrations.map(function (obj) {
+            obj = Hipeac.map.registration(obj);
+
             var w = _.without(obj.custom_data.history, VIRTUAL_ACACES);
             obj.in_track = {};
             obj.date = moment(obj.created_at);
@@ -145,6 +152,7 @@
             obj.country_code = (obj.user.profile.institution)
               ? obj.user.profile.institution.country.code
               : obj.custom_data.profile.country.value;
+            obj.dietary_requirements = obj.user.profile.meal_preference_id && obj.user.profile.meal_preference_id != 7;
             obj.user_gender = obj.custom_data.profile.gender || 'unknown';
             obj.user_name = obj.user.profile.name;
             obj.user_affiliation = (obj.user.profile.institution)
@@ -165,10 +173,14 @@
               return 'track:' + o.track.name;
             });
 
+            var h = state.event.custom_data.hotel_distribution[obj.id] || null;
+            var l = state.event.custom_data.lunch_distribution[obj.id] || null;
+
             obj._q = [
               obj._q,
               'gender:' + obj.user_gender,
               'admitted:' + (obj.admitted ? 'yes' : 'no'),
+              'dietary.requirements:' + (obj.dietary_requirements ? 'yes' : 'no'),
               (obj.status == 0) ? 'accepted:waiting' : '',
               (obj.status == 1) ? 'accepted:yes.internally' : '',
               (obj.status == 2) ? 'accepted:yes.confirmed' : '',
@@ -177,11 +189,31 @@
               'grant.assigned:' + (obj.grant_assigned ? 'yes' : 'no'),
               'poster:' + (obj.custom_data.poster.present ? 'yes' : 'no'),
               'room.shared:' + (obj.custom_data.room.share ? 'yes' : 'no'),
-              extraq.join(' ')
+              extraq.join(' '),
+              (h)
+                ? ('hotel:' + slugify(h + '-' + state.event.custom_data.hotels[h].name))
+                : 'hotel:unknown',
+              (l)
+                ? ('lunch:' + l)
+                : 'lunch:unknown'
             ].join(' ').toLowerCase();
 
             return obj;
           })
+        },
+        stats: function (state, getters) {
+          var stats = {};
+
+          _.each(getters.remappedRegistrations, function (obj) {
+            _.each(_.uniq(obj._q.split(' ')), function (w) {
+              if (w.indexOf(':') > -1) {
+                if (!_.has(stats, w)) stats[w] = 1;
+                else stats[w] += 1;
+              }
+            });
+          });
+
+          return stats;
         },
         simpleTracks: function (state) {
           var tracks = {};
@@ -241,9 +273,7 @@
           var self = this;
 
           Hipeac.api.get(VARS.registrationsUrl).then(function (res) {
-            state.registrations = Object.freeze(res.data.map(function (obj) {
-              return Hipeac.map.registration(obj);
-            }));
+            state.registrations = Object.freeze(res.data);
 
             setTimeout(function () {
               self.commit('getRegistrations');
@@ -310,14 +340,299 @@
       }
     };
 
+    var HotelsView = {
+      mixins: [QueryMixin],
+      template: '#v-hotels',
+      data: function () {
+        return {
+          search: {
+            filters: [
+              {
+                name: 'grant.assigned',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'dietary.requirements',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'gender',
+                options: ['female', 'male', 'non-binary', 'unknown']
+              }
+            ]
+          },
+          table: {
+            columns: [
+              {
+                name: 'idx',
+                label: '#'
+              },
+              {
+                name: 'status',
+                field: 'status',
+                sortable: true,
+                label: 'Accept',
+                align: 'center',
+              },
+              {
+                name: 'grant_assigned',
+                field: 'grant_assigned',
+                sortable: true,
+                label: 'Grant',
+                align: 'center',
+              },
+              {
+                name: 'user_gender',
+                field: 'user_gender',
+                sortable: true,
+                align: 'center',
+                label: 'Gender'
+              },
+              {
+                name: 'user_name',
+                field: 'user_name',
+                sortable: true,
+                align: 'left',
+                label: 'Student'
+              },
+              {
+                name: 'country_code',
+                field: 'country_code',
+                sortable: true,
+                align: 'center',
+                label: 'Country'
+              },
+              {
+                name: 'dietary_requirements',
+                field: 'dietary_requirements',
+                sortable: true,
+                align: 'center',
+                label: 'Dietary'
+              },
+              {
+                name: 'payment_status',
+                field: 'paid',
+                sortable: true,
+                align: 'center',
+                label: 'Paid'
+              },
+              {
+                name: 'hotel',
+                field: 'hotel',
+                sortable: true,
+                align: 'left',
+                label: 'Hotel'
+              }
+            ],
+            pagination: {
+              rowsPerPage: 50
+            }
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapGetters(['remappedRegistrations', 'stats']),
+        Vuex.mapState(['event', 'registrations']), {
+        hotels: function () {
+          if (!this.event) [];
+          return _.mapObject(this.event.custom_data.hotels, function (obj, key) {
+            obj.stats_key = slugify(key + '-' + obj.name).toLowerCase();
+            return obj;
+          });
+        },
+        filtersWithHotels: function () {
+          var hotelFilters = [];
+
+          if (this.event) {
+            var event = this.event;
+            var distribution = this.event.custom_data.hotel_distribution;
+            var codes = _.uniq(_.values(this.event.custom_data.hotel_distribution));
+            hotelFilters = [
+              {
+                name: 'hotel',
+                options: codes.map(function (c) {
+                  return slugify(c + '-' + event.custom_data.hotels[c].name).toLowerCase();
+                })
+              }
+            ];
+            hotelFilters[0].options.push('unknown');
+          }
+
+          return _.union(hotelFilters, this.search.filters);
+        },
+        hotelOptions: function () {
+          if (!this.event) return [];
+          var options = [];
+          _.each(this.event.custom_data.hotels, function (hotel, code) {
+            options.push({
+              value: code,
+              label: code
+            });
+          });
+          return options;
+        },
+        confirmedRegistrations: function () {
+          if (!this.event) return [];
+          var event = this.event;
+          return this.remappedRegistrations.filter(function (r) {
+            return r.status == 2;
+          });
+        },
+        sharedRooms: function () {
+          if (!this.event || !this.registrations.length) return [];
+          var regs = this.registrations;
+          return this.event.custom_data.shared_rooms.map(function (ids) {
+            return ids.map(function (id) {
+              return _.find(regs, { id: id });
+            })
+          });
+        }
+      }),
+      methods: {
+        updateData: _.debounce(function () {
+          console.log('update');
+          var self = this;
+          Hipeac.api.request('put', VARS.eventUrl, this.event).then(function (res) {
+            Hipeac.utils.notifySuccess('Hotel information updated.');
+            self.$store.commit('updateEvent', res.data);
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
+        }, 50)
+      }
+    };
+
+    var LunchView = {
+      mixins: [QueryMixin],
+      template: '#v-lunch',
+      data: function () {
+        return {
+          search: {
+            filters: [
+              {
+                name: 'grant.assigned',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'dietary.requirements',
+                options: ['yes', 'no']
+              },
+              {
+                name: 'gender',
+                options: ['female', 'male', 'non-binary', 'unknown']
+              }
+            ]
+          },
+          table: {
+            columns: [
+              {
+                name: 'idx',
+                label: '#'
+              },
+              {
+                name: 'user_gender',
+                field: 'user_gender',
+                sortable: true,
+                align: 'center',
+                label: 'Gender'
+              },
+              {
+                name: 'user_name',
+                field: 'user_name',
+                sortable: true,
+                align: 'left',
+                label: 'Student'
+              },
+              {
+                name: 'user_affiliation',
+                field: 'user_affiliation',
+                sortable: true,
+                align: 'left',
+                label: 'Affiliation',
+                classes:'text-caption'
+              },
+              {
+                name: 'dietary_requirements',
+                field: 'dietary_requirements',
+                sortable: true,
+                align: 'center',
+                label: 'Dietary'
+              },
+              {
+                name: 'lunch_group',
+                field: 'lunch_group',
+                sortable: true,
+                align: 'left',
+                label: 'Lunch'
+              }
+            ],
+            pagination: {
+              rowsPerPage: 50
+            }
+          }
+        }
+      },
+      computed: _.extend(
+        Vuex.mapGetters(['remappedRegistrations', 'stats']),
+        Vuex.mapState(['event', 'registrations']), {
+        filtersWithLunch: function () {
+          var lunchFilters = [];
+
+          if (this.event) {
+            lunchFilters = [
+              {
+                name: 'lunch',
+                options: this.event.custom_data.lunch_groups.map(function (g) {
+                  return g.toLowerCase();
+                })
+              }
+            ];
+            lunchFilters[0].options.push('unknown');
+          }
+
+          return _.union(lunchFilters, this.search.filters);
+        },
+        lunchOptions: function () {
+          if (!this.event) return [];
+          var options = [];
+          _.each(this.event.custom_data.lunch_groups, function (g) {
+            options.push({
+              value: g,
+              label: g
+            });
+          });
+          return options;
+        },
+        confirmedRegistrations: function () {
+          if (!this.event) return [];
+          var event = this.event;
+          return this.remappedRegistrations.filter(function (r) {
+            return r.status == 2;
+          });
+        }
+      }),
+      methods: {
+        updateData: _.debounce(function () {
+          console.log('update');
+          var self = this;
+          Hipeac.api.request('put', VARS.eventUrl, this.event).then(function (res) {
+            Hipeac.utils.notifySuccess('Lunch group updated.');
+            self.$store.commit('updateEvent', res.data);
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
+        }, 50)
+      }
+    };
+
     var RegistrationsView = {
+      mixins: [QueryMixin],
       template: '#v-registrations',
       props: ['q', 'id'],
       data: function () {
         return {
           dialogVisible: false,
           togglePlaceholder: false,
-          query: this.q || '',
           search: {
             filters: [
               {
@@ -468,7 +783,7 @@
               }
             ],
             pagination: {
-              rowsPerPage: 25
+              rowsPerPage: 50
             }
           }
         }
@@ -539,9 +854,6 @@
           return this.grantsPerCountry
               && (this.grantsPerCountry[row.country_code].grants_assigned >= this.grantsPerCountry[row.country_code].grants)
               && this.event.custom_data.granted_ids.indexOf(row.id) < 0;
-        },
-        customFilter: function (rows, terms, cols, getCellValue) {
-          return Hipeac.utils.filterMultiple(rows, terms);
         },
         updateData: _.debounce(function () {
           var self = this;
@@ -615,6 +927,18 @@
           path: '/grants/',
           pathToRegexpOptions: {strict: true},
           component: GrantsView
+        },
+        {
+          name: 'hotels',
+          path: '/hotels/',
+          pathToRegexpOptions: {strict: true},
+          component: HotelsView
+        },
+        {
+          name: 'lunch',
+          path: '/lunch/',
+          pathToRegexpOptions: {strict: true},
+          component: LunchView
         },
         {
           name: 'stats',

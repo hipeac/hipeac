@@ -37,7 +37,7 @@
         <q-btn v-if="$q.screen.gt.xs" flat no-caps @click="dialog = true" icon="filter_list" class="float-right" label="Filters"></q-btn>
       </q-card-actions>
       <q-separator></q-separator>
-      <q-banner class="bg-yellow-1 q-py-md q-px-lg">
+      <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
         <strong v-if="conflicts">You have registered for multiple simultaneous sessions, please check your registration.<br></strong>
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
         <span v-if="filtered">. <a href="#" @click.prevent="clearFilters()" class="inherit">Showing filtered results... &times;</a></span>
@@ -72,7 +72,7 @@
           </div>
         </div>
       </q-card-section>
-      <q-banner class="bg-yellow-1 q-py-md q-px-lg">
+      <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
         <span>All times are displayed in your local time zone: {{ user.tz }}</span>
       </q-banner>
     </q-card>

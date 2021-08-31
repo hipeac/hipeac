@@ -64,14 +64,18 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return super().retrieve(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=ArticleListSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=ArticleListSerializer,
     )
     def articles(self, request, *args, **kwargs):
         self.queryset = self.get_object().articles.prefetch_related("institutions", "projects")
         return super().list(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=B2bSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=B2bSerializer,
     )
     @never_cache
     def b2b(self, request, *args, **kwargs):
@@ -79,14 +83,18 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return super().list(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=CommitteeListSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=CommitteeListSerializer,
     )
     def committees(self, request, *args, **kwargs):
         self.queryset = self.get_object().committees.prefetch_related("members__profile__institution")
         return super().list(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=CourseListSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=CourseListSerializer,
     )
     def courses(self, request, *args, **kwargs):
         self.queryset = self.get_object().courses.prefetch_related(
@@ -95,7 +103,9 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return super().list(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=JobNestedSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=JobNestedSerializer,
     )
     def jobs(self, request, *args, **kwargs):
         self.queryset = self.get_object().jobs
@@ -113,12 +123,15 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
             .registrations.select_related("user__profile")
             .prefetch_related("user__profile__institution", "user__profile__second_institution")
             .prefetch_related("user__profile__projects")
+            .filter(status=Registration.STATUS_ACCEPTED)
         )
 
         return super().list(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=SessionSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=SessionSerializer,
     )
     def sessions(self, request, *args, **kwargs):
         session_type = request.query_params.get("session_type", False)
@@ -156,15 +169,19 @@ class EventManagementViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixi
         return super().retrieve(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=RegistrationManagementSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=RegistrationManagementSerializer,
     )
     def registrations(self, request, *args, **kwargs):
         self.queryset = (
             self.get_object()
             .registrations.select_related("user__profile")
-            .prefetch_related("courses", "sessions", "posters")
+            .prefetch_related("courses", "sessions", "posters", "files")
             .prefetch_related("user__profile__institution", "user__profile__second_institution")
             .prefetch_related("user__profile__projects")
+            .prefetch_related("user__profile__links")
+            .filter(status=Registration.STATUS_ACCEPTED)
         )
 
         return super().list(request, *args, **kwargs)
@@ -203,6 +220,7 @@ class CourseViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Generi
             .registrations.select_related("user__profile")
             .prefetch_related("user__profile__institution", "user__profile__second_institution")
             .prefetch_related("user__profile__projects")
+            .filter(status=Registration.STATUS_ACCEPTED)
         )
 
         return super().list(request, *args, **kwargs)

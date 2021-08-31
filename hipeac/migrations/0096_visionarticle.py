@@ -27,7 +27,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"db_table": "hipeac_vision_article", "ordering": ("position",),},
+            options={
+                "db_table": "hipeac_vision_article",
+                "ordering": ("position",),
+            },
             bases=(hipeac.models.mixins.LinkMixin, models.Model),
         ),
     ]

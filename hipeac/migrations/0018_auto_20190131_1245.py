@@ -10,8 +10,13 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="membershiprequest", name="status",),
+        migrations.RemoveField(
+            model_name="membershiprequest",
+            name="status",
+        ),
         migrations.AddField(
-            model_name="membershiprequest", name="accepted", field=models.BooleanField(default=None, null=True),
+            model_name="membershiprequest",
+            name="accepted",
+            field=models.BooleanField(default=None, null=True),
         ),
     ]

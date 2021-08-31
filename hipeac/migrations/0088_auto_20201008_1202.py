@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="session", name="zoom_webinar_id", field=models.CharField(blank=True, max_length=32, null=True),
+            model_name="session",
+            name="zoom_webinar_id",
+            field=models.CharField(blank=True, max_length=32, null=True),
         ),
     ]

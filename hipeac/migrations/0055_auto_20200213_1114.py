@@ -10,7 +10,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterModelOptions(name="project", options={"ordering": ["-end_date"]},),
+        migrations.AlterModelOptions(
+            name="project",
+            options={"ordering": ["-end_date"]},
+        ),
         migrations.AlterModelOptions(
             name="session",
             options={"ordering": ["date", "session_type__position", "start_at", "room__position", "end_at"]},

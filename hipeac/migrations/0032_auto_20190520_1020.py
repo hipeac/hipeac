@@ -311,5 +311,8 @@ class Migration(migrations.Migration):
                 to="hipeac.Institution",
             ),
         ),
-        migrations.AlterUniqueTogether(name="review", unique_together={("application", "reviewer")},),
+        migrations.AlterUniqueTogether(
+            name="review",
+            unique_together={("application", "reviewer")},
+        ),
     ]

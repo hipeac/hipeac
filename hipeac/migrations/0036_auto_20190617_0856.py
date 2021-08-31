@@ -21,7 +21,9 @@ class Migration(migrations.Migration):
             field=models.FileField(blank=True, null=True, upload_to="private/magazine"),
         ),
         migrations.AlterField(
-            model_name="vision", name="file", field=models.FileField(blank=True, null=True, upload_to="private/vision"),
+            model_name="vision",
+            name="file",
+            field=models.FileField(blank=True, null=True, upload_to="private/vision"),
         ),
         migrations.AlterField(
             model_name="vision",

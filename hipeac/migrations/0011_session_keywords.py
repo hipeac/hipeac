@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="session", name="keywords", field=models.TextField(default="[]", editable=False),
+            model_name="session",
+            name="keywords",
+            field=models.TextField(default="[]", editable=False),
         ),
     ]

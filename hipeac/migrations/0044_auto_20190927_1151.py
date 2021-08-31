@@ -10,5 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(model_name="profile", name="is_public", field=models.BooleanField(default=True),),
+        migrations.AlterField(
+            model_name="profile",
+            name="is_public",
+            field=models.BooleanField(default=True),
+        ),
     ]

@@ -276,6 +276,7 @@ class CourseSessionListSerializer(serializers.ModelSerializer):
 
 
 class CourseListSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="v1:course-detail", read_only=True)
     sessions = CourseSessionListSerializer(many=True)
     teachers = UserPublicSerializer(many=True, read_only=True)
     topics = MetadataListField()

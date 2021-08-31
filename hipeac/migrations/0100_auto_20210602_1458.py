@@ -10,8 +10,22 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterModelOptions(name="break", options={"ordering": ["start_at"]},),
-        migrations.RemoveField(model_name="break", name="date",),
-        migrations.AlterField(model_name="break", name="end_at", field=models.DateTimeField(blank=True, null=True),),
-        migrations.AlterField(model_name="break", name="start_at", field=models.DateTimeField(blank=True, null=True),),
+        migrations.AlterModelOptions(
+            name="break",
+            options={"ordering": ["start_at"]},
+        ),
+        migrations.RemoveField(
+            model_name="break",
+            name="date",
+        ),
+        migrations.AlterField(
+            model_name="break",
+            name="end_at",
+            field=models.DateTimeField(blank=True, null=True),
+        ),
+        migrations.AlterField(
+            model_name="break",
+            name="start_at",
+            field=models.DateTimeField(blank=True, null=True),
+        ),
     ]

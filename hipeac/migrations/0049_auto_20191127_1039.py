@@ -25,5 +25,8 @@ class Migration(migrations.Migration):
             options={"ordering": ["-start_at"]},
             bases=(hipeac.models.mixins.LinkMixin, models.Model),
         ),
-        migrations.AlterModelOptions(name="hipeacpartner", options={"ordering": ["hipeac", "position"]},),
+        migrations.AlterModelOptions(
+            name="hipeacpartner",
+            options={"ordering": ["hipeac", "position"]},
+        ),
     ]

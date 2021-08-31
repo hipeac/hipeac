@@ -10,5 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(model_name="hipeac", name="visible", field=models.BooleanField(default=False),),
+        migrations.AddField(
+            model_name="hipeac",
+            name="visible",
+            field=models.BooleanField(default=False),
+        ),
     ]

@@ -10,5 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(model_name="block", name="key", field=models.CharField(max_length=48),),
+        migrations.AlterField(
+            model_name="block",
+            name="key",
+            field=models.CharField(max_length=48),
+        ),
     ]

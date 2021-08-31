@@ -13,7 +13,9 @@ class TestValidators:
 
     def test_start_date_before_registration_start_date(self, now):
         obj = baker.prepare_recipe(
-            "hipeac.event", start_date=now.add(days=1).date, registration_start_date=now.add(days=10).date,
+            "hipeac.event",
+            start_date=now.add(days=1).date,
+            registration_start_date=now.add(days=10).date,
         )
         with pytest.raises(ValidationError):
             obj.full_clean()
@@ -38,7 +40,9 @@ class TestValidators:
 
     def test_start_date_before_registration_deadline(self, now):
         obj = baker.prepare_recipe(
-            "hipeac.event", start_date=now.add(days=1).date, registration_deadline=now.add(days=10).datetime,
+            "hipeac.event",
+            start_date=now.add(days=1).date,
+            registration_deadline=now.add(days=10).datetime,
         )
         with pytest.raises(ValidationError):
             obj.full_clean()

@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="job", name="email", field=models.EmailField(blank=True, max_length=254, null=True),
+            model_name="job",
+            name="email",
+            field=models.EmailField(blank=True, max_length=254, null=True),
         ),
     ]

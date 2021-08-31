@@ -1181,7 +1181,8 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddIndex(
-            model_name="metadata", index=models.Index(fields=["type"], name="hipeac_meta_type_f3ab48_idx"),
+            model_name="metadata",
+            index=models.Index(fields=["type"], name="hipeac_meta_type_f3ab48_idx"),
         ),
         migrations.AddField(
             model_name="link",
@@ -1379,21 +1380,35 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(blank=True, related_name="articles", to="hipeac.Project"),
         ),
         migrations.AddIndex(
-            model_name="session", index=models.Index(fields=["event", "date"], name="hipeac_sess_event_i_aa2af2_idx"),
+            model_name="session",
+            index=models.Index(fields=["event", "date"], name="hipeac_sess_event_i_aa2af2_idx"),
         ),
-        migrations.AlterUniqueTogether(name="registrationlog", unique_together={("registration", "session")},),
-        migrations.AddIndex(
-            model_name="registration", index=models.Index(fields=["uuid"], name="hipeac_regi_uuid_33aef4_idx"),
-        ),
-        migrations.AlterUniqueTogether(name="registration", unique_together={("event", "user")},),
-        migrations.AddIndex(
-            model_name="quote", index=models.Index(fields=["type"], name="hipeac_quot_type_5be033_idx"),
+        migrations.AlterUniqueTogether(
+            name="registrationlog",
+            unique_together={("registration", "session")},
         ),
         migrations.AddIndex(
-            model_name="profile", index=models.Index(fields=["membership_tags"], name="hipeac_prof_members_7d3555_idx"),
+            model_name="registration",
+            index=models.Index(fields=["uuid"], name="hipeac_regi_uuid_33aef4_idx"),
+        ),
+        migrations.AlterUniqueTogether(
+            name="registration",
+            unique_together={("event", "user")},
         ),
         migrations.AddIndex(
-            model_name="coupon", index=models.Index(fields=["code"], name="hipeac_coup_code_86749f_idx"),
+            model_name="quote",
+            index=models.Index(fields=["type"], name="hipeac_quot_type_5be033_idx"),
         ),
-        migrations.AlterUniqueTogether(name="block", unique_together={("page", "key")},),
+        migrations.AddIndex(
+            model_name="profile",
+            index=models.Index(fields=["membership_tags"], name="hipeac_prof_members_7d3555_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="coupon",
+            index=models.Index(fields=["code"], name="hipeac_coup_code_86749f_idx"),
+        ),
+        migrations.AlterUniqueTogether(
+            name="block",
+            unique_together={("page", "key")},
+        ),
     ]

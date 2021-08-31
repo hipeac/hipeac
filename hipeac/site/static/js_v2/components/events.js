@@ -146,7 +146,7 @@ Vue.component('hipeac-program', {
             duration: br.duration,
             session_type: 'break',
             icon: br.icon,
-            q: []
+            _q: []
           });
         });
       }
@@ -172,7 +172,7 @@ Vue.component('hipeac-program', {
               color: course.color,
               slot: course.custom_data.slot || null,
               track: course.custom_data.track || null,
-              q: session.q
+              _q: session._q
             });
           });
         });
@@ -194,7 +194,7 @@ Vue.component('hipeac-program', {
             route: 'session',
             session_type: session.session_type,
             color: session.color,
-            q: session.q
+            _q: session._q
           });
         });
       }

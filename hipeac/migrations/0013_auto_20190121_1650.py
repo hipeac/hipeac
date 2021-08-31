@@ -11,9 +11,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterModelOptions(
-            name="session", options={"ordering": ["date", "start_at", "room__position", "end_at"]},
+            name="session",
+            options={"ordering": ["date", "start_at", "room__position", "end_at"]},
         ),
-        migrations.RemoveField(model_name="video", name="project",),
+        migrations.RemoveField(
+            model_name="video",
+            name="project",
+        ),
         migrations.AddField(
             model_name="video",
             name="projects",

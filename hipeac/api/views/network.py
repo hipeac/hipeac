@@ -41,7 +41,9 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
         return super().retrieve(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=JobNestedSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=JobNestedSerializer,
     )
     def jobs(self, request, *args, **kwargs):
         self.queryset = self.get_object().jobs.active()
@@ -114,7 +116,9 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
         return super().list(request, *args, **kwargs)
 
     @action(
-        detail=True, pagination_class=None, serializer_class=JobNestedSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=JobNestedSerializer,
     )
     def jobs(self, request, *args, **kwargs):
         self.queryset = self.get_object().jobs.active()

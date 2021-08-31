@@ -10,9 +10,27 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveIndex(model_name="session", name="hipeac_sess_event_i_aa2af2_idx",),
-        migrations.RemoveIndex(model_name="session", name="hipeac_sess_event_i_d4b8b1_idx",),
-        migrations.AddField(model_name="poster", name="breakout_room", field=models.TextField(blank=True, null=True),),
-        migrations.AddField(model_name="poster", name="presentation", field=models.TextField(blank=True, null=True),),
-        migrations.AddField(model_name="poster", name="video_url", field=models.URLField(blank=True, null=True),),
+        migrations.RemoveIndex(
+            model_name="session",
+            name="hipeac_sess_event_i_aa2af2_idx",
+        ),
+        migrations.RemoveIndex(
+            model_name="session",
+            name="hipeac_sess_event_i_d4b8b1_idx",
+        ),
+        migrations.AddField(
+            model_name="poster",
+            name="breakout_room",
+            field=models.TextField(blank=True, null=True),
+        ),
+        migrations.AddField(
+            model_name="poster",
+            name="presentation",
+            field=models.TextField(blank=True, null=True),
+        ),
+        migrations.AddField(
+            model_name="poster",
+            name="video_url",
+            field=models.URLField(blank=True, null=True),
+        ),
     ]

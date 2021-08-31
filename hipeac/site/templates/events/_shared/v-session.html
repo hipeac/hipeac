@@ -88,8 +88,8 @@
   <q-card-section v-if="session.isKeynote && session.main_speaker">
     <hipeac-profile-item :profile="session.main_speaker.profile" class="q-mb-md"></hipeac-profile-item>
     <marked :text="session.main_speaker.profile.bio"></marked>
-    <a class="text-caption text-grey-7 inherit" :href="session.main_speaker.href" target="_blank">
-      <q-icon size="xs" name="shortcut" class="q-mr-xs"></q-icon>View HiPEAC profile</a>
+    <p class="q-mt-sm"><a class="text-caption text-grey-7 inherit" :href="session.main_speaker.href" target="_blank">
+      <q-icon size="xs" name="shortcut" class="q-mr-xs"></q-icon>View HiPEAC profile</a></p>
   </q-card-section>
 {% endverbatim %}
 </script>

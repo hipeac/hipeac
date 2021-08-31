@@ -10,5 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(model_name="course", name="custom_data", field=models.JSONField(default=dict),),
+        migrations.AddField(
+            model_name="course",
+            name="custom_data",
+            field=models.JSONField(default=dict),
+        ),
     ]

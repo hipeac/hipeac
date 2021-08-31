@@ -4,8 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django_countries import countries
 from django.db import connection
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
+from hipeac.models import Registration
 from .base import EventDetail
 
 
@@ -16,8 +19,7 @@ def namedtuplefetchall(cursor):
 
 
 class AcacesDetail(EventDetail):
-    """Displays a ACACES page.
-    """
+    """Displays a ACACES page."""
 
     template_name = "events/acaces/acaces.html"
 
@@ -42,6 +44,37 @@ class AcacesManagement(AcacesDetail):
             raise PermissionDenied
 
         return super().dispatch(request, *args, **kwargs)
+
+
+class AcacesSurvey(AcacesDetail):
+    template_name = "events/acaces/survey/gelato.html"
+
+    def get_registration(self, user=None):
+        if not hasattr(self, "registration"):
+            self.registration = self.get_object().registrations.get(user=user, status=Registration.STATUS_ACCEPTED)
+        return self.registration
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        registration = self.get_registration(request.user)
+        if "gelato" not in registration.custom_data or not registration.custom_data["gelato"]:
+            return redirect("https://www.surveymonkey.com/r/ACACES2021")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["registration"] = self.get_registration()
+        return context
+
+
+class AcacesSurveyGelato(AcacesDetail):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        registration = self.get_object().registrations.get(user=request.user, status=Registration.STATUS_ACCEPTED)
+        if "gelato" not in registration.custom_data or not registration.custom_data["gelato"]:
+            registration.custom_data["gelato"] = True
+            registration.save()
+        return redirect(reverse_lazy("acaces_survey", kwargs={"year": self.kwargs.get("year")}))
 
 
 class AcacesStats(AcacesDetail):

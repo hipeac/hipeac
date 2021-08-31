@@ -11,7 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterModelOptions(
-            name="session", options={"ordering": ["start_at", "session_type__position", "room__position", "end_at"]},
+            name="session",
+            options={"ordering": ["start_at", "session_type__position", "room__position", "end_at"]},
         ),
         migrations.AddField(
             model_name="session",

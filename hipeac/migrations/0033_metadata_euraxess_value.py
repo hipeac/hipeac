@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="metadata", name="euraxess_value", field=models.CharField(blank=True, max_length=250, null=True),
+            model_name="metadata",
+            name="euraxess_value",
+            field=models.CharField(blank=True, max_length=250, null=True),
         ),
     ]

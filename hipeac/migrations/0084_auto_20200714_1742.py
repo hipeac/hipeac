@@ -16,7 +16,9 @@ class Migration(migrations.Migration):
             field=models.FileField(blank=True, null=True, upload_to="private/poster"),
         ),
         migrations.AlterField(
-            model_name="poster", name="breakout_room", field=models.CharField(blank=True, max_length=250, null=True),
+            model_name="poster",
+            name="breakout_room",
+            field=models.CharField(blank=True, max_length=250, null=True),
         ),
         migrations.AlterField(
             model_name="poster",

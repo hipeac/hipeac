@@ -11,12 +11,18 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="visionarticle", name="abstract", field=models.TextField(blank=True, null=True),
+            model_name="visionarticle",
+            name="abstract",
+            field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name="visionarticle", name="dimension", field=models.CharField(blank=True, max_length=250, null=True),
+            model_name="visionarticle",
+            name="dimension",
+            field=models.CharField(blank=True, max_length=250, null=True),
         ),
         migrations.AlterField(
-            model_name="visionarticle", name="authors", field=models.CharField(blank=True, max_length=250, null=True),
+            model_name="visionarticle",
+            name="authors",
+            field=models.CharField(blank=True, max_length=250, null=True),
         ),
     ]

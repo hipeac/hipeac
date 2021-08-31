@@ -14,7 +14,9 @@ class OpenEventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     lookup_field = "code"
 
     @action(
-        detail=True, pagination_class=None, serializer_class=OpenRegistrationSerializer,
+        detail=True,
+        pagination_class=None,
+        serializer_class=OpenRegistrationSerializer,
     )
     @never_cache
     def registrations(self, request, *args, **kwargs):

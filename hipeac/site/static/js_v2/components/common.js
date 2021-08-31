@@ -622,3 +622,34 @@ Vue.component('hipeac-file-list', {
     }
   }
 });
+
+Vue.component('stats-progress', {
+  props: {
+    size: {
+      type: String,
+      default: 'lg'
+    },
+    fontSize: {
+      type: String,
+      default: '12px'
+    },
+    value: {
+      type: Number,
+      required: true
+    }
+  },
+  template: `
+    <q-circular-progress show-value :size="size" :font-size="fontSize" :value="value" :color="color" track-color="grey-3">
+      <samp><strong><slot></slot></strong></samp>
+    </q-circular-progress>
+  `,
+  computed: {
+    color: function () {
+      if (this.value == 100) return 'positive';
+      if (this.value >= 50) return 'blue';
+      if (this.value >= 25) return 'light-blue';
+      if (this.value >= 10) return 'cyan';
+      return 'blue-grey';
+    }
+  }
+});

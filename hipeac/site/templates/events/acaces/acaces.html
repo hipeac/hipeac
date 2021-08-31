@@ -20,10 +20,14 @@
       {% else %}
         <q-route-tab :to="{name: 'venue'}" label="Venue and travel"></q-route-tab>
       {% endif %}
-      <!--{% if user.is_authenticated %}
-        <q-route-tab exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
-      {% endif %}-->
-      <q-route-tab v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>
+      {% if event.id == 6806 %}
+        <q-route-tab v-if="user.registration" exact :to="{name: 'covid'}" label="COVID-19"></q-route-tab>
+        <q-route-tab v-if="user.registration" exact :to="{name: 'meals'}" label="Meals"></q-route-tab>
+      {% endif %}
+      {% if user.is_authenticated %}
+        <q-route-tab v-if="user.registration" exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
+      {% endif %}
+      <q-route-tab v-if="event && (event.is_open_for_registration || user.registration)" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>
       <private-btn v-if="managementUrl" :url="managementUrl" icon="admin_panel_settings" target="acaces_management"></private-btn>
     </q-tabs>
   </q-toolbar>
@@ -43,10 +47,14 @@
       {% else %}
         <q-fab-action :to="{name: 'venue'}" color="white" text-color="dark" label="Venue and travel"></q-fab-action>
       {% endif %}
-      <!--{% if user.is_authenticated %}
+      {% if event.id == 6806 %}
+        <q-fab-action v-if="user.registration" exact :to="{name: 'covid'}" color="white" text-color="dark" label="COVID-19"></q-fab-action>
+        <q-fab-action v-if="user.registration" exact :to="{name: 'meals'}" color="white" text-color="dark" label="Meals"></q-fab-action>
+      {% endif %}
+      {% if user.is_authenticated %}
         <q-fab-action exact :to="{name: 'attendees'}" color="white" text-color="dark" label="Attendees"></q-fab-action>
-      {% endif %}-->
-      <q-fab-action v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" color="white" text-color="dark" :label="(user.registration) ? 'My registration' : 'Register'"></q-fab-action>
+      {% endif %}
+      <q-fab-action v-if="event && (event.is_open_for_registration || user.registration)" exact :to="{name: 'registration'}" color="white" text-color="dark" :label="(user.registration) ? 'My registration' : 'Register'"></q-fab-action>
     </q-fab>
   </q-page-sticky>
 {% endblock %}
@@ -54,11 +62,15 @@
 {% block vue_templates %}
   {% include './v-about.html' with event=event year=event.year %}
   {% include './v-course.html' %}
+  {% include './v-covid.html' %}
   {% include './v-program.html' %}
   {% if event.is_virtual %}
     {% include './v-registration-virtual.html' %}
   {% else %}
     {% include './v-registration.html' %}
+  {% endif %}
+  {% if event.id == 6806 %}
+    {% include './v-meals-21.html' %}
   {% endif %}
   {% include './v-venue.html' %}
   {% if event.slug == 'fiuggi' %}
@@ -244,6 +256,13 @@
       }
     };
 
+    var CovidView = {
+      template: '#v-covid',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      }),
+    };
+
     var CourseView = {
       template: '#v-course',
       props: ['id'],
@@ -261,7 +280,7 @@
         },
         userLink: function () {
           if (!this.user.registration) return null;
-          return _.findWhere(this.links, {session: +this.id}) || null;
+          return _.findWhere(this.user.links, {session: +this.id}) || null;
         }
       }),
       methods: {
@@ -301,7 +320,6 @@
           attendees: []
         }
       },
-      props: ['sessionId'],
       computed: _.extend(
         Vuex.mapState(['user', 'event', 'course']), {
         institutions: function () {
@@ -309,17 +327,17 @@
         }
       }),
       methods: {
-        fetchAttendees: function () {
+        getAttendees: function () {
           var self = this;
-          api().getCourseAttendees(this.sessionId).done(function (res) {
-            self.attendees = Object.freeze(mapper().users(res.map(function (obj) {
-              return obj.user;
-            })));
+          Hipeac.api.get(this.course.url + 'attendees/').then(function (res) {
+            self.attendees = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.user(obj.user);
+            }));
           });
         }
       },
       created: function () {
-        this.fetchAttendees();
+        this.getAttendees();
       }
     };
 
@@ -499,6 +517,7 @@
 
           if (!this.event.is_virtual) {
             // Update extra fields
+            if (!_.has(this.obj.custom_data, 'gelato')) { this.$set(this.obj.custom_data, 'gelato', false); }
             if (!_.has(this.obj.custom_data, 'selection')) { this.$set(this.obj.custom_data, 'selection', {}); }
             if (!_.has(this.obj.custom_data, 'history')) { this.$set(this.obj.custom_data, 'history', []); }
             if (!_.has(this.obj.custom_data, 'motivation')) { this.$set(this.obj.custom_data, 'motivation', null); }
@@ -571,15 +590,14 @@
         }
       },
       computed: _.extend(
-        Vuex.mapState(['user', 'event', 'session']),
-        Vuex.mapGetters(['links']), {
+        Vuex.mapState(['user', 'event', 'session']), {
         userIsRegistered: function () {
           if (!this.user.registration) return false;
           return _.contains(this.user.registration.sessions, +this.id);
         },
         userLink: function () {
           if (!this.user.registration) return null;
-          return _.findWhere(this.links, {session: +this.id}) || null;
+          return _.findWhere(this.user.links, {session: +this.id}) || null;
         }
       }),
       methods: {
@@ -605,6 +623,17 @@
       created: function () {
         this.getSession();
       }
+    };
+
+    var MealsView = {
+      template: '#v-meals',
+      computed: _.extend(
+        Vuex.mapState(['user', 'event']), {
+        mg: function () {
+          if (!this.event || !this.user || !this.user.registration) return null;
+          return this.event.custom_data.lunch_distribution[this.user.registration.id];
+        }
+      }),
     };
 
     var SessionMainView = {
@@ -657,35 +686,6 @@
       }),
     };
 
-    var SessionAttendeesView = {
-      template: '#v-session-attendees',
-      data: function () {
-        return {
-          attendees: []
-        }
-      },
-      props: ['sessionId'],
-      computed: _.extend(
-        Vuex.mapState(['user', 'event', 'session']), {
-        institutions: function () {
-          return extractInstitutions(this.attendees);
-        }
-      }),
-      methods: {
-        fetchAttendees: function () {
-          var self = this;
-          api().getSessionAttendees(this.sessionId).done(function (res) {
-            self.attendees = Object.freeze(mapper().users(res.map(function (obj) {
-              return obj.user;
-            })));
-          });
-        }
-      },
-      created: function () {
-        this.fetchAttendees();
-      }
-    };
-
     var SessionDownloadsView = {
       template: '#v-session-downloads',
       computed: _.extend(
@@ -732,6 +732,12 @@
           path: '/attendees/',
           pathToRegexpOptions: {strict: true},
           component: AttendeesView
+        },
+        {
+          name: 'covid',
+          path: '/covid-19/',
+          pathToRegexpOptions: {strict: true},
+          component: CovidView
         },
         {
           name: 'logistics',
@@ -858,6 +864,12 @@
           path: '/registration/',
           pathToRegexpOptions: {strict: true},
           component: RegistrationView
+        },
+        {
+          name: 'meals',
+          path: '/meals/',
+          pathToRegexpOptions: {strict: true},
+          component: MealsView
         },
         {
           path: '/venue/',

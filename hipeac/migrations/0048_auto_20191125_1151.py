@@ -13,7 +13,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="hipeacpartner", name="representatives",),
+        migrations.RemoveField(
+            model_name="hipeacpartner",
+            name="representatives",
+        ),
         migrations.AddField(
             model_name="hipeacpartner",
             name="representative",

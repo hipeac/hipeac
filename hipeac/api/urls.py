@@ -12,7 +12,8 @@ urlpatterns = [
     re_path(
         r"^",
         include_docs_urls(
-            title="HiPEAC API", description="Add `?format=csv` to the request URL if you want to download a CSV file.",
+            title="HiPEAC API",
+            description="Add `?format=csv` to the request URL if you want to download a CSV file.",
         ),
     ),
 ]

@@ -263,7 +263,7 @@ class RegistrationAdmin(admin.ModelAdmin):
                 ),
             },
         ),
-        ("EXTRA INFORMATION", {"fields": ("with_booth",)}),
+        ("EXTRA INFORMATION", {"fields": ("with_booth", "custom_data")}),
     )
     actions = (
         "send_reminder",

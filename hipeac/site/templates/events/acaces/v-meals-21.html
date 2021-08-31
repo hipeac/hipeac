@@ -1,0 +1,128 @@
+<script type="text/x-template" id="v-meals">
+{% verbatim %}
+  <div v-if="event && user.registration && user.registration.status == 2">
+    <q-card class="hipeac__card q-my-lg" :class="{'q-pa-md': $q.screen.gt.xs }">
+      <q-card-section>
+        <div class="row q-col-gutter-xl q-mb-lg">
+          <div class="col-12 col-md-6">
+            <display-3>Due to COVID regulations we cannot accomodate all ACACES participants in one restaurant. That's why all meals are distributed in two restaurants: Silva Splendid Hotel and Ambasciatori. Here you can see which restaurant has been assigned to you on which day:</display-3>
+          </div>
+          <div class="col-12 col-md-6">
+            <q-banner rounded class="bg-grey-3 text-dark col-12 col-md-6">
+              <template v-slot:avatar>
+                <q-icon name="restaurant" size="md" />
+              </template>
+              Your meal group: <strong>{{ mg }}</strong>
+            </q-banner>
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section>
+        <q-markup-table flat separator="cell">
+          <thead>
+            <tr>
+              <th></th>
+              <th><strong class="text-uppercase">Sunday</strong></th>
+              <th><strong class="text-uppercase">Monday</strong></th>
+              <th><strong class="text-uppercase">Tuesday</strong></th>
+              <th><strong class="text-uppercase">Wednesday</strong></th>
+              <th><strong class="text-uppercase">Thursday</strong></th>
+              <th><strong class="text-uppercase">Friday</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="text-uppercase">Lunch</span>
+              </td>
+              <td class="text-center">---</td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Silva Splendid</span>
+                <span v-else-if="mg == 'C'">Ambasciatori</span>
+                <span v-else-if="mg == 'D'">Silva Splendid</span>
+                <span v-else-if="mg == 'E'">Ambasciatori</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Silva Splendid</span>
+                <span v-else-if="mg == 'C'">Ambasciatori</span>
+                <span v-else-if="mg == 'D'">Silva Splendid</span>
+                <span v-else-if="mg == 'E'">Ambasciatori</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Ambasciatori</span>
+                <span v-else-if="mg == 'C'">Silva Splendid</span>
+                <span v-else-if="mg == 'D'">Silva Splendid</span>
+                <span v-else-if="mg == 'E'">Ambasciatori</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Silva Splendid</span>
+                <span v-else-if="mg == 'C'">Ambasciatori</span>
+                <span v-else-if="mg == 'D'">Ambasciatori</span>
+                <span v-else-if="mg == 'E'">Silva Splendid</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Ambasciatori</span>
+                <span v-else-if="mg == 'C'">Silva Splendid</span>
+                <span v-else-if="mg == 'D'">Ambasciatori</span>
+                <span v-else-if="mg == 'E'">Silva Splendid</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="text-uppercase">Dinner</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Silva Splendid</span>
+                <span v-else-if="mg == 'C'">Ambasciatori</span>
+                <span v-else-if="mg == 'D'">Ambasciatori</span>
+                <span v-else-if="mg == 'E'">Silva Splendid</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Ambasciatori</span>
+                <span v-else-if="mg == 'C'">Ambasciatori</span>
+                <span v-else-if="mg == 'D'">Silva Splendid</span>
+                <span v-else-if="mg == 'E'">Silva Splendid</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Ambasciatori</span>
+                <span v-else-if="mg == 'C'">Ambasciatori</span>
+                <span v-else-if="mg == 'D'">Silva Splendid</span>
+                <span v-else-if="mg == 'E'">Silva Splendid</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Silva Splendid</span>
+                <span v-else-if="mg == 'C'">Silva Splendid</span>
+                <span v-else-if="mg == 'D'">Ambasciatori</span>
+                <span v-else-if="mg == 'E'">Ambasciatori</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Ambasciatori</span>
+                <span v-else-if="mg == 'C'">Silva Splendid</span>
+                <span v-else-if="mg == 'D'">Silva Splendid</span>
+                <span v-else-if="mg == 'E'">Ambasciatori</span>
+              </td>
+              <td class="text-center">
+                <span v-if="mg == 'A'">Silva Splendid</span>
+                <span v-else-if="mg == 'B'">Silva Splendid</span>
+                <span v-else-if="mg == 'C'">Silva Splendid</span>
+                <span v-else-if="mg == 'D'">Ambasciatori</span>
+                <span v-else-if="mg == 'E'">Ambasciatori</span>
+              </td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+      </q-card-section>
+    </q-card>
+  </div>
+{% endverbatim %}
+</script>

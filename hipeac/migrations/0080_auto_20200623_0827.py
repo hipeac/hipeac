@@ -22,9 +22,21 @@ class Migration(migrations.Migration):
                 ]
             },
         ),
-        migrations.RenameField(model_name="session", old_name="date", new_name="legacy_date",),
-        migrations.RenameField(model_name="session", old_name="end_at", new_name="legacy_end_at",),
-        migrations.RenameField(model_name="session", old_name="start_at", new_name="legacy_start_at",),
+        migrations.RenameField(
+            model_name="session",
+            old_name="date",
+            new_name="legacy_date",
+        ),
+        migrations.RenameField(
+            model_name="session",
+            old_name="end_at",
+            new_name="legacy_end_at",
+        ),
+        migrations.RenameField(
+            model_name="session",
+            old_name="start_at",
+            new_name="legacy_start_at",
+        ),
         migrations.AddIndex(
             model_name="session",
             index=models.Index(fields=["event", "legacy_date"], name="hipeac_sess_event_i_d4b8b1_idx"),

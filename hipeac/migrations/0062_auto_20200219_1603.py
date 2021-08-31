@@ -16,6 +16,8 @@ class Migration(migrations.Migration):
             field=models.CharField(blank=True, max_length=250, null=True),
         ),
         migrations.AlterField(
-            model_name="openregistration", name="address", field=models.TextField(blank=True, null=True),
+            model_name="openregistration",
+            name="address",
+            field=models.TextField(blank=True, null=True),
         ),
     ]

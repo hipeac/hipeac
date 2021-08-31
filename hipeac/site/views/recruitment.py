@@ -1,6 +1,8 @@
 from commonmark import commonmark as marked
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.syndication.views import Feed
+from django.http import response
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -75,6 +77,19 @@ class JobDetail(SlugMixin, generic.DetailView):
 
     def get_queryset(self):
         return super().get_queryset().select_related("institution").prefetch_related("links")
+
+    def dispatch(self, request, *args, **kwargs):
+        job = get_object_or_404(Job, pk=kwargs.get("pk"))
+        if job.is_closed():
+            self.template_name = "recruitment/job/job.gone.html"
+            messages.error(request, "This job offer has expired.")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        res = super().get(request, *args, **kwargs)
+        if self.get_object().is_closed():
+            res.status_code = 410
+        return res
 
 
 class JobEvaluationRedirect(generic.View):

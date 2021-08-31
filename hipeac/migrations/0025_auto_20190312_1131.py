@@ -168,5 +168,8 @@ class Migration(migrations.Migration):
                 to="hipeac.Institution",
             ),
         ),
-        migrations.AlterUniqueTogether(name="internshipapplication", unique_together={("internship", "created_by")},),
+        migrations.AlterUniqueTogether(
+            name="internshipapplication",
+            unique_together={("internship", "created_by")},
+        ),
     ]

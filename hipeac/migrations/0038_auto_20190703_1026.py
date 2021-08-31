@@ -12,7 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="video", name="user",),
+        migrations.RemoveField(
+            model_name="video",
+            name="user",
+        ),
         migrations.AddField(
             model_name="video",
             name="users",

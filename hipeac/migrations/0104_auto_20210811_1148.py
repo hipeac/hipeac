@@ -8,26 +8,31 @@ import hipeac.models.files
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('hipeac', '0103_auto_20210713_0933'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("hipeac", "0103_auto_20210713_0933"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='File',
+            name="File",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('public', 'Public'), ('private', 'Private')], max_length=8)),
-                ('file', models.FileField(upload_to=hipeac.models.files.get_upload_path)),
-                ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='files', to='contenttypes.contenttype')),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("type", models.CharField(choices=[("public", "Public"), ("private", "Private")], max_length=8)),
+                ("file", models.FileField(upload_to=hipeac.models.files.get_upload_path)),
+                ("object_id", models.PositiveIntegerField()),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="files", to="contenttypes.contenttype"
+                    ),
+                ),
             ],
             options={
-                'ordering': ['content_type', 'object_id'],
+                "ordering": ["content_type", "object_id"],
             },
         ),
         migrations.AddIndex(
-            model_name='file',
-            index=models.Index(fields=['file'], name='hipeac_file_file_2bc3b0_idx'),
+            model_name="file",
+            index=models.Index(fields=["file"], name="hipeac_file_file_2bc3b0_idx"),
         ),
     ]

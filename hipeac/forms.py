@@ -39,10 +39,19 @@ class CommaSeparatedChoiceField(MultipleChoiceField):
 class MembershipTagsChoiceField(CommaSeparatedChoiceField):
     def _get_custom_choices(self):
         return (
-            ("---", (("member", "Member"), ("affiliated", "Affiliated Member"),)),
+            (
+                "---",
+                (
+                    ("member", "Member"),
+                    ("affiliated", "Affiliated Member"),
+                ),
+            ),
             (
                 "--- Geographic attributes",
-                (("non-eu", "Outside Europe (associated)"), ("nms", "New member state (NMS)"),),
+                (
+                    ("non-eu", "Outside Europe (associated)"),
+                    ("nms", "New member state (NMS)"),
+                ),
             ),
             (
                 "--- Other attributes",

@@ -20,7 +20,7 @@
         <q-route-tab exact :to="{name: 'venue'}" label="Venue and travel"></q-route-tab>
       {% endif %}
       {% if user.is_authenticated %}
-        <q-route-tab exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
+        <q-route-tab v-if="user.registration" exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
       {% endif %}
       <q-route-tab v-if="event && event.is_open_for_registration" exact :to="{name: 'registration'}" :label="(user.registration) ? 'My registration' : 'Register'" icon="edit"></q-route-tab>
     </q-tabs>
@@ -40,7 +40,7 @@
         <q-fab-action exact :to="{name: 'venue'}" color="white" text-color="dark" label="Venue and travel"></q-fab-action>
       {% endif %}
       {% if user.is_authenticated %}
-        <q-fab-action exact :to="{name: 'attendees'}" color="white" text-color="dark" label="Attendees"></q-fab-action>
+        <q-fab-action v-if="user.registration" exact :to="{name: 'attendees'}" color="white" text-color="dark" label="Attendees"></q-fab-action>
       {% endif %}
       <q-fab-action exact :to="{name: 'registration'}" color="white" text-color="dark" :label="(user.registration) ? 'My registration' : 'Register'"></q-fab-action>
     </q-fab>
@@ -55,6 +55,7 @@
   {% include './v-program.html' %}
   {% include './v-registration.html' %}
   {% include './v-session.html' %}
+  {% include './v-venue.html' %}
 {% endblock %}
 
 {% block scripts %}
@@ -531,6 +532,13 @@
       }),
     };
 
+    var VenueView = {
+      template: '#v-venue',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
+
     var RegistrationView = {
       template: '#v-registration',
       data: function () {
@@ -629,6 +637,12 @@
           path: '/logistics/',
           pathToRegexpOptions: {strict: true},
           component: LogisticsView
+        },
+        {
+          name: 'venue',
+          path: '/venue/',
+          pathToRegexpOptions: {strict: true},
+          component: VenueView
         },
         {
           path: '/program/',

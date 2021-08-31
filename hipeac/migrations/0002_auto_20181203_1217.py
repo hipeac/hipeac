@@ -10,7 +10,19 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(model_name="coupon", name="created_at", field=models.DateTimeField(auto_now_add=True),),
-        migrations.AlterField(model_name="institution", name="updated_at", field=models.DateTimeField(auto_now=True),),
-        migrations.AlterField(model_name="project", name="updated_at", field=models.DateTimeField(auto_now=True),),
+        migrations.AlterField(
+            model_name="coupon",
+            name="created_at",
+            field=models.DateTimeField(auto_now_add=True),
+        ),
+        migrations.AlterField(
+            model_name="institution",
+            name="updated_at",
+            field=models.DateTimeField(auto_now=True),
+        ),
+        migrations.AlterField(
+            model_name="project",
+            name="updated_at",
+            field=models.DateTimeField(auto_now=True),
+        ),
     ]

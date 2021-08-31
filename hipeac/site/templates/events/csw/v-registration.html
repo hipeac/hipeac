@@ -67,13 +67,13 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label class="q-mb-xs">
-                  <span>Regular </span>
-                  <span v-if="event.is_early">(early: <strong>EUR {{ event.fees.early }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</span>
-                  <span v-else>(late: EUR {{ event.fees.late }})</span>
+                  <span>Free registration</span>
+                  <!--<span v-if="event.is_early">(early: <strong>EUR {{ event.fees.early }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</span>
+                  <span v-else>(late: EUR {{ event.fees.late }})</span>-->
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item tag="label" class="q-py-xs">
+            <!--<q-item tag="label" class="q-py-xs">
               <q-item-section avatar top>
                 <q-radio v-model="obj.fee_type" val="student"></q-checkbox></q-radio>
               </q-item-section>
@@ -84,7 +84,7 @@
                   <span v-else>(late: EUR {{ event.fees.late_student }})</span>
                 </q-item-label>
               </q-item-section>
-            </q-item>
+            </q-item>-->
           </q-list>
         </q-card-section>
         <q-card-section class="q-ma-sm">
@@ -132,7 +132,7 @@
         <q-card-section class="q-ma-sm q-mb-lg">
           <q-btn unelevated @click.prevent="save" color="positive" :disabled="!obj.sessions.length">Update registration</q-btn>
         </q-card-section>
-        <q-banner class="bg-yellow-1 q-py-md q-px-lg">
+        <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
           <span>All times are displayed in your local time zone: {{ user.tz }}</span>
         </q-banner>
       </q-card>

@@ -11,7 +11,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="openregistration", name="visa_requested", field=models.BooleanField(default=False),
+            model_name="openregistration",
+            name="visa_requested",
+            field=models.BooleanField(default=False),
         ),
-        migrations.AddField(model_name="openregistration", name="visa_sent", field=models.BooleanField(default=False),),
+        migrations.AddField(
+            model_name="openregistration",
+            name="visa_sent",
+            field=models.BooleanField(default=False),
+        ),
     ]

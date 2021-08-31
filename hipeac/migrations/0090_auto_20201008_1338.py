@@ -10,5 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(model_name="sessionaccesslink", name="url", field=models.URLField(max_length=500),),
+        migrations.AlterField(
+            model_name="sessionaccesslink",
+            name="url",
+            field=models.URLField(max_length=500),
+        ),
     ]

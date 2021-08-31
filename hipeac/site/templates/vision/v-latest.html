@@ -77,14 +77,14 @@
         <a v-if="vision" :href="'https://www.google.com/search?q=%22HiPEAC+Vision+' + vision.year + '%22+-site%3Ahipeac.net+-site%3Atwitter.com'" _target="blank" class="btn btn-sm btn-block btn-outline-secondary text-wrap"><i class="material-icons mr-1">search</i>Find more Vision references in Google</a>
       </div>
       <div class="col-12 col-md-8">
-        <div v-for="(articles, dimension) in groupedArticles" class="text-sm">
+        <div v-for="(articles, dimension, idx) in groupedArticles" v-show="idx > 0" class="text-sm">
           <display-sm v-if="dimension" class="mb-3">{{ dimension }}</display-sm>
           <table class="table table-sm">
             <tr v-for="item in articles" :key="item.id">
               <td class="sm"><icon name="description" class="sm"></icon></td>
               <td>{{ item.title }} <small class="text-secondary">{{ item.authors }}</small></td>
               <td class="text-right align-middle pr-0">
-                <a :href="item.download_url" target="_blank">
+                <a :href="item.doi_url" target="_blank" rel="noopener">
                   <i class="material-icons sm">download</i>
                 </a>
               </td>

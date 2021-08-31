@@ -46,11 +46,6 @@
               <q-icon :name="{'male': 'male', 'female': 'female', 'non-binary': 'toll', null: 'toll'}[props.row.user_gender]"></q-icon>
             </q-td>
           </template>
-          <template v-slot:body-cell-user_affiliation="props">
-            <q-td :props="props" class="text-truncate" style="width: 200px">
-              <small>{{ props.row.user_affiliation }}</small>
-            </q-td>
-          </template>
           <template v-slot:body-cell-advisor="props">
             <q-td auto-width :props="props">
               <small>{{ props.row.advisor }}</small>

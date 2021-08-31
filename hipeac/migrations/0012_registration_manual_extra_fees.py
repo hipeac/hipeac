@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="registration", name="manual_extra_fees", field=models.PositiveSmallIntegerField(default=0),
+            model_name="registration",
+            name="manual_extra_fees",
+            field=models.PositiveSmallIntegerField(default=0),
         ),
     ]

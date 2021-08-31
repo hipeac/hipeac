@@ -36,7 +36,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"db_table": "hipeac_event_course",},
+            options={
+                "db_table": "hipeac_event_course",
+            },
         ),
         migrations.CreateModel(
             name="CourseSession",
@@ -53,6 +55,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"db_table": "hipeac_event_course_session", "ordering": ["date", "start_at"],},
+            options={
+                "db_table": "hipeac_event_course_session",
+                "ordering": ["date", "start_at"],
+            },
         ),
     ]

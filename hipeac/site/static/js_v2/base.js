@@ -11,6 +11,7 @@ var CommonMarkWriter = new commonmark.HtmlRenderer();
 var EventEmitter = new TinyEmitter();
 
 var make_local = function (dt) {
+  return moment(dt);
   return moment.utc(dt).local();
 };
 
@@ -226,7 +227,7 @@ var Hipeac = {
         'Social Event': 'yellow'
       }[obj.session_type.value] || 'grey-7';
 
-      obj.q = [
+      obj._q = [
         obj.title,
         obj.session_type.value,
         obj.keywords.join(' ')
@@ -237,7 +238,7 @@ var Hipeac = {
     user: function (obj) {
       institution = obj.profile.institution;
       second_institution = obj.profile.second_institution || null;
-      obj.q = [
+      obj._q = [
         obj.profile.name,
         (institution)
           ? [institution.name, institution.local_name, institution.short_name].join(' ')

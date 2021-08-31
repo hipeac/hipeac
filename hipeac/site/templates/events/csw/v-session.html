@@ -27,7 +27,6 @@
               <li>
                 <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
                 <span>{{ session.startAt.format('HH:mm') }} - {{ session.endAt.format('HH:mm') }}</span>
-                <q-tooltip :offset="[10, 10]">All times are displayed in your local time zone: {{ user.tz }}</q-tooltip>
               </li>
               <li v-if="$q.screen.gt.sm && userIsRegistered" class="text-bold text-green">
                 <q-icon size="xs" name="check" color="green" class="q-mr-xs"></q-icon>

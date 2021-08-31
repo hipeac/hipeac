@@ -10,7 +10,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="visionarticle", name="file",),
+        migrations.RemoveField(
+            model_name="visionarticle",
+            name="file",
+        ),
         migrations.AddField(
             model_name="visionarticle",
             name="doi_url",

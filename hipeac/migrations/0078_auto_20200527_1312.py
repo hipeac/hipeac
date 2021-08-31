@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="acacesposterabstract", name="file", field=models.FileField(upload_to="public/abstract"),
+            model_name="acacesposterabstract",
+            name="file",
+            field=models.FileField(upload_to="public/abstract"),
         ),
     ]

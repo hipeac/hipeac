@@ -11,12 +11,23 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterModelOptions(
-            name="session", options={"ordering": ["session_type__position", "start_at", "room__position", "end_at"]},
+            name="session",
+            options={"ordering": ["session_type__position", "start_at", "room__position", "end_at"]},
         ),
-        migrations.RemoveField(model_name="session", name="legacy_date",),
-        migrations.RemoveField(model_name="session", name="legacy_end_at",),
-        migrations.RemoveField(model_name="session", name="legacy_start_at",),
+        migrations.RemoveField(
+            model_name="session",
+            name="legacy_date",
+        ),
+        migrations.RemoveField(
+            model_name="session",
+            name="legacy_end_at",
+        ),
+        migrations.RemoveField(
+            model_name="session",
+            name="legacy_start_at",
+        ),
         migrations.AddIndex(
-            model_name="session", index=models.Index(fields=["event"], name="hipeac_sess_event_i_7b3339_idx"),
+            model_name="session",
+            index=models.Index(fields=["event"], name="hipeac_sess_event_i_7b3339_idx"),
         ),
     ]

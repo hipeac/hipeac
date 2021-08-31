@@ -12,7 +12,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(model_name="poster", name="abstract", field=models.TextField(blank=True, null=True),),
+        migrations.AddField(
+            model_name="poster",
+            name="abstract",
+            field=models.TextField(blank=True, null=True),
+        ),
         migrations.AddField(
             model_name="poster",
             name="topics",
@@ -28,5 +32,7 @@ class Migration(migrations.Migration):
                 ],
             ),
         ),
-        migrations.DeleteModel(name="AcacesPosterAbstract",),
+        migrations.DeleteModel(
+            name="AcacesPosterAbstract",
+        ),
     ]

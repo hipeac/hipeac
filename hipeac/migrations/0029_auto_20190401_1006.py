@@ -33,5 +33,8 @@ class Migration(migrations.Migration):
             options={"db_table": "hipeac_files_public", "ordering": ["content_type", "object_id", "position"]},
             bases=(hipeac.models.generic.DeleteFileMixin, models.Model),
         ),
-        migrations.AlterModelTable(name="privatefile", table="hipeac_files_private",),
+        migrations.AlterModelTable(
+            name="privatefile",
+            table="hipeac_files_private",
+        ),
     ]

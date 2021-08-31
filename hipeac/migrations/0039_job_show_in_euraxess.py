@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="job", name="add_to_euraxess", field=models.BooleanField(default=True, editable=False),
+            model_name="job",
+            name="add_to_euraxess",
+            field=models.BooleanField(default=True, editable=False),
         ),
     ]

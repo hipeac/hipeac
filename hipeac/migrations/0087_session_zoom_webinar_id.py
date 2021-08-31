@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="session", name="zoom_webinar_id", field=models.PositiveIntegerField(blank=True, null=True),
+            model_name="session",
+            name="zoom_webinar_id",
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
     ]

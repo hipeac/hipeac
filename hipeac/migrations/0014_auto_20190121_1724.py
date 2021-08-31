@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="video", name="youtube_id", field=models.CharField(max_length=40, unique=True),
+            model_name="video",
+            name="youtube_id",
+            field=models.CharField(max_length=40, unique=True),
         ),
     ]

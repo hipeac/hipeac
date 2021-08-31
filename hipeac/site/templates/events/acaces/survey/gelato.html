@@ -1,0 +1,24 @@
+{% extends 'v2/layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+
+{% block submenu %}
+  <q-toolbar class="container">
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
+  </q-toolbar>
+{% endblock %}
+
+{% block page %}
+  <q-card class="hipeac__card q-my-lg" :class="{'q-pa-md': $q.screen.gt.xs }">
+    <q-card-section class="text-center">
+      <p class="q-mb-xl"><img src="{% static 'images/gelato.png' %}"></p>
+      <h2 class="text-h4 q-mb-md">Thank you for filling the survey!</h2>
+      <p>You can now ask your gelato ticket to the HiPEAC staff.</p>
+    </q-card-section>
+  </q-card>
+{% endblock %}

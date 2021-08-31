@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="session", name="keywords", field=models.JSONField(default=list, editable=False),
+            model_name="session",
+            name="keywords",
+            field=models.JSONField(default=list, editable=False),
         ),
     ]

@@ -2,8 +2,7 @@ from .base import EventDetail
 
 
 class ConferenceDetail(EventDetail):
-    """Displays a Conference page.
-    """
+    """Displays a Conference page."""
 
     template_name = "events/conference/conference.html"
 

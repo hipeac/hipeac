@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="magazine", name="downloads", field=models.PositiveSmallIntegerField(default=0),
+            model_name="magazine",
+            name="downloads",
+            field=models.PositiveSmallIntegerField(default=0),
         ),
     ]

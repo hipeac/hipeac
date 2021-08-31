@@ -132,7 +132,7 @@
         <q-card-section class="q-ma-sm q-mb-lg">
           <q-btn unelevated @click.prevent="save" color="positive" :disabled="!obj.sessions.length">Update registration</q-btn>
         </q-card-section>
-        <q-banner class="bg-yellow-1 q-py-md q-px-lg">
+        <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
           <span>All times are displayed in your local time zone: {{ user.tz }}</span>
         </q-banner>
       </q-card>
