@@ -86,7 +86,7 @@ FIXTURE_DIRS = [
 db = urlparse(os.environ.get("DATABASE_URL"))
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": db.path[1:],
         "USER": db.username,
         "PASSWORD": db.password,

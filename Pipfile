@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
 
 [packages]
 carbonize = "*"
@@ -26,14 +26,15 @@ django-libsass = "*"
 django-recaptcha = "*"
 django-redis = "*"
 drf-writable-nested = "*"
+environs = "*"
 google-cloud-language = "*"
 grpcio = "*"
 gunicorn = "*"
 lxml = "*"
-mysqlclient = "*"
 pandas = "*"
 pillow = "*"
 plotly = "*"
+psycopg2 = "*"
 pyphen = "*"
 requests = "*"
 reportlab = "*"
