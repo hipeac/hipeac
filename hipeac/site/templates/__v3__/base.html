@@ -1,0 +1,122 @@
+{% spaceless %}
+{% load compress %}
+{% load static %}
+
+
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#" data-rev="{{ GIT_REV }}" data-csrf-token="{{ csrf_token }}" data-user="{{ user.id | default:"0" }}">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" type="text/css" rel="stylesheet">
+    {% compress css file base %}
+      <link href="{% static '__v3__/vendor/quasar@2.1.0/quasar.prod.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static '__v3__/scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
+      <link href="{% static 'css/flags.css' %}" type="text/css" rel="stylesheet">
+    {% endcompress %}
+    {% block styles %}{% endblock %}
+    <title>{% block head_title %}HiPEAC{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta property="og:site_name" content="HiPEAC">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta name="twitter:site" content="@hipeac">
+    <meta name="twitter:dnt" content="on">
+    {% block structured_data %}{% endblock %}
+    {% if not debug and not request.DNT %}
+      <script async src="//www.googletagmanager.com/gtag/js?id=UA-79856831-1"></script>
+      {% compress js inline %}
+        <script>
+          var userId = +(document.querySelector('html').dataset.user);
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          };
+          gtag('js', new Date());
+          gtag('config', 'UA-2857653-1', {
+            'user_id': (userId == 0) ? undefined : userId
+          });
+        </script>
+      {% endcompress %}
+    {% endif %}
+    {% block head_scripts %}{% endblock %}
+  </head>
+  <body class="bg-grey-1">
+    <noscript>
+      <div class="p-5 bg-light-yellow text-center mb-5">
+        <h2 class="mt-4">No love for JavaScript?</h2>
+        <p class="mt-3">HiPEAC requires your browser to have <a href="http://enable-javascript.com/">JavaScript enabled</a>.</p>
+      </div>
+    </noscript>
+    <div id="vue" v-cloak>
+      {% if messages %}
+        {% for message in messages %}
+          <django-message message="{{ message }}" level="{{ message.level }}" tags="{{ message.tags }}"></django-message>
+        {% endfor %}
+      {% endif %}
+      {% if form %}
+        {% if form.non_field_errors %}
+          {% for error in form.non_field_errors %}
+            <django-form-error error="{{ error }}"></django-form-error>
+          {% endfor %}
+        {% endif %}
+        {% for field in form %}
+          {% if field.errors %}
+            {% for error in field.errors %}
+              <django-form-error field="{{ field.label }}" error="{{ error }}"></django-form-error>
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      <q-layout view="hHh LpR lff" class="hipeac__layout">
+        {% block header %}{% endblock %}
+        {% block page_container %}{% endblock %}
+        {% block footer %}{% endblock %}
+      </q-layout>
+    </div>
+    {% block vue_templates %}{% endblock %}
+    {% if not debug %}
+      <script src="https://browser.sentry-cdn.com/6.12.0/bundle.tracing.min.js" integrity="sha384-S3qfdh3AsT1UN84WIYNuOX9vVOoFg3nB17Jp5/pTFGDBGBt+dtz7MGAV845efkZr" crossorigin="anonymous"></script>
+      <script src="https://browser.sentry-cdn.com/6.12.0/vue.min.js" integrity="sha384-CuCDTHNwfKKxDsiqbSI4p7MpikMED/z+znW6nnr6374xyEHle52d+p36HADU+N7M" crossorigin="anonymous"></script>
+      <script src="{% static '__v3__/js/sentry.js' %}"></script>
+    {% endif %}
+    {% compress js file helpers %}
+      <script src="{% static '__v3__/vendor/axios@0.21.4/axios.min.js' %}"></script>
+      <script src="{% static '__v3__/vendor/commonmark@0.30.0/commonmark.min.js' %}"></script>
+      <script src="{% static '__v3__/vendor/moment@2.29.1/moment.min.js' %}"></script>
+      <script src="{% static '__v3__/vendor/moment-range@4.0.2/moment-range.min.js' %}"></script>
+      <script src="{% static '__v3__/vendor/slugify@1.6.0/slugify.js' %}"></script>
+      <script src="{% static '__v3__/vendor/tiny-emitter@2.1.0/tinyemitter.min.js' %}"></script>
+      <script src="{% static '__v3__/vendor/underscore@1.13.1/underscore.umd.min.js' %}"></script>
+    {% endcompress %}
+    {% compress js file vue %}
+      {% if debug %}
+        <script src="{% static '__v3__/vendor/vue@3.2.12/vue.global.js' %}"></script>
+        <script src="{% static '__v3__/vendor/vuex@4.0.2/vuex.global.js' %}"></script>
+        <script src="{% static '__v3__/vendor/vue-router@4.0.11/vue-router.global.js' %}"></script>
+        <script src="{% static '__v3__/vendor/quasar@2.1.0/quasar.umd.js' %}"></script>
+      {% else %}
+        <script src="{% static '__v3__/vendor/vue@3.2.12/vue.global.prod.js' %}"></script>
+        <script src="{% static '__v3__/vendor/vuex@4.0.2/vuex.global.prod.js' %}"></script>
+        <script src="{% static '__v3__/vendor/vue-router@4.0.11/vue-router.global.prod.js' %}"></script>
+        <script src="{% static '__v3__/vendor/quasar@2.1.0/quasar.umd.prod.js' %}"></script>
+      {%endif %}
+    {% endcompress %}
+    {% compress js file hipeac %}
+      <script src="{% static '__v3__/js/base.js' %}"></script>
+      <script src="{% static '__v3__/js/metadata.js' %}"></script>
+      <script src="{% static '__v3__/js/components/common.js' %}"></script>
+      <script src="{% static '__v3__/js/mixins/app.js' %}"></script>
+    {% endcompress %}
+    {% block menu_scripts %}{% endblock %}
+    {% block extra_scripts %}{% endblock %}
+    {% block scripts %}{% endblock %}
+    {% if not debug %}
+      <script>Hipeac.cookies.consent();</script>
+    {% endif %}
+  </body>
+</html>
+
+
+{% endspaceless %}

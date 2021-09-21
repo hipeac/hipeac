@@ -1,0 +1,30 @@
+<script type="text/x-template" id="v-program-keynotes">
+{% verbatim %}
+  <div v-if="event && keynotes.length">
+    <div class="row" :class="{'q-col-gutter-md items-stretch': $q.screen.gt.sm}">
+      <div v-for="keynote in keynotes" class="col-12 col-md">
+        <q-card class="hipeac__card column pointer" :class="{'full-height': $q.screen.gt.xs}" @click="$router.push({name: 'session', params: {id: keynote.id}})">
+          <q-card-section>
+            <hipeac-profile-item v-if="keynote.main_speaker" :profile="keynote.main_speaker.profile" class="q-mb-md"></hipeac-profile-item>
+            <display-3 class="q-mt-sm q-mb-xs">{{ keynote.title }}</display-3>
+          </q-card-section>
+          <q-card-section>
+            <marked :text="keynote.excerpt"></marked>
+          </q-card-section>
+          <q-space v-if="$q.screen.gt.xs"></q-space>
+          <q-card-section>
+            <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-8">
+              <li><q-icon size="xs" name="today" color="grey-7"></q-icon> {{ keynote.start.format("ddd, MMMM Do") }}</li>
+              <li><q-icon size="xs" name="schedule" color="grey-7"></q-icon> {{ keynote.start.format('HH:mm') }} - {{ keynote.end.format('HH:mm') }}</li>
+            </ul>
+          </q-card-section>
+          <q-separator class="q-my-sm"></q-separator>
+          <q-card-actions>
+            <q-btn outline color="primary">More info</q-btn>
+          </q-card-actions>
+        </q-card>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

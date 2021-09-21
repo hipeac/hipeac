@@ -75,6 +75,23 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     @action(
         detail=True,
         pagination_class=None,
+        permission_classes=(HasRegistrationForEvent,),
+        serializer_class=RegistrationListSerializer,
+    )
+    def attendees(self, request, *args, **kwargs):
+        self.queryset = (
+            self.get_object()
+            .registrations.select_related("user__profile")
+            .prefetch_related("user__profile__institution", "user__profile__second_institution")
+            .prefetch_related("user__profile__projects")
+            .filter(status=Registration.STATUS_ACCEPTED)
+        )
+
+        return super().list(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        pagination_class=None,
         serializer_class=B2bSerializer,
     )
     @never_cache

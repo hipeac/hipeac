@@ -57,8 +57,7 @@ class Session(LinkMixin, models.Model):
         if self.id:
             self.keywords = (
                 [institution.short_name for institution in self.institutions.all()]
-                + (["has:projects"] if self.projects.count() > 0 else [])
-                + [project.acronym for project in self.projects.all()]
+                + [''.join(['project:', slugify(project.acronym)]) for project in self.projects.all()]
                 + [f"{speaker.first_name} {speaker.last_name}" for speaker in self.speakers.all()]
                 + ([f"{self.main_speaker.first_name} {self.main_speaker.last_name}"] if self.main_speaker else [])
             )

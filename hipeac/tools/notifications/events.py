@@ -21,7 +21,7 @@ class RegistrationPendingNotificator(Notificator):
                 query = """
                     SELECT u.id AS user_id
                     FROM auth_user AS u
-                    WHERE u.last_login > DATE_SUB(NOW(), INTERVAL 6 MONTH)
+                    WHERE u.last_login > (CURRENT_DATE - INTERVAL '6 MONTH')
                     AND u.id NOT IN (
                         SELECT user_id
                         FROM hipeac_registration

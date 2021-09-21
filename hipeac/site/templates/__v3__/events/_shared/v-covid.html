@@ -1,0 +1,47 @@
+<script type="text/x-template" id="v-covid">
+{% verbatim %}
+  <div v-if="event">
+    <q-card class="hipeac__card q-mt-lg">
+      <div class="row q-col-gutter-y-lg q-col-gutter-x-xl reverse" :class="{'q-col-gutter-xl': $q.screen.gt.sm}">
+        <div class="col-12 col-md-4">
+          <q-list separator>
+            <q-item v-if="event.custom_data.covid.guidelines_url" tag="a" :href="event.custom_data.covid.guidelines_url" target="_blank" rel="noopener">
+              <q-item-section avatar>
+                <country-flag :code="event.country.code"></country-flag>
+              </q-item-section>
+              <q-item-section>Official guidelines</q-item-section>
+              <q-item-section side>
+                <q-icon name="north_east" color="grey-8" size="xs" />
+              </q-item-section>
+            </q-item>
+            <hipeac-highlight-item v-if="event.custom_data.covid.pass.required" icon="android" :external="true" tag="a" :href="event.custom_data.covid.pass.check_app.android" target="_blank" rel="noopener" class="platform-android-only">Check your QR code</hipeac-highlight-item>
+            <hipeac-highlight-item v-if="event.custom_data.covid.pass.required" icon="apple" :external="true" tag="a" :href="event.custom_data.covid.pass.check_app.ios" target="_blank" rel="noopener" class="platform-ios-only">Check your QR code</hipeac-highlight-item>
+          </q-list>
+        </div>
+        <div class="col-12 col-md-4 q-pb-lg">
+          <q-banner rounded class="bg-blue-grey-1 q-mb-lg">
+            <template v-slot:avatar>
+              <q-icon name="qr_code" :color="(event.custom_data.covid.pass.required) ? 'primary' : 'grey-8'" />
+            </template>
+            <strong v-if="event.custom_data.covid.pass.required" class="text-primary">Certificates will be checked</strong>
+            <strong v-else class="text-grey-8">No checks at this event</strong>
+          </q-banner>
+          <h5 class="text-caption q-mb-md text-weight-bold">Local guidelines</h5>
+          <marked class="text-caption" :text="event.custom_data.covid.pass.info"></marked>
+        </div>
+        <div class="col-12 col-md-4 q-pb-lg">
+          <q-banner rounded class="bg-blue-grey-1 q-mb-lg">
+            <template v-slot:avatar>
+              <q-icon name="masks" :color="(event.custom_data.covid.masks.required) ? 'primary' : 'grey-8'" />
+            </template>
+            <strong v-if="event.custom_data.covid.masks.required" class="text-primary">Masks are required at this event</strong>
+            <strong v-else class="text-grey-8">No masks are required at this event</strong>
+          </q-banner>
+          <h5 class="text-caption q-mb-md text-weight-bold">Local guidelines</h5>
+          <marked class="text-caption" :text="event.custom_data.covid.masks.info"></marked>
+        </div>
+      </div>
+    </q-card>
+  </div>
+{% endverbatim %}
+</script>

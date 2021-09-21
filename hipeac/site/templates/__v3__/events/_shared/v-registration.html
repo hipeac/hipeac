@@ -1,0 +1,99 @@
+<script type="text/x-template" id="v-registration">
+{% verbatim %}
+  <div v-if="event">
+    <q-card v-if="!authenticated" class="hipeac__card q-mt-lg">
+      <h2>You need to log in to your HiPEAC account to register for an event.</h2>
+      <a href="{% endverbatim %}{% url 'account_login' %}?next={{ request.path }}{% verbatim %}" class="btn btn-outline-primary">Log in</a>
+    </q-card>
+    <div v-else-if="obj" class="row q-col-gutter-md q-mt-sm items-stretch">
+      <div class="col-12 col-md-4">
+        <q-card v-if="registration" class="hipeac__card full-height">
+          <display-2 class="q-mt-none q-mb-lg">My registration</display-2>
+          <p class="text-caption">
+            <span>Registration ID: {{ registration.id }}</span><br>
+            <span>Created: {{ registration.created_at }}</span><br>
+            <span>Last updated: {{ registration.updated_at }}</span>
+            <q-separator class="q-my-md"></q-separator>
+            <strong>Base fee: <span v-if="registration.base_fee == 0">FREE</span><span v-else>EUR {{ registration.base_fee }}</span> ({{ registration.fee_type }})</strong><br>
+            <strong>Extras: EUR {{ registration.extra_fees }}</strong>
+          </p>
+        </q-card>
+        <q-card v-else class="hipeac__card full-height">
+          <display-2 class="q-mt-none">New registration</display-2>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-8">
+        <q-card class="hipeac__card full-height">
+          <q-card-section class="q-pt-none">
+            <form-section-title>Registration fee</form-section-title>
+            <p class="text-overline q-mb-none">Choose your registration fee.</p>
+            <q-list dense class="q-mt-md">
+              <q-item tag="label" class="q-py-xs">
+                <q-item-section avatar top>
+                  <q-radio v-model="obj.fee_type" val="regular"></q-radio>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="q-mb-xs">
+                    <span>Free registration</span>
+                    <!--<span v-if="event.is_early">(early: <strong>EUR {{ event.fees.early }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</span>
+                    <span v-else>(late: EUR {{ event.fees.late }})</span>-->
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+              <!--<q-item tag="label" class="q-py-xs">
+                <q-item-section avatar top>
+                  <q-radio v-model="obj.fee_type" val="student"></q-radio>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="q-mb-xs">
+                    <span>Student </span>
+                    <span v-if="event.is_early">(early: <strong>EUR {{ event.fees.early_student }}</strong>, until {{ event.registration_early_deadline | moment('LLLL') }})</span>
+                    <span v-else>(late: EUR {{ event.fees.late_student }})</span>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>-->
+            </q-list>
+          </q-card-section>
+
+          <q-card-section>
+            <form-section-title>Sessions</form-section-title>
+            <p class="text-overline q-mb-none">Choose the sessions you want to attend.</p>
+          </q-card-section>
+          <q-card-section v-for="day in program" v-show="day.sessions.length">
+            <display-5 class="q-pl-lg">{{ day.date.format('dddd, MMM D') }}</display-5>
+            <q-separator class="q-my-sm"></q-separator>
+            <q-list>
+              <q-item v-for="session in day.sessions" tag="label" class="q-py-md">
+                <q-item-section avatar top>
+                  <q-checkbox v-model="obj.sessions" :val="session.id"></q-checkbox>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="q-mb-xs">{{ session.title }}</q-item-label>
+                  <q-item-label caption>
+                    <span class="q-mr-md">
+                      <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
+                      <span>{{ session.session_type.value }}</span>
+                    </span>
+                    <span>
+                      <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
+                      <span>{{ session.start.format('H:mm') }} - {{ session.end.format('H:mm') }}</span>
+                    </span>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+
+          <q-card-section>
+            <form-section-title>Bringing a poster</form-section-title>
+            <p class="text-overline">Include your poster information here.</p>
+            <hipeac-text-list v-model="obj.custom_data.posters" :fields="poster_fields" :limit="poster_limit" />
+          </q-card-section>
+
+          <q-btn unelevated color="primary" @click="createOrUpdate" :label="(registration) ? 'Update registration' : 'Create registration'" class="q-my-lg" :disabled="!obj.fee_type || !obj.sessions.length" />
+        </q-card>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

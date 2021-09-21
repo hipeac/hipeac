@@ -1,0 +1,43 @@
+<script type="text/x-template" id="v-about">
+{% verbatim %}
+  <div v-if="event">
+    <q-card class="hipeac__card q-mt-lg">
+      <div class="row q-col-gutter-y-lg q-col-gutter-x-xl reverse" :class="{'q-col-gutter-xl': $q.screen.gt.sm}">
+        <div class="col-12 col-md-4">
+          <q-list separator>
+            <q-item class="text-dark">
+              <q-item-section avatar>
+                <country-flag :code="event.country.code"></country-flag>
+              </q-item-section>
+              <q-item-section>{{ event.city }}, {{ event.country.name }}</q-item-section>
+            </q-item>
+            <hipeac-highlight-item :to="{name: 'program'}" icon="date_range">{{ event.start.format('MMMM D') }} - {{ event.end.format('D, YYYY') }}</hipeac-highlight-item>
+            <hipeac-highlight-item :to="{name: 'program'}" icon="category">{{ event.sessions.length }} sessions</hipeac-highlight-item>
+            <hipeac-highlight-item v-if="registration" :to="{name: 'attendees'}" icon="people">
+              <span>{{ event.registrations_round }}<span v-if="event.registrations_round < event.registrations_count">+</span> attendees</span>
+            </hipeac-highlight-item>
+            <hipeac-highlight-item v-if="registration" :to="{name: 'registration'}" icon="fact_check" color="green-7">Registered</hipeac-highlight-item>
+            <hipeac-highlight-item v-else-if="event.is_open_for_registration" :to="{name: 'registration'}" icon="fact_check" color="primary">Register</hipeac-highlight-item>
+          </q-list>
+        </div>
+        <div class="col-12 col-md-8">
+          <marked :text="event.presentation" class="catchphrase text-h5 text-weight-light"></marked>
+          <div v-if="event.type == 'csw' && event.sponsors.length">
+            <display-5 class="q-mt-xl q-mb-lg">Local organizers</display-5>
+            <div class="row items-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
+              <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4 col-md-3">
+                <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
+                  <img :src="sponsor.institution.images.lg" class="sponsor">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </q-card>
+    <div class="q-mt-md hipeac-shadow">
+      <q-img :src="event.images.lg" class="full-width rounded-borders"></q-img>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

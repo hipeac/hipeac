@@ -1,0 +1,268 @@
+{% extends '__v3__/layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+
+{% block submenu %}
+  <q-toolbar class="container">
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
+    <q-space v-show="$q.screen.gt.sm"></q-space>
+    <hipeac-submenu-tabs v-if="event" :menu="menu" :checks="{'registration': !!registration, 'covid': !!event.custom_data.covid}"></hipeac-submenu-tabs>
+  </q-toolbar>
+{% endblock %}
+
+{% block page %}
+  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}"
+  data-attendees-url="{% url 'v1:event-attendees' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}"></div>
+  <router-view></router-view>
+  <hipeac-submenu-fabs v-if="event" :menu="menu" :checks="{'registration': !!registration, 'covid': !!event.custom_data.covid}"></hipeac-submenu-fabs>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-jobs.html' %}
+  {% include './v-program.html' %}
+  {% include '../_shared/v-about.html' %}
+  {% include '../_shared/v-attendees.html' %}
+  {% include '../_shared/v-covid.html' %}
+  {% include '../_shared/v-program-keynotes.html' %}
+  {% include '../_shared/v-program-main.html' %}
+  {% include '../_shared/v-session.html' %}
+  {% include '../_shared/v-venue.html' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js file csw %}
+  <script src="{% static '__v3__/js/components/events.js' %}"></script>
+  <script src="{% static '__v3__/js/components/users.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/query.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/session.js' %}"></script>
+  <script src="{% static '__v3__/js/stores/events.js' %}"></script>
+  <script type="text/javascript">
+    var Store = Vuex.createStore({
+      modules: {
+        events: EventModule
+      }
+    });
+
+    var AboutView = {
+      template: '#v-about',
+      computed: _.extend(
+        Vuex.mapState('events', ['event', 'registration']), {
+      })
+    };
+
+    var AttendeesView = {
+      template: '#v-attendees',
+      computed: _.extend(
+        Vuex.mapState('events', ['event', 'registration', 'attendees']), {
+      }),
+      created: function () {
+        this.$store.commit('events/getAttendees');
+      }
+    };
+
+    var CovidView = {
+      template: '#v-covid',
+      computed: _.extend(
+        Vuex.mapState('events', ['event']), {
+      })
+    };
+
+    var ProgramView = {
+      template: '#v-program',
+      computed: _.extend(
+        Vuex.mapState('events', ['event']), {
+      }),
+      created: function () {
+        this.$store.commit('events/getKeynotes');
+      }
+    };
+
+    var ProgramMainView = {
+      template: '#v-program-main',
+      computed: _.extend(
+        Vuex.mapState('events', ['event', 'keynotes']), {
+      })
+    };
+
+    var ProgramKeynotesView = {
+      template: '#v-program-keynotes',
+      computed: _.extend(
+        Vuex.mapState('events', ['event', 'keynotes']), {
+      })
+    };
+
+    var SessionView = {
+      mixins: [SessionMixin],
+      template: '#v-session',
+      computed: _.extend(
+        Vuex.mapState('events', ['event', 'registration']), {
+      })
+    };
+
+    var VenueView = {
+      template: '#v-venue',
+      computed: _.extend(
+        Vuex.mapState('events', ['event']), {
+      })
+    };
+
+    var Router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
+      linkActiveClass: 'active',
+      scrollBehavior: function (to, from) {
+        if ((from.name && from.name == 'session') || (to.name && to.name == 'session')) return;
+        return {top: 0};
+      },
+      routes: [
+        {
+          name: 'about',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'attendees',
+          path: '/attendees/',
+          pathToRegexpOptions: {strict: true},
+          component: AttendeesView
+        },
+        {
+          name: 'covid',
+          path: '/covid-19/',
+          pathToRegexpOptions: {strict: true},
+          component: CovidView
+        },
+        {
+          path: '/program/',
+          pathToRegexpOptions: {strict: true},
+          component: ProgramView,
+          children: [
+            {
+              name: 'keynotes',
+              path: 'keynotes/',
+              pathToRegexpOptions: {strict: true},
+              component: ProgramKeynotesView
+            },
+            {
+              name: 'program',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: ProgramMainView
+            },
+            {
+              name: 'session',
+              path: 'sessions/:id/',
+              pathToRegexpOptions: {strict: true},
+              components: {
+                default: ProgramMainView,
+                dialog: SessionView
+              },
+              props: {
+                default: true,
+                dialog: true
+              }
+            }
+          ]
+        },
+        {
+          name: 'venue',
+          path: '/venue/',
+          pathToRegexpOptions: {strict: true},
+          component: VenueView
+        }
+      ]
+    });
+
+    var app = Vue.createApp({
+      data: {
+        menu: [
+          {
+            label: 'About',
+            to: {name: 'about'},
+            exact: true
+          },
+          {
+            label: 'Program',
+            to: {name: 'program'},
+            exact: false
+          },
+          {
+            label: 'Venue and travel',
+            to: {name: 'venue'},
+            exact: true
+          },
+          {
+            label: 'COVID-19',
+            to: {name: 'covid'},
+            exact: true,
+            check: 'covid'
+          },
+          {
+            label: 'Attendees',
+            to: {name: 'attendees'},
+            exact: true,
+            check: 'registration'
+          },
+          {
+            label: 'Registration',
+            to: {name: 'venue'},
+            exact: true,
+            check: 'registration',
+            icon: 'edit'
+          }
+        ]
+      },
+      mixins: [AppMixin],
+      computed: _.extend(
+        Vuex.mapState('events', ['event', 'registration']), {
+      }),
+      created: function () {
+        this.$q.loading.show();
+        this.$store.commit('events/getEvent');
+        this.$store.commit('events/getRegistration');
+      }
+    });
+    Hipeac.utils.registerComponents(app, [HipeacCommonComponents, HipeacEventComponents, HipeacUserComponents]);
+    app.use(Store);
+    app.use(Router);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+  <script type="application/ld+json">{% spaceless_json %}
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": "{{ event }}",
+      "description": "{{ event.presentation | truncate }}",
+      "url": "{{ request.build_absolute_uri }}",
+      "startDate": "{{ event.start_date | date:'c' }}",
+      "endDate": "{{ event.end_date | date:'c' }}",
+      {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
+      {% if event.is_virtual %}
+        "organizer": {
+          "@type": "Organization",
+          "name": "HiPEAC",
+          "url": "https://www.hipeac.net/"
+        },
+        "location": {
+          "@type": "VirtualLocation"
+        }
+      {% else %}
+        "location": {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "{{ event.city }}",
+            "addressCountry": "{{ event.country.code }}"
+          }
+        }
+      {% endif %}
+    }
+  {% endspaceless_json %}</script>
+{% endblock %}

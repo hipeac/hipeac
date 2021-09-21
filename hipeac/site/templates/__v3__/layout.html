@@ -1,0 +1,92 @@
+{% extends '__v3__/base.html' %}
+
+{% load account %}
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block header %}
+  <hipeac-dialog-menu v-model="visibleDialogMenu"></hipeac-dialog-menu>
+  <q-header bordered class="bg-white text-dark hipeac__header">
+    <q-toolbar class="hipeac__toolbar container">
+      <q-btn flat round v-show="$q.screen.lt.md" @click="visibleDialogMenu = !visibleDialogMenu" icon="menu" class="q-mr-sm text-hipeac" style="margin-left: -12px"></q-btn>
+      <a href="{% url 'homepage' %}" class="q-mr-lg">
+        <img src="{% static 'images/hipeac.svg' %}" class="logo q-mt-xs">
+      </a>
+      <hipeac-toolbar-menu v-show="$q.screen.gt.sm"></hipeac-toolbar-menu>
+      <q-space></q-space>
+      {% if user.is_authenticated %}
+        <q-btn outline no-caps color="primary" type="a" href="{% url 'account_login' %}" color="danger" label="{% user_display user %}">
+          <q-menu anchor="bottom right" self="top right">
+          </q-menu>
+        </q-btn>
+      {% else %}
+        <q-btn outline no-caps type="a" href="{% url 'account_signup' %}" color="green" class="q-mr-sm">Join</q-btn>
+        <q-btn outline no-caps type="a" href="{% url 'account_login' %}" color="primary">Log in</q-btn>
+      {% endif %}
+    </q-toolbar>
+  </q-header>
+{% endblock %}
+
+{% block page_container %}
+  <q-page-container>
+    <q-page :class="{'q-py-xs q-px-lg': $q.screen.gt.sm, 'q-py-none bg-white': $q.screen.lt.md}" style="margin-top: 56px">
+      <q-page-sticky expand position="top" class="hipeac__submenu">
+        {% block submenu %}{% endblock %}
+      </q-page-sticky>
+      <div class="container">
+        {% block page %}{% endblock %}
+        <div class="q-mt-xl text-transparent">.</div>
+      </div>
+    </q-page>
+  </q-page-container>
+{% endblock %}
+
+{% block footer %}
+  <q-footer class="bg-transparent text-grey-8 q-py-xl" :class="{'q-px-xl': $q.screen.gt.sm}">
+    <div class="container">
+      <div class="row q-col-gutter-md justify-between text-caption" :class="{'reverse': $q.screen.gt.sm}">
+        <div class="col-12 col-md-2" :class="{'text-right': $q.screen.gt.sm}">
+          <img src="{% static 'images/eu-flag.svg' %}" style="width:60px">
+        </div>
+        <div class="col-12 col-md-10">
+          <p class="text-caption"><strong>&copy; 2004-{% now 'Y' %} HiPEAC, European Network on High-performance Embedded Architecture and Compilation</strong><br>The HiPEAC project has received funding from the European Union’s Horizon2020 research and innovation programme under grant agreement number 871174.</p>
+          <div class="q-gutter-x-md">
+            <a href="/privacy-policy/" class="inherit">Privacy policy</a>
+            <a href="/disclaimer/" class="inherit">Disclaimer</a>
+            <a href="mailto:{{ CONTACT_EMAIL }}" class="inherit">
+              <q-icon name="alternate_email" class="q-mr-xs"></q-icon>Contact</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </q-footer>
+{% endblock %}
+
+{% block menu_scripts %}
+  <script type="text/javascript">
+    var HIPEAC_MENU = [
+      ['Network', '{% url "network" %}', '{% active request "network,user,institution,project" %}'],
+      ['Events', '{% url "events" %}', '{% active request "events,acaces,conference,conference_v2,csw,roadshow" %}'],
+      ['Jobs', '{% url "jobs" %}', '{% active request "jobs,job" %}'],
+      ['Vision', '{% url "vision" %}', '{% active request "vision" %}'],
+      ['Awards', '{% url "awards" %}', '{% active request "awards" %}'],
+      ['News', '{% url "news" %}', '{% active request "news,article" %}'],
+      ['Press room', '{% url "press" %}', '{% active request "press" %}']
+    ];
+  </script>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+  <script type="text/javascript">
+    var app = Vue.createApp({
+      mixins: [AppMixin]
+    });
+    Hipeac.utils.registerComponents(app, [HipeacCommonComponents]);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+{% endblock %}

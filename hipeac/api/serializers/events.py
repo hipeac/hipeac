@@ -101,6 +101,7 @@ class RegistrationListSerializer(serializers.ModelSerializer):
 
 
 class AuthRegistrationSerializer(WritableNestedModelSerializer):
+    self = serializers.HyperlinkedIdentityField(view_name="v1:auth-registration-detail", read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name="v1:auth-registration-detail", read_only=True)
     payment_href = serializers.URLField(source="get_payment_url", read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
@@ -131,6 +132,7 @@ class RegistrationManagementSerializer(AuthRegistrationSerializer):
 
 
 class SessionNestedSerializer(WritableNestedModelSerializer):
+    self = serializers.HyperlinkedIdentityField(view_name="v1:session-detail", read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name="v1:session-detail", read_only=True)
     href = serializers.CharField(source="get_absolute_url", read_only=True)
     session_type = MetadataFieldWithPosition()
@@ -212,6 +214,7 @@ class SessionAccessLinkSerializer(serializers.ModelSerializer):
 
 class EventNestedSerializer(serializers.ModelSerializer):
     country = CountryField(country_dict=True)
+    self = serializers.HyperlinkedIdentityField(view_name="v1:event-detail", read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name="v1:event-detail", read_only=True)
     url_articles = serializers.HyperlinkedIdentityField(view_name="v1:event-articles")
     url_registrations = serializers.HyperlinkedIdentityField(view_name="v1:event-registrations")

@@ -1,0 +1,14 @@
+<script type="text/x-template" id="v-program">
+{% verbatim %}
+  <div v-if="event && event.sessions.length">
+    <q-card class="hipeac__card q-mt-lg" :class="{'q-mb-md': $q.screen.gt.sm}">
+      <q-tabs no-caps inline-label class="bg-white text-blue-9" :class="{'q-px-lg': $q.screen.lt.md}">
+        <q-route-tab :to="{name: 'program'}" icon="category" label="All sessions"></q-route-tab>
+        <q-route-tab exact :to="{name: 'keynotes'}" icon="stars" label="Keynotes"></q-route-tab>
+      </q-tabs>
+    </q-card>
+    <router-view></router-view>
+    <router-view name="dialog"></router-view>
+  </div>
+{% endverbatim %}
+</script>

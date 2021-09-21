@@ -17,6 +17,7 @@
             <q-route-tab :to="{name: 'stats'}" label="Stats"></q-route-tab>
             <q-route-tab :to="{name: 'registrations'}" label="Registrations"></q-route-tab>
             <q-route-tab :to="{name: 'grants'}" label="Grants"></q-route-tab>
+            <q-route-tab :to="{name: 'courses'}" label="Courses"></q-route-tab>
             <q-route-tab :to="{name: 'hotels'}" label="Hotels"></q-route-tab>
             <q-route-tab v-if="event && event.custom_data.lunch_groups.length" :to="{name: 'lunch'}" label="Lunch"></q-route-tab>
             <!--<q-route-tab :to="{name: 'emails'}" label="Emails"></q-route-tab>-->
@@ -32,6 +33,7 @@
 {% endblock %}
 
 {% block vue_templates %}
+  {% include './v-courses.html' %}
   {% include './v-emails.html' %}
   {% include './v-grants.html' %}
   {% include './v-hotels.html' %}
@@ -285,6 +287,13 @@
         }
       }
     });
+
+    var CoursesView = {
+      template: '#v-courses',
+      computed: _.extend(
+        Vuex.mapState(['event']), {
+      })
+    };
 
     var EmailsView = {
       template: '#v-emails',
@@ -915,6 +924,12 @@
               id: +route.params.id
             };
           }
+        },
+        {
+          name: 'courses',
+          path: '/courses/',
+          pathToRegexpOptions: {strict: true},
+          component: CoursesView
         },
         {
           name: 'emails',

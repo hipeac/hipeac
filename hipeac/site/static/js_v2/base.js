@@ -224,7 +224,7 @@ var Hipeac = {
         'Industrial Session': 'deep-purple',
         'Workshop': 'green',
         'Tutorial': 'teal',
-        'Social Event': 'yellow'
+        'Social Event': 'yellow-8'
       }[obj.session_type.value] || 'grey-7';
 
       obj._q = [
