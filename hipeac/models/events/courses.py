@@ -15,7 +15,7 @@ class Course(models.Model):
     teachers = models.ManyToManyField(get_user_model(), blank=True, related_name="courses")
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
 
-    custom_data = models.JSONField(default=dict)
+    custom_data = models.JSONField(default=dict, blank=True)
 
     links = GenericRelation("hipeac.Link")
     private_files = GenericRelation("hipeac.PrivateFile")

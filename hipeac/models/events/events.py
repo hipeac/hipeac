@@ -91,7 +91,7 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     links = GenericRelation("hipeac.Link")
     venues = models.ManyToManyField("hipeac.Venue", blank=True, related_name="events")
 
-    custom_data = models.JSONField(default=dict)
+    custom_data = models.JSONField(default=dict, blank=True)
 
     objects = EventQuerySet.as_manager()
 
