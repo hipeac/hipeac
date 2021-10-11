@@ -45,7 +45,7 @@ whitenoise = "*"
 zoomus = "*"
 
 [dev-packages]
-black = "==21.7b0"
+black = "==21.9b0"
 django-debug-toolbar = "*"
 flake8 = "*"
 flake8-mypy = "*"
