@@ -418,6 +418,29 @@ var HipeacCommonComponents = {
     template: '<q-chip outline :color="color" size="xs" :icon="icon" class="hipeac-chip">No</q-chip>'
   },
 
+  'hipeac-please-login': {
+    data: function () {
+      return {
+        path: window.location.pathname
+      };
+    },
+    props: {
+      msg: {
+        type: String,
+        default: 'You need to log in to your HiPEAC account to view this page.'
+      }
+    },
+    template: `
+      <div class="row justify-center">
+        <div class="col-12 col-md-8 col-lg-6 text-center">
+          <q-icon name="password" size="6em" color="blue-2" />
+          <h2 class="text-weight-light q-my-lg">{{ msg }}</h2>
+          <q-btn outline no-caps type="a" color="primary" :href="'/accounts/login/?next=' + path" label="Log in" size="lg" class="q-my-lg" />
+        </div>
+      </div>
+    `
+  },
+
   'hipeac-logo': {
     props: {
       fill: {

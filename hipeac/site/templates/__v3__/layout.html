@@ -23,7 +23,7 @@
         </q-btn>
       {% else %}
         <q-btn outline no-caps type="a" href="{% url 'account_signup' %}" color="green" class="q-mr-sm">Join</q-btn>
-        <q-btn outline no-caps type="a" href="{% url 'account_login' %}" color="primary">Log in</q-btn>
+        <q-btn outline no-caps type="a" href="{% url 'account_login' %}?next={{ request.path }}" color="primary">Log in</q-btn>
       {% endif %}
     </q-toolbar>
   </q-header>
