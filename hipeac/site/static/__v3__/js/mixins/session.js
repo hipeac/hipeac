@@ -4,6 +4,7 @@ var SessionMixin = {
     return {
       dialogVisible: false,
       session: null,
+      sessionAttendees: [],
       tab: 'main'
     };
   },
@@ -42,6 +43,12 @@ var SessionMixin = {
       var session = _.findWhere(this.event.sessions, {id: +this.id});
       Hipeac.api.request('GET', session.self).then(function (res) {
         self.session = Hipeac.map.session(res.data);
+
+        Hipeac.api.request('GET', res.data.rel_attendees).then(function (res) {
+          self.sessionAttendees = Object.freeze(res.data.map(function (obj) {
+            return Hipeac.map.user(obj.user);
+          }));
+        });
       });
     }
   },

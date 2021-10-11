@@ -12,6 +12,7 @@ from ..permissions import (
     HasAdminPermissionOrReadOnly,
     HasManagementPermission,
     HasRegistrationForEvent,
+    HasRegistrationForRelatedEvent,
     RegistrationPermission,
 )
 from ..serializers import (
@@ -82,8 +83,7 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         self.queryset = (
             self.get_object()
             .registrations.select_related("user__profile")
-            .prefetch_related("user__profile__institution", "user__profile__second_institution")
-            .prefetch_related("user__profile__projects")
+            .prefetch_related("user__profile__institution")
             .filter(status=Registration.STATUS_ACCEPTED)
         )
 
@@ -228,15 +228,14 @@ class CourseViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Generi
     @action(
         detail=True,
         pagination_class=None,
-        # permission_classes=(HasRegistrationForEvent,),
+        permission_classes=(HasRegistrationForRelatedEvent,),
         serializer_class=RegistrationListSerializer,
     )
     def attendees(self, request, *args, **kwargs):
         self.queryset = (
             self.get_object()
             .registrations.select_related("user__profile")
-            .prefetch_related("user__profile__institution", "user__profile__second_institution")
-            .prefetch_related("user__profile__projects")
+            .prefetch_related("user__profile__institution")
             .filter(status=Registration.STATUS_ACCEPTED)
         )
 

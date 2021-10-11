@@ -174,6 +174,7 @@ class SessionSerializer(SessionListSerializer):
     institutions_info = serializers.SerializerMethodField(read_only=True)
     is_industrial_session = serializers.BooleanField(read_only=True)
     private_files = PrivateFileSerializer(many=True, read_only=True)
+    rel_attendees = serializers.HyperlinkedIdentityField(view_name="v1:session-attendees")
 
     class Meta(SessionNestedSerializer.Meta):
         exclude = (

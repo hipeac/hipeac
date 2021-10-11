@@ -8,7 +8,7 @@
           <q-toolbar class="text-dark bg-grey-2">
             <q-tabs v-model="tab" no-caps inline-label shrink mobile-arrows class="q-mr-md">
               <q-tab name="main">
-                <q-icon size="xs" name="lens" :color="session.color" class="q-mr-sm"></q-icon>
+                <q-icon size="xs" name="lens" :color="session.color" class="q-mr-sm" />
                 <div class="q-tab__label">{{ session.session_type.value }}</div>
               </q-tab>
               <q-tab v-if="session.is_keynote && session.main_speaker" name="bio" label="Bio" />
@@ -16,26 +16,26 @@
               <q-tab v-if="registration" name="attendees" label="Attendees" />
             </q-tabs>
             <q-space></q-space>
-            <editor-link v-if="session.editor_href" type="btn" :url="session.editor_href" target="_blank"></editor-link>
-            <q-btn flat round v-close-popup icon="close"></q-btn>
+            <editor-link v-if="session.editor_href" type="btn" :url="session.editor_href" target="_blank" />
+            <q-btn flat round v-close-popup icon="close" />
           </q-toolbar>
           <div class="q-pa-md text-center text-caption text-grey-8">
             <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none">
               <li>
-                <q-icon size="xs" name="today" class="q-mr-xs"></q-icon>
+                <q-icon size="xs" name="today" class="q-mr-xs" />
                 <span>{{ session.start.format("ddd, MMMM Do") }}</span>
               </li>
               <li>
-                <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
+                <q-icon size="xs" name="schedule" class="q-mr-xs" />
                 <span>{{ session.start.format('H:mm') }} - {{ session.end.format('H:mm') }}</span>
               </li>
               <li v-if="$q.screen.gt.sm && registered" class="text-bold text-green">
-                <q-icon size="xs" name="fact_check" color="green-7" class="q-mr-xs"></q-icon>
+                <q-icon size="xs" name="fact_check" color="green-7" class="q-mr-xs" />
                 <span>Registered</span>
               </li>
             </ul>
           </div>
-          <q-separator class="q-mb-none"></q-separator>
+          <q-separator class="q-mb-none" />
         </q-header>
 
         <q-page-container>
@@ -46,37 +46,43 @@
                 <div class="row q-col-gutter-x-xl q-col-gutter-y-lg">
                   <div class="col-12 col-md-8">
                     <display-2 class="q-mb-md">{{ session.title }}</display-2>
-                    <marked v-if="session.summary" :text="session.summary"></marked>
+                    <marked v-if="session.summary" :text="session.summary" />
                   </div>
                   <div class="col-12 col-md-4">
                     <div v-if="session.main_speaker" class="q-mb-lg">
                       <display-5>Speaker</display-5>
-                      <hipeac-profile-item :profile="session.main_speaker.profile" class="q-mb-md"></hipeac-profile-item>
+                      <hipeac-profile-item :profile="session.main_speaker.profile" class="q-mb-md" />
                       <a class="text-caption text-grey-8 inherit" :href="session.main_speaker.href" target="_blank">
-                        <q-icon size="xs" name="shortcut" class="q-mr-xs"></q-icon>View HiPEAC profile</a>
+                        <q-icon size="xs" name="shortcut" class="q-mr-xs" />View HiPEAC profile</a>
                     </div>
-                    <hipeac-session-breaks :session="session" :breaks="event.breaks"></hipeac-session-breaks>
+                    <hipeac-session-breaks :session="session" :breaks="event.breaks" class="q-mb-lg" />
+                    <hipeac-session-application-areas :session="session" class="q-mb-lg" />
+                    <hipeac-session-topics :session="session" />
                   </div>
                 </div>
               </q-tab-panel>
 
               <q-tab-panel name="bio">
-                <div class="row q-col-gutter-x-xl reverse">
+                <div class="row q-col-gutter-x-xl q-col-gutter-y-lg reverse">
                   <div class="col-12 col-md-4">
-                    <hipeac-profile-item :profile="session.main_speaker.profile" class="q-mb-md"></hipeac-profile-item>
+                    <hipeac-profile-item :profile="session.main_speaker.profile" class="q-mb-md" />
                     <p class="q-mt-sm">
                       <a class="text-caption text-grey-8 inherit" :href="session.main_speaker.href" target="_blank">
-                        <q-icon size="xs" name="shortcut" class="q-mr-xs"></q-icon>View HiPEAC profile</a>
+                        <q-icon size="xs" name="shortcut" class="q-mr-xs" />View HiPEAC profile</a>
                     </p>
                   </div>
                   <div class="col-12 col-md-8">
-                    <marked :text="session.main_speaker.profile.bio"></marked>
+                    <marked :text="session.main_speaker.profile.bio" />
                   </div>
                 </div>
               </q-tab-panel>
 
               <q-tab-panel name="program">
-                <marked v-if="session.program" :text="session.program"></marked>
+                <marked v-if="session.program" :text="session.program" />
+              </q-tab-panel>
+
+              <q-tab-panel name="attendees">
+                <user-viewer :users="sessionAttendees" :show-profile-link="true" event-name="attendees-query-changed"></user-viewer>
               </q-tab-panel>
 
             </q-tab-panels>

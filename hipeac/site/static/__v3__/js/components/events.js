@@ -262,6 +262,53 @@ var HipeacEventComponents = {
         return output;
       }
     }
+  },
+
+  'hipeac-metadata': {
+    props: {
+      metadata: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      },
+      title: {
+        type: String,
+        default: 'Metadata'
+      },
+      badgeColor: {
+        type: String,
+        default: 'primary'
+      }
+    },
+    template: `
+      <div v-if="metadata.length">
+        <display-5 style="margin:0">{{ title }}</display-5>
+        <div class="q-gutter-x-sm q-mt-sm">
+          <q-badge v-for="item in metadata" :label="item.value" :color="badgeColor" />
+        </div>
+      </div>
+    `
+  },
+
+  'hipeac-session-application-areas': {
+    props: {
+      session: {
+        type: Object,
+        required: true
+      }
+    },
+    template: '<hipeac-metadata :metadata="session.application_areas" title="Application areas" badge-color="blue-5"></hipeac-metadata>'
+  },
+
+  'hipeac-session-topics': {
+    props: {
+      session: {
+        type: Object,
+        required: true
+      }
+    },
+    template: '<hipeac-metadata :metadata="session.topics" title="Topics"></hipeac-metadata>'
   }
 
 };
