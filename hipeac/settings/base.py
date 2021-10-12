@@ -59,7 +59,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
-    "django.middleware.gzip.GZipMiddleware",
+    "compression_middleware.middleware.CompressionMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
     "django.middleware.common.CommonMiddleware",
