@@ -66,6 +66,10 @@ var HipeacEventComponents = {
                       <span v-if="showSlots && session.session_type.value == 'Course'">Slot {{ session.slot }}</span>
                       <span v-else>{{ session.session_type.value }}</span>
                     </li>
+                    <li v-if="session.room">
+                      <q-icon size="xs" name="room" color="grey-7" class="q-mr-xs"></q-icon>
+                      <span>{{ session.room.name }}</span>
+                    </li>
                     <li>
                       <q-icon size="xs" name="schedule" color="grey-7" class="q-mr-xs"></q-icon>
                       <span>{{ session.start.format('H:mm') }} - {{ session.end.format('H:mm') }}</span>
@@ -114,6 +118,13 @@ var HipeacEventComponents = {
       },
       sessions: function () {
         var output = [];
+        var rooms = {};
+
+        _.each(this.event.venues, function (venue) {
+          _.each(venue.rooms, function (room) {
+            rooms[room.id] = room;
+          });
+        });
 
         if (this.event.breaks.length) {
           _.each(this.event.breaks, function (br) {
@@ -127,6 +138,7 @@ var HipeacEventComponents = {
               end: br.end,
               duration: br.duration,
               session_type: 'break',
+              room: null,
               icon: br.icon,
               _q: ''
             });
@@ -148,6 +160,7 @@ var HipeacEventComponents = {
               topics: session.topics,
               route: 'session',
               session_type: session.session_type,
+              room: rooms[session.room] || null,
               color: session.color,
               _q: session._q
             });

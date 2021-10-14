@@ -25,6 +25,10 @@
                 <q-icon size="xs" name="today" class="q-mr-xs" />
                 <span>{{ session.start.format("ddd, MMMM Do") }}</span>
               </li>
+              <li v-if="room">
+                <q-icon size="xs" name="room" class="q-mr-xs" />
+                <span>{{ room.name }}</span>
+              </li>
               <li>
                 <q-icon size="xs" name="schedule" class="q-mr-xs" />
                 <span>{{ session.start.format('H:mm') }} - {{ session.end.format('H:mm') }}</span>

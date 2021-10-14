@@ -13,6 +13,16 @@ var SessionMixin = {
       if (!this.registration) return false;
       return _.contains(this.registration.sessions, +this.id);
     },
+    room: function () {
+      if (!this.event || !this.session) return null;
+      var rooms = {};
+      _.each(this.event.venues, function (venue) {
+        _.each(venue.rooms, function (room) {
+          rooms[room.id] = room;
+        });
+      });
+      return rooms[this.session.room] || null;
+    },
     showDialog: {
       get: function () {
         return this.session != null;
