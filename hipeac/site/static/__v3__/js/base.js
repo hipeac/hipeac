@@ -150,6 +150,10 @@ var Hipeac = {
       obj.name = obj.profile.name;
       return obj;
     },
+    vision: function (obj) {
+      obj.year = obj.download_url.match(/\d+/)[0] || null;
+      return obj;
+    },
     qBooleans: function (obj, fields) {
       if (!obj._q) obj._q = '';
       var qs = [];

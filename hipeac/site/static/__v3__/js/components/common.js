@@ -675,6 +675,35 @@ var HipeacCommonComponents = {
         return 'blue-grey';
       }
     }
+  },
+
+  'youtube-embed': {
+    props: {
+      url: {
+        type: String,
+        required: true
+      },
+      hideInfo: {
+        type: Boolean,
+        default: true
+      }
+    },
+    template: '<q-video :ratio="16/9" :src="src" class="rounded-borders" />',
+    computed: {
+      youtubeId: function () {
+        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        var match = this.url.match(regExp);
+        return (match && match[7].length == 11) ? match[7] : null;
+      },
+      src: function () {
+        if (!this.youtubeId) return null;
+        return [
+          'https://www.youtube.com/embed/',
+          this.youtubeId,
+          (this.hideInfo) ? '?showinfo=0' : ''
+        ].join('');
+      }
+    }
   }
 
 };

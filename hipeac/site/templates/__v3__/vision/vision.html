@@ -1,4 +1,4 @@
-{% extends 'v2/layout.html' %}
+{% extends '__v3__/layout.html' %}
 
 {% load compress %}
 {% load static %}
@@ -8,17 +8,15 @@
 
 {% block submenu %}
   <q-toolbar class="container">
-    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ flatpage.title }}</q-toolbar-title>
-    <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
-      <q-route-tab exact :to="{name: 'latest'}" label="Latest"></q-route-tab>
-      <q-route-tab exact :to="{name: 'archive'}" label="Archive"></q-route-tab>
-    </q-tabs>
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ flatpage.title }} <span v-if="$route.path.indexOf('/latest/') > -1 && vision">{% verbatim %}{{ vision.year }}{% endverbatim %}</span></q-toolbar-title>
+    <hipeac-submenu-tabs :menu="menu"></hipeac-submenu-tabs>
   </q-toolbar>
 {% endblock %}
 
 {% block page %}
   <div id="vars" data-vision-list="{% url 'v1:vision-list' %}"></div>
-  <div is="router-view"></div>
+  <router-view></router-view>
+  <hipeac-submenu-fabs :menu="menu"></hipeac-submenu-fabs>
 {% endblock %}
 
 {% block vue_templates %}
@@ -32,7 +30,7 @@
   <script>
     var VARS = document.querySelector('#vars').dataset;
 
-    var Store = new Vuex.Store({
+    var Store = Vuex.createStore({
       state: {
         visions: null
       },
@@ -76,8 +74,11 @@
       },
       mutations: {
         getVisions: function (state) {
-          Hipeac.api.get(VARS.visionList).then(function (res) {
-            state.visions = Object.freeze(res.data);
+          Hipeac.api.request('GET', VARS.visionList).then(function (res) {
+            state.visions = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.vision(obj);
+            }));
+            Quasar.Loading.hide();
           });
         }
       }
@@ -130,7 +131,7 @@
       computed: _.extend(
         Vuex.mapGetters(['vision', 'articles', 'groupedArticles', 'dimensions']), {
         filteredArticles: function () {
-          return Hipeac.utils.filterMultiple(this.articles || [], this.query);
+          return Hipeac.utils.filter(this.articles || [], this.query);
         },
         dimensionData: function () {
           return _.indexBy(this.dimensions, 'name');
@@ -138,8 +139,19 @@
       })
     };
 
-    var Router = new VueRouter({
+    var VisionDownloadsView = {
+      template: '#v-downloads',
+      computed: _.extend(
+        Vuex.mapGetters(['vision']), {
+      })
+    };
+
+    var Router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
       linkActiveClass: 'active',
+      scrollBehavior: function (to, from) {
+        return {top: 0};
+      },
       routes: [
         {
           path: '/',
@@ -161,6 +173,12 @@
               path: 'articles/',
               pathToRegexpOptions: {strict: true},
               component: VisionArticleView
+            },
+            {
+              name: 'downloads',
+              path: 'downloads/',
+              pathToRegexpOptions: {strict: true},
+              component: VisionDownloadsView
             }
           ]
         },
@@ -173,19 +191,35 @@
       ]
     });
 
-    new Vue({
-      el: '#vue',
-      store: Store,
-      router: Router,
-      beforeCreate: function () {
-        if (this.$route.path.substr(-1) != '/') {
-          this.$router.push({'path': this.$route.path + '/'});
-        }
+    var app = Vue.createApp({
+      data: {
+        menu: [
+          {
+            label: 'Latest',
+            to: {name: 'latest'},
+            exact: false
+          },
+          {
+            label: 'Archive',
+            to: {name: 'archive'},
+            exact: true
+          }
+        ]
       },
+      mixins: [AppMixin],
+      computed: _.extend(
+        Vuex.mapGetters(['vision']), {
+      }),
       created: function () {
+        this.$q.loading.show();
         this.$store.commit('getVisions');
       }
     });
+    Hipeac.utils.registerComponents(app, [HipeacCommonComponents]);
+    app.use(Store);
+    app.use(Router);
+    app.use(Quasar);
+    app.mount('#vue');
   </script>
 {% endcompress %}
 {% endblock %}

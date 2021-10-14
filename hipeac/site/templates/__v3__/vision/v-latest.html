@@ -1,0 +1,124 @@
+{% load compress %}
+{% load hipeac %}
+
+
+<script type="text/x-template" id="v-latest-wrapper">
+{% verbatim %}
+  <div v-if="vision">
+    <q-card class="hipeac__card q-my-lg" style="padding-bottom: 0">
+      <q-card-section class="text-center q-py-none">
+        <marked :text="vision.introduction" class="text-h6 text-weight-light q-my-none"></marked>
+      </q-card-section>
+      <q-tabs no-caps inline-label class="bg-white text-blue-9 q-mt-lg">
+        <q-route-tab exact :to="{name: 'latest'}" icon="book" label="Overview"></q-route-tab>
+        <q-route-tab exact :to="{name: 'articles'}" icon="article" label="Articles"></q-route-tab>
+        <q-route-tab exact :to="{name: 'downloads'}" icon="download" label="Other downloads"></q-route-tab>
+      </q-tabs>
+    </q-card>
+    <router-view></router-view>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-latest">
+{% verbatim %}
+  <div v-if="visions">
+    <div class="row q-col-gutter-lg">
+      <div class="col-12 col-md-8">
+        <q-card class="hipeac__card">
+          <q-card-section class="q-py-none">
+            <display-5>Summary</display-5>
+            <marked :text="vision.summary"></marked>
+            <div v-if="vision.youtube_url" class="q-mt-xl">
+              <display-5>Video</display-5>
+              <youtube-embed :url="vision.youtube_url"></youtube-embed>
+            </div>
+            <q-list class="q-mt-xl">
+              <q-item clickable tag="a" :href="'https://www.google.com/search?q=%22HiPEAC+Vision+' + vision.year + '%22+-site%3Ahipeac.net+-site%3Atwitter.com'" target="_blank">
+                <q-item-section avatar>
+                  <q-icon color="grey" name="find_in_page" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label caption>Find Vision references on Google</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-4">
+        <q-card v-if="$q.screen.gt.sm && vision.download_url" class="hipeac__card q-mb-lg">
+          <q-btn unelevated no-caps type="a" :href="vision.download_url" class="full-width" color="primary">
+            <q-icon name="download" size="xs" class="q-mr-sm" />Download the full document</q-btn>
+        </q-card>
+        <q-card class="hipeac__card">
+          <q-card-section class="q-py-none">
+            <display-5>Dimensions</display-5>
+            <q-list dense separator>
+              <q-item v-for="articles, dimension in groupedArticles" :key="dimension" clickable :to="{name: 'articles', query: {q: dimensionData[dimension].key}}">
+                <q-item-section>{{ dimension }}</q-item-section>
+                <q-item-section side>
+                  <q-chip icon="article" :color="dimensionData[dimension].color" text-color="white" :label="articles.length" />
+                </q-item-section>
+              </q-item>
+            </q-list>
+            <p class="text-caption text-grey-8 q-mt-lg q-mb-none">In order to help the reader, instead of having big monolithic chapters, we propose to split the “rationale” part of the document into a coherent set of independent articles grouped by `dimensions`, illustrating or explaining different aspects of the recommendations we propose. We hope it will help and that you will take as much pleasure in reading this new release as we have done in producing it.</p>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-articles">
+{% verbatim %}
+  <q-card class="hipeac__card q-pa-lg" v-if="vision && vision.articles.length">
+    <hipeac-search-bar v-model="query" placeholder="Search by title, authors, dimension..." :filters="search.filters" class="q-mb-lg" />
+    <div class="row q-col-gutter-md">
+      <div v-for="item in filteredArticles" :key="item.id" class="col-12 col-md-3">
+        <q-card flat bordered class="column full-height q-px-md">
+          <q-card-section class="q-pt-xs">
+            <div class="text-overline" :class="'text-' + dimensionData[item.dimension].color">{{ item.dimension }}</div>
+            <div class="text-h6 q-mb-sm">{{ item.title }}</div>
+            <div class="text-caption text-grey-8">{{ item.authors }}</div>
+          </q-card-section>
+          <q-space />
+          <q-card-section class="text-body2">{{ item.abstract }}</q-card-section>
+          <q-separator />
+          <q-card-actions>
+            <q-btn flat type="a" :href="(item.doi_url) ? item.doi_url : item.download_url" target="_blank" color="grey">Download</q-btn>
+          </q-card-actions>
+        </q-card>
+      </div>
+    </div>
+  </q-card>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-downloads">
+{% verbatim %}
+  <q-card class="hipeac__card q-pa-lg" v-if="vision">
+    <q-list>
+      <q-item v-if="vision.download_url" clickable tag="a" :href="vision.download_url" target="_blank">
+        <q-item-section avatar>
+          <q-avatar color="primary" text-color="white" icon="file_download" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>{{ vision.title }}</q-item-label>
+          <q-item-label caption>https://www.hipeac.net{{ vision.download_url }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item v-for="file in vision.public_files" clickable tag="a" :href="file.file" target="_blank">
+        <q-item-section avatar>
+          <q-avatar color="blue-2" text-color="white" icon="file_download" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>{{ file.description }}</q-item-label>
+          <q-item-label caption>{{ file.file }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
+  </q-card>
+{% endverbatim %}
+</script>
