@@ -16,29 +16,30 @@
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}"
-  data-attendees-url="{% url 'v1:event-attendees' event.id %}" data-jobs-url="{% url 'v1:event-jobs' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}"></div>
+  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-attendees-url="{% url 'v1:event-attendees' event.id %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}"></div>
   <router-view></router-view>
   <hipeac-submenu-fabs v-if="event" :menu="menu" :checks="{'registration': !!registration, 'covid': !!event.custom_data.covid}"></hipeac-submenu-fabs>
 {% endblock %}
 
 {% block vue_templates %}
-  {% include './v-jobs.html' %}
   {% include './v-program.html' %}
   {% include '../_shared/v-about.html' %}
   {% include '../_shared/v-attendees.html' %}
   {% include '../_shared/v-covid.html' %}
   {% include '../_shared/v-program-keynotes.html' %}
   {% include '../_shared/v-program-main.html' %}
+  {% include '../_shared/v-registration.html' %}
   {% include '../_shared/v-session.html' %}
   {% include '../_shared/v-venue.html' %}
 {% endblock %}
 
 {% block scripts %}
 {% compress js file csw %}
+  <script src="{% static '__v3__/js/components/forms.js' %}"></script>
   <script src="{% static '__v3__/js/components/events.js' %}"></script>
   <script src="{% static '__v3__/js/components/users.js' %}"></script>
   <script src="{% static '__v3__/js/mixins/query.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/registration.js' %}"></script>
   <script src="{% static '__v3__/js/mixins/session.js' %}"></script>
   <script src="{% static '__v3__/js/stores/events.js' %}"></script>
   <script type="text/javascript">
@@ -49,10 +50,26 @@
     });
 
     var AboutView = {
+      data: function () {
+        return {
+          committees: []
+        };
+      },
       template: '#v-about',
       computed: _.extend(
         Vuex.mapState('events', ['event', 'registration']), {
-      })
+      }),
+      methods: {
+        getCommittees: function () {
+          var self = this;
+          Hipeac.api.request('GET', VARS.committeesUrl).then(function (res) {
+            self.committees = Object.freeze(res.data);
+          });
+        }
+      },
+      created: function () {
+        this.getCommittees();
+      }
     };
 
     var AttendeesView = {
@@ -94,6 +111,16 @@
       computed: _.extend(
         Vuex.mapState('events', ['event', 'keynotes']), {
       })
+    };
+
+    var RegistrationView = {
+      mixins: [RegistrationMixin],
+      template: '#v-registration',
+      data: function () {
+        return {
+          poster_limit: 1
+        };
+      }
     };
 
     var SessionView = {
@@ -170,6 +197,12 @@
           ]
         },
         {
+          name: 'registration',
+          path: '/registration/:id?/',
+          pathToRegexpOptions: {strict: true},
+          component: RegistrationView
+        },
+        {
           name: 'venue',
           path: '/venue/',
           pathToRegexpOptions: {strict: true},
@@ -210,9 +243,8 @@
           },
           {
             label: 'Registration',
-            to: {name: 'venue'},
+            to: {name: 'registration'},
             exact: true,
-            check: 'registration',
             icon: 'edit'
           }
         ]
@@ -227,7 +259,9 @@
         this.$store.commit('events/getRegistration');
       }
     });
-    Hipeac.utils.registerComponents(app, [HipeacCommonComponents, HipeacEventComponents, HipeacUserComponents]);
+    Hipeac.utils.registerComponents(app, [
+      HipeacCommonComponents, HipeacFormComponents, HipeacEventComponents, HipeacUserComponents
+    ]);
     app.use(Store);
     app.use(Router);
     app.use(Quasar);
@@ -239,21 +273,23 @@
       "@context": "http://schema.org",
       "@type": "Event",
       "name": "{{ event }}",
+      "organizer": {
+        "@type": "Organization",
+        "name": "HiPEAC",
+        "url": "https://www.hipeac.net/"
+      },
       "description": "{{ event.presentation | truncate }}",
       "url": "{{ request.build_absolute_uri }}",
       "startDate": "{{ event.start_date | date:'c' }}",
       "endDate": "{{ event.end_date | date:'c' }}",
       {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
       {% if event.is_virtual %}
-        "organizer": {
-          "@type": "Organization",
-          "name": "HiPEAC",
-          "url": "https://www.hipeac.net/"
-        },
+        "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
         "location": {
           "@type": "VirtualLocation"
         }
       {% else %}
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "location": {
           "@type": "Place",
           "address": {

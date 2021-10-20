@@ -74,6 +74,7 @@ var Hipeac = {
 
       obj.start = getMoment(obj.start_date, obj.is_virtual);
       obj.end = getMoment(obj.end_date, obj.is_virtual);
+      obj.registration_start = getMoment(obj.registration_start_date, obj.is_virtual);
       obj.registrations_round = (obj.registrations_count)
         ? Math.floor(obj.registrations_count / 10) * 10
         : 0;

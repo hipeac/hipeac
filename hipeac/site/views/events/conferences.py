@@ -4,7 +4,7 @@ from .base import EventDetail
 class ConferenceDetail(EventDetail):
     """Displays a Conference page."""
 
-    template_name = "events/conference/conference.html"
+    template_name = "__v3__/events/conference/conference.html"
 
     def get_object(self, queryset=None):
         if not hasattr(self, "object"):

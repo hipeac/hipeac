@@ -322,6 +322,41 @@ var HipeacEventComponents = {
       }
     },
     template: '<hipeac-metadata :metadata="session.topics" title="Topics"></hipeac-metadata>'
+  },
+
+  'hipeac-committees': {
+    props: {
+      committees: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      },
+      showAvatar: {
+        type: Boolean,
+        default: false
+      }
+    },
+    template: `
+      <div v-if="committees.length">
+        <div v-for="committee in sortedCommittees" :key="committee.id" class="q-mb-lg">
+          <display-5>{{ committee.name }}</display-5>
+          <q-list class="q-ml-xl">
+            <hipeac-profile-item v-for="user in committee.members" :key="user.id" :profile="user.profile" :showAvatar="showAvatar"></hipeac-profile-item>
+          </q-list>
+        </div>
+      </div>
+    `,
+    computed: {
+      sortedCommittees: function () {
+        return this.committees.map(function (obj) {
+          obj.members = obj.members.sort(function (a, b) {
+            return Hipeac.utils.sortText(a.profile.name, b.profile.name);
+          });
+          return obj;
+        });
+      }
+    }
   }
 
 };

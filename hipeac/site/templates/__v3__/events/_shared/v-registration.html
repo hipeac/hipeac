@@ -4,6 +4,9 @@
     <q-card v-if="!authenticated" class="hipeac__card q-mt-lg">
       <hipeac-please-login msg="You need to log in to your HiPEAC account to register for an event." />
     </q-card>
+    <q-card v-else-if="!event.is_open_for_registration" class="hipeac__card q-mt-lg">
+      <hipeac-big-alert icon="pending_actions" :msg="'Registrations will open on ' + event.registration_start.format('LL') + '.'" />
+    </q-card>
     <div v-else-if="obj" class="row q-col-gutter-md q-mt-sm items-stretch">
       <div class="col-12 col-md-4">
         <q-card v-if="registration" class="hipeac__card full-height">
