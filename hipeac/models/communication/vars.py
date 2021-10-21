@@ -7,6 +7,7 @@ SECTION_CHOICES = (
     ("csw", "Computing Systems Week"),
     ("conference", "HiPEAC Conference"),
     ("acaces", "ACACES"),
+    ("vision", "HiPEAC Vision"),
     ("roadshow", "HiPEAC Roadshow"),
     ("collaborations", "Collaboration Grants"),
 )
