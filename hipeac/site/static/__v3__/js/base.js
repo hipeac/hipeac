@@ -1,10 +1,8 @@
 var DJANGO_VARS = document.querySelector('html').dataset;
 
 
-var getMoment = function (dt, localize) {
-  return (localize)
-    ? moment.utc(dt).local()
-    : moment(dt);
+var getMoment = function (dt, tz) {
+  return moment(dt).tz(tz || 'Europe/Brussels');
 };
 
 
@@ -18,6 +16,7 @@ function modelFromUrl(url) {
 
 var EventEmitter = new TinyEmitter();
 window['moment-range'].extendMoment(moment);
+
 
 var Hipeac = {
   api: {
@@ -58,13 +57,13 @@ var Hipeac = {
     }
   },
   map: {
-    break: function (obj, localize) {
+    break: function (obj, tz) {
       obj.icon = {
         'cofee': 'coffee',
         'lunch': 'restaurant'
       }[obj.type] || 'coffee';
-      obj.start = getMoment(obj.start_at, localize);
-      obj.end = getMoment(obj.end_at, localize);
+      obj.start = getMoment(obj.start_at, tz);
+      obj.end = getMoment(obj.end_at, tz);
       obj.duration = moment.duration(obj.end.diff(obj.start));
       return obj;
     },
@@ -72,9 +71,10 @@ var Hipeac = {
       var mapBreak = this.break;
       var mapSession = this.session;
 
-      obj.start = getMoment(obj.start_date, obj.is_virtual);
-      obj.end = getMoment(obj.end_date, obj.is_virtual);
-      obj.registration_start = getMoment(obj.registration_start_date, obj.is_virtual);
+      obj.tz = (obj.is_virtual) ? moment.tz.guess(true) : 'Europe/Brussels';
+      obj.start = getMoment(obj.start_date, obj.tz);
+      obj.end = getMoment(obj.end_date, obj.tz);
+      obj.registration_start = getMoment(obj.registration_start_date, obj.tz);
       obj.registrations_round = (obj.registrations_count)
         ? Math.floor(obj.registrations_count / 10) * 10
         : 0;
@@ -87,7 +87,7 @@ var Hipeac = {
 
       if (obj.breaks && obj.breaks.length) {
         obj.breaks = obj.breaks.map(function (s) {
-          return mapBreak(s, obj.is_virtual);
+          return mapBreak(s, obj.tz);
         }).sort(function (a, b) {
           return a.start.unix() - b.start.unix();
         });
@@ -95,7 +95,7 @@ var Hipeac = {
 
       if (obj.sessions && obj.sessions.length) {
         obj.sessions = obj.sessions.map(function (s) {
-          return mapSession(s, obj.is_virtual);
+          return mapSession(s, obj.tz);
         }).sort(function (a, b) {
           return a.start.unix() - b.start.unix() || a.session_type.position - b.session_type.position;
         });
@@ -117,9 +117,9 @@ var Hipeac = {
 
       return obj;
     },
-    session: function (obj, localize) {
-      obj.start = getMoment(obj.start_at, localize);
-      obj.end = getMoment(obj.end_at, localize);
+    session: function (obj, tz) {
+      obj.start = getMoment(obj.start_at, tz);
+      obj.end = getMoment(obj.end_at, tz);
       obj.duration = moment.duration(obj.end.diff(obj.start));
       obj.is_keynote = obj.session_type.value == 'Keynote';
 
