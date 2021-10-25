@@ -8,6 +8,8 @@
     <q-card class="hipeac__card q-my-lg" style="padding-bottom: 0">
       <q-card-section class="text-center q-py-none">
         <marked :text="vision.introduction" class="text-h6 text-weight-light q-my-none"></marked>
+        <q-btn v-if="!$q.screen.gt.sm && vision.download_url" unelevated no-caps type="a" :href="vision.download_url" class="full-width q-mt-lg" color="primary">
+          <q-icon name="download" size="xs" class="q-mr-sm" />Download the full document</q-btn>
       </q-card-section>
       <q-tabs no-caps inline-label class="bg-white text-blue-9 q-mt-lg">
         <q-route-tab exact :to="{name: 'latest'}" icon="book" label="Overview"></q-route-tab>
@@ -100,7 +102,7 @@
 {% verbatim %}
   <q-card class="hipeac__card q-pa-lg" v-if="vision">
     <q-list>
-      <q-item v-if="vision.download_url" clickable tag="a" :href="vision.download_url" target="_blank">
+      <q-item v-if="$q.screen.gt.sm && vision.download_url" clickable tag="a" :href="vision.download_url" target="_blank">
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white" icon="file_download" />
         </q-item-section>
