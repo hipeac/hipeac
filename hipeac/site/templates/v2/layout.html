@@ -28,6 +28,7 @@
             </a>
             <q-btn stretch flat no-caps type="a" href="{% url 'network' %}" label="Network" class="q-ml-lg {% active request 'network,user,institution,project' %}"></q-btn>
             <q-btn stretch flat no-caps type="a" href="{% url 'events' %}" label="Events" class="{% active request 'events,acaces,conference,conference_v2,csw,roadshow' %}"></q-btn>
+            <q-btn stretch flat no-caps type="a" href="{% url 'webinars' %}" label="Webinars" class="{% active request 'webinars' %}"></q-btn>
             <q-btn stretch flat no-caps type="a" href="{% url 'jobs' %}" label="Jobs" class="{% active request 'jobs,job' %}"></q-btn>
             <q-btn stretch flat no-caps type="a" href="{% url 'vision' %}" label="Vision" class="{% active request 'vision' %}"></q-btn>
             <q-btn stretch flat no-caps type="a" href="{% url 'awards' %}" label="Awards" class="{% active request 'awards' %}"></q-btn>
@@ -35,7 +36,7 @@
             <q-btn stretch flat no-caps type="a" href="{% url 'press' %}" label="Press room" class="{% active request 'press' %}"></q-btn>
             <q-space></q-space>
             {% if user.is_authenticated %}
-              <q-btn outline no-caps color="primary" type="a" href="{% url 'account_login' %}" color="danger" label="{% user_display user %}">
+              <q-btn outline no-caps color="primary" type="a" href="{% url 'account_login' %}" label="{% user_display user %}">
                 <q-menu anchor="bottom right" self="top right">
 
                 </q-menu>

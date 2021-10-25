@@ -1,4 +1,4 @@
-<script type="text/x-template" id="v-session">
+<script type="text/x-template" id="v-webinar">
 {% verbatim %}
   <div>
     <q-dialog full-height v-model="showDialog" @show="dialogVisible = true" @hide="reroute">
@@ -6,14 +6,14 @@
 
         <q-header class="bg-white">
           <q-toolbar class="text-dark bg-grey-2">
-            <q-tabs v-model="tab" no-caps inline-label shrink mobile-arrows class="q-mr-md">
+            <q-tabs v-model="tab" no-caps inline-label shrink class="q-mr-md">
               <q-tab name="main">
                 <q-icon size="xs" name="lens" :color="session.color" class="q-mr-sm" />
                 <div class="q-tab__label">{{ session.session_type.value }}</div>
               </q-tab>
-              <q-tab v-if="session.is_keynote && session.main_speaker" name="bio" label="Bio" />
+              <q-tab v-if="session.main_speaker" name="speaker" label="Main speaker" />
               <q-tab v-if="session.program" name="program" label="Program" />
-              <q-tab v-if="registration" name="attendees" label="Attendees" />
+              <q-tab v-if="registered" name="attendees" label="Attendees" />
             </q-tabs>
             <q-space></q-space>
             <editor-link v-if="session.editor_href" type="btn" :url="session.editor_href" target="_blank" />
@@ -24,10 +24,6 @@
               <li>
                 <q-icon size="xs" name="today" class="q-mr-xs" />
                 <span>{{ session.start.format("ddd, MMMM Do") }}</span>
-              </li>
-              <li v-if="room">
-                <q-icon size="xs" name="room" class="q-mr-xs" />
-                <span>{{ room.name }}</span>
               </li>
               <li>
                 <q-icon size="xs" name="schedule" class="q-mr-xs" />
@@ -53,8 +49,13 @@
                     <marked v-if="session.summary" :text="session.summary" />
                   </div>
                   <div class="col-12 col-md-4">
+                    <div v-if="!session.has_ended" class="q-gutter-sm">
+                      <q-btn v-if="!registered" @click="register" unelevated no-caps color="primary" class="full-width">Register</q-btn>
+                      <q-btn v-else @click="unregister" outline no-caps color="negative" class="full-width">Unregister</q-btn>
+                      <q-btn v-if="registration" type="a" :href="registration.access_link" target="_black" rel="noopener" unelevated no-caps color="primary" class="full-width">Join Zoom webinar</q-btn>
+                    </div>
                     <div v-if="session.main_speaker" class="q-mb-lg">
-                      <display-5>Speaker</display-5>
+                      <display-5>Main speaker</display-5>
                       <hipeac-profile-item :profile="session.main_speaker.profile" class="q-mb-md" />
                       <a class="text-caption text-grey-8 inherit" :href="session.main_speaker.href" target="_blank">
                         <q-icon size="xs" name="shortcut" class="q-mr-xs" />View HiPEAC profile</a>
@@ -66,7 +67,7 @@
                 </div>
               </q-tab-panel>
 
-              <q-tab-panel name="bio">
+              <q-tab-panel name="speaker">
                 <div class="row q-col-gutter-x-xl q-col-gutter-y-lg reverse">
                   <div class="col-12 col-md-4">
                     <hipeac-profile-item :profile="session.main_speaker.profile" class="q-mb-md" />
@@ -86,7 +87,7 @@
               </q-tab-panel>
 
               <q-tab-panel name="attendees">
-                <user-viewer v-if="registration" :users="sessionAttendees" :show-profile-link="true" event-name="attendees-query-changed"></user-viewer>
+                <user-viewer v-if="registered" :users="sessionAttendees" :show-profile-link="true" event-name="attendees-query-changed"></user-viewer>
               </q-tab-panel>
 
             </q-tab-panels>

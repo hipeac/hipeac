@@ -1,0 +1,30 @@
+{% load static %}
+
+
+<script type="text/x-template" id="v-logistics">
+  <div class="q-my-lg">
+    <q-card class="hipeac__card q-pa-lg">
+      <q-card-section>
+        <img src="{% static 'images/zoom.svg' %}" class="float-right q-ml-lg q-mb-lg" style="width: 120px">
+        <display-5>Logistics</display-5>
+        <p>All webinars will be delivered using Zoom. Once you register on our website, you will receive an email from Zoom with a unique link to join the webinar. A reminder will be sent 24 hours before the webinar starts.</p>
+{% verbatim %}
+        <div v-if="access_links.length">
+          <p>You can also access your upcoming webinars directly using the following links:</p>
+          <q-list>
+            <q-item v-for="link in access_links" clickable tag="a" :href="link.registration.access_link" target="_blank">
+              <q-item-section avatar>
+                <q-avatar color="blue-2" text-color="white" icon="open_in_browser" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ link.webinar.title }}</q-item-label>
+                <q-item-label caption>{{ link.webinar.start.format('dddd, MMM D, H:mm') }} - {{ link.webinar.end.format('H:mm') }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </q-card-section>
+    </q-card>
+  </div>
+{% endverbatim %}
+</script>

@@ -21,6 +21,7 @@ from ..serializers import (
     NotificationSerializer,
     PublicationListSerializer,
     VideoListSerializer,
+    WebinarRegistrationListSerializer,
 )
 
 
@@ -66,6 +67,11 @@ class AuthUserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     @action(detail=False, pagination_class=None, serializer_class=NotificationSerializer)
     def notifications(self, request, *args, **kwargs):
         self.queryset = request.user.notifications.active()
+        return ListModelMixin.list(self, request, *args, **kwargs)
+
+    @action(detail=False, pagination_class=None, serializer_class=WebinarRegistrationListSerializer)
+    def webinars(self, request, *args, **kwargs):
+        self.queryset = request.user.webinar_registrations.upcoming()
         return ListModelMixin.list(self, request, *args, **kwargs)
 
 

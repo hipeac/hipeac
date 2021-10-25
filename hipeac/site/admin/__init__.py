@@ -12,3 +12,4 @@ from .recruitment import *
 from .steering import *
 from .users import *
 from .vision import *
+from .webinars import *

@@ -71,6 +71,7 @@ urlpatterns = [
     path("acaces/<int:year>/survey/gelato/", views.AcacesSurveyGelato.as_view(), name="acaces_gelato"),
     path("csw/<int:year>/<slug:slug>/", views.CswDetail.as_view(), name="csw"),
     path("events/ec/<int:pk>/", views.EventDetail.as_view(), name="ec_meeting"),
+    path("webinars/", views.WebinarList.as_view(), name="webinars"),
     re_path(r"^events/roadshow/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$", views.RoadshowDetail.as_view(), name="roadshow"),
     path(
         "registration/payment/<int:pk>/result/",

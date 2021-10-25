@@ -17,7 +17,7 @@
       <hipeac-toolbar-menu v-show="$q.screen.gt.sm"></hipeac-toolbar-menu>
       <q-space></q-space>
       {% if user.is_authenticated %}
-        <q-btn outline no-caps color="primary" type="a" href="{% url 'account_login' %}" color="danger" label="{% user_display user %}">
+        <q-btn outline no-caps color="primary" type="a" href="{% url 'account_login' %}" label="{% user_display user %}">
           <q-menu anchor="bottom right" self="top right">
           </q-menu>
         </q-btn>
@@ -69,6 +69,7 @@
     var HIPEAC_MENU = [
       ['Network', '{% url "network" %}', '{% active request "network,user,institution,project" %}'],
       ['Events', '{% url "events" %}', '{% active request "events,acaces,conference,conference_v2,csw,roadshow" %}'],
+      ['Webinars', '{% url "webinars" %}', '{% active request "webinars" %}'],
       ['Jobs', '{% url "jobs" %}', '{% active request "jobs,job" %}'],
       ['Vision', '{% url "vision" %}', '{% active request "vision" %}'],
       ['Awards', '{% url "awards" %}', '{% active request "awards" %}'],

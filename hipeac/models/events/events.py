@@ -58,10 +58,12 @@ class Event(ImagesMixin, LinkMixin, models.Model):
     ACACES = "acaces"
     CONFERENCE = "conference"
     CSW = "csw"
+    WEBINARS = "webinars"
     EC_MEETING = EC_MEETING
     TYPE_CHOICES = (
         (CSW, "CSW"),
         (CONFERENCE, "Conference"),
+        (WEBINARS, "Webinars"),
         (ACACES, "ACACES Summer School"),
         (EC_MEETING, "EC Consultation Meeting"),
     )
@@ -102,6 +104,10 @@ class Event(ImagesMixin, LinkMixin, models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.city)
+        if self.type == self.WEBINARS:
+            self.city = None
+            self.country = None
+            self.is_virtual = True
         super().save(*args, **kwargs)
 
     class Meta:
@@ -131,6 +137,8 @@ class Event(ImagesMixin, LinkMixin, models.Model):
             return f"HiPEAC {self.start_date.year}{location}"
         if self.type == self.CSW:
             return f"CSW {self.season} {self.start_date.year}{location}"
+        if self.type == self.WEBINARS:
+            return f"Webinars {self.start_date.year}"
 
         return f'{self.city}, {self.start_date.strftime("%B %Y")}'
 

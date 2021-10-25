@@ -1,0 +1,312 @@
+{% extends '__v3__/layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}Webinars - {{ block.super }}{% endblock %}
+
+{% block submenu %}
+  <q-toolbar class="container">
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">HiPEAC Webinars</q-toolbar-title>
+    <q-space v-show="$q.screen.gt.sm"></q-space>
+    <hipeac-submenu-tabs :menu="menu"></hipeac-submenu-tabs>
+  </q-toolbar>
+{% endblock %}
+
+{% block page %}
+  <div id="vars" data-registrations-url="{% url 'v1:auth-user-webinars' %}" data-webinars-url="{% url 'v1:webinar-list' %}"></div>
+  <router-view></router-view>
+  <router-view name="dialog"></router-view>
+  <hipeac-submenu-fabs :menu="menu"></hipeac-submenu-fabs>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-logistics.html' %}
+  {% include './v-previous.html' %}
+  {% include './v-upcoming.html' %}
+  {% include './v-webinar.html' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js file webinars %}
+  <script src="{% static '__v3__/js/components/forms.js' %}"></script>
+  <script src="{% static '__v3__/js/components/events.js' %}"></script>
+  <script src="{% static '__v3__/js/components/users.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/session.js' %}"></script>
+  <script type="text/javascript">
+    var VARS = document.querySelector('#vars').dataset;
+
+    var Store = Vuex.createStore({
+      state: {
+        webinars: [],
+        registrations: []
+      },
+      getters: {
+        upcomingWebinars: function (state) {
+          return _.where(state.webinars, {has_ended: false});
+        },
+        previousWebinars: function (state) {
+          return _.where(state.webinars, {has_ended: true});
+        }
+      },
+      mutations: {
+        getWebinars: function (state) {
+          Hipeac.api.request('GET', VARS.webinarsUrl).then(function (res) {
+            state.webinars = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.session(obj);
+            }));
+            Quasar.Loading.hide();
+          });
+        },
+        getUserRegistrations: function (state) {
+          Hipeac.api.request('GET', VARS.registrationsUrl).then(function (res) {
+            state.registrations = Object.freeze(res.data);
+          });
+        },
+        updateUserRegistrations: function (state, payload) {
+          state.registrations = Object.freeze(payload);
+        }
+      }
+    });
+
+    var LogisticsView = {
+      template: '#v-logistics',
+      computed: _.extend(
+        Vuex.mapGetters(['upcomingWebinars']),
+        Vuex.mapState(['registrations']), {
+        access_links: function () {
+          if (!this.registrations.length || !this.upcomingWebinars.length) return [];
+          var webinars = this.upcomingWebinars;
+          var links = [];
+          _.each(this.registrations, function (obj) {
+            links.push({
+              registration: _.clone(obj),
+              webinar: _.clone(_.findWhere(webinars, {id: obj.webinar}))
+            });
+          });
+          return links;
+        }
+      })
+    };
+
+    var PreviousMainView = {
+      template: '#v-previous',
+      computed: _.extend(
+        Vuex.mapGetters(['previousWebinars']), {
+      })
+    };
+
+    var UpcomingMainView = {
+      template: '#v-upcoming',
+      computed: _.extend(
+        Vuex.mapGetters(['upcomingWebinars']), {
+      })
+    };
+
+    var SessionView = {
+      data: function () {
+        return {
+          event: null,
+          rerouteName: 'upcoming'
+        };
+      },
+      mixins: [SessionMixin],
+      template: '#v-webinar',
+      computed: _.extend(
+        Vuex.mapState(['webinars', 'registrations']), {
+        registration: function () {
+          if (!this.registrations.length) return null;
+          return _.findWhere(this.registrations, {'webinar': +this.id});
+        },
+        registered: function () {
+          if (!this.registrations.length) return false;
+          return _.contains(_.pluck(this.registrations, 'webinar'), +this.id);
+        }
+      }),
+      methods: {
+        findSession: function () {
+          var self = this;
+
+          if (!this.webinars.length) {
+            return null;
+          };
+
+          return _.findWhere(this.webinars, {id: +this.id});
+        },
+        register: function () {
+          var self = this;
+
+          if (!this.session || this.session.has_ended) {
+            return;
+          };
+
+          Hipeac.api.request('post', this.session.rel_register, null).then(function (res) {
+            self.$store.commit('updateUserRegistrations', res.data);
+            Hipeac.utils.notify('Registration created.');
+          }).catch(function (error) {
+            console.log(error);
+            if (error.response.status == 403) {
+              Hipeac.utils.notify('You need to log in to your HiPEAC account first.', 'warning');
+            } else {
+              Hipeac.utils.notifyApiError(error);
+            }
+          });
+        },
+        unregister: function () {
+          var self = this;
+
+          if (!this.session || this.session.has_ended) {
+            return;
+          };
+
+          Hipeac.api.create(this.session.rel_unregister, null, function (res) {
+            self.$store.commit('updateUserRegistrations', res.data);
+          }, 'Registration deleted.');
+        }
+      }
+    };
+
+    var Router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
+      linkActiveClass: 'active',
+      scrollBehavior: function (to, from) {
+        if ((from.name && from.name == 'session') || (to.name && to.name == 'session')) return;
+        return {top: 0};
+      },
+      routes: [
+        {
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: UpcomingMainView,
+          children: [
+            {
+              name: 'upcoming',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: UpcomingMainView
+            },
+            {
+              name: 'session',
+              path: ':id/',
+              pathToRegexpOptions: {strict: true},
+              components: {
+                default: UpcomingMainView,
+                dialog: SessionView
+              },
+              props: {
+                default: true,
+                dialog: true
+              }
+            }
+          ]
+        },
+        {
+          name: 'logistics',
+          path: '/logistics/',
+          pathToRegexpOptions: {strict: true},
+          component: LogisticsView,
+        },
+        {
+          path: '/previous/',
+          pathToRegexpOptions: {strict: true},
+          component: PreviousMainView,
+          children: [
+            {
+              name: 'previous',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: PreviousMainView
+            },
+            {
+              name: 'previous_session',
+              path: ':id/',
+              pathToRegexpOptions: {strict: true},
+              components: {
+                default: PreviousMainView,
+                dialog: SessionView
+              },
+              props: {
+                default: true,
+                dialog: true
+              }
+            }
+          ]
+        }
+      ]
+    });
+
+    var app = Vue.createApp({
+      data: {
+        menu: [
+          {
+            label: 'Upcoming',
+            to: {name: 'upcoming'},
+            exact: true
+          },
+          {
+            label: 'Previous',
+            to: {name: 'previous'},
+            exact: true
+          },
+          {
+            label: 'Logistics',
+            to: {name: 'logistics'},
+            exact: true
+          }
+        ]
+      },
+      mixins: [AppMixin],
+      computed: _.extend(
+        Vuex.mapState(['webinars']), {
+      }),
+      created: function () {
+        this.$q.loading.show();
+        this.$store.commit('getWebinars');
+        this.$store.commit('getUserRegistrations');
+      }
+    });
+    Hipeac.utils.registerComponents(app, [
+      HipeacCommonComponents, HipeacFormComponents, HipeacEventComponents, HipeacUserComponents
+    ]);
+    app.use(Store);
+    app.use(Router);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+  <script type="application/ld+json">{% spaceless_json %}
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": "{{ event }}",
+      "organizer": {
+        "@type": "Organization",
+        "name": "HiPEAC",
+        "url": "https://www.hipeac.net/"
+      },
+      "description": "{{ event.presentation | truncate }}",
+      "url": "{{ request.build_absolute_uri }}",
+      "startDate": "{{ event.start_date | date:'c' }}",
+      "endDate": "{{ event.end_date | date:'c' }}",
+      {% if event.images %}"image": "{{ event.images.th }}",{% endif %}
+      {% if event.is_virtual %}
+        "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+        "location": {
+          "@type": "VirtualLocation"
+        }
+      {% else %}
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "location": {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "{{ event.city }}",
+            "addressCountry": "{{ event.country.code }}"
+          }
+        }
+      {% endif %}
+    }
+  {% endspaceless_json %}</script>
+{% endblock %}

@@ -15,3 +15,4 @@ from .session_proposals import *
 from .sessions import *
 from .sponsors import *
 from .venues import *
+from .webinars import *

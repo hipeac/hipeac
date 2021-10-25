@@ -11,15 +11,15 @@ from .events import validate_date
 from ..mixins import LinkMixin
 
 
-class Session(LinkMixin, models.Model):
-    event = models.ForeignKey("hipeac.Event", on_delete=models.CASCADE, related_name="sessions")
+class SessionAbstractModel(models.Model):
+    event = None
     session_type = models.ForeignKey(
         Metadata,
         null=True,
         blank=False,
         on_delete=models.SET_NULL,
         limit_choices_to={"type": Metadata.SESSION_TYPE},
-        related_name=Metadata.SESSION_TYPE,
+        related_name=f"%(class)ss_{Metadata.SESSION_TYPE}",
     )
     is_private = models.BooleanField(default=False)
 
@@ -30,56 +30,46 @@ class Session(LinkMixin, models.Model):
     summary = models.TextField(null=True, blank=True)
     program = models.TextField(null=True, blank=True)
     main_speaker = models.ForeignKey(
-        get_user_model(), null=True, blank=True, on_delete=models.SET_NULL, related_name="main_talks"
+        get_user_model(),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="main_%(class)ss",
+        related_query_name="%(app_label)s_%(class)ss",
     )
-    speakers = models.ManyToManyField(get_user_model(), blank=True, related_name="talks")
-
-    room = models.ForeignKey("hipeac.Room", null=True, blank=True, on_delete=models.SET_NULL, related_name="sessions")
-    max_attendees = models.PositiveSmallIntegerField(default=0, help_text="Leave on `0` for non limiting.")
-    extra_attendees_fee = models.PositiveSmallIntegerField(default=0)
+    speakers = models.ManyToManyField(
+        get_user_model(), blank=True, related_name="%(class)ss", related_query_name="%(app_label)s_%(class)ss"
+    )
+    keywords = models.JSONField(default=list, editable=False)
 
     application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
     topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
+    projects = models.ManyToManyField(
+        "hipeac.Project", blank=True, related_name="%(class)ss", related_query_name="%(app_label)s_%(class)ss"
+    )
+    institutions = models.ManyToManyField(
+        "hipeac.Institution", blank=True, related_name="%(class)ss", related_query_name="%(app_label)s_%(class)ss"
+    )
+
     acl = GenericRelation("hipeac.Permission")
-    projects = models.ManyToManyField("hipeac.Project", blank=True, related_name="sessions")
-    institutions = models.ManyToManyField("hipeac.Institution", blank=True, related_name="sessions")
     links = GenericRelation("hipeac.Link")
     private_files = GenericRelation("hipeac.PrivateFile")
 
-    zoom_webinar_id = models.CharField(max_length=32, null=True, blank=True)
-    zoom_attendee_report = models.FileField(upload_to="private/zoom", null=True, blank=True)
-
-    keywords = models.JSONField(default=list, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-        if self.id:
-            self.keywords = (
-                [institution.short_name for institution in self.institutions.all()]
-                + [''.join(['project:', slugify(project.acronym)]) for project in self.projects.all()]
-                + [f"{speaker.first_name} {speaker.last_name}" for speaker in self.speakers.all()]
-                + ([f"{self.main_speaker.first_name} {self.main_speaker.last_name}"] if self.main_speaker else [])
-            )
-        super().save(*args, **kwargs)
-
     class Meta:
-        indexes = [
-            models.Index(fields=["event"]),
-        ]
-        ordering = ["start_at", "session_type__position", "room__position", "end_at"]
+        abstract = True
 
     def clean(self) -> None:
-        validate_date(self.start_at.date(), self.event)
+        if self.event:
+            validate_date(self.start_at.date(), self.event)
 
     def __str__(self) -> str:
         return self.title
 
     def can_be_managed_by(self, user) -> bool:
         return self.main_speaker_id == user.id or self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
-
-    def get_absolute_url(self) -> str:
-        return "".join([self.event.get_absolute_url(), f"#/program/sessions/{self.id}/"])
 
     def get_editor_url(self) -> str:
         content_type = ContentType.objects.get_for_model(self)
@@ -93,12 +83,29 @@ class Session(LinkMixin, models.Model):
     def slug(self) -> str:
         return slugify(self.title)
 
-    @property
-    def zoom_webinar_int(self) -> int:
-        return int(self.zoom_webinar_id.replace(" ", ""))
 
+class Session(LinkMixin, SessionAbstractModel):
+    event = models.ForeignKey("hipeac.Event", on_delete=models.CASCADE, related_name="sessions")
 
-class SessionAccessLink(models.Model):
-    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="access_links")
-    user = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE, related_name="session_access_links")
-    url = models.URLField(max_length=500)
+    room = models.ForeignKey("hipeac.Room", null=True, blank=True, on_delete=models.SET_NULL, related_name="sessions")
+    max_attendees = models.PositiveSmallIntegerField(default=0, help_text="Leave on `0` for non limiting.")
+    extra_attendees_fee = models.PositiveSmallIntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        if self.id:
+            self.keywords = (
+                [institution.short_name for institution in self.institutions.all()]
+                + ["".join(["project:", slugify(project.acronym)]) for project in self.projects.all()]
+                + [f"{speaker.first_name} {speaker.last_name}" for speaker in self.speakers.all()]
+                + ([f"{self.main_speaker.first_name} {self.main_speaker.last_name}"] if self.main_speaker else [])
+            )
+        super().save(*args, **kwargs)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["event"]),
+        ]
+        ordering = ["start_at", "session_type__position", "room__position", "end_at"]
+
+    def get_absolute_url(self) -> str:
+        return "".join([self.event.get_absolute_url(), f"#/program/sessions/{self.id}/"])

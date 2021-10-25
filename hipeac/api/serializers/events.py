@@ -177,11 +177,7 @@ class SessionSerializer(SessionListSerializer):
     rel_attendees = serializers.HyperlinkedIdentityField(view_name="v1:session-attendees")
 
     class Meta(SessionNestedSerializer.Meta):
-        exclude = (
-            "created_at",
-            "updated_at",
-            "zoom_attendee_report",
-        )
+        exclude = ("created_at", "updated_at")
 
     def get_excerpt(self, obj) -> str:
         return truncate_md(obj.summary, limit=350) if obj.summary else ""
@@ -276,7 +272,7 @@ class RoadshowSerializer(RoadshowNestedSerializer):
 class CourseSessionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseSession
-        exclude = ("zoom_attendee_report",)
+        exclude = ()
 
 
 class CourseListSerializer(serializers.ModelSerializer):

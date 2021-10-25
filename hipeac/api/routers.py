@@ -36,8 +36,10 @@ class Router(DefaultRouter):
         self.register(r"network/projects", views.ProjectViewSet, basename="project")
         self.register(r"user", views.AuthUserViewSet, basename="auth-user")
         self.register(r"user/registrations", views.RegistrationViewSet, basename="auth-registration")
+        self.register(r"user/webinars", views.RegistrationViewSet, basename="auth-webinar")
         self.register(r"users", views.UserViewSet, basename="user")
         self.register(r"vision", views.VisionViewSet, basename="vision")
+        self.register(r"webinars", views.WebinarViewSet, basename="webinar")
 
         self.register(r"m/events/events", views.EventManagementViewSet, basename="event-management")
 

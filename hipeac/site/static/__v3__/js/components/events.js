@@ -21,16 +21,20 @@ var HipeacEventComponents = {
       showSlots: {
         type: Boolean,
         default: false
+      },
+      sessionRoute: {
+        type: String,
+        default: 'session'
       }
     },
     template: `
-      <q-card>
+      <q-card class="hipeac__card">
         <hipeac-search-bar v-model="q" placeholder="Search by title, speakers, project, topics..." :filters="filters"></hipeac-search-bar>
         <hipeac-no-data v-if="!filteredSessions.length" :filter="q" message="No matching sessions found"></hipeac-no-data>
         <div v-else>
-          <q-card-section v-for="(data, day) in program" :key="day" :class="{'q-pa-md': $q.screen.gt.xs}">
+          <q-card-section v-for="(data, day) in program" :class="{'q-pa-md': $q.screen.gt.xs}">
             <h3 class="q-mb-lg">{{ data.date.format('dddd, MMM D') }}</h3>
-            <div v-if="data.sessions" v-for="session in data.sessions" :key="session.id">
+            <div v-if="data.sessions" v-for="session in data.sessions">
               <div v-if="session.session_type == 'break'" class="row bg-grey-1 text-body2">
                 <div v-if="session.show_time" class="col-12 border-top"></div>
                 <div class="col-2 q-py-md q-px-xs text-center">
@@ -119,6 +123,7 @@ var HipeacEventComponents = {
       sessions: function () {
         var output = [];
         var rooms = {};
+        var sessionRoute = this.sessionRoute;
 
         _.each(this.event.venues, function (venue) {
           _.each(venue.rooms, function (room) {
@@ -129,7 +134,6 @@ var HipeacEventComponents = {
         if (this.event.breaks.length) {
           _.each(this.event.breaks, function (br) {
             output.push({
-              key: 'b-' + br.id,
               id: br.id,
               title: br.notes,
               date: br.date,
@@ -148,7 +152,6 @@ var HipeacEventComponents = {
         if (this.event.sessions.length) {
           _.each(this.event.sessions, function (session) {
             output.push({
-              key: 's-' + session.id,
               id: session.id,
               title: session.title,
               date: session.date,
@@ -158,7 +161,7 @@ var HipeacEventComponents = {
               duration: session.duration,
               teachersStr: '',
               topics: session.topics,
-              route: 'session',
+              route: sessionRoute,
               session_type: session.session_type,
               room: rooms[session.room] || null,
               color: session.color,
@@ -176,7 +179,7 @@ var HipeacEventComponents = {
         return output;
       },
       filteredSessions: function () {
-        if (!this.sessions.length) return null;
+        if (!this.sessions.length) return [];
         var filtered = this.sessions;
 
         if (this.q) {
@@ -230,6 +233,28 @@ var HipeacEventComponents = {
     }
   },
 
+  'hipeac-webinars-card': {
+    props: {
+      webinars: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      }
+    },
+    template: `
+      <hipeac-program-card :event="event" />
+    `,
+    computed: {
+      event: function () {
+        return {
+          breaks: [],
+          sessions: this.webinars
+        };
+      }
+    }
+  },
+
   'hipeac-session-breaks': {
     props: {
       breaks: {
@@ -247,7 +272,7 @@ var HipeacEventComponents = {
       <div v-if="!!breaks_in_session.length">
         <display-5>Breaks</display-5>
         <q-list separator class="text-grey-7">
-          <q-item dense v-for="br in breaks_in_session" :key="br.id" class="q-pa-xs">
+          <q-item dense v-for="br in breaks_in_session" class="q-pa-xs">
             <q-item-section avatar>
               <q-icon size="xs" :name="br.icon"></q-icon>
             </q-item-section>
@@ -339,10 +364,10 @@ var HipeacEventComponents = {
     },
     template: `
       <div v-if="committees.length">
-        <div v-for="committee in sortedCommittees" :key="committee.id" class="q-mb-lg">
+        <div v-for="committee in sortedCommittees" class="q-mb-lg">
           <display-5>{{ committee.name }}</display-5>
           <q-list class="q-ml-xl">
-            <hipeac-profile-item v-for="user in committee.members" :key="user.id" :profile="user.profile" :showAvatar="showAvatar"></hipeac-profile-item>
+            <hipeac-profile-item v-for="user in committee.members" :profile="user.profile" :showAvatar="showAvatar"></hipeac-profile-item>
           </q-list>
         </div>
       </div>

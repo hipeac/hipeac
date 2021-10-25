@@ -5,7 +5,8 @@ var SessionMixin = {
       dialogVisible: false,
       session: null,
       sessionAttendees: [],
-      tab: 'main'
+      tab: 'main',
+      rerouteName: 'program',
     };
   },
   computed: {
@@ -37,20 +38,29 @@ var SessionMixin = {
   },
   methods: {
     reroute: function () {
-      this.$router.push({name: 'program'});
+      this.$router.push({name: this.rerouteName});
     },
     clearSession: function () {
       this.session = null;
     },
-    getSession: function () {
+    findSession: function () {
       var self = this;
 
       if (!this.event) {
+        return null;
+      };
+
+      return _.findWhere(this.event.sessions, {id: +this.id});
+    },
+    getSession: function () {
+      var self = this;
+      var session = this.findSession();
+
+      if (!session) {
         setTimeout(function () { self.getSession() }, 25);
         return;
       };
 
-      var session = _.findWhere(this.event.sessions, {id: +this.id});
       Hipeac.api.request('GET', session.self).then(function (res) {
         self.session = Hipeac.map.session(res.data);
 
