@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-vision-list="{% url 'v1:vision-list' %}"></div>
+  <div id="vars" data-vision-list="{% url 'v1:vision-list' %}" data-vision-dissemination="{% url 'v1:vision-dissemination' %}"></div>
   <router-view></router-view>
   <hipeac-submenu-fabs :menu="menu"></hipeac-submenu-fabs>
 {% endblock %}
@@ -32,7 +32,8 @@
 
     var Store = Vuex.createStore({
       state: {
-        visions: null
+        visions: null,
+        dissemination: null
       },
       getters: {
         vision: function (state) {
@@ -79,6 +80,11 @@
               return Hipeac.map.vision(obj);
             }));
             Quasar.Loading.hide();
+          });
+        },
+        getDissemination: function (state) {
+          Hipeac.api.request('GET', VARS.visionDissemination).then(function (res) {
+            state.dissemination = Object.freeze(res.data);
           });
         }
       }
@@ -139,6 +145,13 @@
       })
     };
 
+    var VisionDisseminationView = {
+      template: '#v-dissemination',
+      computed: _.extend(
+        Vuex.mapState(['dissemination']), {
+      })
+    };
+
     var VisionDownloadsView = {
       template: '#v-downloads',
       computed: _.extend(
@@ -173,6 +186,12 @@
               path: 'articles/',
               pathToRegexpOptions: {strict: true},
               component: VisionArticleView
+            },
+            {
+              name: 'dissemination',
+              path: 'dissemination/',
+              pathToRegexpOptions: {strict: true},
+              component: VisionDisseminationView
             },
             {
               name: 'downloads',
@@ -213,6 +232,7 @@
       created: function () {
         this.$q.loading.show();
         this.$store.commit('getVisions');
+        this.$store.commit('getDissemination');
       }
     });
     Hipeac.utils.registerComponents(app, [HipeacCommonComponents]);

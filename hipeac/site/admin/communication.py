@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.utils.safestring import mark_safe
 
 from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
-from hipeac.models.communication import Article, Clipping, Magazine, Quote, Video
+from hipeac.models.communication import Article, Clipping, Dissemination, Magazine, Quote, Video
 from .generic import ImagesInline, PublicFilesInline
 
 
@@ -29,6 +29,15 @@ class ClippingAdmin(admin.ModelAdmin):
 
     def external_link(self, obj):
         return mark_safe(f'<a target="_blank" href="{obj.url}">{obj.media}</a>')
+
+
+@admin.register(Dissemination)
+class DisseminationAdmin(admin.ModelAdmin):
+    date_hierarchy = "date"
+    list_display = ("id", "event", "type", "date")
+    list_filter = ("type", "date")
+
+    inlines = (PublicFilesInline,)
 
 
 class MagazineAdminForm(ModelForm):

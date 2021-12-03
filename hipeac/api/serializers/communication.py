@@ -1,6 +1,7 @@
+from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
-from hipeac.models import Article, Clipping, Quote, Magazine, Video
+from hipeac.models import Article, Clipping, Dissemination, Quote, Magazine, Video
 from .generic import ImageSerializer, MetadataListField
 from .institutions import InstitutionNestedSerializer
 from .users import UserPublicListSerializer
@@ -18,6 +19,14 @@ class ArticleListSerializer(serializers.ModelSerializer):
 class ClippingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Clipping
+        fields = "__all__"
+
+
+class DisseminationListSerializer(serializers.ModelSerializer):
+    country = CountryField(country_dict=True)
+
+    class Meta:
+        model = Dissemination
         fields = "__all__"
 
 

@@ -15,6 +15,7 @@
         <q-route-tab exact :to="{name: 'latest'}" icon="book" label="Overview"></q-route-tab>
         <q-route-tab exact :to="{name: 'articles'}" icon="article" label="Articles"></q-route-tab>
         <q-route-tab exact :to="{name: 'downloads'}" icon="download" label="Other downloads"></q-route-tab>
+        <q-route-tab exact :to="{name: 'dissemination'}" icon="monitor" label="Dissemination"></q-route-tab>
       </q-tabs>
     </q-card>
     <router-view></router-view>
@@ -94,6 +95,25 @@
         </q-card>
       </div>
     </div>
+  </q-card>
+{% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-dissemination">
+{% verbatim %}
+  <q-card class="hipeac__card q-pa-lg" v-if="dissemination">
+    <q-list>
+      <q-item v-for="dis in dissemination" clickable tag="a" :href="dis.external_url" target="_blank">
+        <q-item-section avatar>
+          <q-avatar color="blue-2" text-color="white" icon="monitor" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label caption>{{ dis.date }}</q-item-label>
+          <q-item-label>{{ dis.event }}</q-item-label>
+          <q-item-label caption>{{ dis.description }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
   </q-card>
 {% endverbatim %}
 </script>
