@@ -76,7 +76,7 @@ def csv_users_activity(queryset, filename):
 
         with connection.cursor() as cursor:
             query = """
-                SELECT e.type, YEAR(e.start_date), COUNT(*)
+                SELECT e.type, EXTRACT(year FROM e.start_date), COUNT(*)
                 FROM hipeac_registration AS r
                 INNER JOIN hipeac_event AS e ON r.event_id = e.id
                 WHERE r.user_id IN (
@@ -84,7 +84,7 @@ def csv_users_activity(queryset, filename):
                     FROM hipeac_profile
                     WHERE user_id = %s OR advisor_id = %s
                 ) AND e.start_date BETWEEN '%s-01-01' AND '%s-12-31'
-                GROUP BY e.type, YEAR(e.start_date)
+                GROUP BY e.type, EXTRACT(year FROM e.start_date)
             """
             cursor.execute(query, [user.id, user.id, years[0], years[-1]])
 
@@ -136,7 +136,7 @@ def csv_users_activity(queryset, filename):
 
         with connection.cursor() as cursor:
             query = """
-                SELECT YEAR(s.start_at), COUNT(*)
+                SELECT EXTRACT(year FROM s.start_at), COUNT(*)
                 FROM hipeac_session AS s
                 INNER JOIN (
                     SELECT *
@@ -148,7 +148,7 @@ def csv_users_activity(queryset, filename):
                     FROM hipeac_profile
                     WHERE user_id = %s OR advisor_id = %s
                 ) AND s.start_at BETWEEN '%s-01-01 00:00' AND '%s-12-31 23:59'
-                GROUP BY YEAR(s.start_at)
+                GROUP BY EXTRACT(year FROM s.start_at)
             """
             cursor.execute(query, [user.id, user.id, years[0], years[-1]])
 
@@ -159,14 +159,14 @@ def csv_users_activity(queryset, filename):
 
         with connection.cursor() as cursor:
             query = """
-                SELECT YEAR(j.created_at), COUNT(*)
+                SELECT EXTRACT(year FROM j.created_at), COUNT(*)
                 FROM hipeac_job AS j
                 WHERE j.created_by_id IN (
                     SELECT user_id
                     FROM hipeac_profile
                     WHERE user_id = %s OR advisor_id = %s
                 ) AND j.created_at BETWEEN '%s-01-01' AND '%s-12-31'
-                GROUP BY YEAR(j.created_at)
+                GROUP BY EXTRACT(year FROM j.created_at)
             """
             cursor.execute(query, [user.id, user.id, years[0], years[-1]])
 
@@ -177,12 +177,12 @@ def csv_users_activity(queryset, filename):
 
         with connection.cursor() as cursor:
             query = """
-                SELECT YEAR(m.publication_date), COUNT(*)
+                SELECT EXTRACT(year FROM m.publication_date), COUNT(*)
                 FROM hipeac_magazine_users AS rel
                 INNER JOIN hipeac_magazine AS m ON rel.magazine_id = m.id
                 WHERE rel.user_id = %s
                     AND m.publication_date BETWEEN '%s-01-01' AND '%s-12-31'
-                GROUP BY YEAR(m.publication_date)
+                GROUP BY EXTRACT(year FROM m.publication_date)
             """
             cursor.execute(query, [user.id, years[0], years[-1]])
 
