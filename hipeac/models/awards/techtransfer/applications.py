@@ -56,8 +56,8 @@ class TechTransferApplication(models.Model):
         """
         if self.call.is_frozen:
             raise ValidationError('Call is "frozen": no more changes are allowed in applications.')
-        if self.awardee and self.status != "OK":
-            raise ValidationError("Please check that the `status` has been updated.")
+        if self.awardee and not self.awarded:
+            raise ValidationError("Please check that the `awarded` field has been updated.")
 
     def __str__(self) -> str:
         return self.title
