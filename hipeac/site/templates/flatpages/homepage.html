@@ -86,6 +86,32 @@
     <div class="row">
       <div class="col-12 col-md-12 col-lg-4 d-flex align-items-stretch">
         <div class="hipeac-card">
+          <div v-if="webinars && webinars.length">
+            <display-sm>Webinars</display-sm>
+            <table class="table pointer mt-0 mb-3">
+              <tbody>
+                {% verbatim %}
+                <tr v-for="item in webinars" :key="item.id" @click="updateLocation('/webinars/#/' + item.id + '/')">
+                  <td class="px-0" style="width:50px">
+                    <span class="avatar rounded"></span>
+                  </td>
+                  <td>
+                    {{ item.title }}<br>
+                    <small>
+                      <icon class="sm mr-1" name="videocam"></icon>
+                      <strong>Zoom</strong>, {{ item.niceDate }}
+                    </small>
+                  </td>
+                  <td class="text-right align-middle pr-0">
+                    <a :href="item.href">
+                      <i class="material-icons sm">arrow_forward</i>
+                    </a>
+                  </td>
+                </tr>
+                {% endverbatim %}
+              </tbody>
+            </table>
+          </div>
           <div is="event-list" :items="events" :min="10" :max="15"></div>
         </div>
       </div>
@@ -108,6 +134,7 @@
       el: '#vue',
       data: function () {
         return {
+          webinars: null,
           events: null,
           upcomingEvent: null
         };
@@ -124,11 +151,27 @@
               self.upcomingEvent = upcomingEvents.reverse()[0];
             }
           });
+        },
+        fetchWebinars: function () {
+          var self = this;
+          ajax().get('/api/v1/webinars/').done(function (res) {
+            webinars = res.filter(function (obj) {
+              return moment(obj.end_at) > Date.now();
+            });
+            if (webinars.length > 0) {
+              self.webinars = Object.freeze(mapper().webinars(webinars.reverse()));
+            }
+          });
+        },
+        updateLocation: function (url, target) {
+          var w = window.open(url, target || '_self');
+          w.focus();
         }
       },
       created: function () {
         $.when(
-          this.fetchEvents()
+          this.fetchEvents(),
+          this.fetchWebinars()
         );
       }
     });

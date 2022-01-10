@@ -284,6 +284,13 @@ function mapper() {
         obj.q = '';
         return obj;
       });
+    },
+    webinars: function (items) {
+      return items.map(function (obj) {
+        obj.startAt = moment(obj.start_at);
+        obj.niceDate = obj.startAt.format('MMMM D, YYYY');
+        return obj;
+      });
     }
   };
 }
