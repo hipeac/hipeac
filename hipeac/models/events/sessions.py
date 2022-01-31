@@ -51,6 +51,9 @@ class SessionAbstractModel(models.Model):
         "hipeac.Institution", blank=True, related_name="%(class)ss", related_query_name="%(app_label)s_%(class)ss"
     )
 
+    zoom_webinar_id = models.CharField(max_length=32, null=True, blank=True)
+    zoom_attendee_report = models.FileField(upload_to="private/zoom", null=True, blank=True)
+
     acl = GenericRelation("hipeac.Permission")
     links = GenericRelation("hipeac.Link")
     private_files = GenericRelation("hipeac.PrivateFile")
@@ -82,6 +85,10 @@ class SessionAbstractModel(models.Model):
     @property
     def slug(self) -> str:
         return slugify(self.title)
+
+    @property
+    def zoom_webinar_int(self) -> int:
+        return int(self.zoom_webinar_id.replace(" ", ""))
 
 
 class Session(LinkMixin, SessionAbstractModel):
