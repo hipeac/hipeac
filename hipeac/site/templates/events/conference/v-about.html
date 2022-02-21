@@ -64,7 +64,7 @@
             <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
               <img :src="sponsor.institution.images.lg" class="sponsor">
             </a>
-            <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
+            <a v-else-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
               <img :src="sponsor.project.images.lg" class="sponsor">
             </a>
           </div>
