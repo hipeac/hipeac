@@ -85,22 +85,24 @@ class MembershipTypeFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         value = self.value()
-        queryset = queryset.filter(is_active=True, profile__membership_revocation_date__isnull=True)
+        queryset = queryset.filter(is_active=True)
 
         if value in ["any", "industry"]:
             queryset = queryset.filter(
-                Q(profile__membership_tags__contains="member") | Q(profile__membership_tags__contains="affiliated")
+                Q(profile__membership_tags__contains="member") | Q(profile__membership_tags__contains="affiliated"),
+                profile__membership_revocation_date__isnull=True
             )
 
         if value:
             if value == "industry":
                 return queryset.filter(
                     Q(profile__institution__type__in=[Institution.INDUSTRY, Institution.SME])
-                    | Q(profile__second_institution__type__in=[Institution.INDUSTRY, Institution.SME])
+                    | Q(profile__second_institution__type__in=[Institution.INDUSTRY, Institution.SME]),
+                    profile__membership_revocation_date__isnull=True
                 )
 
             if value != "":
-                return queryset.filter(profile__membership_tags__contains=value)
+                return queryset.filter(profile__membership_tags__contains=value, profile__membership_revocation_date__isnull=True)
 
         return queryset
 
