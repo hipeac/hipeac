@@ -13,7 +13,7 @@ class EuraxessXMLGenerator:
     organisation_id_key = "406359-507680"
     datasource_key = "d22ff6df705c4afcc0a7279b6ebd953a"
     encoding = "utf-8"
-    no_namespace_schema_location = "http://euraxess.intrasoft-intl.com/api/schema/JobOpportunitySchema.xsd"
+    no_namespace_schema_location = "https://euraxess.ec.europa.eu/api/schema/JobOpportunitySchema.xsd"
     xsi = "http://www.w3.org/2001/XMLSchema-instance"
 
     def __init__(self, *, queryset):
