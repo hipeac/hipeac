@@ -12,27 +12,6 @@
       <link href="{% static 'scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
     {% endcompress %}
     {% block styles %}{% endblock %}
-    {% if not debug and not request.DNT and user.is_authenticated %}
-      <link href="/manifest.json" rel="manifest">
-      <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
-      {% compress js inline %}
-        <script>
-          var userId = document.getElementsByTagName('html')[0].getAttribute('data-user');
-          var OneSignal = window.OneSignal || [];
-          OneSignal.push(function () {
-            OneSignal.init({
-              appId: '2b07f91b-27bf-4b6d-864c-40e42a7514e4',
-              autoResubscribe: true,
-              welcomeNotification: {
-                disable: true
-              }
-            });
-            OneSignal.setExternalUserId(userId);
-            OneSignal.showNativePrompt();
-          });
-        </script>
-      {% endcompress %}
-    {% endif %}
     <title>{% block head_title %}HiPEAC{% endblock %}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
