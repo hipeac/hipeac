@@ -40,14 +40,25 @@
                       </router-link>
                     </q-item-section>
                   </q-item>
-                  <q-item-label header v-if="simpleTracks.length">Tracks</q-item-label>
-                  <q-item v-for="t in simpleTracks" :key="t.track.project_id" class="q-py-xs">
+                  <q-item class="q-py-xs">
                     <q-item-section avatar>
-                      <stats-progress :value="(mainStats.tracks[t.track.name] / mainStats.registrations) * 100" :color="t.track.color">{{ mainStats.tracks[t.track.name] }}</stats-progress>
+                      <stats-progress :value="(mainStats.gender.male / mainStats.registrations) * 100" color="blue">{{ mainStats.gender.non_binary }}</stats-progress>
                     </q-item-section>
-                    <q-item-section>{{ t.track.name }}</q-item-section>
+                    <q-item-section>Non-binary</q-item-section>
                     <q-item-section side>
-                      <router-link :to="{name: 'registrations', query: {q: 'track:' + t.track.name.toLowerCase()}}" class="q-ml-xs">
+                      <router-link :to="{name: 'registrations', query: {q: 'gender:non-binary'}}" class="q-ml-xs">
+                        <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+                      </router-link>
+                    </q-item-section>
+                  </q-item>
+                  <q-item-label header>Posters</q-item-label>
+                  <q-item class="q-py-xs">
+                    <q-item-section avatar>
+                      <stats-progress :value="(mainStats.posters / mainStats.registrations) * 100" color="blue">{{ mainStats.posters }}</stats-progress>
+                    </q-item-section>
+                    <q-item-section>Applicants w/ poster</q-item-section>
+                    <q-item-section side>
+                      <router-link :to="{name: 'registrations', query: {q: 'poster:yes'}}" class="q-ml-xs">
                         <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
                       </router-link>
                     </q-item-section>

@@ -113,7 +113,15 @@ var HipeacCommonComponents = {
   },
 
   'display-5': {
-    template: '<h6 class="q-mt-none q-mb-md text-weight-bold text-dark"><slot></slot></h6>'
+    props: {
+      dense: {
+        type: Boolean,
+        default: false
+      }
+    },
+    template: `
+      <h6 class="q-my-none text-weight-bold text-dark" :class="{'q-mb-md': !dense}"><slot></slot></h6>
+    `
   },
 
   'form-section-title': {
@@ -241,11 +249,16 @@ var HipeacCommonComponents = {
         default: function () {
           return {};
         }
+      },
+      hashtag: {
+        type: String,
+        default: null
       }
     },
     template: `
       <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps>
         <q-route-tab v-for="item in items" :exact="item.exact" :to="item.to" :label="item.label" :icon="item.icon"></q-route-tab>
+        <q-route-tab v-if="hashtag" class="q-px-xs" :href="'https://twitter.com/hashtag/' + hashtag + '?f=live'" target="_blank"><twitter-logo :width="20" fill="white" /></q-route-tab>
       </q-tabs>
     `,
     computed: {
@@ -493,6 +506,22 @@ var HipeacCommonComponents = {
     `
   },
 
+  'twitter-logo': {
+    props: {
+      fill: {
+        type: String,
+        default: '#55ACEE'
+      },
+      width: {
+        type: Number,
+        default: 32
+      }
+    },
+    template: `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" :width="width"><path :fill="fill" d="M32 6.08c-1.18.52-2.45.87-3.78 1.03a6.59 6.59 0 0 0 2.89-3.63c-1.27.75-2.67 1.3-4.17 1.6a6.56 6.56 0 0 0-11.18 5.98A18.64 18.64 0 0 1 2.23 4.2a6.54 6.54 0 0 0 2.03 8.76 6.54 6.54 0 0 1-2.97-.82v.09a6.57 6.57 0 0 0 5.26 6.43 6.6 6.6 0 0 1-2.96.12 6.57 6.57 0 0 0 6.13 4.55A13.17 13.17 0 0 1 0 26.05 18.6 18.6 0 0 0 10.06 29c12.07 0 18.68-10 18.68-18.68l-.02-.85c1.28-.92 2.4-2.08 3.27-3.4z"/></svg>
+    `
+  },
+
   'ugent-logo': {
     template: `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75.77 76.25"><path fill="#0077b5" d="M0 5.47C0 2.45 2.51 0 5.6 0h64.57c3.1 0 5.6 2.45 5.6 5.46v65.33c0 3.02-2.5 5.46-5.6 5.46H5.6c-3.09 0-5.6-2.44-5.6-5.46z"/><path fill="#fff" fill-rule="evenodd" d="M22.97 63.83V29.4H11.53v34.43zM17.25 24.7c3.99 0 6.47-2.64 6.47-5.95-.07-3.38-2.48-5.95-6.4-5.95-3.91 0-6.47 2.57-6.47 5.95 0 3.3 2.48 5.95 6.32 5.95zM29.3 63.83h11.45V44.6c0-1.03.07-2.05.37-2.79.83-2.05 2.71-4.18 5.87-4.18 4.15 0 5.8 3.15 5.8 7.78v18.42h11.45V44.09c0-10.58-5.65-15.5-13.18-15.5-6.17 0-8.88 3.45-10.39 5.8h.08V29.4H29.3c.15 3.23 0 34.43 0 34.43z"/></svg>
@@ -615,7 +644,7 @@ var HipeacCommonComponents = {
         if (q == '') {
           this.filterData = {};
           return;
-        };
+        }
 
         var filterParts = {};
         var textParts = [];

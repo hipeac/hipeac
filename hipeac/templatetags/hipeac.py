@@ -7,7 +7,6 @@ from django.utils.safestring import mark_safe
 from urllib.parse import quote_plus
 
 from hipeac.functions import truncate_md
-from hipeac.models import get_cached_metadata
 
 
 register = template.Library()
@@ -60,13 +59,10 @@ class MarkdownNode(Node):
         return mark_safe(marked(text))
 
 
-def metadata_output(ids, title, *, output_format: str = "<small>{0}</small><br>", maps=[str]):
-    keys = [int(key) for key in ids.split(",")]
-    metadata_items = get_cached_metadata()
-
+def metadata_output(metadata_items, title, *, output_format: str = "<small>{0}</small><br>", maps=[str]):
     output = []
     output.append(f'<div class="mb-4"><h5 class="display-sm mb-2">{title}</h5><p>')
-    for metadata in [metadata_items[key] for key in keys if key in metadata_items]:
+    for metadata in metadata_items:
         output.append(output_format.format(*[m(metadata.value) for m in maps]))
     output.append("</p></div>")
 
@@ -74,18 +70,18 @@ def metadata_output(ids, title, *, output_format: str = "<small>{0}</small><br>"
 
 
 @register.filter
-def metadata_list(ids, title):
-    if not ids:
+def metadata_list(metadata_items, title):
+    if not metadata_items:
         return ""
-    return metadata_output(ids, title)
+    return metadata_output(metadata_items, title)
 
 
 @register.filter
-def metadata_list_jobs(ids, title):
-    if not ids:
+def metadata_list_jobs(metadata_items, title):
+    if not metadata_items:
         return ""
     return metadata_output(
-        ids,
+        metadata_items,
         title,
         output_format='<small><a href="/jobs/#/?q={0}" class="inherit">{1}</a></small><br>',
         maps=[quote_plus, str],
@@ -93,18 +89,18 @@ def metadata_list_jobs(ids, title):
 
 
 @register.filter
-def metadata_badges(ids, title):
-    if not ids:
+def metadata_badges(metadata_items, title):
+    if not metadata_items:
         return ""
-    return metadata_output(ids, title, output_format='<span class="badge badge-primary mr-1">{0}</span>')
+    return metadata_output(metadata_items, title, output_format='<span class="badge badge-primary mr-1">{0}</span>')
 
 
 @register.filter
-def metadata_badges_jobs(ids, title):
-    if not ids:
+def metadata_badges_jobs(metadata_items, title):
+    if not metadata_items:
         return ""
     return metadata_output(
-        ids,
+        metadata_items,
         title,
         output_format='<a href="/jobs/#/?q={0}" class="inherit"><span class="badge badge-primary mr-1">{1}</span></a>',
         maps=[quote_plus, str],

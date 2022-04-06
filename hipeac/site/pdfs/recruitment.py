@@ -1,6 +1,6 @@
 from django.template.defaultfilters import date as date_filter
 
-from hipeac.tools.pdf import PdfResponse, Pdf
+from hipeac.services.pdf import PdfResponse, Pdf
 
 
 class JobsPdfMaker:
@@ -28,16 +28,14 @@ class JobsPdfMaker:
                     pdf.add_spacer()
                     pdf.add_text(job.title, "h1")
                     pdf.add_text(f"<strong>Deadline</strong>: {date_filter(job.deadline)}", "ul_li")
-                    pdf.add_text(
-                        f'<strong>Career levels</strong>: {job.get_metadata_display("career_levels")}', "ul_li"
-                    )
-                    pdf.add_text(f'<strong>Keywords</strong>: {job.get_metadata_display("topics")}', "ul_li")
+                    pdf.add_text(f"<strong>Career levels</strong>: {job.get_career_levels_display()}", "ul_li")
+                    pdf.add_text(f"<strong>Keywords</strong>: {job.get_topics_display()}", "ul_li")
                     pdf.add_spacer()
                     pdf.add_text(job.description, "p_justify", "markdown")
                     pdf.add_page_break()
 
                 except Exception:
-                    pdf.add_text(f"<strong>ERROR FOUND: #{job.id} {job.title}</strong>", "h4")
+                    pdf.add_text("<strong>ERROR FOUND</strong>", "h4")
                     pdf.add_page_break()
 
             self._response.write(pdf.get())

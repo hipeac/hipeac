@@ -48,7 +48,7 @@ var SessionMixin = {
 
       if (!this.event) {
         return null;
-      };
+      }
 
       return _.findWhere(this.event.sessions, {id: +this.id});
     },
@@ -59,7 +59,7 @@ var SessionMixin = {
       if (!session) {
         setTimeout(function () { self.getSession() }, 25);
         return;
-      };
+      }
 
       Hipeac.api.request('GET', session.self).then(function (res) {
         self.session = Hipeac.map.session(res.data);

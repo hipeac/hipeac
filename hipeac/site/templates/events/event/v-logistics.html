@@ -22,7 +22,7 @@
           <p>You can also access your sessions directly using the following links:</p>
 {% verbatim %}
           <ul>
-            <li v-for="s in access_sessions" :key="s.id">{{ s.startAt.format("ddd, MMMM Do H:mm") }}: "{{ s.title }}" ({{ s.session_type.value}}) - [<a :href="s.access_link.url"><strong>Personal link</strong></a>]</li>
+            <li v-for="s in access_sessions" :key="s.id">{{ s.startAt.format("ddd, MMMM Do H:mm") }}: "{{ s.title }}" ({{ s.type.value}}) - [<a :href="s.access_link.url"><strong>Personal link</strong></a>]</li>
           </ul>
 {% endverbatim %}
         </div>

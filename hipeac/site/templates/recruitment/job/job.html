@@ -81,9 +81,7 @@
                   {% endif %}
                 </div>
               {% endif %}
-              {{ job.topics | metadata_badges_jobs:'Topics' }}
-              {{ job.application_areas | metadata_list_jobs:'Application areas' }}
-              {{ job.career_levels | metadata_list_jobs:'Career levels' }}
+
               {% include 'components/links.html' with title='More information' items=job.get_ordered_links %}
               {% if job.project %}
                 <div class="mb-4">
@@ -125,7 +123,7 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" property="og:title" content="{{ job.title }}">
   <meta name="twitter:description" property="og:description" content="{{ job.description | truncate }}">
-  <meta name="keywords" content="{{ job.keywords | join_json:', ' }}">
+  <meta name="keywords" content="{{ job.keywords | join:', ' }}">
   <meta property="og:type" content="website">
   <meta property="og:updated_time" content="{{ job.updated_at | date:'c' }}" />
   {% if job.institution.images %}

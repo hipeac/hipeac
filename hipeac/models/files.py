@@ -10,10 +10,6 @@ def get_upload_path(instance, filename):
 
 
 class File(models.Model):
-    """
-    Model related files.
-    """
-
     PUBLIC = "public"
     PRIVATE = "private"
     TYPE_CHOICES = (
@@ -21,17 +17,19 @@ class File(models.Model):
         (PRIVATE, "Private"),
     )
 
-    type = models.CharField(max_length=8, choices=TYPE_CHOICES)
-    file = models.FileField(upload_to=get_upload_path)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="files")
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
+    type = models.CharField(max_length=8, choices=TYPE_CHOICES)
+    file = models.FileField(upload_to=get_upload_path)
+    position = models.PositiveSmallIntegerField(default=0)
+    description = models.TextField(null=True, blank=True)
+
     class Meta:
-        indexes = [
-            models.Index(fields=["file"]),
-        ]
-        ordering = ["content_type", "object_id"]
+        db_table = "hipeac_rel_file"
+        indexes = [models.Index(fields=["file"])]
+        ordering = ("content_type", "object_id", "position")
 
     def delete(self, *args, **kwargs):
         if os.path.isfile(self.file.path):

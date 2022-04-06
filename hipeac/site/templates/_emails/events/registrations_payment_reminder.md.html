@@ -9,10 +9,16 @@ Dear {{ user_name }},
 This is a reminder to complete your payment for {{ event_name }}.
 
 ---------------
+{% if not invoice_requested %}
+You will find instructions for the payment [on this page](https://www.hipeac.net{{ payment_url }}).
 
-{% if not invoice_requested %}You will find instructions for the payment [on this page](https://www.hipeac.net{{ payment_url }}). If you have a received a coupon from the Organization, you can also validate it there.
+If you have a received a coupon from the Organization, you can validate it there.
 
-If you would prefer to pay via invoice, please contact <vicky@hipeac.net> with the following invoice details:{% else %}We've noticed that you would like to pay your registration fee by invoice. Can you please send us the following invoice details to <vicky@hipeac.net>:{% endif %}
+You can also [share a private link](https://www.hipeac.net{{ payment_delegated_url }})
+with the administration at your institution if you want them to pay the registration on your behalf.
+The payment can be done online and you can download a receipt afterwards.
+
+If you would prefer to pay via invoice, please contact <vicky@hipeac.net> with the following invoice details:{% else %}We've noticed that you would like to pay your registration fee by invoice. Can you please send us the following invoice details to <vicky@hipeac.net>:{% endif %}
 
 - In case we need to send the invoice to your institution:
   - Official name and address or your institution

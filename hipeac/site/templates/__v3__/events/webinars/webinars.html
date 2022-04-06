@@ -77,7 +77,7 @@
         Vuex.mapGetters(['upcomingWebinars']),
         Vuex.mapState(['registrations']), {
         access_links: function () {
-          if (!this.registrations.length || !this.upcomingWebinars.length) return [];
+          if (!this.registrations.length || !this.upcomingWebinars.length) return [];
           var webinars = this.upcomingWebinars;
           var links = [];
           _.each(this.registrations, function (obj) {
@@ -168,6 +168,31 @@
       }
     };
 
+    var PreviousSessionView = {
+      data: function () {
+        return {
+          event: null,
+          rerouteName: 'previous'
+        };
+      },
+      mixins: [SessionMixin],
+      template: '#v-webinar',
+      computed: _.extend(
+        Vuex.mapState(['webinars']), {
+      }),
+      methods: {
+        findSession: function () {
+          var self = this;
+
+          if (!this.webinars.length) {
+            return null;
+          };
+
+          return _.findWhere(this.webinars, {id: +this.id});
+        }
+      }
+    };
+
     var Router = VueRouter.createRouter({
       history: VueRouter.createWebHashHistory(),
       linkActiveClass: 'active',
@@ -225,7 +250,7 @@
               pathToRegexpOptions: {strict: true},
               components: {
                 default: PreviousMainView,
-                dialog: SessionView
+                dialog: PreviousSessionView
               },
               props: {
                 default: true,

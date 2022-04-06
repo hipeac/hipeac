@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from hipeac.models import Registration
+from hipeac.models import Acaces, Registration
 from .base import EventDetail
 
 
@@ -21,11 +21,12 @@ def namedtuplefetchall(cursor):
 class AcacesDetail(EventDetail):
     """Displays a ACACES page."""
 
+    model = Acaces
     template_name = "events/acaces/acaces.html"
 
     def get_object(self, queryset=None):
         if not hasattr(self, "object"):
-            self.object = self.get_queryset().get(type="acaces", start_date__year=self.kwargs.get("year"))
+            self.object = self.get_queryset().get(start_date__year=self.kwargs.get("year"))
         return self.object
 
     def get_context_data(self, **kwargs):
@@ -39,7 +40,7 @@ class AcacesManagement(AcacesDetail):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.groups.filter(name="Management").exists():
+        if not request.user.groups.filter(name="Management ACACES").exists():
             messages.error(request, "You don't have the necessary permissions to view this page.")
             raise PermissionDenied
 
@@ -51,7 +52,7 @@ class AcacesSurvey(AcacesDetail):
 
     def get_registration(self, user=None):
         if not hasattr(self, "registration"):
-            self.registration = self.get_object().registrations.get(user=user, status=Registration.STATUS_ACCEPTED)
+            self.registration = self.get_object().registrations.get(user=user, accepted=True)
         return self.registration
 
     @method_decorator(login_required)

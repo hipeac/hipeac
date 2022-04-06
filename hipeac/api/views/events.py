@@ -1,4 +1,5 @@
 from django.db import IntegrityError
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.decorators import action
@@ -6,9 +7,17 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
 from rest_framework.parsers import FileUploadParser
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import B2b, Course, Event, File, Registration, Roadshow, Session, SessionAccessLink
+
+from hipeac.models import (
+    AcacesRegistration,
+    Event,
+    File,
+    Registration,
+    Roadshow,
+    Session,
+    SessionAccessLink,
+)
 from ..permissions import (
-    B2bPermission,
     HasAdminPermissionOrReadOnly,
     HasManagementPermission,
     HasRegistrationForEvent,
@@ -18,7 +27,6 @@ from ..permissions import (
 from ..serializers import (
     ArticleListSerializer,
     AuthRegistrationSerializer,
-    B2bSerializer,
     CommitteeListSerializer,
     CourseListSerializer,
     EventListSerializer,
@@ -27,23 +35,16 @@ from ..serializers import (
     JobNestedSerializer,
     RegistrationListSerializer,
     RegistrationManagementSerializer,
-    RoadshowListSerializer,
-    RoadshowSerializer,
     SessionListSerializer,
     SessionSerializer,
-    SessionAccessLinkSerializer,
     VideoListSerializer,
 )
 
-
-class B2bViewSet(UpdateModelMixin, GenericViewSet):
-    queryset = B2b.objects.all()
-    permission_classes = (B2bPermission,)
-    serializer_class = B2bSerializer
+# from ..serializers import SessionAccessLinkSerializer
 
 
 class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Event.objects.public()
+    queryset = Event.objects.all()
     serializer_class = EventSerializer
 
     def list(self, request, *args, **kwargs):
@@ -55,12 +56,7 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         self.queryset = self.queryset.select_related("coordinating_institution").prefetch_related(
             "breaks",
-            "fees",
             "links",
-            "venues__rooms",
-            "sponsors__institution",
-            "sponsors__project",
-            "sessions__session_type",
         )
         return super().retrieve(request, *args, **kwargs)
 
@@ -70,7 +66,9 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         serializer_class=ArticleListSerializer,
     )
     def articles(self, request, *args, **kwargs):
-        self.queryset = self.get_object().articles.prefetch_related("institutions", "projects")
+        self.queryset = self.get_object().articles.prefetch_related(
+            "rel_institutions__institution", "rel_projects__project"
+        )
         return super().list(request, *args, **kwargs)
 
     @action(
@@ -80,23 +78,19 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         serializer_class=RegistrationListSerializer,
     )
     def attendees(self, request, *args, **kwargs):
+        event = self.get_object()
+
         self.queryset = (
             self.get_object()
             .registrations.select_related("user__profile")
             .prefetch_related("user__profile__institution")
-            .filter(status=Registration.STATUS_ACCEPTED)
         )
 
-        return super().list(request, *args, **kwargs)
+        if event.type == Event.ACACES:
+            self.queryset = self.queryset.filter(
+                acacesregistration__status=AcacesRegistration.STATUS_ADMITTED, acacesregistration__accepted=True
+            )
 
-    @action(
-        detail=True,
-        pagination_class=None,
-        serializer_class=B2bSerializer,
-    )
-    @never_cache
-    def b2b(self, request, *args, **kwargs):
-        self.queryset = self.get_object().b2b
         return super().list(request, *args, **kwargs)
 
     @action(
@@ -105,7 +99,7 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         serializer_class=CommitteeListSerializer,
     )
     def committees(self, request, *args, **kwargs):
-        self.queryset = self.get_object().committees.prefetch_related("members__profile__institution")
+        self.queryset = self.get_object().committees.prefetch_related("rel_users__user__profile__institution")
         return super().list(request, *args, **kwargs)
 
     @action(
@@ -140,7 +134,6 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
             .registrations.select_related("user__profile")
             .prefetch_related("user__profile__institution", "user__profile__second_institution")
             .prefetch_related("user__profile__projects")
-            .filter(status=Registration.STATUS_ACCEPTED)
         )
 
         return super().list(request, *args, **kwargs)
@@ -148,18 +141,14 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     @action(
         detail=True,
         pagination_class=None,
-        serializer_class=SessionSerializer,
+        serializer_class=SessionListSerializer,
     )
     def sessions(self, request, *args, **kwargs):
         session_type = request.query_params.get("session_type", False)
         if not session_type:
             raise PermissionDenied("Please include a `session_type` query parameter in your request.")
 
-        self.queryset = (
-            self.get_object()
-            .sessions.filter(session_type=session_type)
-            .prefetch_related("session_type", "main_speaker__profile", "projects", "institutions", "links")
-        )
+        self.queryset = self.get_object().sessions.filter(type=session_type)
         return super().list(request, *args, **kwargs)
 
     @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
@@ -181,7 +170,7 @@ class EventManagementViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixi
             "venues__rooms",
             "sponsors__institution",
             "sponsors__project",
-            "sessions__session_type",
+            "sessions__type",
         )
         return super().retrieve(request, *args, **kwargs)
 
@@ -198,83 +187,19 @@ class EventManagementViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixi
             .prefetch_related("user__profile__institution", "user__profile__second_institution")
             .prefetch_related("user__profile__projects")
             .prefetch_related("user__profile__links")
-            .filter(status=Registration.STATUS_ACCEPTED)
         )
 
         return super().list(request, *args, **kwargs)
-
-
-class RoadshowViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Roadshow.objects.prefetch_related("institutions")
-    serializer_class = RoadshowSerializer
-
-    def list(self, request, *args, **kwargs):
-        self.pagination_class = None
-        self.serializer_class = RoadshowListSerializer
-        return super().list(request, *args, **kwargs)
-
-
-class CourseViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Course.objects.all()
-    permission_classes = (HasAdminPermissionOrReadOnly,)
-    serializer_class = CourseListSerializer
-
-    def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related("teachers__profile")
-        self.pagination_class = None
-        self.serializer_class = CourseListSerializer
-        return super().list(request, *args, **kwargs)
-
-    @action(
-        detail=True,
-        pagination_class=None,
-        permission_classes=(HasRegistrationForRelatedEvent,),
-        serializer_class=RegistrationListSerializer,
-    )
-    def attendees(self, request, *args, **kwargs):
-        self.queryset = (
-            self.get_object()
-            .registrations.select_related("user__profile")
-            .prefetch_related("user__profile__institution")
-            .filter(status=Registration.STATUS_ACCEPTED)
-        )
-
-        return super().list(request, *args, **kwargs)
-
-    @action(detail=True, pagination_class=None, serializer_class=VideoListSerializer)
-    def videos(self, request, *args, **kwargs):
-        self.queryset = self.get_object().videos
-        return super().list(request, *args, **kwargs)
-
-
-class SessionViewSet(CourseViewSet):
-    queryset = Session.objects.prefetch_related("session_type")
-    permission_classes = (HasAdminPermissionOrReadOnly,)
-    serializer_class = SessionSerializer
-
-    def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related("main_speaker__profile")
-        self.pagination_class = None
-        self.serializer_class = SessionListSerializer
-        return super().list(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        self.queryset = self.queryset.prefetch_related(
-            "main_speaker__profile__institution", "projects", "private_files", "links"
-        )
-        return super().retrieve(request, *args, **kwargs)
 
 
 class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
-    queryset = Registration.objects.prefetch_related("courses", "sessions", "posters")
+    queryset = Registration.objects.prefetch_related("sessions")
     permission_classes = (RegistrationPermission,)
     serializer_class = AuthRegistrationSerializer
 
     def get_queryset_for_event(self):
         event_id = self.request.query_params.get("event_id", None)
-        queryset = Registration.objects.filter(user_id=self.request.user.id).prefetch_related(
-            "courses", "sessions", "posters"
-        )
+        queryset = Registration.objects.filter(user_id=self.request.user.id).prefetch_related("sessions")
         if event_id is not None:
             queryset = queryset.filter(event_id=event_id)
         return queryset
@@ -289,17 +214,17 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
         except IntegrityError:
             raise ValidationError({"message": ["Duplicate entry - this user already has a registration."]})
 
-    @never_cache
+    @method_decorator(never_cache)
     def list(self, request, *args, **kwargs):
         self.queryset = self.get_queryset_for_event()
         return super().list(request, *args, **kwargs)
 
-    @never_cache
+    @method_decorator(never_cache)
     def retrieve(self, request, *args, **kwargs):
         self.queryset = self.get_queryset_for_event()
         return super().retrieve(request, *args, **kwargs)
 
-    @never_cache
+    @method_decorator(never_cache)
     @action(detail=True, queryset=SessionAccessLink.objects.all())
     def access_links(self, request, *args, **kwargs):
         """
@@ -352,7 +277,7 @@ class RegistrationViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, 
         serializer_class=AuthRegistrationSerializer,
         parser_classes=[FileUploadParser],
     )
-    @never_cache
+    @method_decorator(never_cache)
     def files(self, request, *args, **kwargs):
         registration = self.get_object()
 

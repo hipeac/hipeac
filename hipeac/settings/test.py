@@ -1,3 +1,7 @@
+import os
+
+from urllib.parse import urlparse
+
 from .base import *  # noqa
 
 
@@ -10,7 +14,29 @@ INTERNAL_IPS = ("127.0.0.1",)
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "dev.db"}}
+if os.environ.get("GITHUB_WORKFLOW"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "github_actions",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
+else:
+    db = urlparse(os.environ.get("TEST_DATABASE_URL"))
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": db.path[1:],
+            "USER": db.username,
+            "PASSWORD": db.password,
+            "HOST": db.hostname,
+            "PORT": db.port,
+        },
+    }
 
 
 # https://docs.djangoproject.com/en/1.11/topics/cache/

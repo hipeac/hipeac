@@ -2,12 +2,12 @@ from rest_framework import serializers
 
 from hipeac.models import HipeacPartner
 from .institutions import InstitutionNestedSerializer
-from .users import UserPublicSerializer
+from .users import UserPublicMiniSerializer
 
 
 class HipeacPartnerNestedSerializer(serializers.ModelSerializer):
     institution = InstitutionNestedSerializer()
-    representative = UserPublicSerializer()
+    representative = UserPublicMiniSerializer()
 
     class Meta:
         model = HipeacPartner

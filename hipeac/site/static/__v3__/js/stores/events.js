@@ -37,9 +37,10 @@ var EventModule = {
     getRegistration: function (state) {
       if (!USER_IS_AUTHENTICATED) return;
 
-      Hipeac.api.request('GET', VARS.registrationUrl, null, {event_id: +VARS.eventId}).then(function (res) {
-        if (res.data.results.length == 1) {
-          var reg = res.data.results[0];
+      Hipeac.api.request('GET', VARS.registrationUrl).then(function (res) {
+        var reg = _.findWhere(res.data, {event: +VARS.eventId});
+
+        if (reg) {
           state.registration = Object.freeze(Hipeac.map.registration(reg));
         } else {
           state.registration = null;

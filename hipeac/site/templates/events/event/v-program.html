@@ -78,7 +78,7 @@
           <div v-if="data.sessions" v-for="(session, idx) in data.sessions" :key="session.id" :v-hide="filteredSessionIds.indexOf(session.id) < 0">
             <hr v-if="idx > 0">
             <div class="col-session">
-              <span class="float-right badge badges-session ml-3 ml-md-4 mb-2 mb-md-3 mt-1 mt-md-0" :class="session.badgeColor">{{ session.session_type.value }}</span>
+              <span class="float-right badge badges-session ml-3 ml-md-4 mb-2 mb-md-3 mt-1 mt-md-0" :class="session.badgeColor">{{ session.type.value }}</span>
               <catchphrase class="mb-1 d-inline-block mr-2">
                 <span>{{ session.startAt.format('HH:mm') }}</span>
                 <span class="text-secondary text-smr">&nbsp; - &nbsp;{{ session.endAt.format('HH:mm') }} / </span>

@@ -5,7 +5,7 @@ from django.template.defaultfilters import date as date_filter
 from lxml import etree
 from typing import List
 
-from hipeac.api.serializers import MetadataListFieldWithEuraxess
+from hipeac.api.serializers.metadata import MetadataWithEuraxessSerializer
 from hipeac.models import Institution
 
 
@@ -32,7 +32,7 @@ class EuraxessXMLGenerator:
         return list(set(output))
 
     def add_jobs(self, *, queryset) -> None:
-        metadata = MetadataListFieldWithEuraxess()
+        metadata = MetadataWithEuraxessSerializer(many=True)
         md_parser = Parser()
         md_renderer = HtmlRenderer()
 

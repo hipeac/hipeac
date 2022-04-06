@@ -1,6 +1,6 @@
 # flake8: noqa
 
-from .cleanup import *
+from .db import *
 from .dblp import *
 from .emails import *
 from .imaging import *

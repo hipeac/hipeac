@@ -159,7 +159,7 @@
 
           var store = this.$store;
           store.commit('startSaving');
-          ajax().put(this.obj.url, this.obj).done(function (res) {
+          ajax().put(this.obj.self, this.obj).done(function (res) {
             store.commit('endSaving', res);
           }).fail(function (err) {
             store.commit('logError', err);

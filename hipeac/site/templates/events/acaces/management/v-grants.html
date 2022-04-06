@@ -1,6 +1,6 @@
 <script type="text/x-template" id="v-grants">
 {% verbatim %}
-  <div v-if="event && event.custom_data.grants_per_country" class="q-my-lg">
+  <div v-if="event && event.grants_per_country" class="q-my-lg">
     <div class="row q-col-gutter-lg">
       <div class="col-12 col-md-3">
         <acaces-grant-stats-card :data="mainStats"></acaces-grant-stats-card>

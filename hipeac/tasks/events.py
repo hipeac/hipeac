@@ -1,4 +1,4 @@
-from celery.decorators import task
+from celery import task
 from typing import Tuple
 
 from hipeac.models import Event, SessionAccessLink

@@ -32,7 +32,7 @@
     </div>
     <search-card placeholder="Search members by name, affiliation, country..." class="mb-2"></search-card>
     <div class="hipeac-card">
-      <user-viewer :users="members" :institutions="institutions" :is-member-list="true" :show-contact-modal="userIsAuthenticated"></user-viewer>
+      <member-viewer :members="members"></member-viewer>
     </div>
   </div>
 {% endverbatim %}

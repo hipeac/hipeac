@@ -8,12 +8,6 @@ var HipeacUserComponents = {
         msg: null
       };
     },
-    props: {
-      eventUrl: {
-        type: String,
-        required: true
-      }
-    },
     template: `
       <q-dialog v-model="showDialog" @show="dialogVisible = true">
         <q-card v-if="user" class="q-pa-sm" style="width: 500px">
@@ -28,7 +22,7 @@ var HipeacUserComponents = {
             <q-btn v-close-popup @click="sendMessage" outline color="primary" label="Send message" :disable="!msg" />
           </q-card-section>
           <q-card-section class="text-caption q-pb-lg">
-            <span>Please note that {{ user.first_name }} can choose to discard your message.</span>
+            <span>Please note that {{ user.name }} can choose to discard your message.</span>
           </q-card-section>
         </q-card>
       </q-dialog>
@@ -52,7 +46,7 @@ var HipeacUserComponents = {
         this.user = user;
       },
       sendMessage: function () {
-        Hipeac.api.request('post', this.eventUrl + 'contact/', {
+        Hipeac.api.request('post', '/api/contact/', {
           user_id: this.user.id,
           message: this.msg
         }).then(function (res) {
@@ -70,7 +64,7 @@ var HipeacUserComponents = {
     }
   },
 
-  'user-viewer': {
+  'attendees-list': {
     data: function () {
       return {
         filters: {
@@ -93,27 +87,7 @@ var HipeacUserComponents = {
         type: String,
         default: 'users-query-changed'
       },
-      embedSearch: {
-        type: Boolean,
-        default: true
-      },
-      isMemberList: {
-        type: Boolean,
-        default: false
-      },
       showContactForm: {
-        type: Boolean,
-        default: true
-      },
-      showProfileLink: {
-        type: Boolean,
-        default: false
-      },
-      showTopics: {
-        type: Boolean,
-        default: true
-      },
-      showInColumns: {
         type: Boolean,
         default: true
       },
@@ -123,33 +97,29 @@ var HipeacUserComponents = {
     },
     template: `
       <div v-if="users.length">
-        <user-contact-dialog></user-contact-dialog>
-        <div class="row q-col-gutter-lg">
-          <div class="col-12 text-body2" :class="{'col-lg': showInColumns}">
-            <display-2 v-if="embedSearch" v-html="overviewText" class="q-mb-lg"></display-2>
+        <hipeac-search-bar v-if="users.length > 20" v-model="q" placeholder="Search by name, affiliation, country..." class="q-mb-lg"></hipeac-search-bar>
+        <div class="row q-col-gutter-lg q-pt-md">
+          <div class="col-12 col-lg">
+            <display-2 v-html="overviewText" class="q-mb-lg"></display-2>
             <div class="q-mb-md">
-              <display-5 class="display-inline q-mr-md">Institution types</display-5>
+              <display-5 :dense="true" class="display-inline q-mr-md">Institution types</display-5>
               <q-checkbox v-for="(name, code) in institutionTypes" v-model="filters.institutionTypes" :key="code" :val="code" :label="name" size="xs" />
             </div>
-            <display-5 v-if="countries.length" class="display-inline q-mr-md">Countries</display-5>
+            <display-5 :dense="true" v-if="countries.length" class="display-inline q-mr-md">Countries</display-5>
             <q-checkbox v-for="country in countries" v-model="filters.countries" :key="country.code" :val="country.code" :label="country.name" size="xs" />
           </div>
-          <div class="col-12" :class="{'col-lg': showInColumns}">
-            <display-4 v-if="!embedSearch" v-html="overviewText" class="q-mb-lg"></display-4>
-            <q-markup-table flat dense class="text-body-2">
+          <div class="col-12 col-lg">
+            <q-markup-table flat :dense="$q.screen.gt.sm">
               <tbody>
                 <tr v-for="user in filteredUsers" :key="user.id">
                   <td>
-                    {{ user.profile.name }}
-                    <span v-if="user.profile.institution">, <institution-icon :type="user.profile.institution.type" class="q-mx-xs"></institution-icon><small>{{ user.profile.institution.short_name }}</small></span>
-                    <small v-if="user.profile.second_institution">
-                      / {{ user.profile.second_institution.short_name }}
-                    </small>
+                    {{ user.profile.name }}<span v-if="user.profile.institution">, <small>{{ user.profile.institution.short_name }}</small></span>
+                    <small v-if="user.profile.second_institution"> / {{ user.profile.second_institution.short_name }}</small>
                   </td>
                   <td v-if="showContactForm" @click="contactUser(user)" class="min-width pointer">
                     <q-icon name="forward_to_inbox" />
                   </td>
-                  <td v-if="showProfileLink" class="min-width">
+                  <td class="min-width">
                     <a v-if="user.href" :href="user.href" target="_blank">
                       <q-icon name="north_east" />
                     </a>
@@ -159,12 +129,10 @@ var HipeacUserComponents = {
             </q-markup-table>
           </div>
         </div>
+        <user-contact-dialog></user-contact-dialog>
       </div>
     `,
     computed: {
-      topics: function () {
-        return [];
-      },
       sortedUsers: function () {
         if (!this.users) return [];
         return this.users.slice().map(function (obj) {
@@ -177,7 +145,22 @@ var HipeacUserComponents = {
         });
       },
       countries: function () {
-        return [];  // to-do
+        if (!this.institutions) return [];
+        return _.uniq(_.pluck(this.institutions, 'country'), function (obj) {
+          return obj.code;
+        }).sort(function (a, b) {
+          return Hipeac.utils.sortText(a.name, b.name);
+        });
+      },
+      institutions: function () {
+        if (!this.users) return [];
+        return _.uniq(_.pluck(this.users.filter(function (obj) {
+          return obj.profile.institution !== null;
+        }).map(function (obj) {
+          return obj.profile;
+        }), 'institution'), function (obj) {
+          return obj.id;
+        });
       },
       filteredUsers: function () {
         if (!this.users) return [];
@@ -221,10 +204,10 @@ var HipeacUserComponents = {
       },
       overviewText: function () {
         if (!this.users) {
-          return (!this.isMemberList) ? 'No attendees found.' : 'No members found.';
+          return 'No attendees found.';
         }
 
-        var userText = (!this.isMemberList) ? 'attendees' : 'members';
+        var userText = 'attendees';
 
         return [
           '<strong class="text-no-wrap">',
@@ -250,10 +233,6 @@ var HipeacUserComponents = {
       updateQuery: function (val) {
         this.q = val;
       }
-    },
-    created: function () {
-    },
-    beforeDestroy: function () {
     }
   }
 

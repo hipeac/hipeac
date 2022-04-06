@@ -1,0 +1,23 @@
+{% extends '__v3__/layout.html' %}
+
+{% load compress %}
+{% load static %}
+
+
+{% block header %}{% endblock %}
+{% block drawer %}{% endblock %}
+
+{% block page %}
+  <div class="row q-col-gutter-md justify-center">
+
+    <div class="col-12 col-md-6 col-lg-5">
+      <div class="text-center q-mb-lg">
+        <a href="{% url 'homepage' %}"><img src="{% static 'images/hipeac.svg' %}" class="logo q-mt-xs"></a>
+      </div>
+      <q-card class="hipeac__card">
+        <h3 class="text-h5 q-my-xl">We have processed your request.</h3>
+      </q-card>
+    </div>
+
+  </div>
+{% endblock %}

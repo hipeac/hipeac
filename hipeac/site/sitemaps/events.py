@@ -30,7 +30,7 @@ class SessionSitemap(Sitemap):
     priority = 1.0
 
     def items(self):
-        return Session.objects.only("id", "title", "date")
+        return Session.objects.only("id", "title", "updated_at", "event")
 
     def lastmod(self, obj):
-        return obj.date
+        return obj.updated_at

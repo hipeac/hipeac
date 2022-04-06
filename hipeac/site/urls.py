@@ -20,6 +20,44 @@ sitemaps = {
     "sessions": SessionSitemap,
 }
 
+payment_patterns = (
+    [
+        path(
+            "<int:pk>/",
+            include(
+                [
+                    path("payment/", never_cache(views.RegistrationPaymentView.as_view()), name="payment"),
+                    path(
+                        "payment/result/",
+                        never_cache(views.RegistrationPaymentResultView.as_view()),
+                        name="payment_result",
+                    ),
+                    path("receipt.pdf", never_cache(views.RegistrationReceiptPdfView.as_view()), name="receipt"),
+                    path(
+                        "invoice-request/",
+                        never_cache(views.RegistrationInvoiceRequestView.as_view()),
+                        name="invoice_request",
+                    ),
+                ]
+            ),
+        ),
+        path(
+            "<uuid:uuid>/d/p/<slug:secret>/",
+            include(
+                [
+                    path("", never_cache(views.RegistrationPaymentDelegatedView.as_view()), name="payment_delegated"),
+                    path(
+                        "result/",
+                        never_cache(views.RegistrationPaymentDelegatedResultView.as_view()),
+                        name="payment_delegated_result",
+                    ),
+                ]
+            ),
+        ),
+    ],
+    "payment_patterns",
+)
+
 urlpatterns = [
     # Recruitment
     path("", TemplateView.as_view(template_name="flatpages/homepage.html"), name="homepage"),
@@ -73,17 +111,9 @@ urlpatterns = [
     path("events/ec/<int:pk>/", views.EventDetail.as_view(), name="ec_meeting"),
     path("webinars/", views.WebinarList.as_view(), name="webinars"),
     re_path(r"^events/roadshow/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$", views.RoadshowDetail.as_view(), name="roadshow"),
-    path(
-        "registration/payment/<int:pk>/result/",
-        never_cache(views.RegistrationPaymentResultView.as_view()),
-        name="registration_payment_result",
-    ),
-    path(
-        "registration/payment/<int:pk>/",
-        never_cache(views.RegistrationPaymentView.as_view()),
-        name="registration_payment",
-    ),
-    path("registration/receipt/<int:pk>/", views.RegistrationReceiptPdfView.as_view(), name="registration_receipt"),
+    # payments
+    path("registration/", include(payment_patterns, namespace="registration_payment")),
+    path("done/", TemplateView.as_view(template_name="__v3__/pages/done.html"), name="done"),
     # Editor
     path("editor/new/<slug:model>/", never_cache(views.EditorCreateView.as_view()), name="editor_create"),
     path("editor/<int:ct>/<int:pk>/", never_cache(views.EditorView.as_view()), name="editor"),

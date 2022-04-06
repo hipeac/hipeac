@@ -18,5 +18,7 @@ class ProjectDetail(SlugMixin, generic.DetailView):
             super()
             .get_queryset()
             .select_related("coordinator", "coordinating_institution")
-            .prefetch_related("partners", "links")
+            .prefetch_related(
+                "rel_application_areas__application_area", "rel_institutions__institution", "rel_topics__topic", "links"
+            )
         )

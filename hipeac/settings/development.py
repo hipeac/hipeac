@@ -20,7 +20,6 @@ except ModuleNotFoundError:
 
 # https://docs.djangoproject.com/en/1.11/topics/cache/
 
-CACHE_MIDDLEWARE_SECONDS = 1
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
 
 

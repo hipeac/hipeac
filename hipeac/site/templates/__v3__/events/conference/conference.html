@@ -5,30 +5,31 @@
 {% load static %}
 
 
-{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+{% block head_title %}{{ conference }} - {{ block.super }}{% endblock %}
 
 {% block submenu %}
   <q-toolbar class="container">
-    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ conference }}</q-toolbar-title>
     <q-space v-show="$q.screen.gt.sm"></q-space>
-    <hipeac-submenu-tabs v-if="event" :menu="menu" :checks="{'registration': !!registration, 'covid': !!event.custom_data.covid}"></hipeac-submenu-tabs>
+    <hipeac-submenu-tabs v-if="event" :menu="menu" :checks="{'not_ready': !event.is_ready, 'ready': event.is_ready, 'registration': !!registration}" :hashtag="event.hashtag"></hipeac-submenu-tabs>
   </q-toolbar>
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-attendees-url="{% url 'v1:event-attendees' event.id %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}"></div>
+  <div id="vars" data-event-id="{{ conference.id }}" data-event-url="{% url 'v1:conference-detail' conference.id %}" data-attendees-url="{% url 'v1:event-attendees' conference.id %}" data-committees-url="{% url 'v1:event-committees' conference.id %}" data-sessions-url="{% url 'v1:event-sessions' conference.id %}" data-registration-url="{% url 'v1:auth-registration-conference-list' %}"></div>
   <router-view></router-view>
-  <hipeac-submenu-fabs v-if="event" :menu="menu" :checks="{'registration': !!registration, 'covid': !!event.custom_data.covid}"></hipeac-submenu-fabs>
+  <hipeac-submenu-fabs v-if="event" :menu="menu" :checks="{'not_ready': !event.is_ready, 'ready': event.is_ready, 'registration': !!registration}"></hipeac-submenu-fabs>
 {% endblock %}
 
 {% block vue_templates %}
+  {% include './v-call-papers.html' with event=conference %}
+  {% include './v-call-sessions.html' with event=conference %}
   {% include './v-program.html' %}
+  {% include './v-registration.html' %}
   {% include '../_shared/v-about.html' %}
   {% include '../_shared/v-attendees.html' %}
-  {% include '../_shared/v-covid.html' %}
   {% include '../_shared/v-program-keynotes.html' %}
   {% include '../_shared/v-program-main.html' %}
-  {% include '../_shared/v-registration.html' %}
   {% include '../_shared/v-session.html' %}
   {% include '../_shared/v-venue.html' %}
 {% endblock %}
@@ -82,10 +83,33 @@
       }
     };
 
-    var CovidView = {
-      template: '#v-covid',
+    var CallPapersView = {
+      template: '#v-call-papers',
       computed: _.extend(
         Vuex.mapState('events', ['event']), {
+      })
+    };
+
+    var CallSessionsView = {
+      template: '#v-call-sessions',
+      computed: _.extend(
+        Vuex.mapState('events', ['event']), {
+        tutorials: function () {
+          if (!this.event.sessions.length) return [];
+          return this.event.sessions.filter(function (obj) {
+            return obj.type.value == 'Tutorial';
+          }).sort(function (a, b) {
+            return Hipeac.utils.sortText(a.title, b.title);
+          });
+        },
+        workshops: function () {
+          if (!this.event.sessions.length) return [];
+          return this.event.sessions.filter(function (obj) {
+            return obj.type.value == 'Workshop';
+          }).sort(function (a, b) {
+            return Hipeac.utils.sortText(a.title, b.title);
+          });
+        }
       })
     };
 
@@ -159,10 +183,16 @@
           component: AttendeesView
         },
         {
-          name: 'covid',
-          path: '/covid-19/',
+          name: 'call-papers',
+          path: '/call-for-papers/',
           pathToRegexpOptions: {strict: true},
-          component: CovidView
+          component: CallPapersView
+        },
+        {
+          name: 'call-sessions',
+          path: '/call/',
+          pathToRegexpOptions: {strict: true},
+          component: CallSessionsView
         },
         {
           path: '/program/',
@@ -222,18 +252,25 @@
           {
             label: 'Program',
             to: {name: 'program'},
-            exact: false
+            exact: false,
+            check: 'ready'
+          },
+          {
+            label: 'Call for papers',
+            to: {name: 'call-papers'},
+            exact: true,
+            check: 'not_ready'
+          },
+          {
+            label: 'Call for workshops',
+            to: {name: 'call-sessions'},
+            exact: true,
+            check: 'not_ready'
           },
           {
             label: 'Venue and travel',
             to: {name: 'venue'},
             exact: true
-          },
-          {
-            label: 'COVID-19',
-            to: {name: 'covid'},
-            exact: true,
-            check: 'covid'
           },
           {
             label: 'Attendees',

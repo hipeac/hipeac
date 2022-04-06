@@ -2,33 +2,33 @@
 {% verbatim %}
   <q-card class="hipeac__card q-my-lg" :class="{'q-pa-md': $q.screen.gt.xs }">
 
-    <q-card-section v-if="obj" class="q-mb-md">
-      <q-banner v-if="obj.id && obj.status == 1 && admitted(obj.id)" rounded class="bg-deep-orange text-white">
+    <q-card-section v-if="obj" class="q-my-none q-py-none">
+      <q-banner v-if="obj.id && obj.status == 1 && obj.accepted === null" rounded class="bg-deep-orange text-white">
         <template v-slot:avatar>
           <q-icon name="check" size="md" />
         </template>
-        You have been admitted into the HiPEAC Summer School, but in order to complete your registration you need to accept your invitation first. You can also reject the invitation, of course. <span v-if="obj.custom_data.grant_requested"><strong v-if="granted(obj.id)">Please note that your grant request has been <u>accepted</u>.</strong><strong v-else>Please note that your grant request has been <u>rejected</u>.</strong></span>
+        You have been admitted into the HiPEAC Summer School, but in order to complete your registration you need to accept your invitation first. You can also reject the invitation, of course. <span v-if="obj.grant_requested"><strong v-if="obj.grant_assigned">Please note that your grant request has been <u>accepted</u>.</strong><strong v-else-if="obj.grant_assigned == null">Please note that <u>no decision has been made yet</u> about your grant request.</strong><strong v-else>Please note that your grant request has been <u>rejected</u>.</strong></span>
         <template v-slot:action>
           <q-btn @click="accept" flat label="Accept invitation" color="white" />
           <q-btn @click="reject" flat label="Reject" color="white" />
         </template>
       </q-banner>
 
-      <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id)" rounded class="bg-positive text-white">
+      <q-banner v-if="obj.id && obj.accepted" rounded class="bg-positive text-white">
         <template v-slot:avatar>
           <q-icon name="check" size="md" />
         </template>
         You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}!
       </q-banner>
 
-      <q-banner v-if="obj.id && obj.status == 9 && admitted(obj.id)" rounded class="bg-red text-white">
+      <q-banner v-if="obj.id && obj.accepted === false" rounded class="bg-red text-white">
         <template v-slot:avatar>
           <q-icon name="close" size="md" />
         </template>
         You have rejected your invitation to the HiPEAC Summer School. Contact us if you change your mind.
       </q-banner>
 
-      <div class="row q-col-gutter-md">
+      <!--<div class="row q-col-gutter-md">
         <div class="col-12 col-md-6">
           <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id) && event.custom_data.hotel_distribution[obj.id]" rounded class="bg-grey-3 text-dark q-mt-md">
             <template v-slot:avatar>
@@ -49,7 +49,7 @@
             Meal group: <strong>{{ event.custom_data.lunch_distribution[obj.id] }}</strong>
           </q-banner>
         </div>
-      </div>
+      </div>-->
     </q-card-section>
 
     <!--<q-card-section>
@@ -75,28 +75,30 @@
     </div>
 
     <q-card-section v-else-if="obj !== undefined">
+      <q-banner rounded inline-actions class="bg-orange-1 text-dark q-py-md q-mb-lg text-body2" v-if="event">
+        <template v-slot:avatar><q-icon name="help_outline" size="sm" /></template>
+        The Summer School has a fee of {{ event.fee - event.shared_room_discount }} EUR if you are considering to share a room, and {{ event.fee }} EUR for a single room. <strong v-if="event.grant_request_deadline"><br>You can always apply for a grant if you register before {{ event.grant_request_deadline }}.</strong>
+      </q-banner>
+
       <div v-if="obj">
 
-        <div v-if="obj.id && obj.status == 2 && admitted(obj.id)">
+        <!--<div v-if="obj.id && obj.status == 2 && admitted(obj.id)">
           <display-2 class="q-my-lg">Travel information</display-2>
-          <display-4>COVID-19 related information</display-4>
-          <p class="q-mb-sm">Are you fully vaccinated, recovered from COVID-19 or will you come to Italy after taking a test? <a @click="obj.custom_data.travel.covid = null" class="cursor-pointer q-ml-md"><small>CLEAR</small></a></p>
-          <q-option-group inline v-model="obj.custom_data.travel.covid" type="radio" :options="[{label: 'Fully vaccinated', value: 'full_cycle'}, {label: 'Recovered from COVID-19', value: 'recovered'}, {label: 'I will take a test before traveling to Italy', value: 'test'}]" @input="save"></q-option-group>
-          <!--<display-4 class="q-mt-lg">Arriving to Fiuggi</display-4>
+          <display-4 class="q-mt-lg">Arriving to Fiuggi</display-4>
           <p class="q-my-sm">What flights/trains to Rome will you take? Bus to Fiuggi?</p>
           <div class="row q-col-gutter-md">
-            <q-input filled v-model="obj.custom_data.travel.flight" type="text" label="Flight/train to Rome (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
-            <q-select filled v-model="obj.custom_data.travel.bus" :options="['Hotel Mediterraneo 14:00 (Rome)', 'Fiumicino 14:00', 'Fiumicino 16:00', 'Fiumicino 18:00', 'Ciampino 14:30', 'Ciampino 18:30', 'I will take care of my own transportation']" label="Bus to Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
-            <q-input filled v-model="obj.custom_data.travel.phone" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
-          </div>-->
+            <q-input filled v-model="obj.arrival_flight" type="text" label="Flight/train to Rome (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
+            <q-select filled v-model="obj.arrival_bus" :options="['Hotel Mediterraneo 14:00 (Rome)', 'Fiumicino 14:00', 'Fiumicino 16:00', 'Fiumicino 18:00', 'Ciampino 14:30', 'Ciampino 18:30', 'I will take care of my own transportation']" label="Bus to Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
+            <q-input filled v-model="obj.phone_number" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
+          </div>
           <display-4 class="q-mt-lg">Returning home</display-4>
           <p class="q-my-sm">What flights/trains will you take? What bus would you need to take?</p>
           <div class="row q-col-gutter-md">
-            <q-input filled v-model="obj.custom_data.travel.flight_return" type="text" label="Return (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
-            <q-select filled v-model="obj.custom_data.travel.bus_return" :options="['5am to FCO', '6am to FCO (via CIA)', '8am to FCO', '9am to FCO (via CIA)', '9am to Roma Termini', 'I will take care of my own transportation']" label="Bus from Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
-            <q-input filled v-model="obj.custom_data.travel.phone" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
+            <q-input filled v-model="obj.departure_flight" type="text" label="Return (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
+            <q-select filled v-model="obj.departure_bus" :options="['5am to FCO', '6am to FCO (via CIA)', '8am to FCO', '9am to FCO (via CIA)', '9am to Roma Termini', 'I will take care of my own transportation']" label="Bus from Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
+            <q-input filled v-model="obj.phone_number" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
           </div>
-        </div>
+        </div>-->
 
         <display-2 class="q-my-lg">Your application</display-2>
 
@@ -124,21 +126,15 @@
 
         <display-4 class="q-mt-lg">Motivation</display-4>
         <p class="q-mb-sm">What is your main motivation to follow the summer school? <span class="text-red">*</span></p>
-        <q-input filled autogrow v-model="obj.custom_data.motivation" type="textarea" class="q-mt-sm q-mb-md"></q-input>
+        <q-input filled autogrow v-model="obj.motivation" type="textarea" class="q-mt-sm q-mb-md"></q-input>
         <p class="q-mb-sm">Are you requesting a grant?</p>
-        <q-option-group inline v-model="obj.custom_data.grant_requested" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]"></q-option-group>
+        <q-option-group inline v-model="obj.grant_requested" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]"></q-option-group>
 
         <div v-if="courses.length">
           <display-4 class="q-mt-lg">Course selection</display-4>
           <div class="row q-col-gutter-x-xl q-col-gutter-y-md q-mb-lg">
             <div class="col-12 col-md-6">
               <p class="q-mb-sm">The summer school consists of {{ courses.length }} courses spread over two morning slots and two afternoon slots. Per slot there are three parallel courses of which you can take only one.</p>
-            </div>
-            <div v-if="trackList.length" class="col-12 col-md-6">
-              <q-banner rounded v-for="t in trackList" :key="t.project.id" class="bg-yellow-2">
-                <div class="q-mb-xs text-caption">If you choose to attend all <strong>{{ t.track.name }}</strong> track courses, you can qualify for a {{ t.project.acronym }} grant:</div>
-                <div v-for="c in t.courses" class="text-caption">- {{ c.title }}</div>
-              </q-banner>
             </div>
           </div>
           <div class="row q-col-gutter-lg">
@@ -161,11 +157,14 @@
 
         <display-4 class="q-mt-lg">Poster session</display-4>
         <p class="q-mb-sm">You can present your research (ideas) to the other participants and to the teachers and other senior people at the conference.<br>Are you planning to present a poster?</p>
-        <q-option-group inline v-model="obj.custom_data.poster.present" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]" class="q-mt-sm q-mb-md"></q-option-group>
-        <div v-show="obj.custom_data.poster.present">
-          <q-input filled v-model="obj.custom_data.poster.title" type="text" :label="'What would be the ' + ((requestType == 'Application') ? 'preliminary' : '') + ' poster title?'" class="q-mb-md"></q-input>
-          <q-input filled v-model="obj.custom_data.poster.authors" type="text" :label="'Who are the ' + ((requestType == 'Application') ? 'preliminary' : '') + ' authors?'" class="q-mb-md"></q-input>
-          <q-input filled v-model="obj.custom_data.poster.institution" type="text" label="Author affiliation" class="q-mb-md"></q-input>
+        <q-btn v-if="obj.poster" no-caps outline color="primary" @click="obj.poster = null" label="I will not be presenting a poster after all"></q-btn>
+        <q-btn v-else no-caps outline color="primary" @click="addPoster(obj)" label="Yes"></q-btn>
+        <div v-if="obj.poster" class="q-mt-md q-mb-lg">
+          <q-input filled v-model="obj.poster.title" type="text" :label="'What would be the ' + ((requestType == 'Application') ? 'preliminary' : '') + ' poster title?'" class="q-mb-md"></q-input>
+          <q-input filled v-model="obj.poster.authors" type="text" :label="'Who are the ' + ((requestType == 'Application') ? 'preliminary' : '') + ' authors?'" class="q-mb-md"></q-input>
+        </div>
+
+        <!--
 
           <div v-if="obj.files && obj.files.length">
             <h6 class="q-mt-lg q-mb-md">Files</h6>
@@ -174,14 +173,13 @@
 
           <div v-else>
             <q-uploader ref="uploader" flat auto-upload no-thumbnails :factory="uploaderFactory" accept=".pdf" :max-files="1" @failed="uploadFailed" @rejected="uploadRejected" @uploaded="uploaded" label="Upload postyer abstract in PDF" color="grey-7" class="full-width bg-grey-2" />
-          </div>
-        </div>
+          </div>-->
 
         <display-4 class="q-mt-lg">Accomodation and visum</display-4>
-        <p class="q-mb-sm">You can have a 200 euro reduction if you are willing to share a room with somebody else.<br>Are you willing to share a room? <em>(200 euro reduction)</em></p>
-        <q-option-group inline v-model="obj.custom_data.room.share" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]" class="q-mt-sm q-mb-md"></q-option-group>
-        <div v-show="obj.custom_data.room.share">
-          <q-input filled v-model="obj.custom_data.room.mate" type="text" label="With whom would you like to share a room? (if known)" class="q-mb-md"></q-input>
+        <p class="q-mb-sm">You can have a <strong>{{ event.shared_room_discount }} euro reduction</strong> if you are willing to share a room with somebody else.<br>Are you willing to share a room?</p>
+        <q-option-group inline v-model="obj.roommate_requested" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]" class="q-mt-sm q-mb-md"></q-option-group>
+        <div v-show="obj.roommate_requested">
+          <q-input filled v-model="obj.roommate_notes" type="text" label="With whom would you like to share a room? (if known)" class="q-mb-md"></q-input>
         </div>
         <p class="q-mb-sm">When your application is accepted, will you need a letter of invitation for visum purposes?</p>
         <q-option-group inline v-model="obj.visa_requested" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]" class="q-my-sm"></q-option-group>
@@ -224,18 +222,12 @@
         <display-4 class="q-mt-lg">ACACES veteran</display-4>
         <p class="q-mb-sm">Tell us if you have been in any previous ACACES editions.</p>
         <div class="q-gutter-sm q-mt-sm q-mb-md"">
-          <q-checkbox v-for="y in years" :key="y" v-model="obj.custom_data.history" :val="y" :label="'' + y"></q-checkbox>
-        </div>
-
-        <display-4 class="q-mt-lg">Accompanying persons</display-4>
-        <p class="q-mb-sm">Tell us if you have been in any previous ACACES editions.</p>
-        <div class="q-gutter-sm q-mt-sm q-mb-md"">
-          <q-checkbox v-for="y in years" :key="y" v-model="obj.custom_data.history" :val="y" :label="'' + y"></q-checkbox>
+          <q-checkbox v-for="y in years" :key="y" v-model="obj.history" :val="y" :label="'' + y"></q-checkbox>
         </div>
 
         <div class="text-center">
           <q-btn unelevated size="16px" @click.prevent="save" :color="(obj.id) ? 'primary' : 'positive'" :disabled="incompleteForm" class="q-my-xl"><span v-if="obj.id">Update</span><span v-else>Submit</span>&nbsp;{{ requestType }}</q-btn>
-          <p v-if="incompleteForm" class="text-body2 text-red">Make sure you have included all required information.<br><strong>Missing:</strong><span v-if="!this.obj.custom_data.profile.country"> - country</span><span v-if="!this.obj.custom_data.profile.institution"> - affiliation</span><span v-if="!this.obj.custom_data.profile.gender"> - gender</span><span v-if="!this.obj.custom_data.motivation"> - motivation</span><span v-if="this.obj.courses.length < this.slots.length"> - course selection</span></p>
+          <p v-if="incompleteForm" class="text-body2 text-red">Make sure you have included all required information.<br><strong>Missing:</strong><span v-if="!this.obj.custom_data.profile.country"> - country</span><span v-if="!this.obj.custom_data.profile.institution"> - affiliation</span><span v-if="!this.obj.custom_data.profile.gender"> - gender</span><span v-if="!this.obj.motivation"> - motivation</span><span v-if="this.obj.courses.length < this.slots.length"> - course selection</span></p>
         </div>
       </div>
 
@@ -244,10 +236,10 @@
     <q-card-section v-if="obj && obj.id" class="text-caption">
       <q-separator class="q-mb-lg"></q-separator>
       <strong>{{ requestType }} number:</strong> {{ obj.id }}<br>
-      <strong>{{ requestType }} date:</strong> {{ obj.createdAt.format('LLLL') }}<br>
-      <strong>Last updated:</strong> {{ obj.updatedAt.format('LLLL') }}<br>
-      <strong>Appplication status:</strong>&nbsp;<q-badge v-if="obj.status == 0" color="yellow" text-color="dark" label="Well received"></q-badge><q-badge v-else-if="obj.status == 1" color="yellow" text-color="dark" label="Waiting for an answer from the student"></q-badge><q-badge v-else-if="obj.status == 2" color="positive" text-color="white" label="Accepted by student"></q-badge><q-badge v-else-if="obj.status == 9" color="negative" text-color="white" label="Rejected by student"></q-badge><br>
-      <strong>Grant status:</strong>&nbsp;<span v-if="obj.custom_data.grant_requested"><q-badge v-if="!granted(obj.id)" color="yellow" text-color="dark" label="No grant assigned"></q-badge><q-badge v-else color="positive" text-color="white" label="Accepted"></q-badge></span><q-badge v-else color="light-blue-1" text-color="dark" label="No grant requested"></q-badge>
+      <strong>{{ requestType }} date:</strong> {{ obj.created.format('LLLL') }}<br>
+      <strong>Last updated:</strong> {{ obj.updated.format('LLLL') }}<br>
+      <strong>Appplication status:</strong>&nbsp;<q-badge v-if="obj.status == 0" color="yellow" text-color="dark" label="Well received"></q-badge><q-badge v-else-if="obj.status == 1 && obj.accepted == null" color="yellow" text-color="dark" label="Waiting for an answer from the student"></q-badge><q-badge v-else-if="obj.accepted" color="positive" text-color="white" label="Accepted by student"></q-badge><q-badge v-else-if="!obj.accepted" color="negative" text-color="white" label="Rejected by student"></q-badge><br>
+      <strong>Grant status:</strong>&nbsp;<span v-if="obj.grant_requested"><q-badge v-if="obj.grant_assigned == null" color="yellow" text-color="dark" label="No decision"></q-badge><q-badge v-else-if="!obj.grant_assigned" color="negative" text-color="dark" label="Grant request rejected"></q-badge><q-badge v-else color="positive" text-color="white" label="Accepted"></q-badge></span><q-badge v-else color="light-blue-1" text-color="dark" label="No grant requested"></q-badge>
     </q-card-section>
 
   </q-card>

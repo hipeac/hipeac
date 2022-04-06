@@ -74,11 +74,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "hipeac.urls"
-WSGI_APPLICATION = "hipeac.wsgi.app"
-
-FIXTURE_DIRS = [
-    os.path.join(PROJECT_ROOT, "fixtures"),
-]
+WSGI_APPLICATION = "hipeac.wsgi.application"
 
 
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -109,7 +105,6 @@ TIME_ZONE = "Europe/Brussels"
 
 LANGUAGE_CODE = "en"
 USE_I18N = False
-USE_L10N = False
 
 FIRST_DAY_OF_WEEK = 1
 DATE_FORMAT = "N j, Y"
@@ -176,6 +171,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_VERSION": "v1",
+    "URL_FIELD_NAME": "self",
     "PAGE_SIZE": 50,
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }

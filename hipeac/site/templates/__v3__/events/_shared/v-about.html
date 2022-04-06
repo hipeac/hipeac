@@ -5,7 +5,11 @@
       <div class="row q-col-gutter-y-lg q-col-gutter-x-xl reverse" :class="{'q-col-gutter-xl': $q.screen.gt.sm}">
         <div class="col-12 col-md-4">
           <q-list separator>
-            <q-item class="text-dark">
+            <q-item v-if="event.is_virtual" class="text-dark">
+              <q-item-section avatar><q-icon name="monitor" /></q-item-section>
+              <q-item-section>Virtual event</q-item-section>
+            </q-item>
+            <q-item v-else class="text-dark">
               <q-item-section avatar>
                 <country-flag :code="event.country.code"></country-flag>
               </q-item-section>
@@ -22,23 +26,13 @@
         </div>
         <div class="col-12 col-md-8">
           <marked :text="event.presentation" class="catchphrase text-h5 text-weight-light"></marked>
-          <div v-if="event.type == 'csw' && event.sponsors.length">
-            <display-5 class="q-mt-xl q-mb-lg">Local organizers</display-5>
-            <div class="row items-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
-              <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4 col-md-3">
-                <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
-                  <img :src="sponsor.institution.images.lg" class="sponsor">
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </q-card>
     <div class="q-mt-md hipeac-shadow">
       <q-img :src="event.images.lg" class="full-width rounded-borders"></q-img>
     </div>
-    <div v-if="event.type == 'conference'" class="row q-col-gutter-md q-mt-none">
+    <div v-if="event.type == 'conference' && event.sponsors" class="row q-col-gutter-md q-mt-none">
       <div v-if="event.sponsors.length" class="col-12 col-md align-items-stretch">
         <q-card class="hipeac__card full-height">
           <display-5 class="q-mb-xl">Sponsors</display-5>
@@ -46,9 +40,6 @@
             <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4">
               <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
                 <img :src="sponsor.institution.images.lg" class="sponsor">
-              </a>
-              <a v-else-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
-                <img :src="sponsor.project.images.lg" class="sponsor">
               </a>
             </div>
           </div>

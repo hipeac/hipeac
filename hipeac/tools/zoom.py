@@ -51,11 +51,11 @@ def attendee_report(csv_path: str) -> Tuple[int, Dict]:
             if not section:
                 continue
 
-            if not len(report) and section == "duration":
+            if not report and section == "duration":
                 duration = int(row[3].strip())
                 continue
 
-            if not len(report) and row[0] == "Attended":
+            if not report and row[0] == "Attended":
                 fields = row
                 continue
 

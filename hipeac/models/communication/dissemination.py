@@ -1,12 +1,11 @@
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django_countries.fields import CountryField
 
+from hipeac.models.mixins import FilesMixin
 from .vars import SECTION_CHOICES
-from ..mixins import UrlMixin
 
 
-class Dissemination(UrlMixin, models.Model):
+class Dissemination(FilesMixin, models.Model):
     type = models.CharField(max_length=16, null=True, blank=True, choices=SECTION_CHOICES)
     date = models.DateField()
     event = models.CharField(max_length=250)
@@ -14,10 +13,9 @@ class Dissemination(UrlMixin, models.Model):
     description = models.TextField(blank=True)
     external_url = models.URLField(null=True, blank=True)
 
-    public_files = GenericRelation("hipeac.PublicFile")
-
     class Meta:
-        ordering = ["-date"]
+        db_table = "hipeac_comm_dissemination"
+        ordering = ("-date",)
         verbose_name = "Dissemination event"
 
     def __str__(self) -> str:

@@ -21,8 +21,8 @@
           <h4 class="text-h5 q-mb-md">My registration</h4>
           <p class="text-caption">
             <span>Registration ID: {{ user.registration.id }}</span><br>
-            <span>Created: {{ user.registration.createdAt }}</span><br>
-            <span>Last updated: {{ user.registration.updatedAt }}</span>
+            <span>Created: {{ user.registration.created }}</span><br>
+            <span>Last updated: {{ user.registration.updated }}</span>
             <q-separator class="q-my-md"></q-separator>
             <strong>Base fee: <span v-if="user.registration.base_fee == 0">FREE</span><span v-else>EUR {{ user.registration.base_fee }}</span> ({{ user.registration.fee_type }})</strong><br>
             <strong>Extras: EUR {{ user.registration.extra_fees }}</strong>
@@ -103,7 +103,7 @@
                 <q-item-label caption>
                   <span class="q-mr-md">
                     <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
-                    <span>{{ session.session_type.value }}</span>
+                    <span>{{ session.type.value }}</span>
                   </span>
                   <span>
                     <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
@@ -115,7 +115,7 @@
             </q-item>
           </q-list>
         </q-card-section>
-        <q-card-section v-if="event.is_virtual && event.virtualExhibition" class="q-ma-sm q-mb-none">
+        <!--<q-card-section v-if="event.is_virtual && event.virtualExhibition" class="q-ma-sm q-mb-none">
           <display-3 class="q-mb-md">{{ event.virtualExhibition.title }}</display-3>
           <p class="text-body2 q-mb-none">Are you interested in contacting any of these companies/projects during the "{{ event.virtualExhibition.title }}" ({{ event.virtualExhibition.startAt.format("ddd, MMMM Do") }})? Select the companies/projects you will want to talk to and we will keep you updated.</p>
           <q-list dense class="text-body2 q-mt-md">
@@ -128,7 +128,7 @@
               </q-item-section>
             </q-item>
           </q-list>
-        </q-card-section>
+        </q-card-section>-->
         <q-card-section class="q-ma-sm q-mb-lg">
           <q-btn unelevated @click.prevent="save" color="positive" :disabled="!obj.sessions.length">Update registration</q-btn>
         </q-card-section>

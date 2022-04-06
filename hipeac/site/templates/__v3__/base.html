@@ -4,14 +4,14 @@
 
 
 <!doctype html>
-<html lang="en" prefix="og: http://ogp.me/ns#" data-rev="{{ GIT_REV }}" data-csrf-token="{{ csrf_token }}" data-user="{{ user.id | default:"0" }}">
+<html lang="en" prefix="og: http://ogp.me/ns#" data-rev="{{ GIT_REV }}" data-csrf-token="{{ csrf_token }}" data-user="{{ user.id | default:'undefined' }}">
   <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" type="text/css" rel="stylesheet">
     {% compress css file base %}
-      <link href="{% static '__v3__/vendor/quasar@2.1.0/quasar.prod.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static '__v3__/vendor/quasar@2.6.6/quasar.prod.css' %}" type="text/css" rel="stylesheet">
       <link href="{% static '__v3__/scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
       <link href="{% static 'css/flags.css' %}" type="text/css" rel="stylesheet">
     {% endcompress %}
@@ -25,7 +25,7 @@
     <meta name="twitter:dnt" content="on">
     {% block structured_data %}{% endblock %}
     {% if not debug and not request.DNT %}
-      <script async src="//www.googletagmanager.com/gtag/js?id=UA-79856831-1"></script>
+      <script async src="//www.googletagmanager.com/gtag/js?id=G-L9R1MSGBM9"></script>
       {% compress js inline %}
         <script>
           var userId = +(document.querySelector('html').dataset.user);
@@ -34,7 +34,7 @@
             dataLayer.push(arguments);
           };
           gtag('js', new Date());
-          gtag('config', 'UA-2857653-1', {
+          gtag('config', 'G-L9R1MSGBM9', {
             'user_id': (userId == 0) ? undefined : userId
           });
         </script>
@@ -77,8 +77,8 @@
     </div>
     {% block vue_templates %}{% endblock %}
     {% if not debug %}
-      <script src="https://browser.sentry-cdn.com/6.12.0/bundle.tracing.min.js" integrity="sha384-S3qfdh3AsT1UN84WIYNuOX9vVOoFg3nB17Jp5/pTFGDBGBt+dtz7MGAV845efkZr" crossorigin="anonymous"></script>
-      <script src="https://browser.sentry-cdn.com/6.12.0/vue.min.js" integrity="sha384-CuCDTHNwfKKxDsiqbSI4p7MpikMED/z+znW6nnr6374xyEHle52d+p36HADU+N7M" crossorigin="anonymous"></script>
+      <script src="https://browser.sentry-cdn.com/6.19.1/bundle.tracing.min.js" integrity="sha384-hthbsqa5mLHmR+ZUw29J9qGt8SdDRD7AVpG02i/NAsu5cv9G9I9D9IhEtSVyoPv2" crossorigin="anonymous"></script>
+      <script src="https://browser.sentry-cdn.com/6.19.1/vue.min.js" integrity="sha384-vva9SXyCvEuVwTpFhMnZYaRY7TjpBa78FW4Asdm2yR+Tg88zllQqn4yRijoCrLrt" crossorigin="anonymous"></script>
       <script src="{% static '__v3__/js/sentry.js' %}"></script>
     {% endif %}
     {% compress js file helpers %}
@@ -93,15 +93,15 @@
     {% endcompress %}
     {% compress js file vue %}
       {% if debug %}
-        <script src="{% static '__v3__/vendor/vue@3.2.12/vue.global.js' %}"></script>
+        <script src="{% static '__v3__/vendor/vue@3.2.33/vue.global.js' %}"></script>
         <script src="{% static '__v3__/vendor/vuex@4.0.2/vuex.global.js' %}"></script>
-        <script src="{% static '__v3__/vendor/vue-router@4.0.11/vue-router.global.js' %}"></script>
-        <script src="{% static '__v3__/vendor/quasar@2.1.0/quasar.umd.js' %}"></script>
+        <script src="{% static '__v3__/vendor/vue-router@4.0.14/vue-router.global.js' %}"></script>
+        <script src="{% static '__v3__/vendor/quasar@2.6.6/quasar.umd.js' %}"></script>
       {% else %}
-        <script src="{% static '__v3__/vendor/vue@3.2.12/vue.global.prod.js' %}"></script>
+        <script src="{% static '__v3__/vendor/vue@3.2.33/vue.global.prod.js' %}"></script>
         <script src="{% static '__v3__/vendor/vuex@4.0.2/vuex.global.prod.js' %}"></script>
-        <script src="{% static '__v3__/vendor/vue-router@4.0.11/vue-router.global.prod.js' %}"></script>
-        <script src="{% static '__v3__/vendor/quasar@2.1.0/quasar.umd.prod.js' %}"></script>
+        <script src="{% static '__v3__/vendor/vue-router@4.0.14/vue-router.global.prod.js' %}"></script>
+        <script src="{% static '__v3__/vendor/quasar@2.6.6/quasar.umd.prod.js' %}"></script>
       {%endif %}
     {% endcompress %}
     {% compress js file hipeac %}

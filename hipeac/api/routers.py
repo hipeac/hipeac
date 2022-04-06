@@ -14,14 +14,36 @@ class Router(DefaultRouter):
             r"awards/paper-awards/conferences", views.PublicationConferenceViewSet, basename="publication-conference"
         )
         self.register(r"awards/tech-transfer", views.TechTransferViewSet, basename="tech-transfer")
-        self.register(r"events/b2b", views.B2bViewSet, basename="b2b")
+
+        # new
+        self.register(r"events/acaces", views.AcacesViewSet, basename="acaces")
+        self.register(r"events/acaces/courses", views.AcacesCourseViewSet, basename="course")
+        self.register(r"events/acaces/management", views.AcacesManagementViewSet, basename="acaces-management")
+        self.register(
+            r"events/acaces/management/grant", views.AcacesGrantManagementViewSet, basename="acaces-grant-management"
+        )
+        self.register(
+            r"events/acaces/management/registration",
+            views.AcacesRegistrationManagementViewSet,
+            basename="acaces-registration-management",
+        )
+        self.register(r"events/conferences", views.ConferenceViewSet, basename="conference")
+        self.register(r"events/csw", views.CswViewSet, basename="csw")
+
+        self.register(
+            r"user/registrations/acaces", views.AcacesRegistrationViewSet, basename="auth-registration-acaces"
+        )
+        self.register(
+            r"user/registrations/conferences",
+            views.ConferenceRegistrationViewSet,
+            basename="auth-registration-conference",
+        )
+        self.register(r"user/registrations/csw", views.CswRegistrationViewSet, basename="auth-registration-csw")
+
         self.register(r"events/events", views.EventViewSet, basename="event")
-        self.register(r"events/courses", views.CourseViewSet, basename="course")
         self.register(r"events/roadshows", views.RoadshowViewSet, basename="roadshow")
         self.register(r"events/sessions", views.SessionViewSet, basename="session")
         self.register(r"files", views.FileViewSet, basename="file")
-        self.register(r"open-events", views.OpenEventViewSet, basename="open-event")
-        self.register(r"open-registrations", views.OpenRegistrationViewSet, basename="open-registration")
         self.register(r"jobs", views.JobViewSet, basename="job")
         self.register(r"jobs/evaluations", views.JobEvaluationViewSet, basename="job-evaluation")
         self.register(r"communication/articles", views.ArticleViewSet, basename="article")
@@ -35,7 +57,7 @@ class Router(DefaultRouter):
         self.register(r"network/partners", views.PartnerViewSet, basename="partner")
         self.register(r"network/projects", views.ProjectViewSet, basename="project")
         self.register(r"user", views.AuthUserViewSet, basename="auth-user")
-        self.register(r"user/registrations", views.RegistrationViewSet, basename="auth-registration")
+        self.register(r"user/registrations", views.RegistrationViewSet, basename="auth-registration")  # TODO: remove
         self.register(r"user/webinars", views.RegistrationViewSet, basename="auth-webinar")
         self.register(r"users", views.UserViewSet, basename="user")
         self.register(r"vision", views.VisionViewSet, basename="vision")

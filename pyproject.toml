@@ -1,2 +1,9 @@
 [tool.black]
 line-length = 120
+
+[tool.coverage.run]
+omit = ["*apps.py", "*migrations/*", "*settings/*", "*tests/*", "*migratedata.py", "*urls.py", "*wsgi.py", "manage.py"]
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError", "def __repr__", "def __str__"]
+show_missing = true

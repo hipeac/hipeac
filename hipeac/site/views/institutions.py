@@ -18,5 +18,11 @@ class InstitutionDetail(SlugMixin, generic.DetailView):
             super()
             .get_queryset()
             .select_related("parent")
-            .prefetch_related("children", "coordinated_projects", "links")
+            .prefetch_related(
+                "children",
+                "coordinated_projects",
+                "rel_application_areas__application_area",
+                "rel_topics__topic",
+                "links",
+            )
         )

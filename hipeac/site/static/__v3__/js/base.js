@@ -61,7 +61,7 @@ var Hipeac = {
       obj.icon = {
         'cofee': 'coffee',
         'lunch': 'restaurant'
-      }[obj.type] || 'coffee';
+      }[obj.type] || 'coffee';
       obj.start = getMoment(obj.start_at, tz);
       obj.end = getMoment(obj.end_at, tz);
       obj.duration = moment.duration(obj.end.diff(obj.start));
@@ -72,8 +72,16 @@ var Hipeac = {
       var mapSession = this.session;
 
       obj.tz = (obj.is_virtual) ? moment.tz.guess(true) : 'Europe/Brussels';
-      obj.start = getMoment(obj.start_date, obj.tz);
-      obj.end = getMoment(obj.end_date, obj.tz);
+
+      if (obj.sessions.length) {
+        obj.start = getMoment(obj.sessions[0].start_at, obj.tz);
+        obj.end = getMoment(obj.sessions[obj.sessions.length - 1].end_at, obj.tz);
+      } else {
+        obj.start = getMoment(obj.start_date, obj.tz);
+        obj.end = getMoment(obj.end_date, obj.tz);
+      }
+
+      obj.year = moment(obj.start_date).year();
       obj.registration_start = getMoment(obj.registration_start_date, obj.tz);
       obj.registrations_round = (obj.registrations_count)
         ? Math.floor(obj.registrations_count / 10) * 10
@@ -97,14 +105,16 @@ var Hipeac = {
         obj.sessions = obj.sessions.map(function (s) {
           return mapSession(s, obj.tz);
         }).sort(function (a, b) {
-          return a.start.unix() - b.start.unix() || a.session_type.position - b.session_type.position;
+          return a.start.unix() - b.start.unix() || a.type.position - b.type.position;
         });
       }
 
       return obj;
     },
     registration: function (obj) {
-      /*
+      obj.fee = obj.base_fee + obj.extra_fees + obj.manual_extra_fees;
+      obj.is_paid = obj.saldo >= 0;
+
       this.qBooleans(obj, [
         ['paid', 'is_paid'],
         ['coupon', 'coupon'],
@@ -113,7 +123,6 @@ var Hipeac = {
         ['visa.requested', 'visa_requested'],
         ['visa.sent', 'visa_sent'],
       ]);
-      */
 
       return obj;
     },
@@ -121,7 +130,7 @@ var Hipeac = {
       obj.start = getMoment(obj.start_at, tz);
       obj.end = getMoment(obj.end_at, tz);
       obj.duration = moment.duration(obj.end.diff(obj.start));
-      obj.is_keynote = obj.session_type.value == 'Keynote';
+      obj.is_keynote = obj.type.value == 'Keynote';
       obj.has_ended = obj.end.isBefore(moment());
 
       obj.color = {
@@ -133,13 +142,13 @@ var Hipeac = {
         'Workshop': 'green',
         'Tutorial': 'teal',
         'Social Event': 'yellow'
-      }[obj.session_type.value] || 'grey-7';
+      }[obj.type.value] || 'grey-7';
 
       obj._q = [
         obj.title,
         obj.keywords.join(' '),
         'day:' + obj.start.format('dddd'),
-        'type:' + slugify(obj.session_type.value),
+        'type:' + slugify(obj.type.value),
       ].join(' ').toLowerCase();
 
       /*this.qBooleans(obj, [
@@ -150,10 +159,15 @@ var Hipeac = {
     },
     user: function (obj) {
       obj.name = obj.profile.name;
+      obj._q = [
+        obj.profile.name,
+        (obj.profile.institution) ? obj.profile.institution.name : '',
+        (obj.profile.institution && obj.profile.institution.country) ? obj.profile.institution.country.name : '',
+      ].join(' ').toLowerCase();
       return obj;
     },
     vision: function (obj) {
-      obj.year = obj.download_url.match(/\d+/)[0] || null;
+      obj.year = obj.download_url.match(/\d+/)[0] || null;
       return obj;
     },
     qBooleans: function (obj, fields) {
@@ -191,7 +205,7 @@ var Hipeac = {
           'unelevated': true,
           'color': 'primary'
         }
-      }).onOk(okCallbackFn || function () {}).onCancel(cancelCallbackFn || function () {});
+      }).onOk(okCallbackFn || function () {}).onCancel(cancelCallbackFn || function () {});
     },
     notifyApiError: function (error) {
       var types = {
@@ -221,7 +235,7 @@ var Hipeac = {
       }
 
       // 403 Forbidden || 500 Internal Server Error
-      if (error.response.status == 403 || error.response.status == 500) {
+      if (error.response.status == 403 || error.response.status == 500) {
         msg = error.response.data.message || null;
       }
 
@@ -232,9 +246,6 @@ var Hipeac = {
         message: msg,
         caption: caption,
         type: types[error.response.status] || 'warning',
-        actions: [
-          { label: 'Dismiss', color: 'white', handler: function () {} }
-        ],
         actions: [
           {
             label: 'Dismiss',
@@ -275,14 +286,14 @@ var Hipeac = {
       if (!Quasar.Cookies.has(cookie)) {
         Quasar.Notify.create({
           timeout: 0,
-          message: msg || 'We use cookies to ensure you get the best experience on our website.',
+          message: msg || 'We use cookies to ensure you get the best experience on our website.',
           position: 'bottom-right',
           color: 'primary',
           classes: 'hipeac-cookies-notify',
           multiLine: true,
           actions: [
             {
-              label: acceptBtnText || 'Accept',
+              label: acceptBtnText || 'Accept',
               color: 'yellow-7',
               handler: function () {
                 Quasar.Cookies.set(cookie, true, {
@@ -291,7 +302,7 @@ var Hipeac = {
               }
             },
             {
-              label: privacyBtnText || 'Learn more',
+              label: privacyBtnText || 'Learn more',
               color: 'white',
               handler: function () {
                 Quasar.openURL(privacyUrl || '/privacy/');

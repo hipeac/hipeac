@@ -31,7 +31,9 @@ class ArticleDetail(SlugMixin, generic.DetailView):
     template_name = "communication/article/article.html"
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("images", "institutions", "projects")
+        return (
+            super().get_queryset().prefetch_related("images", "rel_institutions__institution", "rel_projects__project")
+        )
 
 
 class NewsFeed(Feed):

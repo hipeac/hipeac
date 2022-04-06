@@ -1,5 +1,5 @@
 # flake8: noqa
 
-from .evaluation import *
-from .job import *
+from .job_evaluations import *
+from .jobs import *
 from .mobility import *

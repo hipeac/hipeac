@@ -1,3 +1,5 @@
+from django.db.models import Exists
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -40,10 +42,10 @@ class TechTransferViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         return TechTransferCall.objects.active()
 
     @action(detail=False, serializer_class=TechTransferCallSerializer)
-    @never_cache
+    @method_decorator(never_cache)
     def call(self, request, *args, **kwargs):
         return RetrieveModelMixin.retrieve(self, request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        self.queryset = TechTransferApplication.objects.filter(awarded=True).prefetch_related("call")
+        self.queryset = TechTransferApplication.objects.filter(award__isnull=False).prefetch_related("call")
         return super().list(request, *args, **kwargs)

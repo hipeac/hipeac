@@ -113,10 +113,10 @@ class JobsFeed(Feed):
     link = reverse_lazy("jobs")
 
     def items(self):
-        return Job.objects.active().select_related("institution").order_by("-created_at")
+        return Job.objects.active().select_related("institution").prefetch_related("rel_topics__topic").order_by("-id")
 
     def item_categories(self, item) -> List[str]:
-        return [topic.value for topic in item.get_metadata("topics")]
+        return [topic.value for topic in item.topics]
 
     def item_title(self, item) -> str:
         return f"{item.title} @ {item.institution}"

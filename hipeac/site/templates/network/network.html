@@ -53,6 +53,7 @@
   <script src="{% static 'js/components/v-institutions-carousel.js' %}"></script>
 {% endcompress %}
 {% compress js file network %}
+  <script src="{% static 'js/components/v-member-viewer.js' %}"></script>
   <script src="{% static 'js/components/v-user-viewer.js' %}"></script>
   <script>
     var Store = new Vuex.Store({
@@ -66,22 +67,21 @@
       mutations: {
         fetchMembers: function (state) {
           ajax().get($('#urls').data('member-list')).done(function (res) {
-            var institutions = _.indexBy(res.institutions, 'id');
-            var affiliates = _.groupBy(_.map(res.affiliates, function (obj) {
-              obj.profile.institution = institutions[obj.profile.institution] || null;
-              obj.advisor_id = obj.profile.advisor;
-              return obj;
-            }), 'advisor_id');
-            var users = _.map(res.members, function (obj) {
-              obj.profile.institution = institutions[obj.profile.institution] || null;
-              obj.profile.second_institution = institutions[obj.profile.second_institution] || null;
-              if (_.has(affiliates, obj.id)) {
-                obj.affiliates = affiliates[obj.id];
-              }
-              return obj;
-            });
-            state.institutions = Object.freeze(_.values(institutions));
-            state.members = Object.freeze(mapper().users(users));
+            state.members = Object.freeze(res.map(function (obj) {
+              obj.q = [
+                obj.name,
+                (obj.institution)
+                  ? [obj.institution.name, obj.institution.local_name, obj.institution.short_name].join(' ')
+                  : '',
+                (obj.institution && obj.institution.country)
+                  ? obj.institution.country.name
+                  : '',
+                (obj.second_institution)
+                  ? obj.second_institution.name
+                  : '',
+              ].join(' ').toLowerCase();
+              return obj
+            }));
           });
         },
         fetchPartners: function (state) {

@@ -18,7 +18,7 @@ from .emails import send_from_template
 
 
 def save_keywords(nl: NaturalLanguageAnalyzer, job: Job):
-    job.keywords = json.dumps(nl.get_keywords(" ".join([job.title, job.description])))
+    job.keywords = nl.get_keywords(" ".join([job.title, job.description]))
     job.processed_at = timezone.now() + datetime.timedelta(seconds=5)
     job.save()
 

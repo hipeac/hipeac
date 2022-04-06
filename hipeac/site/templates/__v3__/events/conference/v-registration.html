@@ -1,0 +1,111 @@
+<script type="text/x-template" id="v-registration">
+{% verbatim %}
+  <div v-if="event">
+    <q-card v-if="!authenticated" class="hipeac__card q-mt-lg">
+      <hipeac-please-login msg="You need to log in to your HiPEAC account to register for an event." />
+    </q-card>
+    <q-card v-else-if="!event.is_open_for_registration" class="hipeac__card q-mt-lg">
+      <hipeac-big-alert icon="pending_actions" :msg="'Registrations will open on ' + event.registration_start.format('LL') + '.'" />
+    </q-card>
+    <div v-else-if="obj" class="row q-col-gutter-md q-mt-sm items-stretch">
+      <div class="col-12 col-md-4">
+        <q-card v-if="registration" class="hipeac__card full-height">
+          <display-2 class="q-mt-none q-mb-lg">My registration</display-2>
+          <p class="text-caption">
+            <span>Registration ID: {{ registration.id }}</span><br>
+            <span>Created: {{ registration.created_at }}</span><br>
+            <span>Last updated: {{ registration.updated_at }}</span>
+            <q-separator class="q-my-md"></q-separator>
+            <strong>Base fee: <span v-if="registration.base_fee == 0">FREE</span><span v-else>EUR {{ registration.base_fee }}</span> ({{ registration.fee_type }})</strong><br>
+            <strong>Extras: EUR {{ registration.extra_fees }}</strong>
+          </p>
+          <q-banner v-if="conflicts" class="bg-yellow-1 q-py-md q-px-lg q-mb-lg">
+            <template v-slot:avatar>
+              <q-icon name="error_outline" color="orange" size="md"></q-icon>
+            </template>
+            <span>You have registered for multiple simultaneous sessions, please check your selection so that session organizers can have a better idea of the number of attendees. Thank you!</span><br>
+          </q-banner>
+          <q-card-section v-if="registration.fee > 0" class="q-ma-sm">
+            <q-btn v-if="registration.is_paid" outline type="a" :href="registration.payment_url" color="primary" label="View payment info"></q-btn>
+            <span v-else>
+              <q-btn v-if="!registration.invoice_requested" outline type="a" :href="registration.payment_url" color="primary" label="Proceed with payment"></q-btn>
+              <button v-else class="float-right btn btn-outline-secondary" disabled>
+                <span>Invoice is being prepared</span>
+                <q-icon name="receipt" size="sm" class="q-ml-sm"></q-icon>
+              </button>
+            </span>
+          </q-card-section>
+        </q-card>
+        <q-card v-else class="hipeac__card full-height">
+          <display-2 class="q-mt-none">New registration</display-2>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-8">
+        <q-card class="hipeac__card full-height">
+          <q-card-section class="q-pt-none">
+            <form-section-title>Registration fee</form-section-title>
+            <p class="text-overline q-mb-none">Choose your registration fee.</p>
+            <q-list dense class="q-mt-md">
+              <q-item tag="label" class="q-py-xs">
+                <q-item-section avatar top>
+                  <q-radio v-model="obj.fee_type" val="regular"></q-radio>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="q-mb-xs">
+                    <span>Regular </span>
+                    <span v-if="event.is_early">(early: <strong>EUR {{ event.early_fee }}</strong>, until {{ event.registration_early_deadline }})</span>
+                    <span v-else>(late: EUR {{ event.fee }})</span>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item tag="label" class="q-py-xs">
+                <q-item-section avatar top>
+                  <q-radio v-model="obj.fee_type" val="student"></q-radio>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="q-mb-xs">
+                    <span>Student </span>
+                    <span v-if="event.is_early">(early: <strong>EUR {{ event.early_student_fee }}</strong>, until {{ event.registration_early_deadline }})</span>
+                    <span v-else>(late: EUR {{ event.student_fee }})</span>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+
+          <q-card-section>
+            <form-section-title>Sessions</form-section-title>
+            <p class="text-overline q-mb-none">Choose the sessions you want to attend.</p>
+          </q-card-section>
+          <q-card-section v-for="day in program" v-show="day.sessions.length">
+            <display-5 class="q-pl-lg">{{ day.date.format('dddd, MMM D') }}</display-5>
+            <q-separator class="q-my-sm"></q-separator>
+            <q-list>
+              <q-item v-for="session in day.sessions" tag="label" class="q-py-md">
+                <q-item-section avatar top>
+                  <q-checkbox v-model="obj.sessions" :val="session.id"></q-checkbox>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="q-mb-xs">{{ session.title }}</q-item-label>
+                  <q-item-label caption>
+                    <span class="q-mr-md">
+                      <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
+                      <span>{{ session.type.value }}</span>
+                    </span>
+                    <span>
+                      <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
+                      <span>{{ session.start.format('H:mm') }} - {{ session.end.format('H:mm') }}</span>
+                    </span>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+
+          <q-btn unelevated color="primary" @click="createOrUpdate" :label="(registration) ? 'Update registration' : 'Create registration'" class="q-my-lg" :disabled="!obj.fee_type || !obj.sessions.length" />
+        </q-card>
+      </div>
+    </div>
+  </div>
+{% endverbatim %}
+</script>

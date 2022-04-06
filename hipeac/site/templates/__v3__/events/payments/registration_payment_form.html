@@ -1,0 +1,93 @@
+{% extends '__v3__/layout.html' %}
+
+{% load compress %}
+{% load static %}
+
+
+{% block header %}{% endblock %}
+{% block drawer %}{% endblock %}
+
+{% block page %}
+  <div class="row q-col-gutter-md justify-center">
+
+    <div class="col-12 col-md-6 col-lg-5">
+      <div class="text-center q-mb-lg">
+        <a href="{% url 'homepage' %}"><img src="{% static 'images/hipeac.svg' %}" class="logo q-mt-xs"></a>
+      </div>
+      <q-card class="hipeac__card">
+
+        <h5 class="q-mt-none q-mb-sm text-weight-bold">#{{ registration.event.hashtag }} payment</h5>
+        <p class="q-mt-none q-mb-xl text-grey-8">Registration ID: <samp>{{ registration.id }}</samp></p>
+
+        {% if registration.is_paid %}
+          <p>Your registration is fully paid.</p>
+          {% if registration.paid > 0 %}
+            <q-btn outline rounded no-caps type="a" target="_blank" rel="noopener" href="{{ registration.get_receipt_url }}" icon="receipt" color="primary" label="Download receipt" class="q-mt-md q-px-lg" />
+          {% endif %}
+        {% else %}
+          <p class="text-negative">You still have to pay <strong>{{ registration.remaining_fee }} EUR</strong> for your "{{ registration.event }}" registration.</p>
+          {% if registration.paid > 0 %}
+            <p>You have already paid <strong>{{ registration.paid }} EUR</strong>.</p>
+          {% endif %}
+          {% if registration.coupon %}
+            <p>You've used a coupon:<br>
+              <strong class="text-sm">{{ registration.coupon.code }}</strong> &nbsp;<span class="radius badge badge-primary">{{ registration.coupon.value }} EUR</span>
+            </p>
+          {% else %}
+            <p>If you received a coupon, please apply the coupon code to update your balance before proceeding to pay.</p>
+            <form method="post" action="">
+              {% csrf_token %}
+              <div class="row">
+                <q-input filled dense type="text" id="coupon" name="coupon" v-model="coupon" class="col-10 col-sm-11">
+                </q-input>
+                <div class="col-2 col-sm-1 text-center">
+                  <q-btn round dense flat type="submit" icon="send" color="primary" :disabled="coupon == ''" class="q-mt-xs"></q-btn>
+                </div>
+              </div>
+            </form>
+          {% endif %}
+          <q-separator class="q-my-lg"></q-separator>
+          {% if registration.invoice_requested %}
+            <p><strong>You have requested an invoice</strong></p>
+            <p>Please check your email for payment instructions. You should receive an invoice from us soon. If you prefer to pay online <strong>&mdash;no invoice&mdash;</strong> contact us to change your registration: <a href="mailto:management@hipeac.net">management@hipeac.net</a></p>
+          {% else %}
+            <div class="clearfix">
+              <p>Pay <strong>{{ registration.remaining_fee }} EUR</strong> online using our secure payment server. Once the payment is complete you will be able to download a receipt <strong>&mdash;no invoice&mdash;</strong>:</p>
+              <img src="{% static 'images/ingenico.svg' %}" class="float-right mini-logo q-mt-sm">
+              <form method="post" action="{{ ingenico_url }}">
+                {% for key, value in ingenico_parameters.items %}
+                  <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endfor %}
+                <q-btn unelevated color="primary" type="submit" icon="vpn_key" label="Pay"></q-btn>
+              </form>
+              <p class="q-mt-xl q-mb-none text-sm text-grey-8"><i class="material-icons q-mr-sm">screen_share</i> <strong>Delegated payment</strong>: you can <a href="{{ registration.get_payment_delegated_url }}">share a unique payment link</a> with someone else so he/she can pay your registration online (without a HiPEAC acccount).</p>
+              {% if event.allows_invoices %}
+                <p class="q-mt-md q-mb-none text-sm text-grey-8"><i class="material-icons q-mr-sm">account_balance</i> <strong>Payment with invoice</strong>: if you need an official invoice with VAT you can <a href="{% url 'registration_payment:invoice_request' registration.id %}">request an invoice here</a> and pay via bank transfer.</p>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endif %}
+
+      </q-card>
+    </div>
+
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+  <script type="text/javascript">
+    var app = Vue.createApp({
+      data: function () {
+        return {
+          visibleDrawer: true,
+          coupon: ''
+        };
+      }
+    });
+    Hipeac.utils.registerComponents(app, [HipeacCommonComponents]);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+{% endblock %}

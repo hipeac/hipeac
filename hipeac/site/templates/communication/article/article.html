@@ -29,11 +29,11 @@
               <div class="marked">
                 {{ article.content | markdown }}
               </div>
-              {% if article.public_files.count %}
+              {% if article.files.count %}
                 <div class="mt-5">
                   <display-sm class="mb-3 mt-5">Related files</display-sm>
                   <table class="table table-sm">
-                  {% for file in article.public_files.all %}
+                  {% for file in article.files.all %}
                     <tr>
                       <td class="sm"><i class="material-icons sm">description</i></td>
                       <td>{{ file.description }}</td>

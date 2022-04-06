@@ -1,18 +1,26 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from ..projects import Project
 
-class Hipeac(models.Model):
+
+class Hipeac(Project):
     """
-    HiPEAC project.
+    A HiPEAC project.
     """
 
-    project = models.ForeignKey("hipeac.Project", null=True, blank=False, on_delete=models.SET_NULL)
-    visible = models.BooleanField(default=False)
+    is_visible = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "hipeac_self"
 
 
 class HipeacPartner(models.Model):
-    hipeac = models.ForeignKey("hipeac.HiPEAC", on_delete=models.CASCADE, related_name="partners")
+    """
+    A HiPEAC partner.
+    """
+
+    hipeac = models.ForeignKey(Hipeac, on_delete=models.CASCADE, related_name="partners")
     institution = models.ForeignKey("hipeac.Institution", null=True, blank=False, on_delete=models.SET_NULL)
     description = models.TextField(null=True, blank=True)
     representative = models.ForeignKey(
@@ -22,4 +30,5 @@ class HipeacPartner(models.Model):
     tasks = models.CharField(max_length=250, null=True, blank=True)
 
     class Meta:
-        ordering = ["hipeac", "position"]
+        db_table = "hipeac_self_partner"
+        ordering = ("hipeac", "position")

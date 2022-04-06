@@ -1,18 +1,15 @@
 # flake8: noqa
 
-from .b2b import *
+from .acaces import *
 from .breaks import *
 from .committees import *
-from .courses import *
+from .conferences import *
+from .coupons import *
+from .csw import *
 from .events import *
-from .fees import *
-from .open_events import *
-from .open_registrations import *
-from .posters import *
+from .invitation_letters import *
 from .registrations import *
-from .roadshows import *
-from .session_proposals import *
 from .sessions import *
-from .sponsors import *
+from .session_proposals import *
 from .venues import *
 from .webinars import *

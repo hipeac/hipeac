@@ -26,7 +26,7 @@ class PublicationSerializer(serializers.ModelSerializer):
 class PublicationListSerializer(PublicationSerializer):
     class Meta:
         model = Publication
-        exclude = ("authors",)
+        exclude = ()
 
 
 class TechTransferCallSerializer(serializers.ModelSerializer):
@@ -44,13 +44,9 @@ class TechTransferApplicationSerializer(serializers.ModelSerializer):
         exclude = (
             "created_at",
             "applicant",
-            "awardee",
-            "awarded_from",
-            "awarded_to",
             "description",
             "partners_description",
             "value",
-            "team",
         )
 
     def get_year(self, obj) -> int:

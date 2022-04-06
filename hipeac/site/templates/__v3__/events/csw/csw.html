@@ -5,30 +5,29 @@
 {% load static %}
 
 
-{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+{% block head_title %}{{ csw }} - {{ block.super }}{% endblock %}
 
 {% block submenu %}
   <q-toolbar class="container">
-    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ csw }}</q-toolbar-title>
     <q-space v-show="$q.screen.gt.sm"></q-space>
-    <hipeac-submenu-tabs v-if="event" :menu="menu" :checks="{'registration': !!registration, 'covid': !!event.custom_data.covid}"></hipeac-submenu-tabs>
+    <hipeac-submenu-tabs v-if="event" :menu="menu" :checks="{'registration': !!registration}" :hashtag="event.hashtag"></hipeac-submenu-tabs>
   </q-toolbar>
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-attendees-url="{% url 'v1:event-attendees' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}"></div>
+  <div id="vars" data-event-id="{{ csw.id }}" data-event-url="{% url 'v1:csw-detail' csw.id %}" data-attendees-url="{% url 'v1:event-attendees' csw.id %}" data-sessions-url="{% url 'v1:event-sessions' csw.id %}" data-registration-url="{% url 'v1:auth-registration-csw-list' %}"></div>
   <router-view></router-view>
-  <hipeac-submenu-fabs v-if="event" :menu="menu" :checks="{'registration': !!registration, 'covid': !!event.custom_data.covid}"></hipeac-submenu-fabs>
+  <hipeac-submenu-fabs v-if="event" :menu="menu" :checks="{'registration': !!registration}"></hipeac-submenu-fabs>
 {% endblock %}
 
 {% block vue_templates %}
   {% include './v-program.html' %}
+  {% include './v-registration.html' %}
   {% include '../_shared/v-about.html' %}
   {% include '../_shared/v-attendees.html' %}
-  {% include '../_shared/v-covid.html' %}
   {% include '../_shared/v-program-keynotes.html' %}
   {% include '../_shared/v-program-main.html' %}
-  {% include '../_shared/v-registration.html' %}
   {% include '../_shared/v-session.html' %}
   {% include '../_shared/v-venue.html' %}
 {% endblock %}
@@ -64,13 +63,6 @@
       created: function () {
         this.$store.commit('events/getAttendees');
       }
-    };
-
-    var CovidView = {
-      template: '#v-covid',
-      computed: _.extend(
-        Vuex.mapState('events', ['event']), {
-      })
     };
 
     var ProgramView = {
@@ -143,12 +135,6 @@
           component: AttendeesView
         },
         {
-          name: 'covid',
-          path: '/covid-19/',
-          pathToRegexpOptions: {strict: true},
-          component: CovidView
-        },
-        {
           path: '/program/',
           pathToRegexpOptions: {strict: true},
           component: ProgramView,
@@ -212,12 +198,6 @@
             label: 'Venue and travel',
             to: {name: 'venue'},
             exact: true
-          },
-          {
-            label: 'COVID-19',
-            to: {name: 'covid'},
-            exact: true,
-            check: 'covid'
           },
           {
             label: 'Attendees',

@@ -43,7 +43,7 @@ var DjangoComponents = {
         var fails = 0;
 
         _.each(this.fields, function (f) {
-          if (f.required && (mutable[f.name] == undefined || !mutable[f.name].length)) fails++;
+          if (f.required && (mutable[f.name] == undefined || !mutable[f.name].length)) fails++;
         });
 
         return fails == 0;

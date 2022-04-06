@@ -1,16 +1,16 @@
 import uuid
 
-from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
 from hipeac.functions import send_task
-from hipeac.site.emails.events import SessionProposalEmail
+from hipeac.site.emails.events.events import SessionProposalEmail
+from ..mixins import ApplicationAreasMixin, TopicsMixin
 
 
-class SessionProposal(models.Model):
+class SessionProposal(ApplicationAreasMixin, TopicsMixin, models.Model):
     """
     A session proposal for a conference.
     """
@@ -35,11 +35,11 @@ class SessionProposal(models.Model):
     previous_editions = models.TextField(null=True, blank=True)
     other = models.TextField(null=True, blank=True)
 
-    application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
-    topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "hipeac_event_session_proposal"
 
     def get_absolute_url(self) -> str:
         return reverse("session_proposal_update", args=[self.event_id, self.uuid])

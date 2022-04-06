@@ -2,9 +2,7 @@
 {% verbatim %}
   <div v-if="registration">
     <q-card class="hipeac__card q-my-lg">
-      <q-card-section>
-        <user-viewer :users="attendees" :show-profile-link="true" event-name="attendees-query-changed"></user-viewer>
-      </q-card-section>
+      <attendees-list :users="attendees" :show-profile-link="true" event-name="attendees-query-changed"></attendees-list>
     </q-card>
   </div>
 {% endverbatim %}

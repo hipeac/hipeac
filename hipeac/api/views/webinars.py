@@ -8,12 +8,12 @@ from rest_framework.viewsets import GenericViewSet
 from hipeac.models import Webinar, WebinarRegistration
 from hipeac.services.zoom import Zoomer
 from ..permissions import HasRegistrationForWebinar
-from ..serializers import RegistrationListSerializer, WebinarListSerializer, WebinarRegistrationListSerializer
+from ..serializers import RegistrationListSerializer, WebinarSerializer, WebinarRegistrationListSerializer
 
 
 class WebinarViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     pagination_class = None
-    serializer_class = WebinarListSerializer
+    serializer_class = WebinarSerializer
     queryset = Webinar.objects.all()
 
     @action(

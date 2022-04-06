@@ -7,7 +7,7 @@
           <q-tabs no-caps inline-label shrink>
             <q-route-tab exact :to="{name: 'session', params: {id: id}}">
               <q-icon size="xs" name="lens" :color="session.color" class="q-mr-sm"></q-icon>
-              <div class="q-tab__label">{{ session.session_type.value }}</div>
+              <div class="q-tab__label">{{ session.type.value }}</div>
             </q-route-tab>
             <q-route-tab v-if="session.isKeynote && session.main_speaker" exact :to="{name: 'sessionBio', params: {id: id}}" label="Bio"></q-route-tab>
             <q-route-tab v-if="session.program" exact :to="{name: 'sessionProgram', params: {id: id}}" label="Program"></q-route-tab>

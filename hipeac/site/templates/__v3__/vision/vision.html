@@ -137,7 +137,7 @@
       computed: _.extend(
         Vuex.mapGetters(['vision', 'articles', 'groupedArticles', 'dimensions']), {
         filteredArticles: function () {
-          return Hipeac.utils.filter(this.articles || [], this.query);
+          return Hipeac.utils.filter(this.articles || [], this.query);
         },
         dimensionData: function () {
           return _.indexBy(this.dimensions, 'name');

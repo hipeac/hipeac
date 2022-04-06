@@ -1,15 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
-from django.db.models import Q
-from django.forms import ModelForm
+from django.contrib.contenttypes.admin import GenericTabularInline
 
-from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField, MembershipTagsChoiceField
 from hipeac.functions import send_task
-from hipeac.models import Profile, Institution
+from hipeac.models import Profile, RelatedUser
 from hipeac.tools.csv import ModelCsvWriter
 from .csv.users import csv_users_activity
-from .generic import LinksInline
+from .links import LinksInline
+from .membership import MembershipInline
 
 
 admin.site.unregister(get_user_model())
@@ -28,7 +27,7 @@ def send_profile_update_reminders(queryset):
                 "user_name": profile.name,
                 "institution": profile.institution.name if profile.institution else "(none)",
                 "second_institution": profile.second_institution.name if profile.second_institution else "(none)",
-                "topics": profile.get_metadata_display("topics") if profile.topics != "" else "(none)",
+                "topics": profile.get_topics_display(),
             },
         )
         send_task("hipeac.tasks.emails.send_from_template", email)
@@ -39,72 +38,16 @@ class ProfileCsvWriter(ModelCsvWriter):
     custom_fields = ("username", "name", "email")
     exclude = ("user", "bio", "title", "department", "links", "projects", "publications", "is_bouncing", "updated_at")
 
-    def optimize_queryset(self, queryset):
-        return queryset.prefetch_related(
-            "gender", "meal_preference", "position", "advisor", "institution", "second_institution"
-        )
-
-
-class ProfileAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField(required=False)
-    topics = TopicsChoiceField(required=False)
-    membership_tags = MembershipTagsChoiceField(required=False)
+    def get_queryset(self, queryset):
+        return queryset.prefetch_related("gender", "meal_preference", "position", "institution", "second_institution")
 
 
 class ProfileInline(admin.StackedInline):
     model = Profile
-    fk_name = "user"
-    form = ProfileAdminForm
-    exclude = ("is_bouncing",)
-
-    autocomplete_fields = ("institution", "second_institution", "projects")
-    raw_id_fields = ("advisor",)
-    inlines = (LinksInline,)
-    fieldsets = (
-        (None, {"fields": ("country", "bio", "gender", "meal_preference", "image")}),
-        ("AFFILIATION", {"fields": ("position", "institution", "department", "second_institution")}),
-        ("MEMBERSHIP", {"fields": (("membership_date", "membership_revocation_date"), "advisor", "membership_tags")}),
-        ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics", "projects")}),
-        ("PRIVACY", {"classes": ("collapse",), "fields": ("is_subscribed", "is_public")}),
-    )
-
-
-class MembershipTypeFilter(admin.SimpleListFilter):
-    title = "membership"
-    parameter_name = "membership"
-
-    def lookups(self, request, model_admin):
-        return (
-            ("any", "All members"),
-            ("member", "Member"),
-            ("affiliated", "Affiliated member"),
-            ("industry", "Industry member or affiliate"),
-            ("innovation", "Innovation member"),
-            ("stakeholder", "Stakeholder member"),
-        )
-
-    def queryset(self, request, queryset):
-        value = self.value()
-        queryset = queryset.filter(is_active=True)
-
-        if value in ["any", "industry"]:
-            queryset = queryset.filter(
-                Q(profile__membership_tags__contains="member") | Q(profile__membership_tags__contains="affiliated"),
-                profile__membership_revocation_date__isnull=True
-            )
-
-        if value:
-            if value == "industry":
-                return queryset.filter(
-                    Q(profile__institution__type__in=[Institution.INDUSTRY, Institution.SME])
-                    | Q(profile__second_institution__type__in=[Institution.INDUSTRY, Institution.SME]),
-                    profile__membership_revocation_date__isnull=True
-                )
-
-            if value != "":
-                return queryset.filter(profile__membership_tags__contains=value, profile__membership_revocation_date__isnull=True)
-
-        return queryset
+    extra = 0
+    classes = ("collapse",)
+    # form
+    raw_id_fields = ("institution", "second_institution")
 
 
 @admin.register(get_user_model())
@@ -115,17 +58,17 @@ class UserAdmin(AuthUserAdmin):
         "export_csv_activity",
         "extract_publications_from_dblp",
     )
-    list_display = ("id", "username", "name", "institution", "email", "membership_tags")
-    list_filter = (MembershipTypeFilter,) + AuthUserAdmin.list_filter
+    list_display = ("id", "username", "name", "institution", "email")
+    # list_filter = (MembershipTypeFilter,) + AuthUserAdmin.list_filter
+    list_filter = AuthUserAdmin.list_filter
     search_fields = ("username", "email", "first_name", "last_name", "profile__institution__name")
 
-    inlines = (ProfileInline,)
+    inlines = (ProfileInline, MembershipInline)
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("profile").prefetch_related("profile__institution")
 
-    def membership_tags(self, obj) -> str:
-        return obj.profile.membership_tags
+    # custom fields
 
     def name(self, obj) -> str:
         return obj.profile.name
@@ -133,23 +76,14 @@ class UserAdmin(AuthUserAdmin):
     def institution(self, obj) -> str:
         return obj.profile.institution
 
-    def send_profile_update_reminder(self, request, queryset):
-        queryset = queryset.prefetch_related("profile__second_institution")
-        send_profile_update_reminders(queryset)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    send_profile_update_reminder.short_description = "[Mailer] Send profile update reminder"
+    # custom actions
 
     def export_users_csv(self, request, queryset):
         ids = queryset.values_list("id", flat=True)
         return ProfileCsvWriter(filename="hipeac-users.csv", queryset=Profile.objects.filter(user_id__in=ids)).response
 
-    export_users_csv.short_description = "[CSV] Export users' data"
-
     def export_csv_activity(self, request, queryset):
         return csv_users_activity(queryset, "hipeac-users--activity.csv")
-
-    export_csv_activity.short_description = "[CSV] Export activity report for selected users"
 
     def extract_publications_from_dblp(self, request, queryset):
         for user in queryset:
@@ -159,4 +93,41 @@ class UserAdmin(AuthUserAdmin):
         )
         return True
 
+    def send_profile_update_reminder(self, request, queryset):
+        queryset = queryset.prefetch_related("profile__second_institution")
+        send_profile_update_reminders(queryset)
+        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
+
+    export_users_csv.short_description = "[CSV] Export users' data"
+    export_csv_activity.short_description = "[CSV] Export activity report for selected users"
     extract_publications_from_dblp.short_description = "[DATA] Extract publications from DBLP"
+    send_profile_update_reminder.short_description = "➡️ Send profile update reminder"
+
+
+class UsersInline(GenericTabularInline):
+    model = RelatedUser
+    classes = ("collapse",)
+    extra = 0
+    verbose_name = "user"
+    # form
+    raw_id_fields = ("user",)
+
+
+class MembersInline(UsersInline):
+    verbose_name = "member"
+
+
+class OwnersInline(UsersInline):
+    verbose_name = "owner"
+
+
+class SpeakersInline(UsersInline):
+    verbose_name = "speaker"
+
+
+class TeachersInline(UsersInline):
+    verbose_name = "teacher"
+
+
+class TeamMemberInline(UsersInline):
+    verbose_name = "team member"

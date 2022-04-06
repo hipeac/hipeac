@@ -29,8 +29,8 @@ class LinkedInNotificator(Notificator):
                 INNER JOIN hipeac_profile AS p ON u.id = p.user_id
                 WHERE u.id IN (
                     SELECT l.object_id
-                    FROM hipeac_link AS l
-                    WHERE l.content_type_id = 32 AND l.type = 'linkedin'
+                    FROM hipeac_rel_link AS l
+                    WHERE l.content_type_id = 48 AND l.type = 'linkedin'
                 ) AND u.id NOT IN (
                     SELECT s.user_id
                     FROM socialaccount_socialaccount AS s
@@ -54,7 +54,7 @@ class LinkedInNotificator(Notificator):
 
     def parse_notification(self, notification: Notification) -> Dict[str, Any]:
         return {
-            "text": f"Connect your LinkedIn and HiPEAC accounts to be able to log in even if you change institutions.",
+            "text": "Connect your LinkedIn and HiPEAC accounts to be able to log in even if you change institutions.",
             "path": reverse("socialaccount_connections"),
         }
 
@@ -192,6 +192,6 @@ class ResearchTopicsPendingNotificator(Notificator):
 
     def parse_notification(self, notification: Notification) -> Dict[str, Any]:
         return {
-            "text": f"Include your **areas of expertise** in your research profile to help other researchers find you.",
+            "text": "Include your **areas of expertise** in your research profile to help other researchers find you.",
             "path": f"{reverse('user_profile')}#/research/",
         }

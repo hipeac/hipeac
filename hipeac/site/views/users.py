@@ -38,7 +38,7 @@ class UserCertificates(UserAuthenticatedMixin, generic.ListView):
 
     def get_queryset(self):
         today = timezone.now().date()
-        return self.request.user.registrations.filter(event__end_date__lte=today).select_related("event")
+        return self.request.user.registration_registrations.filter(event__end_date__lte=today).select_related("event")
 
 
 class UserCertificatePdf(UserAuthenticatedMixin, generic.DetailView):
@@ -47,7 +47,7 @@ class UserCertificatePdf(UserAuthenticatedMixin, generic.DetailView):
     def get_object(self):
         if not hasattr(self, "object"):
             self.object = (
-                self.request.user.registrations.select_related("user__profile")
+                self.request.user.registration_registrations.select_related("user__profile")
                 .prefetch_related("user__profile__institution")
                 .get(uuid=self.kwargs.get("uuid"))
             )

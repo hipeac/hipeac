@@ -1,0 +1,49 @@
+{% extends '__v3__/layout.html' %}
+
+{% load compress %}
+{% load static %}
+
+
+{% block header %}{% endblock %}
+{% block drawer %}{% endblock %}
+
+{% block page %}
+  <div class="row q-col-gutter-md justify-center">
+
+    <div class="col-12 col-md-6 col-lg-5">
+      <div class="text-center q-mb-lg">
+        <a href="{% url 'homepage' %}"><img src="{% static 'images/hipeac.svg' %}" class="logo q-mt-xs"></a>
+      </div>
+      <q-card class="hipeac__card">
+
+        <h5 class="q-mt-none q-mb-sm text-weight-bold">#{{ registration.event.hashtag }} payment</h5>
+        <p class="q-mt-none q-mb-none text-grey-8">Registration ID: <samp>{{ registration.id }}</samp></p>
+        <p class="q-mt-none q-mb-xl text-grey-8">On behalf of: {{ registration.user.profile.name }}</p>
+
+        {% if registration.is_paid %}
+          <p>{{ registration.user.profile.name }}'s registration is fully paid.</p>
+        {% else %}
+          {% if not registration.invoice_requested %}
+            <div class="clearfix">
+              <p>Pay <strong>{{ registration.remaining_fee }} EUR</strong> for {{ registration.user.profile.name }}'s "{{ registration.event }}" registration. Once the payment is complete {{ registration.user.first_name }} will be able to download a receipt <strong>&mdash;no invoice&mdash;</strong>:</p>
+              {% if registration.paid > 0 %}
+                <p>You have already paid <strong>{{ registration.paid }} EUR</strong>.</p>
+              {% endif %}
+              <img src="{% static 'images/ingenico.svg' %}" class="float-right mini-logo q-mt-sm">
+              <form method="post" action="{{ ingenico_url }}">
+                {% for key, value in ingenico_parameters.items %}
+                  <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endfor %}
+                <q-btn unelevated color="primary" type="submit" icon="vpn_key" label="Pay"></q-btn>
+              </form>
+            </div>
+          {% else %}
+            <p>Delegated payment not available: the user has already requested an invoice.</p>
+          {% endif %}
+        {% endif %}
+
+      </q-card>
+    </div>
+
+  </div>
+{% endblock %}

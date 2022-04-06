@@ -146,7 +146,7 @@ Vue.component('acaces-registrations-table', {
               <q-toggle size="xs" v-model="mutableLists['admitted']" :val="props.row.id" color="green" checked-icon="check" unchecked-icon="arrow_forward_ios" />
             </q-td>
             <q-td key="granted" :props="props">
-              <q-toggle v-if="props.row.custom_data.grant_requested" size="xs" v-model="mutableLists['granted']" :val="props.row.id" color="green" :disable="disableToggle(props.row)" checked-icon="check" :unchecked-icon="(disableToggle(props.row)) ? 'null' : 'arrow_forward_ios'" />
+              <q-toggle v-if="props.row.grant_requested" size="xs" v-model="mutableLists['granted']" :val="props.row.id" color="green" :disable="disableToggle(props.row)" checked-icon="check" :unchecked-icon="(disableToggle(props.row)) ? 'null' : 'arrow_forward_ios'" />
               <q-toggle v-else size="xs" v-model="togglePlaceholder" :val="false" color="green" disable class="transparent" />
             </q-td>
             <q-td key="user_gender" :props="props">
@@ -329,7 +329,7 @@ Vue.component('acaces-registrations-table', {
     disableToggle: function (row) {
       return this.grantsPerCountry
           && (this.grantsPerCountry[row.country_code].grants_assigned >= this.grantsPerCountry[row.country_code].grants)
-          && this.mutableLists['granted'].indexOf(row.id) < 0;
+          && row.grants_assigned;
     }
   },
   watch: {
@@ -471,7 +471,7 @@ Vue.component('acaces-countries-table', {
       else if (g == this.grantsPerCountry[code].grants_assigned) return
       else g--;
 
-      this.$root.$emit('country-grants-updated', code, g);
+      this.$root.$emit('country-grants-updated', this.grantsPerCountry[code].self, g);
     }
   },
   computed: {

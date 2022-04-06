@@ -823,7 +823,7 @@ Vue.component('project-cards', SimpleList.extend({
     template: '' +
         '<div class="row mini-card-gutters">' +
             '<div v-for="item in items" :key="item.id" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" :v-hide="ids.indexOf(item.id) < 0">' +
-                '<div class="hipeac-card mini-card mb-0 inherit d-flex flex-column pointer" @click="updateLocation(item.href)">' +
+                '<div class="hipeac-card mini-card mb-0 inherit d-flex flex-column pointer" @click="updateLocation(item.url)">' +
                     '<span class="header">' +
                         '<img v-if="item.images" :src="item.images.sm" class="logo">' +
                     '</span>' +

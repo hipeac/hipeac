@@ -4,5 +4,11 @@
   {% if is_paid %}
     <li><a href="{% url 'registration_receipt' object_id %}" target="_blank">Receipt</a></li>
   {% endif %}
+  {% if has_letter %}
+    <li><a href="{% url 'admin:registration_pdf_letter' object_id %}" target="_blank" rel="noopener">Invitation Letter</a></li>
+  {% endif %}
+  {% if payment_delegated_url %}
+    <li><a href="{{ payment_delegated_url }}" class="viewsitelink" target="_blank" rel="noopener">Delegated payment</a></li>
+  {% endif %}
   {{ block.super }}
 {% endblock %}

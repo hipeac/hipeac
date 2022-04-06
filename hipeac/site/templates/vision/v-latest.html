@@ -37,10 +37,10 @@
         <div class="col-12 col-md-8">
           <display-sm class="mb-3">Summary</display-sm>
           <marked :text="vision.summary"></marked>
-          <div v-if="vision.public_files.length" class="mt-5">
+          <div v-if="vision.files.length" class="mt-5">
             <display-sm class="mb-3 mt-5">Related files</display-sm>
             <table class="table table-sm">
-              <tr v-for="file in vision.public_files" :key="file.id">
+              <tr v-for="file in vision.files" :key="file.id">
                 <td class="sm"><i class="material-icons sm">description</i></td>
                 <td>{{ file.description }}</td>
                 <td class="text-right">

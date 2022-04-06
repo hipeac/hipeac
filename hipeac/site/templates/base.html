@@ -25,7 +25,7 @@
       {% if request.DNT %}
         <meta name="twitter:dnt" content="on">
       {% else %}
-        <script async src="//www.googletagmanager.com/gtag/js?id=UA-79856831-1"></script>
+        <script async src="//www.googletagmanager.com/gtag/js?id=G-L9R1MSGBM9"></script>
         {% compress js inline %}
           <script>
             var userId = document.getElementsByTagName('html')[0].getAttribute('data-user');
@@ -34,7 +34,7 @@
               dataLayer.push(arguments);
             };
             gtag('js', new Date());
-            gtag('config', 'UA-2857653-1', {
+            gtag('config', 'G-L9R1MSGBM9', {
               'user_id': (userId == 0) ? undefined : userId
             });
           </script>
@@ -100,8 +100,8 @@
       <script src="{% static 'js/v-shared.js' %}"></script>
     {% endcompress %}
     {% if not debug %}
-      <script src="https://browser.sentry-cdn.com/6.9.0/bundle.min.js" integrity="sha384-WO22OE751vRf/HrLRHFis3ipNR16hUk5Q0qW9ascPaSswHI9Q/0ZFMaMvJ0ZgmSI" crossorigin="anonymous"></script>
-      <script src="https://browser.sentry-cdn.com/6.9.0/vue.min.js" integrity="sha384-CuCDTHNwfKKxDsiqbSI4p7MpikMED/z+znW6nnr6374xyEHle52d+p36HADU+N7M" crossorigin="anonymous"></script>
+      <script src="https://browser.sentry-cdn.com/6.19.1/bundle.tracing.min.js" integrity="sha384-hthbsqa5mLHmR+ZUw29J9qGt8SdDRD7AVpG02i/NAsu5cv9G9I9D9IhEtSVyoPv2" crossorigin="anonymous"></script>
+      <script src="https://browser.sentry-cdn.com/6.19.1/vue.min.js" integrity="sha384-vva9SXyCvEuVwTpFhMnZYaRY7TjpBa78FW4Asdm2yR+Tg88zllQqn4yRijoCrLrt" crossorigin="anonymous"></script>
       {% compress js inline %}
         <script>
           Sentry.init({

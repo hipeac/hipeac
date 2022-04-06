@@ -32,7 +32,11 @@ event = Recipe(
 roadshow = Recipe("hipeac.Roadshow", start_date=now.add(days=30).date, end_date=now.add(days=35).date)
 session_type = Recipe("hipeac.Metadata", type=Metadata.SESSION_TYPE)
 session = Recipe(
-    "hipeac.Session", session_type=foreign_key(session_type), date=now.add(days=62).date, event=foreign_key(event)
+    "hipeac.Session",
+    type=foreign_key(session_type),
+    start_at=now.add(days=62).datetime,
+    end_at=now.add(days=62, minutes=90).datetime,
+    event=foreign_key(event),
 )
 
 

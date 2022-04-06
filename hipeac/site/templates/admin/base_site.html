@@ -1,6 +1,15 @@
 {% extends 'admin/base.html' %}
 
+{% load compress %}
+{% load static %}
+
+
+{% block extrahead %}
+  {% compress css file admin %}
+    <link href="{% static '__v3__/scss/admin.scss' %}" type="text/x-scss" rel="stylesheet">
+  {% endcompress %}
+{% endblock %}
 
 {% block branding %}
-  <h1 id="site-name">HiPEAC</h1>
+  <img src="/static/images/admin-logo.png" class="logo">
 {% endblock %}

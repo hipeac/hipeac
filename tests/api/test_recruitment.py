@@ -16,8 +16,8 @@ class TestForAnonymous:
     @pytest.fixture(autouse=True)
     def setup_job(self, db, now):
         if not self.job_active:
-            self.job_active = baker.make_recipe("hipeac.job", deadline=now.add(days=1).datetime)
-            self.job_not_active = baker.make_recipe("hipeac.job", deadline=now.subtract(days=1).datetime)
+            self.job_active = baker.make_recipe("hipeac.job", deadline=now.add(days=1).date)
+            self.job_not_active = baker.make_recipe("hipeac.job", deadline=now.subtract(days=1).date)
 
     def get_detail_url(self, job_id):
         return reverse("v1:job-detail", args=[job_id])
@@ -58,14 +58,12 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
                 "title": "Job title",
                 "description": "Job description.",
                 "deadline": str(now.add(months=1).date),
-                "employment_type": {"id": employment_type.id},
+                "employment_type": employment_type.id,
                 "country": "BE",
                 "email": "recruitment@hipeac.net",
                 "institution": self.recruiter.profile.institution_id,
                 "project": None,
-                "application_areas": [],
                 "career_levels": [],
-                "topics": [],
                 "links": [],
                 "add_to_euraxess": True,
             }

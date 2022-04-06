@@ -1,35 +1,80 @@
 import os
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
 from django.urls import reverse
+from django.utils.functional import cached_property
 from typing import Dict, List, Optional
 
 from hipeac.functions import get_absolute_uri, get_image_variant_paths
-from hipeac.models import Link, get_cached_metadata
 
 
-class ImagesMixin:
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__image_path = self.image.path if self.image else None
+class ApplicationAreasMixin(models.Model):
+    rel_application_areas = GenericRelation("hipeac.ApplicationArea")
 
-    def image_has_changed(self):
-        return self.image and self.image.path != self.__image_path
+    class Meta:
+        abstract = True
 
-    @property
-    def images(self) -> Optional[Dict[str, str]]:
-        if not self.image:  # noqa
-            return None
+    @cached_property
+    def application_areas(self):
+        return [rel.application_area for rel in self.rel_application_areas.all()]
 
-        name, extension = os.path.splitext(os.path.basename(self.image.url))
-        extension = ".jpg" if extension.lower() == ".jpeg" else extension.lower()
-        return get_image_variant_paths(self.image.url, extension=extension, pre=get_absolute_uri())
+    def get_application_areas_display(self, separator: str = ", ") -> str:
+        values = [obj.value for obj in self.topics]
+        values.sort()
+        return separator.join(values)
 
 
-class LinkMixin:
+class EditorMixin:
+    def get_editor_url(self) -> str:
+        content_type = ContentType.objects.get_for_model(self)
+        return reverse("editor", args=[content_type.id, self.id])
+
+
+class FilesMixin(models.Model):
+    files = GenericRelation("hipeac.File")
+
+    class Meta:
+        abstract = True
+
+
+class ImagesMixin(models.Model):
+    images = GenericRelation("hipeac.Image")
+
+    class Meta:
+        abstract = True
+
+
+class InstitutionsMixin(models.Model):
+    rel_institutions = GenericRelation("hipeac.RelatedInstitution")
+
+    class Meta:
+        abstract = True
+
+    @cached_property
+    def institutions(self):
+        return [rel.institution for rel in self.rel_institutions.all()]
+
+
+class KeywordsMixin(models.Model):
+    keywords = ArrayField(models.CharField(max_length=190), default=list, editable=False, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class LinksMixin(models.Model):
     links_cache = None
+    links = GenericRelation("hipeac.Link")
 
-    def get_ordered_links(self) -> List[Link]:
+    class Meta:
+        abstract = True
+
+    def get_ordered_links(self) -> List:
+        from hipeac.models import Link
+
         links = list(dict(Link.TYPE_CHOICES).keys())
         links_order = {links[i]: i for i in range(0, len(links))}
 
@@ -47,39 +92,92 @@ class LinkMixin:
 
     @property
     def twitter_username(self) -> Optional[str]:
+        from hipeac.models import Link
+
         twitter_link = self.get_link(Link.TWITTER)  # noqa
         return twitter_link.split("/")[-1] if twitter_link else None  # noqa
 
     @property
     def website(self) -> Optional[str]:
+        from hipeac.models import Link
+
         return self.get_link(Link.WEBSITE)
 
 
-class MetadataMixin:
-    def get_metadata(self, field_name: str):
-        if field_name not in ["application_areas", "career_levels", "topics"]:
-            return []
-        value = getattr(self, field_name)
-        if value == "":
-            return []
-        keys = [int(key) for key in getattr(self, field_name).split(",")]
-        metadata = get_cached_metadata()
-        return [metadata[key] for key in keys if key in metadata]
+class ImageMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__image_path = self.image.path if self.image else None
 
-    def get_metadata_display(self, field_name: str, separator: str = ", ") -> str:
-        metadata = [str(m) for m in self.get_metadata(field_name)]
-        metadata.sort()
-        return separator.join(metadata)
+    def image_has_changed(self):
+        return self.image and self.image.path != self.__image_path
 
+    @property
+    def images(self) -> Optional[Dict[str, str]]:
+        if not self.image:  # noqa
+            return None
 
-class EditorMixin:
-    def get_editor_url(self) -> str:
-        content_type = ContentType.objects.get_for_model(self)
-        return reverse("editor", args=[content_type.id, self.id])  # noqa
+        _, extension = os.path.splitext(os.path.basename(self.image.url))
+        extension = ".jpg" if extension.lower() == ".jpeg" else extension.lower()
+        return get_image_variant_paths(self.image.url, extension=extension, pre=get_absolute_uri())
 
 
-class UrlMixin(EditorMixin):
-    route_name = None
+class PermissionsMixin(models.Model):
+    acl = GenericRelation("hipeac.Permission")
 
-    def get_absolute_url(self) -> str:
-        return reverse(self.route_name, args=[self.id, self.slug])  # noqa
+    class Meta:
+        abstract = True
+
+    def can_be_managed_by(self, user) -> bool:
+        from hipeac.models import Permission
+
+        return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+
+
+class ProjectsMixin(models.Model):
+    rel_projects = GenericRelation("hipeac.RelatedProject")
+
+    class Meta:
+        abstract = True
+
+    @cached_property
+    def projects(self):
+        return [rel.project for rel in self.rel_projects.all()]
+
+
+class UsersMixin(models.Model):
+    rel_users = GenericRelation("hipeac.RelatedUser")
+
+    class Meta:
+        abstract = True
+
+    @cached_property
+    def users(self):
+        return [rel.user for rel in self.rel_users.all()]
+
+
+class TopicsMixin(models.Model):
+    rel_topics = GenericRelation("hipeac.Topic")
+
+    class Meta:
+        abstract = True
+
+    @cached_property
+    def topics(self):
+        return [rel.topic for rel in self.rel_topics.all()]
+
+    def get_topics_display(self, separator: str = ", ") -> str:
+        values = [obj.value for obj in self.topics]
+        values.sort()
+        return separator.join(values)
+
+
+class VideosMixin(models.Model):
+    rel_videos = GenericRelation("hipeac.RelatedVideo")
+
+    class Meta:
+        abstract = True
+
+    @cached_property
+    def videos(self):
+        return [rel.video for rel in self.rel_videos.all()]

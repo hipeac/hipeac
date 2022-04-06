@@ -1,24 +1,26 @@
-from django.contrib.contenttypes.fields import GenericRelation
-from django.core.validators import FileExtensionValidator, validate_comma_separated_integer_list
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django_countries.fields import CountryField
 
 from hipeac.functions import get_images_path, send_task
-from hipeac.models import Permission
 from hipeac.validators import validate_no_badwords
-from .mixins import ImagesMixin, LinkMixin, UrlMixin
+from .mixins import ApplicationAreasMixin, EditorMixin, ImageMixin, LinksMixin, PermissionsMixin, TopicsMixin
+from .permissions import Permission
 
 
-class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
+class Institution(
+    ApplicationAreasMixin, EditorMixin, ImageMixin, LinksMixin, PermissionsMixin, TopicsMixin, models.Model
+):
     """
     Any institution related to HiPEAC. Institutions are used to determine user affiliation,
     or for managing institution level information like job offers.
     """
-
-    route_name = "institution"
 
     UNIVERSITY = "university"
     LAB = "lab"
@@ -46,29 +48,30 @@ class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
     description = models.TextField(null=True, blank=True, validators=[validate_no_badwords])
     recruitment_contact = models.CharField(max_length=190, null=True, blank=True)
     recruitment_email = models.EmailField(null=True, blank=True)
+
     image = models.FileField(
-        "Logo",
+        "logo",
         upload_to=get_images_path,
         null=True,
         blank=True,
         validators=[FileExtensionValidator(allowed_extensions=["png"])],
     )
 
-    application_areas = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
-    topics = models.CharField(max_length=250, blank=True, validators=[validate_comma_separated_integer_list])
-    acl = GenericRelation("hipeac.Permission")
-    links = GenericRelation("hipeac.Link")
-
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ("name",)
 
     def __str__(self) -> str:
-        return self.short_name
+        if self.country:
+            return f"{self.name}, {self.country.name}"
+        return self.name
 
     def can_be_managed_by(self, user) -> bool:
         return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+
+    def get_absolute_url(self) -> str:
+        return reverse("institution", args=[self.id, self.slug])
 
     @property
     def schema_org_type(self) -> str:
@@ -94,3 +97,16 @@ class Institution(ImagesMixin, LinkMixin, UrlMixin, models.Model):
 def institution_post_save(sender, instance, created, *args, **kwargs):
     if instance.image_has_changed():
         send_task("hipeac.tasks.imaging.generate_logo_variants", (instance.image.path,))
+
+
+class RelatedInstitution(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name="institutions")
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "hipeac_rel_institution"
+        ordering = ("content_type", "object_id", "institution__name")
+        unique_together = ("content_type", "object_id", "institution")

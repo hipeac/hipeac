@@ -40,9 +40,9 @@
       <a v-if="meeting.file" :href="meeting.file" target="_blank" class="btn btn-sm btn-outline-secondary mr-2"><icon name="get_app" class="sm mr-1"></icon>Download meeting minutes</a>
     </p>
     <marked :text="meeting.description" class="with-h mt-5"></marked>
-    <div v-if="meeting.attachments.length" class="mt-5 rounded steering-box-ml bg-light p-3 text-sm">
+    <div v-if="meeting.files.length" class="mt-5 rounded steering-box-ml bg-light p-3 text-sm">
       <display-sm class="mb-3">Attachments</display-sm>
-      <attachments-table :attachments="meeting.attachments"></attachments-table>
+      <attachments-table :attachments="meeting.files"></attachments-table>
     </div>
   </div>
 {% endverbatim %}

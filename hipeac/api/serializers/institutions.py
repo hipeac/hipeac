@@ -3,18 +3,15 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.models import Institution
-from .generic import LinkSerializer, MetadataListField
+from .mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
 
 
-class InstitutionSerializer(WritableNestedModelSerializer):
-    application_areas = MetadataListField()
-    topics = MetadataListField()
-    links = LinkSerializer(many=True)
+class InstitutionSerializer(ApplicationAreasMixin, LinksMixin, TopicsMixin, WritableNestedModelSerializer):
+    self = serializers.HyperlinkedIdentityField(view_name="v1:institution-detail", read_only=True)
+    url = serializers.CharField(source="get_absolute_url", read_only=True)
     children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     country = CountryField(country_dict=True)
     short_name = serializers.CharField(read_only=True)
-    url = serializers.HyperlinkedIdentityField(view_name="v1:institution-detail", read_only=True)
-    href = serializers.CharField(source="get_absolute_url", read_only=True)
 
     class Meta:
         model = Institution
@@ -25,13 +22,13 @@ class InstitutionSerializer(WritableNestedModelSerializer):
 class InstitutionMiniSerializer(InstitutionSerializer):
     class Meta:
         model = Institution
-        fields = ("id", "type", "name", "local_name", "short_name", "country", "href")
+        fields = ("id", "self", "url", "type", "name", "local_name", "short_name", "country")
 
 
 class InstitutionNestedSerializer(InstitutionSerializer):
     class Meta:
         model = Institution
-        fields = ("id", "type", "name", "local_name", "short_name", "location", "country", "url", "href", "images")
+        fields = ("id", "self", "url", "type", "name", "local_name", "short_name", "location", "country", "images")
 
 
 class InstitutionListSerializer(InstitutionNestedSerializer):

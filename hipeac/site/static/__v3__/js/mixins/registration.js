@@ -34,6 +34,14 @@ var RegistrationMixin = {
         };
       });
       return _.indexBy(program, 'day');
+    },
+    conflicts: function () {
+      if (!this.event || !this.registration) return false;
+      var registration = this.registration;
+      var times = _.pluck(this.event.sessions.filter(function (obj) {
+        return _.contains(registration.sessions, obj.id)
+      }), 'start_at');
+      return times.length > _.uniq(times).length;
     }
   }),
   methods: {
@@ -56,21 +64,16 @@ var RegistrationMixin = {
       if (!this.event || this.registration === undefined) {
         setTimeout(function () { self.sync() }, 25);
         return;
-      };
+      }
 
       if (this.registration) {
         this.obj = _.clone(this.registration);
       } else {
         this.obj = _.clone({
           event: this.event.id,
-          courses: [],
-          sessions: [],
-          posters: [],
-          custom_data: {}
+          sessions: []
         });
       }
-
-      if (!_.has(this.obj, 'custom_data')) { this.$set(this.obj, 'custom_data', {}); }
     }
   },
   watch: {

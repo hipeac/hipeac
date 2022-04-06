@@ -1,2 +1,4 @@
-/docs/** linguist-documentation
-/hipeac/site/static/vendor/** linguist-vendored
+hipeac/migrations/** linguist-generated
+hipeac/site/static/vendor/** linguist-vendored
+hipeac/site/static/vendor_v2/** linguist-vendored
+hipeac/site/static/__v3__/vendor/** linguist-vendored

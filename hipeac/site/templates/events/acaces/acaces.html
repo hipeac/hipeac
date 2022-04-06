@@ -5,24 +5,21 @@
 {% load static %}
 
 
-{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+{% block head_title %}{{ acaces }} - {{ block.super }}{% endblock %}
 
 {% block submenu %}
   <q-toolbar class="container">
-    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ acaces }}</q-toolbar-title>
     <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
       <q-route-tab exact :to="{name: 'about'}" label="About"></q-route-tab>
-      {% if event.is_ready %}
+      {% if acaces.is_ready %}
         <q-route-tab :to="{name: 'program'}" label="Program"></q-route-tab>
       {% endif %}
-      {% if event.is_virtual %}
+      {% if acaces.is_virtual %}
         <q-route-tab exact :to="{name: 'logistics'}" label="Logistics"></q-route-tab>
       {% else %}
+        <q-route-tab exact :to="{name: 'faq'}" label="FAQ"></q-route-tab>
         <q-route-tab :to="{name: 'venue'}" label="Venue and travel"></q-route-tab>
-      {% endif %}
-      {% if event.id == 6806 %}
-        <q-route-tab v-if="user.registration" exact :to="{name: 'covid'}" label="COVID-19"></q-route-tab>
-        <q-route-tab v-if="user.registration" exact :to="{name: 'meals'}" label="Meals"></q-route-tab>
       {% endif %}
       {% if user.is_authenticated %}
         <q-route-tab v-if="user.registration" exact :to="{name: 'attendees'}" label="Attendees"></q-route-tab>
@@ -34,7 +31,7 @@
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-management-url="{% url 'acaces_management' event.year %}" data-event-id="{{ event.id }}" data-event-url="{% url 'v1:event-detail' event.id %}" data-committees-url="{% url 'v1:event-committees' event.id %}" data-courses-url="{% url 'v1:event-courses' event.id %}" data-registration-url="{% url 'v1:auth-registration-list' %}" data-registrations-url="{% url 'v1:event-registrations' event.id %}" data-sessions-url="{% url 'v1:event-sessions' event.id %}"></div>
+  <div id="vars" data-management-url="{% url 'acaces_management' acaces.year %}" data-event-id="{{ acaces.id }}" data-event-url="{% url 'v1:acaces-detail' acaces.id %}" data-committees-url="{% url 'v1:event-committees' acaces.id %}" data-courses-url="{% url 'v1:acaces-courses' acaces.id %}" data-registration-url="{% url 'v1:auth-registration-acaces-list' %}" data-registrations-url="{% url 'v1:event-attendees' acaces.id %}" data-sessions-url="{% url 'v1:event-sessions' acaces.id %}"></div>
   <router-view></router-view>
   <q-page-sticky position="bottom-right" :offset="[18, 18]">
     <q-fab v-if="!$q.screen.gt.sm" icon="menu" direction="up" vertical-actions-align="right" color="primary">
@@ -47,33 +44,25 @@
       {% else %}
         <q-fab-action :to="{name: 'venue'}" color="white" text-color="dark" label="Venue and travel"></q-fab-action>
       {% endif %}
-      {% if event.id == 6806 %}
-        <q-fab-action v-if="user.registration" exact :to="{name: 'covid'}" color="white" text-color="dark" label="COVID-19"></q-fab-action>
-        <q-fab-action v-if="user.registration" exact :to="{name: 'meals'}" color="white" text-color="dark" label="Meals"></q-fab-action>
-      {% endif %}
       {% if user.is_authenticated %}
         <q-fab-action exact :to="{name: 'attendees'}" color="white" text-color="dark" label="Attendees"></q-fab-action>
       {% endif %}
-      <q-fab-action v-if="event && (event.is_open_for_registration || user.registration)" exact :to="{name: 'registration'}" color="white" text-color="dark" :label="(user.registration) ? 'My registration' : 'Register'"></q-fab-action>
     </q-fab>
   </q-page-sticky>
 {% endblock %}
 
 {% block vue_templates %}
-  {% include './v-about.html' with event=event year=event.year %}
+  {% include './v-about.html' with event=acaces year=acaces.year %}
   {% include './v-course.html' %}
-  {% include './v-covid.html' %}
+  {% include './v-faq.html' %}
   {% include './v-program.html' %}
-  {% if event.is_virtual %}
+  {% if acaces.is_virtual %}
     {% include './v-registration-virtual.html' %}
   {% else %}
     {% include './v-registration.html' %}
   {% endif %}
-  {% if event.id == 6806 %}
-    {% include './v-meals-21.html' %}
-  {% endif %}
   {% include './v-venue.html' %}
-  {% if event.slug == 'fiuggi' %}
+  {% if acaces.slug == 'fiuggi' %}
     {% include './v-venue-fiuggi.html' %}
   {% endif %}
   {% include '../_shared/v-attendees.html' %}
@@ -115,7 +104,7 @@
           var slots = {};
           _.each(state.courses, function (course) {
             try {
-              var s = course.custom_data.slot;
+              var s = course.slot;
               if (!_.has(slots, s) && s) {
                 slots[s] = [];
               }
@@ -142,7 +131,7 @@
         },
         tracks: function (state) {
           var tracks = {};
-          if (!state.event || !state.event.sponsors.length || !state.courses.length) return tracks;
+          if (!state.event || !state.courses.length) return tracks;
 
           _.each(state.courses, function (c) {
             if (c.custom_data.track && c.custom_data.track.project_id) {
@@ -158,12 +147,6 @@
                 id: c.id,
                 title: c.title
               });
-            }
-          });
-
-          _.each(state.event.sponsors, function (s) {
-            if (s.project && _.has(tracks, s.project.id)) {
-              tracks[s.project.id].project = s.project;
             }
           });
 
@@ -203,9 +186,10 @@
           if (!USER_IS_AUTHENTICATED) return;
           var self = this;
 
-          Hipeac.api.get(VARS.registrationUrl, {event_id: +VARS.eventId}).then(function (res) {
-            if (res.data.results.length == 1) {
-              var reg = res.data.results[0];
+          Hipeac.api.get(VARS.registrationUrl).then(function (res) {
+            var reg = _.findWhere(res.data, {event: +VARS.eventId});
+
+            if (reg) {
               state.user.registration = Object.freeze(Hipeac.map.registration(reg));
             } else {
               state.user.registration = null;
@@ -254,13 +238,6 @@
       created: function () {
         this.$store.commit('getRegistrations');
       }
-    };
-
-    var CovidView = {
-      template: '#v-covid',
-      computed: _.extend(
-        Vuex.mapState(['event']), {
-      }),
     };
 
     var CourseView = {
@@ -329,7 +306,7 @@
       methods: {
         getAttendees: function () {
           var self = this;
-          Hipeac.api.get(this.course.url + 'attendees/').then(function (res) {
+          Hipeac.api.get(this.course.self + 'attendees/').then(function (res) {
             self.attendees = Object.freeze(res.data.map(function (obj) {
               return Hipeac.map.user(obj.user);
             }));
@@ -352,6 +329,13 @@
       template: '#v-course-teachers',
       computed: _.extend(
         Vuex.mapState(['event', 'course']), {
+      }),
+    };
+
+    var FaqView = {
+      template: '#v-faq',
+      computed: _.extend(
+        Vuex.mapState(['event', 'session']), {
       }),
     };
 
@@ -453,24 +437,30 @@
               || !this.obj.custom_data.profile.country
               || !this.obj.custom_data.profile.gender
               || !this.obj.custom_data.profile.institution
-              || !this.obj.custom_data.motivation;
+              || !this.obj.motivation;
         },
         years: function () {
           return _.range(2005, moment().year());
         }
       }),
       methods: {
+        addPoster: function (obj) {
+          obj.poster = {
+            title: null,
+            authors: null,
+          }
+        },
         admitted: function (id) {
-          if (!this.event) return false;
-          return this.event.custom_data.admitted_ids.indexOf(id) != -1;
+          if (!this.obj) return false;
+          return this.obj.status == 1;
         },
         granted: function (id) {
-          if (!this.event) return false;
-          return this.event.custom_data.granted_ids.indexOf(id) != -1;
+          if (!this.obj) return false;
+          return this.obj.grant_assigned;
         },
         acceptOrReject: function (action) {
           var self = this;
-          Hipeac.api.request('post', this.obj.url + action + '/').then(function (res) {
+          Hipeac.api.request('post', this.obj.self + action + '/').then(function (res) {
             Hipeac.utils.notifySuccess('You have ' + action + 'ed.');
             self.$store.commit('updateRegistration', res.data);
             self.syncRegistration();
@@ -506,61 +496,32 @@
             this.obj = _.clone({
               status: (this.event.is_virtual) ? 2 : 0,
               event: this.event.id,
+              grant_requested: false,
               visa_requested: false,
+              history: [],
               courses: [],
               sessions: [],
-              posters: []
+              poster: null,
+              custom_data: {}
             });
           }
 
-          if (!_.has(this.obj, 'custom_data')) { this.$set(this.obj, 'custom_data', {}); }
-
-          if (!this.event.is_virtual) {
-            // Update extra fields
-            if (!_.has(this.obj.custom_data, 'gelato')) { this.$set(this.obj.custom_data, 'gelato', false); }
-            if (!_.has(this.obj.custom_data, 'selection')) { this.$set(this.obj.custom_data, 'selection', {}); }
-            if (!_.has(this.obj.custom_data, 'history')) { this.$set(this.obj.custom_data, 'history', []); }
-            if (!_.has(this.obj.custom_data, 'motivation')) { this.$set(this.obj.custom_data, 'motivation', null); }
-            if (!_.has(this.obj.custom_data, 'grant_requested')) { this.$set(this.obj.custom_data, 'grant_requested', false); }
-            if (!_.has(this.obj.custom_data, 'room')) { this.$set(this.obj.custom_data, 'room', {
-              'share': false,
-              'mate': null
-            }); }
-            if (!_.has(this.obj.custom_data, 'profile')) { this.$set(this.obj.custom_data, 'profile', {
-              'student': false,
-              'industry': false,
-              'member_institution': false,
-              'institution': null,
-              'country': null,
-              'advisor': null,
-              'gender': null
-            }); }
-            if (!_.has(this.obj.custom_data, 'poster')) { this.$set(this.obj.custom_data, 'poster', {
-              'present': false,
-              'title': null,
-              'authors': null,
-              'institution': null
-            }); }
-            if (!_.has(this.obj.custom_data, 'visa')) { this.$set(this.obj.custom_data, 'visa', {
-              'birthdate': null,
-              'birthplace': null,
-              'nationality': null,
-              'passport_number': null,
-              'passport_expiration_date': null
-            }); }
-            if (!_.has(this.obj.custom_data, 'travel')) { this.$set(this.obj.custom_data, 'travel', {
-              'covid': null,
-              'flight': null,
-              'flight_return': null,
-              'bus': null,
-              'bus_return': null,
-            }); }
-          }
+          if (!_.has(this.obj.custom_data, 'visa')) { this.$set(this.obj.custom_data, 'visa', {}); }
+          if (!_.has(this.obj.custom_data, 'selection')) { this.$set(this.obj.custom_data, 'selection', {}); }
+          if (!_.has(this.obj.custom_data, 'profile')) { this.$set(this.obj.custom_data, 'profile', {
+            'student': false,
+            'industry': false,
+            'member_institution': false,
+            'institution': null,
+            'country': null,
+            'advisor': null,
+            'gender': null
+          }); }
         },
         save: function () {
           var self = this;
           var method = (this.user.registration) ? 'put' : 'post';
-          var url = (this.user.registration) ? this.user.registration.url : VARS.registrationUrl;
+          var url = (this.user.registration) ? this.user.registration.self : VARS.registrationUrl;
 
           var rt = this.requestType;
 
@@ -611,7 +572,7 @@
 
           var session = _.findWhere(this.event.sessions, {id: +this.id});
           this.$store.commit('updateSession', session);
-          Hipeac.api.get(session.url).then(function (res) {
+          Hipeac.api.get(session.self).then(function (res) {
             self.$store.commit('updateSession', Hipeac.map.session(res.data));
           });
         },
@@ -630,7 +591,7 @@
       computed: _.extend(
         Vuex.mapState(['user', 'event']), {
         mg: function () {
-          if (!this.event || !this.user || !this.user.registration) return null;
+          if (!this.event || !this.user || !this.user.registration) return null;
           return this.event.custom_data.lunch_distribution[this.user.registration.id];
         }
       }),
@@ -659,7 +620,7 @@
       methods: {
         getAttendees: function () {
           var self = this;
-          Hipeac.api.get(this.session.url + 'attendees/').then(function (res) {
+          Hipeac.api.get(this.session.self + 'attendees/').then(function (res) {
             self.attendees = Object.freeze(res.data.map(function (obj) {
               return Hipeac.map.user(obj.user);
             }));
@@ -717,7 +678,7 @@
     var Router = new VueRouter({
       linkActiveClass: 'active',
       scrollBehavior: function (to, from) {
-        if (from.name.startsWith('course') || from.name.startsWith('session')) return;
+        if (from.name.startsWith('course') || from.name.startsWith('session')) return;
         return {x: 0, y: 0};
       },
       routes: [
@@ -734,10 +695,10 @@
           component: AttendeesView
         },
         {
-          name: 'covid',
-          path: '/covid-19/',
+          name: 'faq',
+          path: '/faq/',
           pathToRegexpOptions: {strict: true},
-          component: CovidView
+          component: FaqView
         },
         {
           name: 'logistics',

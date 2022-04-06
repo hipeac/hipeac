@@ -19,7 +19,10 @@ class Break(models.Model):
 
     class Meta:
         db_table = "hipeac_event_break"
-        ordering = ["start_at"]
+        ordering = ("event", "start_at")
 
     def clean(self) -> None:
         validate_date(self.start_at.date(), self.event)
+
+    def __str__(self) -> str:
+        return f"{self.type.title()} ({self.start_at})"

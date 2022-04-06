@@ -1,4 +1,4 @@
-from hipeac.tools.pdf import PdfResponse, Pdf
+from hipeac.services.pdf import PdfResponse, Pdf
 
 
 class TechTransferCallPdfMaker:

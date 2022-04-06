@@ -4,7 +4,8 @@ var HipeacEventComponents = {
     data: function () {
       return {
         q: '',
-        now: moment()
+        now: moment(),
+        tz: moment.tz.guess(true),
       };
     },
     props: {
@@ -25,17 +26,24 @@ var HipeacEventComponents = {
       sessionRoute: {
         type: String,
         default: 'session'
+      },
+      noDataMessage: {
+        type: String,
+        default: 'No matching sessions found'
       }
     },
     template: `
       <q-card class="hipeac__card">
         <hipeac-search-bar v-model="q" placeholder="Search by title, speakers, project, topics..." :filters="filters"></hipeac-search-bar>
-        <hipeac-no-data v-if="!filteredSessions.length" :filter="q" message="No matching sessions found"></hipeac-no-data>
+        <q-banner v-if="event.is_virtual" class="bg-yellow-1 q-py-md q-px-lg">
+          <span>All times are displayed in your local time zone: {{ tz }}</span>
+        </q-banner>
+        <hipeac-no-data v-if="!filteredSessions.length" :filter="q" :message="noDataMessage"></hipeac-no-data>
         <div v-else>
           <q-card-section v-for="(data, day) in program" :class="{'q-pa-md': $q.screen.gt.xs}">
             <h3 class="q-mb-lg">{{ data.date.format('dddd, MMM D') }}</h3>
             <div v-if="data.sessions" v-for="session in data.sessions">
-              <div v-if="session.session_type == 'break'" class="row bg-grey-1 text-body2">
+              <div v-if="session.type == 'break'" class="row bg-grey-1 text-body2">
                 <div v-if="session.show_time" class="col-12 border-top"></div>
                 <div class="col-2 q-py-md q-px-xs text-center">
                   <q-icon size="sm" :name="session.icon" color="grey-7"></q-icon>
@@ -67,8 +75,8 @@ var HipeacEventComponents = {
                   <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
                     <li>
                       <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
-                      <span v-if="showSlots && session.session_type.value == 'Course'">Slot {{ session.slot }}</span>
-                      <span v-else>{{ session.session_type.value }}</span>
+                      <span v-if="showSlots && session.type.value == 'Course'">Slot {{ session.slot }}</span>
+                      <span v-else>{{ session.type.value }}</span>
                     </li>
                     <li v-if="session.room">
                       <q-icon size="xs" name="room" color="grey-7" class="q-mr-xs"></q-icon>
@@ -141,7 +149,7 @@ var HipeacEventComponents = {
               start: br.start,
               end: br.end,
               duration: br.duration,
-              session_type: 'break',
+              type: 'break',
               room: null,
               icon: br.icon,
               _q: ''
@@ -162,7 +170,7 @@ var HipeacEventComponents = {
               teachersStr: '',
               topics: session.topics,
               route: sessionRoute,
-              session_type: session.session_type,
+              type: session.type,
               room: rooms[session.room] || null,
               color: session.color,
               _q: session._q
@@ -194,8 +202,8 @@ var HipeacEventComponents = {
         _.each(filtered, function (obj) {
           s_day = obj.start.format('YYYY-MM-DD');
           s_time = obj.start.format('LT');
-          obj.show_time = (time != s_time || day != s_day);
-          if (obj.session_type != 'break') {
+          obj.show_time = (time != s_time || day != s_day);
+          if (obj.type != 'break') {
             time = s_time;
             day = s_day;
           }
@@ -240,10 +248,14 @@ var HipeacEventComponents = {
         default: function () {
           return [];
         }
+      },
+      noDataMessage: {
+        type: String,
+        default: 'No matching webinars found'
       }
     },
     template: `
-      <hipeac-program-card :event="event" />
+      <hipeac-program-card :event="event" :no-data-message="noDataMessage" />
     `,
     computed: {
       event: function () {

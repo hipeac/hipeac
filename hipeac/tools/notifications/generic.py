@@ -21,7 +21,7 @@ class Notificator:
         with connection.cursor() as cursor:
             query = """
                 INSERT INTO hipeac_notification
-                (category, user_id, object_id, value, deadline, created_at)
+                (category, user_id, object_id, data, deadline, created_at)
                 VALUES (%s, %s, %s, %s, %s, NOW())
             """
             cursor.executemany(query, data)

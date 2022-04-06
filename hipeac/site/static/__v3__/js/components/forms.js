@@ -371,7 +371,7 @@ var HipeacFormComponents = {
           <div v-for="field in fieldset.fields" class="col-12" :class="field.class">
             <div v-if="field.text">{{ field.text }} <strong v-show="field.required" class="text-orange">*</strong></div>
             <div v-if="field.type" :class="{'q-mt-md': field.text}">
-              <q-input v-if="field.type == 'text' || field.type == 'email'" v-model="mutable.custom_data[field.id]" :type="field.type" filled dense :autogrow="field.type == 'text'" />
+              <q-input v-if="field.type == 'text' || field.type == 'email'" v-model="mutable.custom_data[field.id]" :type="field.type" filled dense :autogrow="field.type == 'text'" />
               <hipeac-text-list v-else-if="field.type == 'text_list'" v-model="mutable.custom_data[field.id]" :fields="field.fields" :limit="field.limit" />
               <q-option-group v-else-if="field.type == 'single_choice' || field.type == 'multiple_choice'" v-model="mutable.custom_data[field.id]" :options="field.options" :type="(field.type == 'single_choice') ? 'radio' : 'checkbox'" />
               <q-item v-else-if="field.type == 'checkbox'" class="q-pl-none">

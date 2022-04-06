@@ -1,8 +1,9 @@
 # flake8: noqa
 
-from .article import *
-from .clipping import *
+from .articles import *
+from .clippings import *
+from .quotes import *
 from .dissemination import *
-from .quote import *
-from .magazine import *
-from .video import *
+from .magazines import *
+from .magazine_recipients import *
+from .videos import *

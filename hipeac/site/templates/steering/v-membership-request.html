@@ -33,9 +33,9 @@
     <a v-if="request.website" :href="request.website" target="_blank" class="btn btn-sm btn-outline-secondary mr-2">External website <icon name="launch" class="sm ml-1"></icon></a>
     <a v-if="request.user" :href="request.user.href" target="_blank" class="btn btn-sm btn-outline-secondary">HiPEAC profile <icon name="launch" class="sm ml-1"></icon></a>
     <marked :text="request.motivation" class="mt-4 w-100"></marked>
-    <div v-if="request.attachments.length" class="mt-5 rounded steering-box-ml bg-light p-3 text-sm">
+    <div v-if="request.files.length" class="mt-5 rounded steering-box-ml bg-light p-3 text-sm">
       <display-sm class="mb-3">Attachments</display-sm>
-      <attachments-table :attachments="request.attachments"></attachments-table>
+      <attachments-table :attachments="request.files"></attachments-table>
     </div>
   </div>
 {% endverbatim %}

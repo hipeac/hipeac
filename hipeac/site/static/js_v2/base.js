@@ -87,20 +87,19 @@ var Hipeac = {
       obj.icon = {
         'cofee': 'coffee',
         'lunch': 'restaurant'
-      }[obj.type] || 'coffee';
+      }[obj.type] || 'coffee';
       obj.startAt = make_local(obj.start_at);
       obj.endAt = make_local(obj.end_at);
-      obj.isoDay = obj.startAt.format('YYYY-MM-DD');;
+      obj.isoDay = obj.startAt.format('YYYY-MM-DD');
       obj.duration = moment.duration(obj.endAt.diff(obj.startAt));
       return obj;
     },
     course: function (obj) {
       var mapSession = this.session;
 
-      obj.slot = (obj.custom_data && obj.custom_data.slot) ? obj.custom_data.slot : null;
-      obj.color = ['white', 'blue', 'red', 'green', 'orange', 'purple', 'cyan'][obj.custom_data.slot || 1],
+      obj.color = ['white', 'blue', 'red', 'green', 'orange', 'purple', 'cyan'][obj.slot || 1],
       obj.sessions = obj.sessions.map(function (s) {
-        s.session_type = {
+        s.type = {
           value: 'Course'
         };
         s.keywords = obj.teachers.map(function (o) {
@@ -110,7 +109,7 @@ var Hipeac = {
         s.topics = obj.topics;
         return mapSession(s);
       }).sort(function (a, b) {
-        return a.startAt.unix() - b.startAt.unix() || a.session_type.position - b.session_type.position;
+        return a.startAt.unix() - b.startAt.unix();
       });
 
       return obj;
@@ -147,7 +146,7 @@ var Hipeac = {
         obj.sessions = obj.sessions.map(function (s) {
           return mapSession(s);
         }).sort(function (a, b) {
-          return a.startAt.unix() - b.startAt.unix() || a.session_type.position - b.session_type.position;
+          return a.startAt.unix() - b.startAt.unix() || a.type.position - b.type.position;
         });
 
         obj.virtualExhibition = _.find(obj.sessions, function (o) {
@@ -155,7 +154,7 @@ var Hipeac = {
         });
       }
 
-      if (obj.sessions && obj.sessions.length) {
+      if (obj.sessions && obj.sessions.length && obj.sponsors && obj.sponsors.length) {
         obj.sortedSponsors = _.sortBy(obj.sponsors.map(function (o) {
           return {
             id: o.id,
@@ -174,10 +173,10 @@ var Hipeac = {
       return obj;
     },
     registration: function (obj) {
-      obj.createdAt = make_local(obj.created_at);
-      obj.updatedAt = make_local(obj.updated_at);
+      obj.created = make_local(obj.created_at);
+      obj.updated = make_local(obj.updated_at);
       obj.fee = obj.base_fee + obj.extra_fees + obj.manual_extra_fees;
-      obj.isPaid = obj.saldo >= 0;
+      obj.is_paid = obj.saldo >= 0;
 
       obj.country = (obj.user.profile.institution && obj.user.profile.institution.country)
         ? obj.user.profile.institution.country
@@ -190,7 +189,7 @@ var Hipeac = {
       ].join(' ').toLowerCase();
 
       this.qBooleans(obj, [
-        ['paid', 'isPaid'],
+        ['paid', 'is_paid'],
         ['invoice.requested', 'invoice_requested'],
         ['invoice.sent', 'invoice_sent'],
         ['visa.requested', 'visa_requested'],
@@ -205,11 +204,11 @@ var Hipeac = {
       obj.isoDay = obj.startAt.format('YYYY-MM-DD');
       obj.isPast = obj.endAt.isBefore(moment());
       obj.duration = moment.duration(obj.endAt.diff(obj.startAt));
-      obj.isKeynote = obj.session_type.value == 'Keynote';
+      obj.isKeynote = obj.type.value == 'Keynote';
       obj.metadata = _.union(
         _.pluck(obj.application_areas, 'id'),
         _.pluck(obj.topics, 'id'),
-        [obj.session_type.id]
+        [obj.type.id]
       ).sort();
       obj.tags = {
         areas: obj.application_areas.map(function (o) { return o.value; }),
@@ -225,11 +224,11 @@ var Hipeac = {
         'Workshop': 'green',
         'Tutorial': 'teal',
         'Social Event': 'yellow-8'
-      }[obj.session_type.value] || 'grey-7';
+      }[obj.type.value] || 'grey-7';
 
       obj._q = [
         obj.title,
-        obj.session_type.value,
+        obj.type.value,
         obj.keywords.join(' ')
       ].join(' ').toLowerCase();
 

@@ -5,16 +5,16 @@
 {% load static %}
 
 
-{% block head_title %}{{ event }} - {{ block.super }}{% endblock %}
+{% block head_title %}{{ csw }} - {{ block.super }}{% endblock %}
 
 {% block submenu %}
   <q-toolbar class="container">
-    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ event }}</q-toolbar-title>
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ csw }}</q-toolbar-title>
     <q-space v-show="$q.screen.gt.sm"></q-space>
     <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps mobile-arrows>
       <q-route-tab exact :to="{name: 'about'}" label="About"></q-route-tab>
       <q-route-tab :to="{name: 'program'}" label="Program"></q-route-tab>
-      {% if event.is_virtual %}
+      {% if csw.is_virtual %}
         <q-route-tab exact :to="{name: 'logistics'}" label="Logistics"></q-route-tab>
       {% else %}
         <q-route-tab exact :to="{name: 'venue'}" label="Venue and travel"></q-route-tab>
@@ -83,7 +83,7 @@
       },
       getters: {
         conflicts: function (state) {
-          if (!state.event || !state.user.registration) return false;
+          if (!state.event || !state.user.registration) return false;
           var times = _.pluck(state.event.sessions.filter(function (obj) {
             return _.contains(state.user.registration.sessions, obj.id)
           }), 'start_at');
@@ -144,9 +144,10 @@
           if (!USER_IS_AUTHENTICATED) return;
           var self = this;
 
-          Hipeac.api.get(VARS.registrationUrl, {event_id: +VARS.eventId}).then(function (res) {
-            if (res.data.results.length == 1) {
-              var reg = res.data.results[0];
+          Hipeac.api.get(VARS.registrationUrl).then(function (res) {
+            var reg = _.findWhere(res.data, {event: +VARS.eventId});
+
+            if (reg) {
               state.user.registration = Object.freeze(Hipeac.map.registration(reg));
               self.commit('getLinks');
             } else {
@@ -250,7 +251,7 @@
           return _.indexBy(this.keynotes, 'id');
         },
         filtered: function () {
-          return this.selectedTracks.length > 0 || this.filters.length > 0 || this.myProgram;
+          return this.selectedTracks.length > 0 || this.filters.length > 0 || this.myProgram;
         },
         tags: function () {
           if (!this.event) return null;
@@ -272,13 +273,13 @@
           if (!this.event) return null;
           var tracks = [];
           _.each(this.event.sessions, function (obj) {
-            obj.session_type.name = {
+            obj.type.name = {
               'Keynote': 'Keynotes',
               'Tutorial': 'Tutorials',
               'Workshop': 'Workshops'
-            }[obj.session_type.value] || obj.session_type.value;
-            obj.session_type.color = obj.color;
-            tracks.push(obj.session_type);
+            }[obj.type.value] || obj.type.value;
+            obj.type.color = obj.color;
+            tracks.push(obj.type);
           });
           return _.sortBy(_.uniq(tracks, function (o) { return o.id; }), 'position');
         },
@@ -330,7 +331,7 @@
           _.each(filtered, function (obj) {
             sDay = obj.startAt.format('YYYY-MM-DD');
             sTime = obj.startAt.format('LT');
-            obj.showTime = (time != sTime || day != sDay);
+            obj.showTime = (time != sTime || day != sDay);
             time = sTime;
             day = sDay;
           });
@@ -469,7 +470,7 @@
 
           var session = _.findWhere(this.event.sessions, {id: +this.id});
           this.$store.commit('updateSession', session);
-          Hipeac.api.get(session.url).then(function (res) {
+          Hipeac.api.get(session.self).then(function (res) {
             self.$store.commit('updateSession', Hipeac.map.session(res.data));
           });
         },
@@ -506,7 +507,7 @@
       methods: {
         getAttendees: function () {
           var self = this;
-          Hipeac.api.get(this.session.url + 'attendees/').then(function (res) {
+          Hipeac.api.get(this.session.self + 'attendees/').then(function (res) {
             self.attendees = Object.freeze(res.data.map(function (obj) {
               return Hipeac.map.user(obj.user);
             }));
@@ -584,9 +585,6 @@
               posters: []
             });
           }
-
-          if (!_.has(this.obj, 'custom_data')) { this.$set(this.obj, 'custom_data', {}); }
-          if (!_.has(this.obj.custom_data, 'exhibition')) { this.$set(this.obj.custom_data, 'exhibition', []); }
         },
         save: function () {
           var self = this;

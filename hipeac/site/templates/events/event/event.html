@@ -263,12 +263,6 @@
                 posters: []
               };
             }
-
-            if (!_.has(self.registration, 'custom_data')) {
-              self.$set(self.registration, 'custom_data', {
-                exhibition: []
-              });
-            }
           });
         },
         save: function () {
@@ -335,7 +329,7 @@
           filteredItems = filterIntersection(filters.applicationAreas, filteredItems, 'applicationAreaIds');
           if (filters.sessionTypes.length > 0) {
             filteredItems = _.filter(filteredItems, function (obj) {
-              return _.contains(filters.sessionTypes, obj.session_type.id);
+              return _.contains(filters.sessionTypes, obj.type.id);
             });
           }
           return _.pluck(filterMultiple(filteredItems, this.q), 'id');
@@ -347,7 +341,7 @@
         sessionTypes: function () {
           if (!this.event) return [];
           return _.toArray(
-            _.indexBy(_.pluck(this.event.sessions, 'session_type'), 'id')
+            _.indexBy(_.pluck(this.event.sessions, 'type'), 'id')
           ).sort(function (a, b) {
             return sort().int(a.position, b.position);
           });

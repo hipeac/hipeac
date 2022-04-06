@@ -59,12 +59,12 @@
     </q-card>
     <q-card class="hipeac__card q-mb-lg">
       <q-card-section class="q-ma-md q-mb-none">
-        <div v-if="event && event.sponsors.length" class="row items-center justify-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
+        <div v-if="event && event.sponsors && event.sponsors.length" class="row items-center justify-center q-col-gutter-y-lg q-col-gutter-x-xl text-center">
           <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4 col-md-2">
             <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
               <img :src="sponsor.institution.images.lg" class="sponsor">
             </a>
-            <a v-else-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
+            <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
               <img :src="sponsor.project.images.lg" class="sponsor">
             </a>
           </div>

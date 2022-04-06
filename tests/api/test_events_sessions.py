@@ -56,11 +56,12 @@ class TestForAdministrator(TestForAuthenticated):
             session_type = baker.make_recipe("hipeac.session_type")
             self.test_data = {
                 "title": "Session title",
-                "session_type": {"id": session_type.id},
+                "type": {"id": session_type.id},
                 "application_areas": [],
                 "topics": [],
                 "projects": [],
                 "institutions": [],
+                "links": [],
             }
 
     @pytest.fixture(autouse=True)

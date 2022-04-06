@@ -2,9 +2,11 @@ from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
 from hipeac.models import Article, Clipping, Dissemination, Quote, Magazine, Video
-from .generic import ImageSerializer, MetadataListField
+from .generic import ImageSerializer
 from .institutions import InstitutionNestedSerializer
-from .users import UserPublicListSerializer
+from .metadata import MetadataSerializer
+from .mixins import ApplicationAreasMixin, TopicsMixin
+from .users import UserPublicMiniSerializer
 
 
 class ArticleListSerializer(serializers.ModelSerializer):
@@ -13,7 +15,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        exclude = ("created_by", "excerpt", "content", "projects", "institutions")
+        exclude = ("created_by", "excerpt", "content")
 
 
 class ClippingListSerializer(serializers.ModelSerializer):
@@ -31,11 +33,11 @@ class DisseminationListSerializer(serializers.ModelSerializer):
 
 
 class QuoteNestedSerializer(serializers.ModelSerializer):
-    institution = InstitutionNestedSerializer()
+    institutions = InstitutionNestedSerializer(many=True)
 
     class Meta:
         model = Quote
-        exclude = ("user",)
+        exclude = ()
 
 
 class QuoteListSerializer(QuoteNestedSerializer):
@@ -48,13 +50,11 @@ class MagazineListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Magazine
-        exclude = ("file", "file_tablet", "downloads")
+        exclude = ("file", "downloads")
 
 
-class VideoListSerializer(serializers.ModelSerializer):
-    application_areas = MetadataListField()
-    topics = MetadataListField()
-    users = UserPublicListSerializer(many=True)
+class VideoListSerializer(ApplicationAreasMixin, TopicsMixin, serializers.ModelSerializer):
+    users = UserPublicMiniSerializer(many=True)
 
     class Meta:
         model = Video

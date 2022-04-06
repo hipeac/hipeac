@@ -1,0 +1,60 @@
+{% load static %}
+
+
+<script type="text/x-template" id="v-call-papers">
+{% verbatim %}
+  <div v-if="event">
+    <q-card class="hipeac__card q-my-lg q-pa-sm">
+      <q-card-section>
+        <display-3>HiPEAC has been pioneering the journal-first publication model. Journal-first means that the manuscript selection process for the conference is outsourced to a journal (ACM TACO). Manuscripts can be submitted to the journal at any time throughout the year as regular journal submissions. For all manuscripts submitted before <strong>June 1, {{ event.year - 1 }}</strong>, ACM TACO guarantees that the final decision (including two rounds of revision) will be communicated before November 15.</display-3>
+      </q-card-section>
+    </q-card>
+    <div class="row q-col-gutter-lg">
+      <div class="col-12 col-md-6">
+        <q-card class="hipeac__card full-height">
+          <q-card-section class="q-ma-sm q-mb-none">
+            <p>All authors of original work papers accepted in the journal between November 15, {{ event.year - 2 }} and November 15, {{ event.year - 1 }} will get an invitation to present their work during the paper track of the HiPEAC conference. There are no conference proceedings published.</p>
+            <p>Topics of interest include, but are not limited to:</p>
+            <ul>
+              <li>Processor, memory, and storage systems architecture</li>
+              <li>Parallel, multi-core and heterogeneous systems</li>
+              <li>Interconnection networks</li>
+              <li>Architectural support for programming productivity</li>
+              <li>Power, performance and implementation efficient designs</li>
+              <li>Reliability and real-time support in processors, compilers and run-time systems</li>
+              <li>Application-specific processors, accelerators and reconfigurable processors</li>
+              <li>Architecture and programming environments for GPU-based computing</li>
+              <li>Simulation and methodology</li>
+              <li>Architectural and run-time support for programming languages</li>
+              <li>Programming models, frameworks and environments for exploiting parallelism</li>
+              <li>Compiler techniques</li>
+              <li>Feedback-directed optimization</li>
+              <li>Program characterization and analysis techniques</li>
+              <li>Dynamic compilation, adaptive execution, and continuous profiling/optimization</li>
+              <li>Binary translation/optimization</li>
+              <li>Code size/memory footprint optimizations</li>
+            </ul>
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-12 col-md-6">
+        <q-card class="hipeac__card full-height text-body2">
+          <q-card-section class="q-ma-sm q-mb-none">
+            <q-btn unelevated color="primary" type="a" href="http://mc.manuscriptcentral.com/taco" target="_blank" rel="noopener" class="full-width">Submit paper via ACM</q-btn>
+            <q-separator class="q-my-lg"></q-separator>
+            <p>Manuscripts can be submitted continuously. Manuscripts submitted before June 1, {{ event.year - 1 }} will get an invitation for HiPEAC {{ event.year }}, if accepted. Manuscripts submitted after June 1, {{ event.year - 1 }} will be invited for HiPEAC {{ event.year + 1  }}, if accepted.</p>
+            <p><a href="http://mc.manuscriptcentral.com/taco" target="_blank" rel="noopener">Submit your best work</a> as soon as it is ready to go. We will work hard to get back to you in 2 months with your reviews.</p>
+            <q-separator class="q-my-lg"></q-separator>
+            <display-3 class="q-mb-lg">Do you know ACM TACO 2.0?</display-3>
+            <p>Over the last three years ACM TACO has optimized its internal review processes. Today, the average turnaround time from submission to first response is 46 days and 95% of the manuscripts get a response within 2 months. For revised manuscripts, the review process goes even faster. In 2013, most accepted manuscripts went through two rounds of reviews to reach a final decision only 5 months after submission. Accepted manuscripts are immediately uploaded in the ACM digital library. Hence, excellent manuscripts can make it from submission to publication in about three months; papers needing a major revision are published after 6 months. We call this “ACM TACO 2.0”.</p>
+            <q-avatar size="100px" class="float-right q-mb-md q-ml-md">
+              <img src="{% endverbatim %}{% static 'images/acm.svg' %}{% verbatim %}">
+            </q-avatar>
+            <p><strong>ACM TACO 2.0 now has a review cycle and an acceptance rate which is competitive with the best ACM conferences</strong>, but without the inconvenient non-negotiable submission deadlines, and with the advantage of being able to revise a paper based on the detailed review reports by carefully selected reviewers, and of being published as soon as it is accepted. On top of that, authors of original work papers get an open invitation to present their paper at the yearly HiPEAC conference, which is the premier European network event on topics central to ACM TACO, attended by more than 500 scientists.</p>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+  </div>
+</script>
+{% endverbatim %}

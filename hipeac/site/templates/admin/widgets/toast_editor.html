@@ -1,0 +1,9 @@
+{% include "django/forms/widgets/textarea.html" %}
+
+
+{% with 'editor-'|add:widget.attrs.id as editorid %}
+  <div id="{{ editorid }}"></div>
+  <script type="text/javascript">
+    django_toast_editor.initEditor("#{{ widget.attrs.id }}", "#{{ editorid }}");
+  </script>
+{% endwith %}

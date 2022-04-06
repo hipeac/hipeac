@@ -89,7 +89,7 @@ function mapper() {
           ? Math.floor(obj.registrations_count / 10) * 10
           : 0;
         obj.links = linkTransform(obj.links);
-        obj.href = obj.redirect_url || obj.href;
+        obj.href = obj.redirect_url || obj.url;
         obj.past = moment().subtract(1, 'days').isAfter(obj.end_date);
         obj.year = moment(obj.start_date).year();
         obj.startDate = moment(obj.start_date);
@@ -229,11 +229,11 @@ function mapper() {
         obj.duration = moment.duration(obj.endAt.diff(obj.startAt));
         obj.applicationAreaIds = _.pluck(obj.application_areas, 'id');
         obj.topicIds = _.pluck(obj.topics, 'id');
-        obj.isKeynote = obj.session_type.value == 'Keynote';
+        obj.isKeynote = obj.type.value == 'Keynote';
         obj.q = [
           getMetadataString(obj),
           obj.title,
-          obj.session_type.value,
+          obj.type.value,
           obj.keywords.join(' ')
         ].join(' ').toLowerCase();
         obj.badgeColor = {
@@ -241,7 +241,7 @@ function mapper() {
           'Paper Track': 'badge-info',
           'Industrial Session': 'badge-primary',
           'Social Event': 'badge-warning',
-        }[obj.session_type.value] || 'badge-light';
+        }[obj.type.value] || 'badge-light';
         return obj;
       });
     },

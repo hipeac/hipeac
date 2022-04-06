@@ -31,10 +31,10 @@ class ModelCsvWriter(CsvWriter):
     metadata_fields = ()
 
     def __init__(self, *, queryset, filename: str):
-        self.queryset = self.optimize_queryset(queryset)
+        self.queryset = self.get_queryset(queryset)
         super().__init__(filename=filename)
 
-    def optimize_queryset(self, queryset):
+    def get_queryset(self, queryset):
         return queryset
 
     def get_value(self, obj, field):

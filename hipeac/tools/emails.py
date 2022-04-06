@@ -8,7 +8,8 @@ RECRUITMENT_EMAIL = "HiPEAC Recruitment <recruitment@hipeac.net>"
 ACACES_EMAIL = "ACACES <acaces@hipeac.net>"
 TEMPLATE_PATHS = {
     "awards.tech_transfer_applications.created": "_emails/awards/tech_transfer_applications_created.md.html",
-    "events.acaces.poster_abstracts_reminder": "_emails/events/acaces_poster_abstracts_reminder.md.html",
+    "events.acaces.admitted": "_emails/events/acaces/admitted.md.html",
+    "events.acaces.poster_abstracts_reminder": "_emails/events/acaces/poster_abstracts_reminder.md.html",
     "events.no_shows": "_emails/events/no_shows.md.html",
     "events.registrations.created": "_emails/events/registrations_created.md.html",
     "events.registrations.created_acaces": "_emails/events/registrations_created_acaces.md.html",

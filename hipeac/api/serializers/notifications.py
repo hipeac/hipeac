@@ -10,7 +10,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        exclude = ("value",)
+        exclude = ()
 
     def get_message(self, obj):
         return parse_notification(obj)

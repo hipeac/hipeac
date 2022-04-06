@@ -1,6 +1,6 @@
 from django.template.defaultfilters import date as date_filter
 
-from hipeac.tools.pdf import PdfResponse, Pdf
+from hipeac.services.pdf import PdfResponse, Pdf
 from hipeac.tools.zoom import attendee_report
 
 
@@ -59,10 +59,10 @@ Gent, Belgium<br />
             pdf.add_text(main_text, "p", "markdown")
             pdf.add_text(f"{reg.user.profile.name} attended the following sessions:")
 
-            for session in reg.sessions.select_related("session_type"):
-                if session.session_type.value != "Social Event":
-                    t = f'- *{session.session_type.value}:* "{session.title}"'
-                    if session.session_type.value == "Keynote":
+            for session in reg.sessions.select_related("type"):
+                if session.type.value != "Social Event":
+                    t = f'- *{session.type.value}:* "{session.title}"'
+                    if session.type.value == "Keynote":
                         t = f"{t}, by {session.main_speaker.profile.name} ({session.main_speaker.profile.institution})"
                     pdf.add_text(t, "p", "markdown")
 

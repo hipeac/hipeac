@@ -63,7 +63,7 @@ Vue.component('hipeac-program', {
       <q-card-section v-for="(data, day) in program" :key="day" :class="{'q-pa-md': $q.screen.gt.xs }">
         <h3 class="q-mb-lg">{{ data.date.format('dddd, MMM D') }}</h3>
         <div v-if="data.sessions" v-for="session in data.sessions" :key="session.id">
-          <div v-if="session.session_type == 'break'" class="row bg-grey-1 text-body2">
+          <div v-if="session.type == 'break'" class="row bg-grey-1 text-body2">
             <div v-if="session.showTime" class="col-12 border-top"></div>
             <div class="col-2 q-py-md q-px-xs text-center">
               <q-icon size="sm" :name="session.icon" color="grey-7"></q-icon>
@@ -95,8 +95,8 @@ Vue.component('hipeac-program', {
               <ul class="row inline q-col-gutter-y-sm q-col-gutter-x-md q-mb-none text-caption text-grey-9">
                 <li>
                   <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
-                  <span v-if="showSlots && session.session_type.value == 'Course'">Slot {{ session.slot }}</span>
-                  <span v-else>{{ session.session_type.value }}</span>
+                  <span v-if="showSlots && session.type.value == 'Course'">Slot {{ session.slot }}</span>
+                  <span v-else>{{ session.type.value }}</span>
                 </li>
                 <li>
                   <q-icon size="xs" name="schedule" color="grey-7" class="q-mr-xs"></q-icon>
@@ -144,7 +144,7 @@ Vue.component('hipeac-program', {
             startAt: br.startAt,
             endAt: br.endAt,
             duration: br.duration,
-            session_type: 'break',
+            type: 'break',
             icon: br.icon,
             _q: []
           });
@@ -168,10 +168,10 @@ Vue.component('hipeac-program', {
               duration: session.duration,
               topics: course.topics,
               route: 'course',
-              session_type: session.session_type,
+              type: session.type,
               color: course.color,
-              slot: course.custom_data.slot || null,
-              track: course.custom_data.track || null,
+              slot: course.slot || null,
+              track: course.track || null,
               _q: session._q
             });
           });
@@ -192,7 +192,7 @@ Vue.component('hipeac-program', {
             teachersStr: '',
             topics: session.topics,
             route: 'session',
-            session_type: session.session_type,
+            type: session.type,
             color: session.color,
             _q: session._q
           });
@@ -227,8 +227,8 @@ Vue.component('hipeac-program', {
       _.each(filtered, function (obj) {
         sDay = obj.startAt.format('YYYY-MM-DD');
         sTime = obj.startAt.format('LT');
-        obj.showTime = (time != sTime || day != sDay);
-        if (obj.session_type != 'break') {
+        obj.showTime = (time != sTime || day != sDay);
+        if (obj.type != 'break') {
           time = sTime;
           day = sDay;
         }

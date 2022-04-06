@@ -2,16 +2,15 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.models import Project
-from .generic import LinkSerializer, MetadataField, MetadataListField
+from .metadata import MetadataSerializer
+from .mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
 
 
-class ProjectSerializer(WritableNestedModelSerializer):
-    programme = MetadataField(allow_null=True)
-    application_areas = MetadataListField()
-    topics = MetadataListField()
-    links = LinkSerializer(many=True)
-    url = serializers.HyperlinkedIdentityField(view_name="v1:project-detail", read_only=True)
-    href = serializers.CharField(source="get_absolute_url", read_only=True)
+class ProjectSerializer(ApplicationAreasMixin, LinksMixin, TopicsMixin, WritableNestedModelSerializer):
+    self = serializers.HyperlinkedIdentityField(view_name="v1:project-detail", read_only=True)
+    url = serializers.CharField(source="get_absolute_url", read_only=True)
+    programme = MetadataSerializer(allow_null=True)
+    ec_project_id = serializers.CharField(read_only=True)
 
     class Meta:
         model = Project
@@ -22,13 +21,13 @@ class ProjectSerializer(WritableNestedModelSerializer):
 class ProjectMiniSerializer(ProjectSerializer):
     class Meta:
         model = Project
-        fields = ("id", "acronym", "name", "ec_project_id")
+        fields = ("id", "self", "url", "acronym", "name")
 
 
 class ProjectNestedSerializer(ProjectSerializer):
     class Meta:
         model = Project
-        fields = ("id", "acronym", "name", "programme", "start_date", "end_date", "url", "href", "images")
+        fields = ("id", "self", "url", "acronym", "name", "programme", "start_date", "end_date", "images")
 
 
 class ProjectListSerializer(ProjectSerializer):
@@ -36,13 +35,13 @@ class ProjectListSerializer(ProjectSerializer):
         model = Project
         fields = (
             "id",
+            "self",
+            "url",
             "acronym",
             "name",
             "programme",
             "start_date",
             "end_date",
-            "url",
-            "href",
             "images",
             "application_areas",
             "topics",

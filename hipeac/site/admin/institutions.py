@@ -1,30 +1,34 @@
 from django.contrib import admin
-from django.forms import ModelForm
+from django.contrib.contenttypes.admin import GenericTabularInline
 
-from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
-from hipeac.models import Institution
-from .generic import HideDeleteActionMixin, LinksInline, PermissionsInline
-
-
-class InstitutionAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField(required=False)
-    topics = TopicsChoiceField(required=False)
+from hipeac.models.institutions import Institution, RelatedInstitution
+from .links import LinksInline
+from .metadata import ApplicationAreasInline, TopicsInline
+from .permissions import PermissionsInline
 
 
 @admin.register(Institution)
-class InstitutionAdmin(HideDeleteActionMixin, admin.ModelAdmin):
-    form = InstitutionAdminForm
-    exclude = ("updated_at",)
-
+class InstitutionAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "type", "country")
     list_filter = ("type",)
-    search_fields = ("name", "local_name", "colloquial_name")
+    search_fields = ("name", "local_name", "colloquial_name", "country")
+    # form
+    raw_id_fields = ("parent",)
+    inlines = (ApplicationAreasInline, TopicsInline, LinksInline, PermissionsInline)
 
-    autocomplete_fields = ("parent",)
-    inlines = (LinksInline, PermissionsInline)
-    fieldsets = (
-        (None, {"fields": ("type", "name", "local_name", "colloquial_name")}),
-        ("INFO", {"fields": (("country", "location"), "description", "image")}),
-        ("RECRUITMENT", {"fields": ("recruitment_contact", "recruitment_email")}),
-        ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics")}),
-    )
+
+class InstitutionsInline(GenericTabularInline):
+    model = RelatedInstitution
+    classes = ("collapse",)
+    extra = 0
+    verbose_name = "institution"
+    # form
+    raw_id_fields = ("institution",)
+
+
+class PartnersInline(InstitutionsInline):
+    verbose_name = "partner"
+
+
+class SponsorsInline(InstitutionsInline):
+    verbose_name = "sponsor"

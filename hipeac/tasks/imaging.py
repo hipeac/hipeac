@@ -1,4 +1,4 @@
-from celery.decorators import task
+from celery import task
 from PIL import Image
 
 from hipeac.functions import get_image_variant_paths

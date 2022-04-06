@@ -1,8 +1,8 @@
-from hipeac.models.communication import article
 from rest_framework import serializers
 
 from hipeac.models import Link, Vision, VisionArticle
-from .generic import ImageSerializer, PublicFileSerializer
+from .generic import ImageSerializer
+from .mixins import FilesMixin
 
 
 class VisionArticleSerializer(serializers.ModelSerializer):
@@ -13,9 +13,8 @@ class VisionArticleSerializer(serializers.ModelSerializer):
         exclude = ("vision", "position")
 
 
-class VisionSerializer(serializers.ModelSerializer):
+class VisionSerializer(FilesMixin, serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=True)
-    public_files = PublicFileSerializer(many=True, read_only=True)
     download_url = serializers.CharField(source="get_download_url", read_only=True)
     youtube_url = serializers.SerializerMethodField(read_only=True)
     articles = VisionArticleSerializer(many=True)

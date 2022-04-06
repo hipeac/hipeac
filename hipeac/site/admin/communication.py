@@ -1,10 +1,25 @@
 from django.contrib import admin
-from django.forms import ModelForm
-from django.utils.safestring import mark_safe
+from django.contrib.contenttypes.admin import GenericTabularInline
+from django.db import models
+from django.utils.html import format_html
 
-from hipeac.forms import ApplicationAreasChoiceField, TopicsChoiceField
-from hipeac.models.communication import Article, Clipping, Dissemination, Magazine, Quote, Video
-from .generic import ImagesInline, PublicFilesInline
+from hipeac.models.communication import (
+    Article,
+    Clipping,
+    Dissemination,
+    Magazine,
+    MagazineRecipient,
+    Quote,
+    Video,
+    RelatedVideo,
+)
+from .files import FilesInline
+from .institutions import InstitutionsInline
+from .images import ImagesInline
+from .metadata import ApplicationAreasInline, TopicsInline
+from .projects import ProjectsInline
+from .users import UsersInline
+from .widgets import MarkdownEditorWidget
 
 
 @admin.register(Article)
@@ -13,11 +28,14 @@ class ArticleAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "type", "publication_date", "is_ready")
     list_filter = ("type", "publication_date")
     search_fields = ("title",)
-
-    autocomplete_fields = ("event", "institutions", "projects")
+    # form
     radio_fields = {"type": admin.VERTICAL}
+    raw_id_fields = ("event",)
     readonly_fields = ("created_by",)
-    inlines = (ImagesInline, PublicFilesInline)
+    inlines = (InstitutionsInline, ProjectsInline, ImagesInline, FilesInline)
+    formfield_overrides = {
+        models.TextField: {"widget": MarkdownEditorWidget},
+    }
 
 
 @admin.register(Clipping)
@@ -28,7 +46,7 @@ class ClippingAdmin(admin.ModelAdmin):
     search_fields = ("title", "media")
 
     def external_link(self, obj):
-        return mark_safe(f'<a target="_blank" href="{obj.url}">{obj.media}</a>')
+        return format_html(f'<a target="_blank" href="{obj.url}">{obj.media}</a>')
 
 
 @admin.register(Dissemination)
@@ -36,66 +54,67 @@ class DisseminationAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     list_display = ("id", "event", "type", "date")
     list_filter = ("type", "date")
-
-    inlines = (PublicFilesInline,)
-
-
-class MagazineAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField(required=False)
-    topics = TopicsChoiceField(required=False)
+    # form
+    inlines = (FilesInline,)
 
 
 @admin.register(Magazine)
 class MagazineAdmin(admin.ModelAdmin):
-    form = MagazineAdminForm
-
     date_hierarchy = "publication_date"
     list_display = ("id", "title", "event", "publication_date", "downloads")
-
-    autocomplete_fields = ("event", "users", "projects")
-    inlines = (ImagesInline,)
+    list_filter = ("publication_date", ("event", admin.RelatedOnlyFieldListFilter))
+    search_fields = ("title",)
+    # form
+    raw_id_fields = ("event",)
     readonly_fields = ("downloads",)
-    fieldsets = (
-        (None, {"fields": ("title", "publication_date", "issuu_url", "file", "downloads")}),
-        ("RELATIONS", {"classes": ("collapse",), "fields": ("event", "users", "projects")}),
-        ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics")}),
-    )
+    inlines = (ApplicationAreasInline, TopicsInline, InstitutionsInline, ProjectsInline, UsersInline)
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("event")
+
+
+@admin.register(MagazineRecipient)
+class MagazineRecipientAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "address_line1", "country", "user", "is_active")
+    list_filter = ("is_active",)
+    search_fields = ("name",)
+    # form
+    raw_id_fields = ("user",)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("user")
 
 
 @admin.register(Quote)
 class QuoteAdmin(admin.ModelAdmin):
     list_display = ("id", "text", "author", "type", "is_featured")
     list_filter = ("type", "is_featured")
-
-    autocomplete_fields = ("institution", "user")
-
-
-class VideoAdminForm(ModelForm):
-    application_areas = ApplicationAreasChoiceField(required=False)
-    topics = TopicsChoiceField(required=False)
-
-    class Meta:
-        help_texts = {
-            "is_expert": "If checked, the video will be shown on the press area.",
-        }
+    # form
+    inlines = (InstitutionsInline, ProjectsInline, UsersInline)
 
 
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
-    form = VideoAdminForm
+    list_display = ("id", "youtube", "title", "is_expert", "shows_on_homepage")
+    list_filter = ("is_expert", "shows_on_homepage")
+    search_fields = ("youtube_id", "title")
+    # form
+    inlines = (InstitutionsInline, ProjectsInline, UsersInline)
 
-    date_hierarchy = "publication_date"
-    list_display = ("id", "title", "publication_date", "youtube_id", "is_expert")
-    list_filter = ("is_expert",)
-    search_fields = ("title",)
+    def youtube(self, obj):
+        return format_html(f'<a href="https://youtu.be/{obj.youtube_id}" target="_blank">{obj.youtube_id}</a>')
 
-    autocomplete_fields = ("event", "projects")
-    raw_id_fields = ("users",)
-    fieldsets = (
-        (None, {"fields": ("title", "publication_date", "youtube_id", "is_expert", "type")}),
-        ("RELATIONS", {"fields": ("event", "users", "projects")}),
-        ("METADATA", {"fields": ("application_areas", "topics")}),
-    )
+    youtube.short_description = "YouTube ID"
+
+
+class VideosInline(GenericTabularInline):
+    model = RelatedVideo
+    classes = ("collapse",)
+    extra = 0
+    verbose_name = "video"
+    # form
+    raw_id_fields = ("video",)
+
+
+class RecordingsInline(VideosInline):
+    verbose_name = "recording"

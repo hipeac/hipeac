@@ -9,7 +9,7 @@ class TechTransferApplicationEmail(TemplateEmail):
     from_email = "HiPEAC <management@hipeac.net>"
 
     def get_subject(self) -> str:
-        return f"[HiPEAC] Your Tech Transfer Award application"
+        return "[HiPEAC] Your Tech Transfer Award application"
 
     def get_to_emails(self) -> List[str]:
         return [self.instance.applicant.email]

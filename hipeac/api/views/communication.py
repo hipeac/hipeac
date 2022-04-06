@@ -28,7 +28,7 @@ class ClippingViewSet(ListModelMixin, GenericViewSet):
 
 
 class QuoteViewSet(ListModelMixin, GenericViewSet):
-    queryset = Quote.objects.prefetch_related("institution")
+    queryset = Quote.objects.all()
     pagination_class = None
     serializer_class = QuoteListSerializer
 

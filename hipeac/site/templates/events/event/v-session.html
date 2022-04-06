@@ -6,7 +6,7 @@
         <div v-if="session" class="modal-header bg-light pb-0">
           <ul class="nav nav-tabs d-flex w-100">
             <li class="nav-item">
-              <router-link class="nav-link" :to="{name: 'session', params: {sessionId: session.id}}" exact><i class="material-icons mr-2">category</i>{{ session.session_type.value }}</a></router-link>
+              <router-link class="nav-link" :to="{name: 'session', params: {sessionId: session.id}}" exact><i class="material-icons mr-2">category</i>{{ session.type.value }}</a></router-link>
             </li>
             <li v-if="session.isKeynote && session.main_speaker" class="nav-item">
               <router-link class="nav-link" :to="{name: 'sessionBio', params: {sessionId: session.id}}" exact><i class="material-icons mr-2">account_circle</i>{{ session.main_speaker.profile.name }}</router-link>
@@ -153,7 +153,7 @@
 <script type="text/x-template" id="{{ id }}-downloads">
 {% verbatim %}
   <div>
-    <attachments-table :attachments="session.private_files"></attachments-table>
+    <attachments-table :attachments="session.files"></attachments-table>
   </div>
 {% endverbatim %}
 </script>

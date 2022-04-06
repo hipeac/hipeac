@@ -102,7 +102,7 @@ def get_h2020_associated_countries():
         "ME",  # Montenegro
         "NO",  # Norway
         "RS",  # Serbia
-        "CH",  # Switzerland (partial association, see below)
+        "CH",  # Switzerland
         "TN",  # Tunisia
         "TR",  # Turkey
         "UA",  # Ukraine

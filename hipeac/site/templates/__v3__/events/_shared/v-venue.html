@@ -5,7 +5,12 @@
       <div class="col-12 col-md-6 d-flex align-items-stretch">
         <q-card class="hipeac__card full-height q-pa-lg">
           <display-5>Venues</display-5>
-          <div v-for="venue in event.venues" class="mb-5">
+          <div v-if="event.venue">
+            <display-2 class="q-mb-xs">{{ event.venue.name }}</display-2>
+            <p class="q-mb-md"><small>Main venue</small></p>
+            <marked v-if="event.venue.description" :text="event.venue.description" class="text-sm"></marked>
+          </div>
+          <div v-for="venue in event.extra_venues" class="mb-5">
             <display-2 class="q-mb-md">{{ venue.name }}</display-2>
             <marked v-if="venue.description" :text="venue.description" class="text-sm"></marked>
           </div>

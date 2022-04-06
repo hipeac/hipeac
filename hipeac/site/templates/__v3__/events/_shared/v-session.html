@@ -9,7 +9,7 @@
             <q-tabs v-model="tab" no-caps inline-label shrink mobile-arrows class="q-mr-md">
               <q-tab name="main">
                 <q-icon size="xs" name="lens" :color="session.color" class="q-mr-sm" />
-                <div class="q-tab__label">{{ session.session_type.value }}</div>
+                <div class="q-tab__label">{{ session.type.value }}</div>
               </q-tab>
               <q-tab v-if="session.is_keynote && session.main_speaker" name="bio" label="Bio" />
               <q-tab v-if="session.program" name="program" label="Program" />
@@ -86,7 +86,7 @@
               </q-tab-panel>
 
               <q-tab-panel name="attendees">
-                <user-viewer v-if="registration" :users="sessionAttendees" :show-profile-link="true" event-name="attendees-query-changed"></user-viewer>
+                <attendees-list v-if="registration" :users="sessionAttendees" :show-profile-link="true" event-name="attendees-query-changed"></attendees-list>
               </q-tab-panel>
 
             </q-tab-panels>
