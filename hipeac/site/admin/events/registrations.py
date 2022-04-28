@@ -1,13 +1,10 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.urls import path, reverse
 from django.utils.html import format_html
 
-from hipeac.functions import send_task
 from hipeac.models.events import Coupon, InvitationLetter, Registration, Session
-from hipeac.site.emails.events.events import RegistrationReminderEmail
 from hipeac.site.pdfs.redux.events.badges import BadgesPdfMaker
-from ..users import send_profile_update_reminders
+from ..generic import include_email_actions
 
 
 @admin.register(Coupon)
@@ -49,6 +46,7 @@ class RegistrationIsPaidFilter(admin.SimpleListFilter):
 
 
 class RegistrationAdmin(admin.ModelAdmin):
+    email_actions = ["events.registration."]
     actions = (
         "pdf_badges",
         "send_reminder",
@@ -106,6 +104,13 @@ class RegistrationAdmin(admin.ModelAdmin):
             .prefetch_related("event")
         )
 
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if self.email_actions:
+            for prefix in self.email_actions:
+                actions = include_email_actions(actions, prefix)
+        return actions
+
     def get_form(self, request, obj=None, **kwargs):
         self.instance = obj  # Capture instance before the form gets generated
         return super().get_form(request, obj=obj, **kwargs)
@@ -128,70 +133,10 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     # custom actions
 
+    @admin.action(description="ℹ️ Download badges")
     def pdf_badges(self, request, queryset):
         maker = BadgesPdfMaker(registrations=queryset, filename="badges.pdf")
         return maker.response
-
-    def send_payment_reminder(self, request, queryset):
-        queryset = queryset.exclude(saldo__gte=0)  # check if `registration.saldo` >= 0 (aka `is_paid()`)
-        for instance in queryset:
-            email = (
-                "events.registrations.payment_reminder",
-                f"[HiPEAC] Payment reminder #{instance.event.hashtag} / {instance.id}",
-                "HiPEAC <management@hipeac.net>",
-                [instance.user.email],
-                {
-                    "user_name": instance.user.profile.name,
-                    "event_name": instance.event.name,
-                    "registration_id": instance.id,
-                    "payment_url": instance.get_payment_url(),
-                    "payment_delegated_url": instance.get_payment_delegated_url(),
-                    "invoice_requested": instance.invoice_requested,
-                },
-            )
-            send_task("hipeac.tasks.emails.send_from_template", email)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    def send_profile_update_reminder(self, request, queryset):
-        user_ids = queryset.values_list("user_id", flat=True)
-        users = (
-            get_user_model()
-            .objects.filter(id__in=user_ids)
-            .select_related("profile")
-            .prefetch_related("profile__institution")
-            .prefetch_related("profile__second_institution")
-        )
-        send_profile_update_reminders(users)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    def send_reminder(self, request, queryset):
-        for instance in queryset:
-            email = RegistrationReminderEmail(instance=instance)
-            send_task("hipeac.tasks.emails.send_from_template", email.data)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    def send_visa_reminder(self, request, queryset):
-        queryset = queryset.exclude(visa_requested=False)  # check if `registration.visa_requested` = True
-        for instance in queryset:
-            email = (
-                "events.registrations.visa_reminder",
-                f"[HiPEAC] Visa reminder #{instance.event.hashtag} / {instance.id}",
-                "HiPEAC <management@hipeac.net>",
-                [instance.user.email],
-                {
-                    "user_name": instance.user.profile.name,
-                    "event_name": instance.event.name,
-                    "registration_id": instance.id,
-                },
-            )
-            send_task("hipeac.tasks.emails.send_from_template", email)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    pdf_badges.short_description = "ℹ️ Download badges"
-    send_payment_reminder.short_description = "➡️ Send payment reminder"
-    send_profile_update_reminder.short_description = "➡️ Send profile update reminder"
-    send_reminder.short_description = "➡️ Send reminder to users"
-    send_visa_reminder.short_description = "➡️ Send visa reminder"
 
     # custom views
 

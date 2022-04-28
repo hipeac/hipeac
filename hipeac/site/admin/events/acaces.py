@@ -14,7 +14,6 @@ from hipeac.models.events.acaces import (
     AcacesRegistration,
 )
 from hipeac.models.metadata import Metadata
-from hipeac.site.emails.events.acaces import AcacesAdmittedEmail, AcacesPosterAbstractsReminderEmail
 from .events import EventAdmin
 from .registrations import RegistrationAdmin
 from ..communication import RecordingsInline
@@ -120,15 +119,7 @@ class AcacesGrantAdmin(admin.ModelAdmin):
 
 @admin.register(AcacesRegistration)
 class AcacesRegistrationAdmin(RegistrationAdmin):
-    actions = (
-        ("admit_and_send_email",)
-        + RegistrationAdmin.actions
-        + (
-            "send_payment_reminder",
-            "send_acaces_poster_abstract_reminder",
-            "update_user_profile",
-        )
-    )
+    email_actions = ["events.acaces.registration."] + RegistrationAdmin.email_actions
     list_display = RegistrationAdmin.list_display + ("grant", "status", "accepted")
     list_filter = ("status", "accepted", "grant_requested", "grant_assigned") + RegistrationAdmin.list_filter
     # form
@@ -188,21 +179,7 @@ class AcacesRegistrationAdmin(RegistrationAdmin):
 
     # custom actions
 
-    def admit_and_send_email(self, request, queryset):
-        """This is not very efficient but we need it to make sure fees are recalculated."""
-        for instance in queryset:
-            instance.status = AcacesRegistration.STATUS_ADMITTED
-            instance.save()
-            email = AcacesAdmittedEmail(instance=instance)
-            send_task("hipeac.tasks.emails.send_from_template", email.data)
-        admin.ModelAdmin.message_user(self, request, "Accepted. Emails are being sent.")
-
-    def send_acaces_poster_abstract_reminder(self, request, queryset):
-        for instance in queryset:
-            email = AcacesPosterAbstractsReminderEmail(instance=instance)
-            send_task("hipeac.tasks.emails.send_from_template", email.data)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
+    @admin.action(description="🔄 Update user profile")
     def update_user_profile(self, request, queryset):
         for instance in queryset:
             profile = instance.user.profile
@@ -221,10 +198,6 @@ class AcacesRegistrationAdmin(RegistrationAdmin):
             if save:
                 profile.save()
         admin.ModelAdmin.message_user(self, request, "User profiles updated.")
-
-    admit_and_send_email.short_description = "✅ Admit and send email"
-    send_acaces_poster_abstract_reminder.short_description = "➡️ Send poster reminder to users"
-    update_user_profile.short_description = "🔄 Update user profile"
 
     # custom fields
 

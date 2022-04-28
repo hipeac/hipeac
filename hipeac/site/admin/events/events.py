@@ -108,6 +108,7 @@ class EventAdmin(admin.ModelAdmin):
 
     # custom actions
 
+    @admin.action(description="🔡 Attendees overview")
     def excel_overview(self, request, queryset):
         if queryset.count() > 1:
             messages.error(request, "Please select only one event.")
@@ -118,6 +119,7 @@ class EventAdmin(admin.ModelAdmin):
             filename=f"{event.year}-{event.slug}-overview.xlsx", queryset=event.registrations
         ).response
 
+    @admin.action(description="ℹ️ Download badges")
     def pdf_badges(self, request, queryset):
         if queryset.count() > 1:
             messages.error(request, "Please select only one event.")
@@ -127,9 +129,6 @@ class EventAdmin(admin.ModelAdmin):
         return BadgesPdfMaker(
             registrations=event.registrations, filename=f"{event.year}-{event.slug}-badges.pdf"
         ).response
-
-    excel_overview.short_description = "🔡 Attendees overview"
-    pdf_badges.short_description = "ℹ️ Download badges"
 
     # custom fields
 

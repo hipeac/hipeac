@@ -80,6 +80,7 @@ class MembershipRequestAdmin(admin.ModelAdmin):
 
     # custom actions
 
+    @admin.action(description="➡️ Send welcome email (only if accepted)")
     def send_members_welcome(self, request, queryset):
         queryset = queryset.filter(accepted=True)
         send_members_welcome_email(queryset)
@@ -89,8 +90,6 @@ class MembershipRequestAdmin(admin.ModelAdmin):
             )
             Membership.objects.create(user=membreq.user, type=Membership.MEMBER, date=membreq.decision_date)
         admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    send_members_welcome.short_description = "➡️ Send welcome email (only if accepted)"
 
     # custom fields
 

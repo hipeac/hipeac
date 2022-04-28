@@ -1,9 +1,9 @@
 from typing import List
 
-from .generic import TemplateEmail
+from .generic import TemplateEmail as OldTemplateEmail
 
 
-class TechTransferApplicationEmail(TemplateEmail):
+class TechTransferApplicationEmail(OldTemplateEmail):
     template_key_legacy = "awards.tech_transfer_applications.created"
     template = "_emails/awards/tech_transfer_applications_created.md.html"
     from_email = "HiPEAC <management@hipeac.net>"

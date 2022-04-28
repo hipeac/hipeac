@@ -30,5 +30,6 @@ class ConferenceAdmin(EventAdmin):
 
 @admin.register(ConferenceRegistration)
 class ConferenceRegistrationAdmin(RegistrationAdmin):
+    email_actions = RegistrationAdmin.email_actions + ["events.conferences.registration."]
     actions = RegistrationAdmin.actions + ("send_payment_reminder",)
     fieldsets = RegistrationAdmin.fieldsets + (("Sessions", {"classes": ("collapse",), "fields": ("sessions",)}),)

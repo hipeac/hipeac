@@ -78,13 +78,16 @@ class UserAdmin(AuthUserAdmin):
 
     # custom actions
 
+    @admin.action(description="[CSV] Export users' data")
     def export_users_csv(self, request, queryset):
         ids = queryset.values_list("id", flat=True)
         return ProfileCsvWriter(filename="hipeac-users.csv", queryset=Profile.objects.filter(user_id__in=ids)).response
 
+    @admin.action(description="[CSV] Export activity report for selected users")
     def export_csv_activity(self, request, queryset):
         return csv_users_activity(queryset, "hipeac-users--activity.csv")
 
+    @admin.action(description="[DATA] Extract publications from DBLP")
     def extract_publications_from_dblp(self, request, queryset):
         for user in queryset:
             send_task("hipeac.tasks.dblp.extract_publications_for_user", (user.id,))
@@ -93,15 +96,11 @@ class UserAdmin(AuthUserAdmin):
         )
         return True
 
+    @admin.action(description="➡️ Send profile update reminder")
     def send_profile_update_reminder(self, request, queryset):
         queryset = queryset.prefetch_related("profile__second_institution")
         send_profile_update_reminders(queryset)
         admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    export_users_csv.short_description = "[CSV] Export users' data"
-    export_csv_activity.short_description = "[CSV] Export activity report for selected users"
-    extract_publications_from_dblp.short_description = "[DATA] Extract publications from DBLP"
-    send_profile_update_reminder.short_description = "➡️ Send profile update reminder"
 
 
 class UsersInline(GenericTabularInline):

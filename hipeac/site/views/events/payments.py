@@ -8,9 +8,9 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 
+from hipeac.emails.events import RegistrationEmail
 from hipeac.models import Event, Coupon, Registration, AcacesRegistration, ConferenceRegistration, CswRegistration
 from hipeac.services.payments.ingenico import Ingenico
-from hipeac.site.emails.events import PaymentReminderEmail
 
 
 def get_registration_object(id, *, key: str = "pk"):
@@ -193,7 +193,7 @@ class RegistrationInvoiceRequestView(generic.RedirectView):
             raise PermissionDenied
         registration.invoice_requested = True
         registration.save()
-        PaymentReminderEmail(instance=registration).send()
+        RegistrationEmail("events.registration.payment_reminder", registration).send()
         return super().dispatch(request, *args, **kwargs)
 
     def get_redirect_url(self, *args, **kwargs):

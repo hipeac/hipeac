@@ -22,6 +22,18 @@ class Acaces(Event):
     def is_open_for_grants(self) -> bool:
         return timezone.now() < self.grant_request_deadline if self.grant_request_deadline else False
 
+    @property
+    def double_discount(self) -> int:
+        return self.shared_room_discount * 2
+
+    @property
+    def fee_discounted(self) -> int:
+        return self.fee - self.shared_room_discount
+
+    @property
+    def fee_double_discounted(self) -> int:
+        return self.fee - self.double_discount
+
 
 @receiver(post_save, sender=Acaces)
 def acaces_post_save(sender, instance, created, *args, **kwargs):

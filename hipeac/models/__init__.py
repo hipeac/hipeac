@@ -1,6 +1,7 @@
 # flake8: noqa
 
 from .communication import *
+from .emails import *
 from .events import *
 from .files import *
 from .images import *

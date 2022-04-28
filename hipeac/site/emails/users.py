@@ -1,9 +1,9 @@
 from typing import List
 
-from .generic import TemplateEmail
+from .generic import TemplateEmail as OldTemplateEmail
 
 
-class UserContactEmail(TemplateEmail):
+class UserContactEmail(OldTemplateEmail):
     template_key_legacy = "users.contact"
     template = "_emails/users/contact.md.html"
     from_email = "HiPEAC <noreply@hipeac.net>"

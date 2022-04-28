@@ -53,6 +53,7 @@ class SessionAdmin(admin.ModelAdmin):
 
     # custom actions
 
+    @admin.action(description="🔡 Attendees overview")
     def excel_overview(self, request, queryset):
         if queryset.count() > 1:
             messages.error(request, "Please select only one session.")
@@ -62,6 +63,7 @@ class SessionAdmin(admin.ModelAdmin):
             filename=f"{queryset.first().id}-session-overview.xlsx", queryset=queryset.first().registrations
         ).response
 
+    @admin.action(description="➡️ Ask proceedings to organizers")
     def send_proceedings_reminder(self, request, queryset):
         for instance in queryset:
             if instance.acl.count() == 0:
@@ -70,6 +72,7 @@ class SessionAdmin(admin.ModelAdmin):
             send_task("hipeac.tasks.emails.send_from_template", email.data)
         admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
 
+    @admin.action(description="➡️ Send reminder to organizers")
     def send_reminder(self, request, queryset):
         for instance in queryset:
             if instance.acl.count() == 0:
@@ -78,6 +81,7 @@ class SessionAdmin(admin.ModelAdmin):
             send_task("hipeac.tasks.emails.send_from_template", email.data)
         admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
 
+    @admin.action(description="➡️ Send speakers reminder to organizers")
     def send_speakers_reminder(self, request, queryset):
         for instance in queryset:
             if instance.acl.count() == 0:
@@ -85,11 +89,6 @@ class SessionAdmin(admin.ModelAdmin):
             email = SessionSpeakersReminderEmail(instance=instance)
             send_task("hipeac.tasks.emails.send_from_template", email.data)
         admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    excel_overview.short_description = "🔡 Attendees overview"
-    send_proceedings_reminder.short_description = "➡️ Ask proceedings to organizers"
-    send_reminder.short_description = "➡️ Send reminder to organizers"
-    send_speakers_reminder.short_description = "➡️ Send speakers reminder to organizers"
 
     # custom fields
 

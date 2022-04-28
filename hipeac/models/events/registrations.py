@@ -54,6 +54,11 @@ class Registration(RegistrationAbstractModel):
     def __str__(self) -> str:
         return str(self.uuid)
 
+    def get_email_class(self):
+        from hipeac.emails.events import RegistrationEmail
+
+        return RegistrationEmail
+
     def can_be_managed_by(self, user) -> bool:
         return self.user_id == user.id
 
