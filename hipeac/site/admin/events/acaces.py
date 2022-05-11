@@ -1,9 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
 
-from hipeac.functions import send_task
 from hipeac.models.events.acaces import (
     Acaces,
     AcacesBus,
@@ -23,6 +22,29 @@ from ..links import LinksInline
 from ..metadata import ApplicationAreasInline, TopicsInline
 from ..users import TeachersInline
 from ..widgets import MarkdownEditorWidget
+
+
+def create_hotel_action(hotel: AcacesHotel) -> callable:
+    def assign_hotel(modeladmin, request, queryset):
+        for instance in queryset:
+            instance.assigned_hotel = hotel
+            instance.save()
+        messages.info(request, "Hotel has been assigned.")
+
+    assign_hotel.short_description = f'🏨 Assign hotel "{hotel.code}": {hotel.name}'
+    assign_hotel.__name__ = f"acaces_hotel.{hotel.id}".replace(".", "_")
+
+    return assign_hotel
+
+
+def include_hotel_actions(actions: dict, event) -> dict:
+    print(event)
+    for hotel in event.hotels.order_by("name"):
+        print(hotel)
+        action = create_hotel_action(hotel)
+        actions[action.__name__] = (action, action.__name__, action.short_description)
+
+    return actions
 
 
 class AcacesBusesInline(admin.TabularInline):
@@ -135,12 +157,23 @@ class AcacesGrantAdmin(admin.ModelAdmin):
 @admin.register(AcacesRegistration)
 class AcacesRegistrationAdmin(RegistrationAdmin):
     email_actions = ["events.acaces.registration."] + RegistrationAdmin.email_actions
-    list_display = RegistrationAdmin.list_display + ("grant", "status", "accepted")
-    list_filter = ("status", "accepted", "grant_requested", "grant_assigned") + RegistrationAdmin.list_filter
+    list_display = RegistrationAdmin.list_display + ("grant", "status", "accepted", "hotel")
+    list_filter = (
+        (
+            "status",
+            "accepted",
+            "grant_requested",
+            "grant_assigned",
+            "roommate_requested",
+            "user__profile__meal_preference",
+        )
+        + RegistrationAdmin.list_filter
+        + (("assigned_hotel", admin.RelatedOnlyFieldListFilter),)
+    )
     # form
     filter_horizontal = RegistrationAdmin.filter_horizontal + ("courses",)
     raw_id_fields = RegistrationAdmin.raw_id_fields + ("roommate",)
-    readonly_fields = RegistrationAdmin.readonly_fields + ("accepted", "grant_requested")
+    readonly_fields = RegistrationAdmin.readonly_fields + ("grant_requested",)
     fieldsets = RegistrationAdmin.fieldsets + (
         ("Application", {"fields": ("status", "accepted", "grant_requested", "grant_assigned")}),
         ("Hotel", {"fields": ("assigned_hotel", "roommate_requested", "roommate_notes", "roommate")}),
@@ -157,6 +190,17 @@ class AcacesRegistrationAdmin(RegistrationAdmin):
         ),
     )
     inlines = RegistrationAdmin.inlines + (AcacesPosterInline,)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("assigned_hotel")
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        try:
+            actions = include_hotel_actions(actions, Acaces.objects.get(id=request.GET["event__id__exact"]))
+        except KeyError:
+            pass
+        return actions
 
     def get_readonly_fields(self, request, obj=None):
         if request.user.is_superuser:
@@ -215,6 +259,9 @@ class AcacesRegistrationAdmin(RegistrationAdmin):
         admin.ModelAdmin.message_user(self, request, "User profiles updated.")
 
     # custom fields
+
+    def hotel(self, obj):
+        return obj.assigned_hotel.code if obj.assigned_hotel else "-"
 
     def grant(self, obj):
         requested = "yes" if obj.grant_requested else "no"

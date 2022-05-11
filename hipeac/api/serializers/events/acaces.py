@@ -1,6 +1,14 @@
 from rest_framework import serializers
 
-from hipeac.models import Acaces, AcacesCourse, AcacesCourseSession, AcacesGrant, AcacesPoster, AcacesRegistration
+from hipeac.models import (
+    Acaces,
+    AcacesBus,
+    AcacesCourse,
+    AcacesCourseSession,
+    AcacesGrant,
+    AcacesPoster,
+    AcacesRegistration,
+)
 from .newevents import EventSerializerMixin
 from .registrations import RegistrationSerializer
 from ..metadata import MetadataSerializer
@@ -17,13 +25,21 @@ class AcacesGrantSerializer(serializers.ModelSerializer):
         exclude = ("id", "event")
 
 
+class AcacesBusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AcacesBus
+        exclude = ()
+
+
 class AcacesPosterSerializer(serializers.ModelSerializer):
     class Meta:
         model = AcacesPoster
+        read_only_fields = ("abstract", "poster", "position")
         exclude = ("registration",)
 
 
 class AcacesSerializer(EventSerializerMixin, serializers.ModelSerializer):
+    buses = AcacesBusSerializer(many=True, read_only=True)
     grants = AcacesGrantSerializer(many=True, read_only=True)
 
     class Meta:

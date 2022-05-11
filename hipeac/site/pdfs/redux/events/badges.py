@@ -199,7 +199,7 @@ class BadgesPdfMaker:
                             event_hashtag=reg.event.hashtag,
                             event_info=event_info,
                             attendee_name=person.name,
-                            color=badge_color,
+                            color=HexColor(STEM_COLOR),
                             institution=None,
                             country="-",
                             show_social=(not reg.is_stem and reg.sessions.filter(type=social_event).exists()),

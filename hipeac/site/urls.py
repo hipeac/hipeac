@@ -106,6 +106,7 @@ urlpatterns = [
     path("<int:year>/<slug:slug>/", views.ConferenceDetail.as_view(), name="conference"),
     path("acaces/<int:year>/", views.AcacesDetail.as_view(), name="acaces"),
     path("acaces/<int:year>/management/", views.AcacesManagement.as_view(), name="acaces_management"),
+    path("acaces/<int:year>/reports/<slug:report>.xlsx", views.AcacesReportSheet.as_view(), name="acaces_reports"),
     path("acaces/<int:year>/stats/", views.AcacesStats.as_view(), name="acaces_stats"),
     path("acaces/<int:year>/survey/", views.AcacesSurvey.as_view(), name="acaces_survey"),
     path("acaces/<int:year>/survey/gelato/", views.AcacesSurveyGelato.as_view(), name="acaces_gelato"),

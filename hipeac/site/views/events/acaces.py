@@ -8,7 +8,14 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from hipeac.models import Acaces, Registration
+from hipeac.models import Acaces, Registration, AcacesRegistration
+from hipeac.site.sheets.events.acaces import (
+    AcacesArrivalBusSheet,
+    AcacesCourseSheet,
+    AcacesDepartureBusSheet,
+    AcacesHotelSheet,
+    AcacesLunchSheet,
+)
 from .base import EventDetail
 
 
@@ -50,16 +57,19 @@ class AcacesManagement(AcacesDetail):
 class AcacesSurvey(AcacesDetail):
     template_name = "events/acaces/survey/gelato.html"
 
-    def get_registration(self, user=None):
+    def get_registration(self, user=None) -> AcacesRegistration:
         if not hasattr(self, "registration"):
-            self.registration = self.get_object().registrations.get(user=user, accepted=True)
+            event = self.get_object()
+            self.registration = AcacesRegistration.objects.get(
+                event_id=event.id, user=user, status=AcacesRegistration.STATUS_ADMITTED, accepted=True
+            )
         return self.registration
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         registration = self.get_registration(request.user)
-        if "gelato" not in registration.custom_data or not registration.custom_data["gelato"]:
-            return redirect("https://www.surveymonkey.com/r/ACACES2021")
+        if not registration.gelato:
+            return redirect("https://www.hipeac.net/r/acaces-gelato/")
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -68,13 +78,15 @@ class AcacesSurvey(AcacesDetail):
         return context
 
 
-class AcacesSurveyGelato(AcacesDetail):
+class AcacesSurveyGelato(AcacesSurvey):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        registration = self.get_object().registrations.get(user=request.user, status=Registration.STATUS_ACCEPTED)
-        if "gelato" not in registration.custom_data or not registration.custom_data["gelato"]:
-            registration.custom_data["gelato"] = True
+        registration = self.get_registration(request.user)
+
+        if not registration.gelato:
+            registration.gelato = True
             registration.save()
+
         return redirect(reverse_lazy("acaces_survey", kwargs={"year": self.kwargs.get("year")}))
 
 
@@ -187,3 +199,26 @@ class AcacesStats(AcacesDetail):
             context["json_data"] = [t._asdict() for t in namedtuplefetchall(cursor)]
 
         return context
+
+
+class AcacesReportSheet(AcacesDetail):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.groups.filter(name__in=["Management ACACES", "ACACES local organizer"]).exists():
+            messages.error(request, "You don't have the necessary permissions to view this page.")
+            raise PermissionDenied
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        report = self.kwargs.get("report")
+        SheetClass = {
+            "buses-to-acaces": AcacesArrivalBusSheet,
+            "buses-to-rome": AcacesDepartureBusSheet,
+            "courses": AcacesCourseSheet,
+            "dietary-requirements": AcacesLunchSheet,
+            "hotels": AcacesHotelSheet,
+        }[report]
+        return SheetClass(
+            filename=f"acaces-{self.get_object().year}-{report}.xlsx", queryset=self.get_object()
+        ).response

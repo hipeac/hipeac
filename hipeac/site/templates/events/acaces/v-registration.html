@@ -18,7 +18,7 @@
         <template v-slot:avatar>
           <q-icon name="check" size="md" />
         </template>
-        You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}!
+        You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}! <strong v-if="obj.grant_assigned">Remember that as a grant recipient you only need to take care of the travel expenses, the rest is already covered.</strong>.
       </q-banner>
 
       <q-banner v-if="obj.id && obj.accepted === false" rounded class="bg-red text-white">
@@ -28,28 +28,22 @@
         You have rejected your invitation to the HiPEAC Summer School. Contact us if you change your mind.
       </q-banner>
 
-      <!--<div class="row q-col-gutter-md">
-        <div class="col-12 col-md-6">
-          <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id) && event.custom_data.hotel_distribution[obj.id]" rounded class="bg-grey-3 text-dark q-mt-md">
+      <div class="row q-col-gutter-md">
+        <div class="col-12">
+          <q-banner v-if="obj.id && obj.accepted && obj.assigned_hotel" rounded class="bg-grey-3 text-dark q-mt-md">
             <template v-slot:avatar>
               <q-icon name="meeting_room" size="md" />
             </template>
             Your hotel:
-            <strong v-if="event.custom_data.hotel_distribution[obj.id] == 'SS'">Silva Splendid Spa Hotel</strong>
-            <strong v-if="event.custom_data.hotel_distribution[obj.id] == 'AM'">Hotel Ambasciatori</strong>
-            <strong v-if="event.custom_data.hotel_distribution[obj.id] == 'SG'">San Giorgio</strong>
-            <strong v-if="event.custom_data.hotel_distribution[obj.id] == 'IM'">Imperiale</strong>
+            <strong v-if="obj.assigned_hotel == 8">Silva Splendid Spa Hotel</strong>
+            <strong v-if="obj.assigned_hotel == 9">Silva Splendid Spa Hotel</strong>
+            <strong v-if="obj.assigned_hotel == 5">Ambasciatori Place Hotel</strong>
+            <strong v-if="obj.assigned_hotel == 7">Hotel San Giorgio</strong>
+            <strong v-if="obj.assigned_hotel == 6">Hotel Imperiale</strong>
+            <strong v-if="obj.assigned_hotel == 10">Hotel Touring</strong>
           </q-banner>
         </div>
-        <div class="col-12 col-md-6">
-          <q-banner v-if="obj.id && obj.status == 2 && admitted(obj.id) && event.custom_data.lunch_distribution[obj.id]" rounded class="bg-grey-3 text-dark q-mt-md col-12 col-md-6">
-            <template v-slot:avatar>
-              <q-icon name="restaurant" size="md" />
-            </template>
-            Meal group: <strong>{{ event.custom_data.lunch_distribution[obj.id] }}</strong>
-          </q-banner>
-        </div>
-      </div>-->
+      </div>
     </q-card-section>
 
     <!--<q-card-section>
@@ -82,23 +76,23 @@
 
       <div v-if="obj">
 
-        <!--<div v-if="obj.id && obj.status == 2 && admitted(obj.id)">
+        <div v-if="obj.id && obj.accepted">
           <display-2 class="q-my-lg">Travel information</display-2>
-          <display-4 class="q-mt-lg">Arriving to Fiuggi</display-4>
+          <!--<display-4 class="q-mt-lg">Arriving to Fiuggi</display-4>
           <p class="q-my-sm">What flights/trains to Rome will you take? Bus to Fiuggi?</p>
           <div class="row q-col-gutter-md">
-            <q-input filled v-model="obj.arrival_flight" type="text" label="Flight/train to Rome (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
-            <q-select filled v-model="obj.arrival_bus" :options="['Hotel Mediterraneo 14:00 (Rome)', 'Fiumicino 14:00', 'Fiumicino 16:00', 'Fiumicino 18:00', 'Ciampino 14:30', 'Ciampino 18:30', 'I will take care of my own transportation']" label="Bus to Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
-            <q-input filled v-model="obj.phone_number" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md"></q-input>
-          </div>
+            <q-input filled v-model="obj.arrival_flight" type="text" label="Flight/train to Rome (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
+            <q-select filled emit-value map-options v-model="obj.arrival_bus" :options="busOptions['acaces']" label="Bus to Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
+            <q-input filled v-model="obj.phone_number" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
+          </div>-->
           <display-4 class="q-mt-lg">Returning home</display-4>
           <p class="q-my-sm">What flights/trains will you take? What bus would you need to take?</p>
           <div class="row q-col-gutter-md">
             <q-input filled v-model="obj.departure_flight" type="text" label="Return (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
-            <q-select filled v-model="obj.departure_bus" :options="['5am to FCO', '6am to FCO (via CIA)', '8am to FCO', '9am to FCO (via CIA)', '9am to Roma Termini', 'I will take care of my own transportation']" label="Bus from Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
+            <q-select filled emit-value map-options v-model="obj.departure_bus" :options="busOptions['home']" label="Bus back to Rome" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
             <q-input filled v-model="obj.phone_number" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
           </div>
-        </div>-->
+        </div>
 
         <display-2 class="q-my-lg">Your application</display-2>
 
@@ -156,24 +150,34 @@
         </div>
 
         <display-4 class="q-mt-lg">Poster session</display-4>
-        <p class="q-mb-sm">You can present your research (ideas) to the other participants and to the teachers and other senior people at the conference.<br>Are you planning to present a poster?</p>
+        <p class="q-mb-sm">You can present your research (ideas) to the other participants and to the teachers and other senior people at the summer school.<br>Are you planning to present a poster?</p>
         <q-btn v-if="obj.poster" no-caps outline color="primary" @click="obj.poster = null" label="I will not be presenting a poster after all"></q-btn>
         <q-btn v-else no-caps outline color="primary" @click="addPoster(obj)" label="Yes"></q-btn>
         <div v-if="obj.poster" class="q-mt-md q-mb-lg">
           <q-input filled v-model="obj.poster.title" type="text" :label="'What would be the ' + ((requestType == 'Application') ? 'preliminary' : '') + ' poster title?'" class="q-mb-md"></q-input>
           <q-input filled v-model="obj.poster.authors" type="text" :label="'Who are the ' + ((requestType == 'Application') ? 'preliminary' : '') + ' authors?'" class="q-mb-md"></q-input>
-        </div>
-
-        <!--
-
-          <div v-if="obj.files && obj.files.length">
-            <h6 class="q-mt-lg q-mb-md">Files</h6>
-            <hipeac-file-list :files="obj.files" />
+          <div v-if="obj.poster.abstract" class="row q-col-gutter-lg">
+            <div class="col-12 col-md-6">
+              <p class="text-body2">Uploaded poster abstract:<br><a :href="obj.poster.abstract">{{ obj.poster.abstract }}</a></p>
+              <p class="text-body2">The abstract is maximum 4 pages in <strong>PDF format</strong> without page numbers. <a href="/media/public/drop-box/acaces.zip" download><strong>This file</strong></a> contains the LaTeX style file and a template for Word.</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <q-uploader ref="uploader" flat auto-upload no-thumbnails :factory="uploaderFactory" accept=".pdf" :max-files="1" @failed="uploadFailed" @rejected="uploadRejected" @uploaded="uploaded" label="Update poster abstract" color="grey-7" class="full-width bg-grey-2" />
+            </div>
           </div>
-
-          <div v-else>
-            <q-uploader ref="uploader" flat auto-upload no-thumbnails :factory="uploaderFactory" accept=".pdf" :max-files="1" @failed="uploadFailed" @rejected="uploadRejected" @uploaded="uploaded" label="Upload postyer abstract in PDF" color="grey-7" class="full-width bg-grey-2" />
-          </div>-->
+          <div v-else-if="obj.poster.abstract !== undefined" class="row q-col-gutter-lg">
+            <div class="col-12 col-md-6">
+              <p class="text-body2">We will produce proceedings with 1-4 page abstracts per poster. So, the participants can in advance have a look at the book of abstracts in order to get an idea about the interests of the other participants. After the summer school, it can be used to find back information about the poster presentations.</p>
+              <p class="text-body2">The abstract is maximum 4 pages in <strong>PDF format</strong> without page numbers. <a href="/media/public/drop-box/acaces.zip" download><strong>This file</strong></a> contains the LaTeX style file and a template for Word.</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <q-uploader ref="uploader" flat auto-upload no-thumbnails :factory="uploaderFactory" accept=".pdf" :max-files="1" @failed="uploadFailed" @rejected="uploadRejected" @uploaded="uploaded" label="Upload poster abstract in PDF" color="grey-7" class="full-width bg-grey-2" />
+            </div>
+          </div>
+          <div v-else-if="obj.poster.abstract == undefined" class="text-grey-7">
+            <small>Please save your registration before uploading a poster abstract.</small>
+          </div>
+        </div>
 
         <display-4 class="q-mt-lg">Accomodation and visum</display-4>
         <p class="q-mb-sm">You can have a <strong>{{ event.shared_room_discount }} euro reduction</strong> if you are willing to share a room with somebody else.<br>Are you willing to share a room?</p>
@@ -233,14 +237,14 @@
 
     </q-card-section>
 
-    <q-card-section v-if="obj && obj.id" class="text-caption">
+    <!--<q-card-section v-if="obj && obj.id" class="text-caption">
       <q-separator class="q-mb-lg"></q-separator>
       <strong>{{ requestType }} number:</strong> {{ obj.id }}<br>
       <strong>{{ requestType }} date:</strong> {{ obj.created.format('LLLL') }}<br>
       <strong>Last updated:</strong> {{ obj.updated.format('LLLL') }}<br>
       <strong>Appplication status:</strong>&nbsp;<q-badge v-if="obj.status == 0" color="yellow" text-color="dark" label="Well received"></q-badge><q-badge v-else-if="obj.status == 1 && obj.accepted == null" color="yellow" text-color="dark" label="Waiting for an answer from the student"></q-badge><q-badge v-else-if="obj.accepted" color="positive" text-color="white" label="Accepted by student"></q-badge><q-badge v-else-if="!obj.accepted" color="negative" text-color="white" label="Rejected by student"></q-badge><br>
       <strong>Grant status:</strong>&nbsp;<span v-if="obj.grant_requested"><q-badge v-if="obj.grant_assigned == null" color="yellow" text-color="dark" label="No decision"></q-badge><q-badge v-else-if="!obj.grant_assigned" color="negative" text-color="dark" label="Grant request rejected"></q-badge><q-badge v-else color="positive" text-color="white" label="Accepted"></q-badge></span><q-badge v-else color="light-blue-1" text-color="dark" label="No grant requested"></q-badge>
-    </q-card-section>
+    </q-card-section>-->
 
   </q-card>
 {% endverbatim %}

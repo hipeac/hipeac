@@ -4,6 +4,7 @@ from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.parsers import FileUploadParser
 from rest_framework.viewsets import GenericViewSet
 
 from hipeac.api.permissions import RegistrationPermission
@@ -59,6 +60,24 @@ class AcacesRegistrationViewSet(BaseRegistrationViewSet):
     @action(detail=True, methods=["POST"])
     def reject(self, request, *args, **kwargs):
         self.set_accepted(False)
+        return super().retrieve(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        methods=["post"],
+        pagination_class=None,
+        parser_classes=[FileUploadParser],
+    )
+    @method_decorator(never_cache)
+    def abstract(self, request, *args, **kwargs):
+        registration = self.get_object()
+
+        if not registration.poster:
+            raise ValidationError({"files": ["Registration has no poster."]})
+
+        registration.poster.abstract = request.data["file"]
+        registration.poster.save()
+
         return super().retrieve(request, *args, **kwargs)
 
 

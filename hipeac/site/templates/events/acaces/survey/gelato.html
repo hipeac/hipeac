@@ -17,7 +17,7 @@
   <q-card class="hipeac__card q-my-lg" :class="{'q-pa-md': $q.screen.gt.xs }">
     <q-card-section class="text-center">
       <p class="q-mb-xl"><img src="{% static 'images/gelato.png' %}"></p>
-      <h2 class="text-h4 q-mb-md">Thank you for filling the survey!</h2>
+      <h2 class="text-h4 q-mb-md">Thank you {{ user.first_name }} for filling the survey!</h2>
       <p>You can now ask your gelato ticket to the HiPEAC staff.</p>
     </q-card-section>
   </q-card>

@@ -413,6 +413,22 @@
       computed: _.extend(
         Vuex.mapGetters(['slots', 'trackList']),
         Vuex.mapState(['countries', 'user', 'event', 'courses']), {
+        busOptions: function () {
+          if (!this.event) return [];
+          var options = {
+            "acaces": [],
+            "home": []
+          };
+          _.each(this.event.buses.sort(function (a, b) {
+            return a.position - b.position;
+          }), function (bus) {
+            options[bus.destination].push({
+              label: bus.name,
+              value: bus.id
+            });
+          });
+          return options;
+        },
         countryOptions: function () {
           var c = this.countries;
           return _.keys(c).map(function (code) {
@@ -441,6 +457,9 @@
         },
         years: function () {
           return _.range(2005, moment().year());
+        },
+        uploadUrl: function () {
+          return this.obj ? this.obj.self + 'abstract/' : null;
         }
       }),
       methods: {
@@ -448,6 +467,7 @@
           obj.poster = {
             title: null,
             authors: null,
+            abstract: undefined,
           }
         },
         admitted: function (id) {

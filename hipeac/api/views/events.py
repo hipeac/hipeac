@@ -159,8 +159,6 @@ class EventManagementViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixi
             "fees",
             "links",
             "venues__rooms",
-            "sponsors__institution",
-            "sponsors__project",
             "sessions__type",
         )
         return super().retrieve(request, *args, **kwargs)
