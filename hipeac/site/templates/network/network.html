@@ -25,6 +25,9 @@
     <a is="router-link" :to="{name: 'researchersBenefits'}" class="nav-link">
       <i class="material-icons mr-1">info</i>Benefits</a>
   </li>
+  <li class="nav-item">
+    <a is="router-link" :to="{name: 'equality'}" class="nav-link">Equality</a>
+  </li>
 {% endblock %}
 
 {% block content %}
@@ -36,6 +39,7 @@
 {% block vue_templates %}
   {% include './v-about.html' with id='v-about' tbs=flatpage.page.tbs %}
   {% include './v-benefits.html' with id='v-benefits' tbs=flatpage.page.tbs %}
+  {% include './v-equality.html' with id='v-equality' tbs=flatpage.page.tbs %}
   {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
   {% include './v-innovation.html' with id='v-innovation' header=flatpage.page.tbs.about_innovation.content benefits=flatpage.page.tbs.innovation_benefits get_involved=flatpage.page.tbs.innovation_get_involved %}
   {% include './v-members.html' with id='v-members' membership=flatpage.page.tbs.membership charter=flatpage.page.tbs.membership_charter how_to=flatpage.page.tbs.membership_how_to %}
@@ -103,6 +107,10 @@
 
     var BenefitsView = {
       template: '#v-benefits'
+    };
+
+    var EqualityView = {
+      template: '#v-equality'
     };
 
     var IndustryView = {
@@ -292,6 +300,12 @@
           path: '/projects/',
           pathToRegexpOptions: {strict: true},
           component: ProjectsListView
+        },
+        {
+          name: 'equality',
+          path: '/equality/',
+          pathToRegexpOptions: {strict: true},
+          component: EqualityView
         }
       ]
     });
