@@ -27,6 +27,12 @@ class SessionAdmin(admin.ModelAdmin):
     # form
     radio_fields = {"type": admin.VERTICAL}
     raw_id_fields = ("event", "main_speaker", "room")
+    fieldsets = (
+        (None, {"fields": ("event", ("start_at", "end_at"), "type", "is_private")}),
+        ("General information", {"fields": ("title", "main_speaker", "summary", "program", "organizers")}),
+        ("Room and extra fees", {"fields": ("room", "max_attendees", "extra_attendees_fee")}),
+        ("Zoom", {"fields": ("zoom_webinar_id", "zoom_attendee_report")}),
+    )
     inlines = (
         ApplicationAreasInline,
         TopicsInline,
@@ -45,11 +51,6 @@ class SessionAdmin(admin.ModelAdmin):
             .prefetch_related("event", "type")
             .annotate(Count("registrations", distinct=True))
         )
-
-    def get_readonly_fields(self, request, obj=None):
-        if request.user.is_superuser:
-            return ()
-        return ("event",)
 
     # custom actions
 
@@ -96,12 +97,3 @@ class SessionAdmin(admin.ModelAdmin):
         return obj.registrations__count if obj.registrations__count > 0 else "-"
 
     registrations_count.short_description = "Registrations"
-
-
-"""
-    fieldsets = (
-        (None, {"fields": ("event", ("start_at", "end_at"), "room", "type", "title", "is_private")}),
-        ("INFO", {"fields": ("main_speaker", "speakers", "summary", "program", "projects", "organizers")}),
-        ("METADATA", {"classes": ("collapse",), "fields": ("application_areas", "topics")}),
-    )
-"""

@@ -11,6 +11,20 @@ class RoomsInline(admin.TabularInline):
     verbose_name = "room"
 
 
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "max_capacity", "venue")
+    search_fields = ("name", "venue__name", "venue__city")
+    # form
+    raw_id_fields = ("venue",)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("venue")
+
+    def has_module_permission(self, request):
+        return False
+
+
 @admin.register(Venue)
 class VenueAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "city", "country")
