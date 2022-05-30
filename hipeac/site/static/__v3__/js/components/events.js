@@ -133,11 +133,11 @@ var HipeacEventComponents = {
         var rooms = {};
         var sessionRoute = this.sessionRoute;
 
-        _.each(this.event.venues, function (venue) {
-          _.each(venue.rooms, function (room) {
+        if (this.event.venue) {
+          _.each(this.event.venue.rooms, function (room) {
             rooms[room.id] = room;
           });
-        });
+        }
 
         if (this.event.breaks.length) {
           _.each(this.event.breaks, function (br) {
