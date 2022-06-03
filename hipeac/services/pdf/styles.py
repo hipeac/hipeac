@@ -29,6 +29,7 @@ for fonts in roboto:
 
 HIPEAC_BLUE = "#005eb8"
 HIPEAC_YELLOW = "#ffe800"
+STEM_COLOR = "#0f9d58"
 TEXT_COLOR = "#37474F"  # Blue Grey 800
 LIGHT_TEXT_COLOR = "#607D8B"  # Blue Grey 500
 DARK_TEXT_COLOR = "#263238"  # Blue Grey 900

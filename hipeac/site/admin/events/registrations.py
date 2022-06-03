@@ -2,9 +2,16 @@ from django.contrib import admin
 from django.urls import path, reverse
 from django.utils.html import format_html
 
-from hipeac.models.events import Coupon, InvitationLetter, Registration, Session
+from hipeac.models.events import AccompanyingPerson, Coupon, InvitationLetter, Registration, Session
 from hipeac.site.pdfs.redux.events.badges import BadgesPdfMaker
 from ..generic import include_email_actions
+
+
+class AccompanyingPersonInline(admin.TabularInline):
+    model = AccompanyingPerson
+    classes = ("collapse",)
+    extra = 0
+    verbose_name = "accompanying person"
 
 
 @admin.register(Coupon)
@@ -94,7 +101,7 @@ class RegistrationAdmin(admin.ModelAdmin):
         ),
         ("Visum", {"fields": ("visa_requested", "visa_sent")}),
     )
-    inlines = (InvitationLetterInline,)
+    inlines = (InvitationLetterInline, AccompanyingPersonInline)
 
     def get_queryset(self, request):
         return (

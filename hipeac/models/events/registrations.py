@@ -10,6 +10,7 @@ from hashlib import sha256
 
 from hipeac.functions import send_task
 from .events import Event
+from ..metadata import Metadata
 
 
 class RegistrationAbstractModel(models.Model):
@@ -86,6 +87,10 @@ class Registration(RegistrationAbstractModel):
     @property
     def is_paid(self) -> bool:
         return self.saldo >= 0
+
+    @property
+    def is_stem(self) -> bool:
+        return self.coupon and "stem" in self.coupon.notes.lower()
 
     @property
     def remaining_fee(self):
@@ -182,3 +187,19 @@ class RegistrationLog(models.Model):
     class Meta:
         db_table = "hipeac_event_registration_log"
         unique_together = ("registration", "session")
+
+
+class AccompanyingPerson(models.Model):
+    registration = models.ForeignKey(Registration, on_delete=models.CASCADE, related_name="accompanying_persons")
+    name = models.CharField(max_length=255)
+    meal_preference = models.ForeignKey(
+        Metadata,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        limit_choices_to={"type": Metadata.MEAL_PREFERENCE},
+        related_name="accompanier_" + Metadata.MEAL_PREFERENCE,
+    )
+
+    class Meta:
+        db_table = "hipeac_event_registration_accompanier"
