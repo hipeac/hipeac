@@ -111,6 +111,9 @@ var Hipeac = {
 
       return obj;
     },
+    job: function (obj) {
+      return obj;
+    },
     registration: function (obj) {
       obj.fee = obj.base_fee + obj.extra_fees + obj.manual_extra_fees;
       obj.is_paid = obj.saldo >= 0;

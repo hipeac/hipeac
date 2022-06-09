@@ -116,15 +116,6 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     @action(
         detail=True,
         pagination_class=None,
-        serializer_class=JobNestedSerializer,
-    )
-    def jobs(self, request, *args, **kwargs):
-        self.queryset = self.get_object().jobs
-        return super().list(request, *args, **kwargs)
-
-    @action(
-        detail=True,
-        pagination_class=None,
         permission_classes=(HasRegistrationForEvent,),
         serializer_class=RegistrationListSerializer,
     )

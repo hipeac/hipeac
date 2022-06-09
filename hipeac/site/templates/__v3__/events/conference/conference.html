@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block page %}
-  <div id="vars" data-event-id="{{ conference.id }}" data-event-url="{% url 'v1:conference-detail' conference.id %}" data-attendees-url="{% url 'v1:event-attendees' conference.id %}" data-committees-url="{% url 'v1:event-committees' conference.id %}" data-sessions-url="{% url 'v1:event-sessions' conference.id %}" data-registration-url="{% url 'v1:auth-registration-conference-list' %}"></div>
+  <div id="vars" data-event-id="{{ conference.id }}" data-event-url="{% url 'v1:conference-detail' conference.id %}" data-attendees-url="{% url 'v1:event-attendees' conference.id %}" data-committees-url="{% url 'v1:event-committees' conference.id %}" data-jobs-url="{% url 'v1:conference-jobs' conference.id %}" data-sessions-url="{% url 'v1:event-sessions' conference.id %}" data-registration-url="{% url 'v1:auth-registration-conference-list' %}"></div>
   <router-view></router-view>
   <hipeac-submenu-fabs v-if="event" :menu="menu" :checks="{'not_ready': !event.is_ready, 'ready': event.is_ready, 'registration': !!registration}"></hipeac-submenu-fabs>
 {% endblock %}
@@ -24,6 +24,7 @@
 {% block vue_templates %}
   {% include './v-call-papers.html' with event=conference %}
   {% include './v-call-sessions.html' with event=conference %}
+  {% include './v-jobs.html' %}
   {% include './v-program.html' %}
   {% include './v-registration.html' %}
   {% include '../_shared/v-about.html' %}
@@ -38,6 +39,7 @@
 {% compress js file csw %}
   <script src="{% static '__v3__/js/components/forms.js' %}"></script>
   <script src="{% static '__v3__/js/components/events.js' %}"></script>
+  <script src="{% static '__v3__/js/components/jobs.js' %}"></script>
   <script src="{% static '__v3__/js/components/users.js' %}"></script>
   <script src="{% static '__v3__/js/mixins/query.js' %}"></script>
   <script src="{% static '__v3__/js/mixins/registration.js' %}"></script>
@@ -111,6 +113,16 @@
           });
         }
       })
+    };
+
+    var JobsView = {
+      template: '#v-jobs',
+      computed: _.extend(
+        Vuex.mapState('events', ['event', 'jobs']), {
+      }),
+      created: function () {
+        this.$store.commit('events/getJobs');
+      }
     };
 
     var ProgramView = {
@@ -195,6 +207,12 @@
           component: CallSessionsView
         },
         {
+          name: 'jobs',
+          path: '/recruitment/',
+          pathToRegexpOptions: {strict: true},
+          component: JobsView
+        },
+        {
           path: '/program/',
           pathToRegexpOptions: {strict: true},
           component: ProgramView,
@@ -268,6 +286,11 @@
             check: 'not_ready'
           },
           {
+            label: 'Recruitment',
+            to: {name: 'jobs'},
+            exact: true
+          },
+          {
             label: 'Venue and travel',
             to: {name: 'venue'},
             exact: true
@@ -297,7 +320,7 @@
       }
     });
     Hipeac.utils.registerComponents(app, [
-      HipeacCommonComponents, HipeacFormComponents, HipeacEventComponents, HipeacUserComponents
+      HipeacCommonComponents, HipeacFormComponents, HipeacEventComponents, HipeacJobComponents, HipeacUserComponents
     ]);
     app.use(Store);
     app.use(Router);

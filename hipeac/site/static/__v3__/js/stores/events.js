@@ -25,6 +25,13 @@ var EventModule = {
         }));
       });
     },
+    getJobs: function (state) {
+      Hipeac.api.request('GET', VARS.jobsUrl).then(function (res) {
+        state.jobs = Object.freeze(res.data.map(function (obj) {
+          return Hipeac.map.job(obj);
+        }));
+      });
+    },
     getKeynotes: function (state) {
       if (!state.keynotes.length) {
         Hipeac.api.request('GET', VARS.sessionsUrl, null, {session_type: 69}).then(function (res) {

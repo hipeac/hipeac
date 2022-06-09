@@ -2,7 +2,6 @@ import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
@@ -164,30 +163,6 @@ class Event(ImageMixin, LinksMixin, VideosMixin, models.Model):
     @property
     def google_photos_url(self) -> str:
         return self.get_link(Link.GOOGLE_PHOTOS)
-
-    @cached_property
-    def jobs(self):
-        from hipeac.models import Job
-
-        sponsors = self.sponsors.values_list("institution_id", "project_id") if self.type == self.CONFERENCE else None
-
-        if sponsors:
-            a, b = map(list, zip(*sponsors))
-            institution_ids, project_ids = list(filter(None, a)), list(filter(None, b))
-            queryset = (
-                Job.objects.active()
-                .filter(
-                    (
-                        Q(institution__in=institution_ids)
-                        | Q(project__in=project_ids)
-                        | Q(institution__parent_id__in=institution_ids)
-                    ),
-                )
-                .order_by("institution__name", "deadline")
-            )
-        else:
-            queryset = Job.objects.none()
-        return queryset
 
     @property
     def season(self) -> str:
