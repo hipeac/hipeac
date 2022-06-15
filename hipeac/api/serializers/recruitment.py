@@ -19,7 +19,7 @@ class HipeacCountries(Countries):
 class JobBaseSerializer(ApplicationAreasMixin, TopicsMixin, WritableNestedModelSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:job-detail", read_only=True)
     url = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
-    href = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
+    href = serializers.CharField(source="get_absolute_url", read_only=True)
     country = CountryField(country_dict=True, countries=HipeacCountries())
     career_levels = MetadataSerializer(many=True)
     employment_type = MetadataSerializer()

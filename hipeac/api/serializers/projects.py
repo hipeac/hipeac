@@ -8,7 +8,8 @@ from .mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
 
 class ProjectSerializer(ApplicationAreasMixin, LinksMixin, TopicsMixin, WritableNestedModelSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:project-detail", read_only=True)
-    url = serializers.CharField(source="get_absolute_url", read_only=True)
+    url = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
+    href = serializers.CharField(source="get_absolute_url", read_only=True)
     programme = MetadataSerializer(allow_null=True)
     ec_project_id = serializers.CharField(read_only=True)
 
@@ -21,13 +22,13 @@ class ProjectSerializer(ApplicationAreasMixin, LinksMixin, TopicsMixin, Writable
 class ProjectMiniSerializer(ProjectSerializer):
     class Meta:
         model = Project
-        fields = ("id", "self", "url", "acronym", "name")
+        fields = ("id", "self", "url", "href", "acronym", "name")
 
 
 class ProjectNestedSerializer(ProjectSerializer):
     class Meta:
         model = Project
-        fields = ("id", "self", "url", "acronym", "name", "programme", "start_date", "end_date", "images")
+        fields = ("id", "self", "url", "href", "acronym", "name", "programme", "start_date", "end_date", "images")
 
 
 class ProjectListSerializer(ProjectSerializer):

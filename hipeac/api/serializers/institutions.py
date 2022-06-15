@@ -8,7 +8,8 @@ from .mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
 
 class InstitutionSerializer(ApplicationAreasMixin, LinksMixin, TopicsMixin, WritableNestedModelSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:institution-detail", read_only=True)
-    url = serializers.CharField(source="get_absolute_url", read_only=True)
+    url = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
+    href = serializers.CharField(source="get_absolute_url", read_only=True)
     children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     country = CountryField(country_dict=True)
     short_name = serializers.CharField(read_only=True)

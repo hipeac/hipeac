@@ -67,7 +67,7 @@ class MagazineAdmin(admin.ModelAdmin):
     # form
     raw_id_fields = ("event",)
     readonly_fields = ("downloads",)
-    inlines = (ApplicationAreasInline, TopicsInline, InstitutionsInline, ProjectsInline, UsersInline)
+    inlines = (ApplicationAreasInline, TopicsInline, InstitutionsInline, ProjectsInline, UsersInline, ImagesInline)
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("event")

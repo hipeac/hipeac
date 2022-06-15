@@ -51,6 +51,21 @@
                   <div class="col-12 col-md-8">
                     <display-2 class="q-mb-md">{{ session.title }}</display-2>
                     <marked v-if="session.summary" :text="session.summary" />
+                    <div v-if="session.institutions.length || session.projects.length">
+                      <q-separator class="q-my-xl" />
+                      <div  class="row items-center q-col-gutter-lg text-center">
+                        <div v-for="institution in session.institutions" :key="institution.id" class="col-6 col-sm-3">
+                          <a v-if="institution.images" :href="institution.href">
+                            <img :src="institution.images.lg" class="sponsor">
+                          </a>
+                        </div>
+                         <div v-for="project in session.projects" :key="project.id" class="col-6 col-sm-3">
+                          <a v-if="project.images" :href="project.href">
+                            <img :src="project.images.lg" class="sponsor">
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="col-12 col-md-4">
                     <div v-if="session.main_speaker" class="q-mb-lg">

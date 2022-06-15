@@ -11,6 +11,7 @@ from hipeac.site.emails.events.events import (
 from hipeac.site.sheets.events.registrations import RegistrationsSheet
 from ..communication import VideosInline
 from ..files import FilesInline
+from ..institutions import InstitutionsInline
 from ..links import LinksInline
 from ..metadata import ApplicationAreasInline, TopicsInline
 from ..permissions import PermissionsInline
@@ -37,6 +38,7 @@ class SessionAdmin(admin.ModelAdmin):
         ApplicationAreasInline,
         TopicsInline,
         ProjectsInline,
+        InstitutionsInline,
         SpeakersInline,
         LinksInline,
         FilesInline,
