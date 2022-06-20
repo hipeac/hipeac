@@ -4,7 +4,7 @@
 
 
 <!doctype html>
-<html lang="en" prefix="og: http://ogp.me/ns#" data-lang="en" data-auth="{{ user.is_authenticated | lower | default:'false' }}" data-csrf-token="{{ csrf_token }}">
+<html lang="en" prefix="og: http://ogp.me/ns#" data-lang="en" data-auth="{{ user.is_authenticated | lower | default:'false' }}" data-csrf-token="{{ csrf_token }}" data-user="{{ user.id | default:'0' }}">
   <head>
     <link href="//fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&family=Material+Icons&display=swap" rel="stylesheet">
     {% compress css file quasar %}
@@ -22,7 +22,24 @@
     {% block structured_data %}{% endblock %}
     <script src="{% static 'vendor_v2/quasar@1.15.20/quasar.ie.polyfills.umd.min.js' %}"></script>
     {% if not debug %}
-      <!-- Google tag manager -->
+      {% if request.DNT %}
+        <meta name="twitter:dnt" content="on">
+      {% else %}
+        <script async src="//www.googletagmanager.com/gtag/js?id=G-L9R1MSGBM9"></script>
+        {% compress js inline %}
+          <script>
+            var userId = +(document.querySelector('html').dataset.user);
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            };
+            gtag('js', new Date());
+            gtag('config', 'G-L9R1MSGBM9', {
+              'user_id': (userId == 0) ? undefined : userId
+            });
+          </script>
+        {% endcompress %}
+      {% endif %}
     {% endif %}
     {% block head_scripts %}{% endblock %}
   </head>
