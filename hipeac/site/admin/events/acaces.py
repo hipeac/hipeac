@@ -14,6 +14,7 @@ from hipeac.models.events.acaces import (
     AcacesRegistration,
 )
 from hipeac.models.metadata import Metadata
+from hipeac.site.pdfs.redux.events.acaces import merge_abstract_pdfs
 from .events import EventAdmin
 from .registrations import RegistrationAdmin
 from ..communication import RecordingsInline
@@ -68,6 +69,7 @@ class AcacesPosterInline(admin.StackedInline):
 
 @admin.register(Acaces)
 class AcacesAdmin(EventAdmin):
+    actions = EventAdmin.actions + ("download_abstracts",)
     list_display = EventAdmin.list_display + ("courses_link",)
     # form
     fieldsets = EventAdmin.fieldsets + (
@@ -80,6 +82,19 @@ class AcacesAdmin(EventAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(models.Count("courses", distinct=True))
+
+    # custom actions
+
+    @admin.action(description="🔽 Download book of abstracts")
+    def download_abstracts(self, request, queryset):
+        if queryset.count() > 1:
+            messages.error(request, "Please select only one event.")
+            return
+
+        acaces = queryset.first()
+        return merge_abstract_pdfs(acaces, filename=f"acaces{acaces.year}-abstracts.pdf", as_attachment=True)
+
+    # custom fields
 
     def courses_link(self, obj):
         if obj.courses__count == 0:
