@@ -46,7 +46,14 @@ class AcacesCourse(
 
     def __str__(self) -> str:
         slot = f"Slot {self.slot}: " if self.slot else ""
-        return f"{slot}{self.title}"
+        string = f"{slot}{self.title}"
+        length = len(string)
+        max_length = 90
+
+        if length > max_length:
+            return f"{string[:max_length]}..."
+
+        return string
 
     @property
     def hours(self) -> float:

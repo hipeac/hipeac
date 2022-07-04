@@ -29,6 +29,7 @@ def draw_badge(
     show_social: bool = False,
     institution: Optional[str] = None,
     country: Optional[str] = None,
+    one_logo: Optional[bool] = False,
 ) -> Drawing:
     side_margin = 6 * mm  # a minimum on the sides for the printers
     width = (210 * mm) - (2 * side_margin)
@@ -54,9 +55,15 @@ def draw_badge(
             )
         )
 
+    has_logo = False
+
     for x in [width * 0.25, width * 0.75]:
         image_width = 15 * mm
-        draw.add(Image(x - (image_width / 2), 12 * mm, image_width, image_width, logo_path))
+
+        if not has_logo:
+            draw.add(Image(x - (image_width / 2), 12 * mm, image_width, image_width, logo_path))
+            if one_logo:
+                has_logo = True
 
         draw.add(
             String(
@@ -161,7 +168,27 @@ class BadgesPdfMaker:
                     institution=institution,
                     country=country,
                     show_social=(not reg.is_stem and reg.sessions.filter(type=social_event).exists()),
+                    one_logo=reg.event.type == "acaces",
                 )
+
+                if reg.event.type == "acaces":
+                    width = (210 * mm) - (2 * side_margin)
+                    y = 28 * mm
+
+                    for course in reg.courses.all():
+                        y = y - (3 * mm)
+                        draw.add(
+                            String(
+                                width * 0.75,
+                                y,
+                                str(course),
+                                fontName="Roboto Light",
+                                fillColor="black",
+                                fontSize=5.0,
+                                textAnchor="middle",
+                            )
+                        )
+
                 pdf.parts.append(draw)
 
                 if reg.accompanying_persons.count():

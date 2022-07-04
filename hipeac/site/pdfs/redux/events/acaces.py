@@ -34,7 +34,7 @@ def merge_abstract_pdfs(acaces, *, filename: str, as_attachment: bool = False) -
             pdf_reader = PdfReader(pdf_file)
             for page in pdf_reader.pages:
                 i += 1
-                page.scale_to(width=8.268*72, height=11.693*72)
+                page.scale_to(width=8.268 * 72, height=11.693 * 72)
                 page.merge_page(get_header(acaces.year, i).pages[0], True)
                 writer.add_page(page)
             if len(pdf_reader.pages) % 2 == 1:
