@@ -11,7 +11,7 @@
   <q-toolbar class="container">
     <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ conference }}</q-toolbar-title>
     <q-space v-show="$q.screen.gt.sm"></q-space>
-    <hipeac-submenu-tabs v-if="event" :menu="menu" :checks="{'not_ready': !event.is_ready, 'ready': event.is_ready, 'registration': !!registration}" :hashtag="event.hashtag"></hipeac-submenu-tabs>
+    <hipeac-submenu-tabs v-if="event" :menu="menu" :checks="{'not_ready': !event.is_ready, 'ready': event.is_ready, 'registration': !!registration, 'not_active': !event.is_active, }" :hashtag="event.hashtag"></hipeac-submenu-tabs>
   </q-toolbar>
 {% endblock %}
 
@@ -24,6 +24,7 @@
 {% block vue_templates %}
   {% include './v-call-papers.html' with event=conference %}
   {% include './v-call-sessions.html' with event=conference %}
+  {% include './v-industry.html' %}
   {% include './v-jobs.html' %}
   {% include './v-program.html' %}
   {% include './v-registration.html' %}
@@ -112,6 +113,27 @@
             return Hipeac.utils.sortText(a.title, b.title);
           });
         }
+      })
+    };
+
+    var IndustryView = {
+      template: '#v-industry',
+      computed: _.extend(
+        Vuex.mapState('events', ['event']), {
+      })
+    };
+
+    var IndustryMainView = {
+      template: '#v-industry-main',
+      computed: _.extend(
+        Vuex.mapState('events', ['event']), {
+      })
+    };
+
+    var IndustrySponsorshipView = {
+      template: '#v-industry-sponsorship',
+      computed: _.extend(
+        Vuex.mapState('events', ['event']), {
       })
     };
 
@@ -207,6 +229,25 @@
           component: CallSessionsView
         },
         {
+          path: '/industry/',
+          pathToRegexpOptions: {strict: true},
+          component: IndustryView,
+          children: [
+            {
+              name: 'industry',
+              path: '',
+              pathToRegexpOptions: {strict: true},
+              component: IndustryMainView
+            },
+            {
+              name: 'sponsorship',
+              path: 'sponsorship/',
+              pathToRegexpOptions: {strict: true},
+              component: IndustrySponsorshipView
+            }
+          ]
+        },
+        {
           name: 'jobs',
           path: '/recruitment/',
           pathToRegexpOptions: {strict: true},
@@ -294,6 +335,12 @@
             label: 'Venue and travel',
             to: {name: 'venue'},
             exact: true
+          },
+          {
+            label: 'Industry',
+            to: {name: 'industry'},
+            exact: true,
+            check: 'not_active'
           },
           {
             label: 'Attendees',

@@ -25,12 +25,12 @@
           </q-list>
         </div>
         <div class="col-12 col-md-8">
-          <marked :text="event.presentation" class="catchphrase text-h5 text-weight-light"></marked>
+          <marked :text="event.presentation" class="catchphrase text-weight-light"></marked>
         </div>
       </div>
     </q-card>
-    <div class="q-mt-md hipeac-shadow">
-      <q-img :src="event.images.lg" class="full-width rounded-borders"></q-img>
+    <div class="q-mt-md">
+      <q-img :src="event.images.lg" class="full-width rounded-borders hipeac-shadow"></q-img>
     </div>
     <div v-if="event.type == 'conference' && event.sponsors" class="row q-col-gutter-md q-mt-none">
       <div v-if="event.sponsors.length" class="col-12 col-md align-items-stretch">
@@ -40,6 +40,9 @@
             <div v-for="sponsor in event.sponsors" :key="sponsor.id" class="col-6 col-sm-4">
               <a v-if="sponsor.institution && sponsor.institution.images" :href="sponsor.institution.href">
                 <img :src="sponsor.institution.images.lg" class="sponsor">
+              </a>
+              <a v-if="sponsor.project && sponsor.project.images" :href="sponsor.project.href">
+                <img :src="sponsor.project.images.lg" class="sponsor">
               </a>
             </div>
           </div>

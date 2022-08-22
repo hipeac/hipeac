@@ -124,6 +124,23 @@ var HipeacCommonComponents = {
     `
   },
 
+  'download-btn': {
+    props: {
+      href: {
+        type: String,
+        required: true
+      },
+      title: {
+        type: String,
+        default: 'Download'
+      }
+    },
+    template: `
+      <q-btn flat type="a" :href="href" class="full-width" color="primary">
+        <q-icon name="download" size="xs" class="q-mr-sm" />{{ title }}</q-btn>
+    `
+  },
+
   'form-section-title': {
     template: `
       <q-banner rounded class="bg-blue-grey-1 q-mb-sm text-right text-dark">

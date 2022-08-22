@@ -23,13 +23,25 @@ class InstitutionSerializer(ApplicationAreasMixin, LinksMixin, TopicsMixin, Writ
 class InstitutionMiniSerializer(InstitutionSerializer):
     class Meta:
         model = Institution
-        fields = ("id", "self", "url", "type", "name", "local_name", "short_name", "country")
+        fields = ("id", "self", "url", "href", "type", "name", "local_name", "short_name", "country")
 
 
 class InstitutionNestedSerializer(InstitutionSerializer):
     class Meta:
         model = Institution
-        fields = ("id", "self", "url", "type", "name", "local_name", "short_name", "location", "country", "images")
+        fields = (
+            "id",
+            "self",
+            "url",
+            "href",
+            "type",
+            "name",
+            "local_name",
+            "short_name",
+            "location",
+            "country",
+            "images",
+        )
 
 
 class InstitutionListSerializer(InstitutionNestedSerializer):
