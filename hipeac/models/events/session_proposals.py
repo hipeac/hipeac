@@ -41,6 +41,9 @@ class SessionProposal(ApplicationAreasMixin, TopicsMixin, models.Model):
     class Meta:
         db_table = "hipeac_event_session_proposal"
 
+    def __str__(self) -> str:
+        return self.title
+
     def get_absolute_url(self) -> str:
         return reverse("session_proposal_update", args=[self.event_id, self.uuid])
 

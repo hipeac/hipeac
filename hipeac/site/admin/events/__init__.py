@@ -6,5 +6,6 @@ from .csw import *
 from .events import *
 from .registrations import *
 from .sessions import *
+from .session_proposals import *
 from .venues import *
 from .webinars import *
