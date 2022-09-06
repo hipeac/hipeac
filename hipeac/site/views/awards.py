@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import generic
 
-from hipeac.models import TechTransferCall, TechTransferApplication
+from hipeac.models import Member, TechTransferCall, TechTransferApplication
 from hipeac.site.forms import TechTransferApplicationForm
 
 
@@ -16,7 +16,7 @@ class TechTransferApplicationFormView(generic.FormView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if request.user.profile.membership is None:
+        if not Member.objects.filter(user=request.user).exists():
             messages.error(
                 self.request,
                 "Sorry but only HiPEAC Members, Affiliate Members or "
