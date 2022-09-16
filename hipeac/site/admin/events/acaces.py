@@ -100,7 +100,7 @@ class AcacesAdmin(EventAdmin):
             {"classes": ("collapse",), "fields": ("fee", "shared_room_discount", "grant_request_deadline")},
         ),
     )
-    inlines = EventAdmin.inlines + [AcacesHotelsInline, AcacesBusesInline]
+    inlines = EventAdmin.inlines + (AcacesHotelsInline, AcacesBusesInline)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(models.Count("courses", distinct=True))

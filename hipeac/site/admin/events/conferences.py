@@ -25,7 +25,7 @@ class ConferenceAdmin(EventAdmin):
             },
         ),
     )
-    inlines = EventAdmin.inlines + [ConferenceSponsorsInline]
+    inlines = EventAdmin.inlines + (ConferenceSponsorsInline,)
 
 
 @admin.register(ConferenceRegistration)
