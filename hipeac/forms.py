@@ -6,7 +6,7 @@ from django.core.validators import validate_comma_separated_integer_list
 from django.forms.fields import MultipleChoiceField
 from django.forms.widgets import CheckboxSelectMultiple
 
-from hipeac.models import get_cached_metadata_queryset, validate_membership_tags, SessionProposal
+from hipeac.models import get_cached_metadata_queryset, validate_membership_tags, SessionProposal, WebinarProposal
 
 
 class HiSignupForm(SignupForm):
@@ -107,3 +107,12 @@ class SessionProposalForm(forms.ModelForm):
         widgets = {
             "event": forms.HiddenInput(),
         }
+
+
+class WebinarProposalForm(forms.ModelForm):
+    application_areas = ApplicationAreasChoiceField(required=False)
+    topics = TopicsChoiceField(required=False)
+
+    class Meta:
+        model = WebinarProposal
+        exclude = ("created_at", "updated_at")

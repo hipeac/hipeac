@@ -113,6 +113,8 @@ urlpatterns = [
     path("csw/<int:year>/<slug:slug>/", views.CswDetail.as_view(), name="csw"),
     path("events/ec/<int:pk>/", views.EventDetail.as_view(), name="ec_meeting"),
     path("webinars/", views.WebinarList.as_view(), name="webinars"),
+    path("webinar-proposal/", never_cache(views.WebinarProposalCreate.as_view()), name="webinar_proposals"),
+    path("w/<uuid:slug>/", never_cache(views.WebinarProposalUpdate.as_view()), name="webinar_proposal_update"),
     re_path(r"^events/roadshow/(?P<pk>\d+)(?:/(?P<slug>[\w-]+))?/$", views.RoadshowDetail.as_view(), name="roadshow"),
     # payments
     path("registration/", include(payment_patterns, namespace="registration_payment")),

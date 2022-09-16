@@ -3,7 +3,7 @@ from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 
-from hipeac.models.events.webinars import Webinar, WebinarRegistration
+from hipeac.models.events.webinars import Webinar, WebinarRegistration, WebinarProposal
 from ..communication import RecordingsInline
 from ..files import FilesInline
 from ..institutions import InstitutionsInline
@@ -58,7 +58,7 @@ class WebinarAdmin(admin.ModelAdmin):
 @admin.register(WebinarRegistration)
 class WebinarRegistrationAdmin(admin.ModelAdmin):
     date_hierarchy = "created_at"
-    list_display = ("id", "created_at", "name")
+    list_display = ("id", "created_at", "user")
     # form
     raw_id_fields = ("user", "webinar")
     readonly_fields = ("created_at", "updated_at", "zoom_access_link")
@@ -75,3 +75,11 @@ class WebinarRegistrationAdmin(admin.ModelAdmin):
         return format_html(
             f'<a href="{url}{obj.user_id}/" target="admin_user">{obj.user.profile.name}</a>, {institution}'
         )
+
+
+@admin.register(WebinarProposal)
+class WebinarProposalAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", "user")
+
+    def user(self, obj):
+        return f"{obj.first_name} {obj.last_name} <{obj.email}>"
