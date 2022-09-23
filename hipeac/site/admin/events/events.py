@@ -99,7 +99,7 @@ class EventAdmin(admin.ModelAdmin):
         )
 
     def get_inlines(self, request, obj=None):
-        return super().get_inlines(request, obj) + [BreaksInline, LinksInline, VideosInline]
+        return super().get_inlines(request, obj) + (BreaksInline, LinksInline, VideosInline)
 
     def get_readonly_fields(self, request, obj=None):
         if request.user.is_superuser:
