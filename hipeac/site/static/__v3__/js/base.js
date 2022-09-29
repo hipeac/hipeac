@@ -2,7 +2,7 @@ var DJANGO_VARS = document.querySelector('html').dataset;
 
 
 var getMoment = function (dt, tz) {
-  return moment(dt).tz(tz || 'Europe/Brussels');
+  return moment.utc(dt).tz(tz || 'Europe/Brussels');
 };
 
 
