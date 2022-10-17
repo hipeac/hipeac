@@ -52,11 +52,13 @@ class WebinarViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
             access_link = Zoomer().post_webinar_registrant(webinar.zoom_webinar_int, user_data)
 
         try:
-            WebinarRegistration.objects.create(webinar_id=webinar.id, user_id=request.user.id, access_link=access_link)
+            WebinarRegistration.objects.create(
+                webinar_id=webinar.id, user_id=request.user.id, zoom_access_link=access_link
+            )
         except IntegrityError:
             raise PermissionDenied({"message": ["You are already registered for this webinar."]})
 
-        self.queryset = request.user.webinar_registrations.upcoming()
+        self.queryset = request.user.webinarregistration_registrations.upcoming()
         return super().list(request, *args, **kwargs)
 
     @action(
@@ -70,7 +72,7 @@ class WebinarViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         try:
             registration = self.get_object().registrations.get(user_id=request.user.id)
             registration.delete()
-            self.queryset = request.user.webinar_registrations.upcoming()
+            self.queryset = request.user.webinarregistration_registrations.upcoming()
             return super().list(request, *args, **kwargs)
         except WebinarRegistration.DoesNotExist:
             raise PermissionDenied({"message": ["You are not registered for this webinar."]})
