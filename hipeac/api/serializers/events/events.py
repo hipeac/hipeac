@@ -135,6 +135,7 @@ class EventSerializer(LinksMixin, EventNestedSerializer):
     venues = VenueSerializer(many=True, read_only=True)
     is_early = serializers.BooleanField(read_only=True)
     is_open_for_registration = serializers.BooleanField(read_only=True)
+    allows_payments = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Event

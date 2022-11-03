@@ -25,7 +25,7 @@
             </template>
             <span>You have registered for multiple simultaneous sessions, please check your selection so that session organizers can have a better idea of the number of attendees. Thank you!</span><br>
           </q-banner>
-          <q-card-section v-if="registration.fee > 0" class="q-ma-sm">
+          <q-card-section v-if="registration.fee > 0 && event.allows_payments" class="q-ma-sm">
             <q-btn v-if="registration.is_paid" outline type="a" :href="registration.payment_url" color="primary" label="View payment info"></q-btn>
             <span v-else>
               <q-btn v-if="!registration.invoice_requested" outline type="a" :href="registration.payment_url" color="primary" label="Proceed with payment"></q-btn>
