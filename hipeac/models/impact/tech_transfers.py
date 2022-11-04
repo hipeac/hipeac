@@ -86,7 +86,7 @@ class TechTransferApplication(models.Model):
         return self.title
 
     def get_absolute_url(self) -> str:
-        return reverse("tech_transfer_update", args=[self.id])
+        return reverse("techtransfer_update", args=[self.id])
 
     @property
     def awarded(self) -> int:
