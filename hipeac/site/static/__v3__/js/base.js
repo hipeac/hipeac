@@ -134,6 +134,7 @@ var Hipeac = {
       obj.end = getMoment(obj.end_at, tz);
       obj.duration = moment.duration(obj.end.diff(obj.start));
       obj.is_keynote = obj.type.value == 'Keynote';
+      obj.is_social_event = obj.type.value == 'Social Event';
       obj.has_ended = obj.end.isBefore(moment());
 
       obj.color = {

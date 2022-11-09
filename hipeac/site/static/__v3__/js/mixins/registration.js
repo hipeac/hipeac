@@ -15,6 +15,17 @@ var RegistrationMixin = {
   },
   computed: _.extend(
     Vuex.mapState('events', ['event', 'registration']), {
+    days: function () {
+      if (!this.event) return 0;
+      return _.size(this.program);
+    },
+    socialEvents: function () {
+      if (!this.event) return null;
+
+      return _.clone(this.event.sessions).filter(function (s) {
+        return s.is_social_event;
+      });
+    },
     program: function () {
       if (!this.event) return null;
 
@@ -26,8 +37,9 @@ var RegistrationMixin = {
         return obj.iso_day;
       }));
       var sessionsMap = _.groupBy(sessions, 'iso_day');
-      var program = days.map(function (day) {
+      var program = days.map(function (day, idx) {
         return {
+          idx: idx,
           day: day,
           date: moment(day),
           sessions: sessionsMap[day]
@@ -42,6 +54,33 @@ var RegistrationMixin = {
         return _.contains(registration.sessions, obj.id)
       }), 'start_at');
       return times.length > _.uniq(times).length;
+    },
+    countersets: function () {
+      if (!this.program) return {};
+
+      var d = {
+        'socialEvents': []
+      };
+      _.each(this.program, function (obj) {
+        d[obj.day] = _.pluck(obj.sessions.filter(function (obj) {
+          return obj.is_social_event == false;
+        }), 'id');
+        d['socialEvents'] = d['socialEvents'].concat(_.pluck(obj.sessions.filter(function (obj) {
+          return obj.is_social_event == true;
+        }), 'id'));
+      });
+
+      return d;
+    },
+    counters: function () {
+      var c = _.clone(this.countersets);
+      var reg = this.registration;
+
+      return _.mapObject(c, function(ids) {
+        return (reg)
+          ? _.intersection(ids, reg.sessions).length
+          : 0;
+      });
     }
   }),
   methods: {

@@ -165,6 +165,10 @@ html, body {
   overflow-x: hidden;
   padding: 24px;
 
+  &.q-pa-sm {
+    padding: 8px;
+  }
+
   .q-card__section,
   .q-card__actions {
     padding-left: 0;

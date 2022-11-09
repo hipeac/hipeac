@@ -10,7 +10,6 @@
 {% block submenu %}
   <q-toolbar class="container">
     <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ conference }}</q-toolbar-title>
-    <q-space v-show="$q.screen.gt.sm"></q-space>
     <hipeac-submenu-tabs v-if="event" :menu="menu" :checks="{'not_ready': !event.is_ready, 'ready': event.is_ready, 'registration': !!registration, 'not_active': !event.is_active, }" :hashtag="event.hashtag"></hipeac-submenu-tabs>
   </q-toolbar>
 {% endblock %}
@@ -176,8 +175,15 @@
       template: '#v-registration',
       data: function () {
         return {
+          step: 1,
           poster_limit: 1
         };
+      },
+      methods: {
+        scrollToStep: function (step) {
+          this.step = step;
+          window.scrollTo(0, 0);
+        }
       }
     };
 

@@ -17,7 +17,7 @@
             <span>Last updated: {{ registration.updated_at }}</span>
             <q-separator class="q-my-md"></q-separator>
             <strong>Base fee: <span v-if="registration.base_fee == 0">FREE</span><span v-else>EUR {{ registration.base_fee }}</span> ({{ registration.fee_type }})</strong><br>
-            <strong>Extras: EUR {{ registration.extra_fees }}</strong>
+            <strong v-if="registration.extra_fees > 0">Extras: EUR {{ registration.extra_fees }}</strong>
           </p>
           <q-banner v-if="conflicts" class="bg-yellow-1 q-py-md q-px-lg q-mb-lg">
             <template v-slot:avatar>
@@ -41,68 +41,122 @@
         </q-card>
       </div>
       <div class="col-12 col-md-8">
-        <q-card class="hipeac__card full-height">
-          <q-card-section class="q-pt-none">
-            <form-section-title>Registration fee</form-section-title>
-            <p class="text-overline q-mb-none">Choose your registration fee.</p>
-            <q-list dense class="q-mt-md">
-              <q-item tag="label" class="q-py-xs">
-                <q-item-section avatar top>
-                  <q-radio v-model="obj.fee_type" val="regular"></q-radio>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="q-mb-xs">
-                    <span>Regular </span>
-                    <span v-if="event.is_early">(early: <strong>EUR {{ event.early_fee }}</strong>, until {{ event.registration_early_deadline }})</span>
-                    <span v-else>(late: EUR {{ event.fee }})</span>
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item tag="label" class="q-py-xs">
-                <q-item-section avatar top>
-                  <q-radio v-model="obj.fee_type" val="student"></q-radio>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="q-mb-xs">
-                    <span>Student </span>
-                    <span v-if="event.is_early">(early: <strong>EUR {{ event.early_student_fee }}</strong>, until {{ event.registration_early_deadline }})</span>
-                    <span v-else>(late: EUR {{ event.student_fee }})</span>
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
+        <q-card v-if="program" class="hipeac__card full-height q-pa-sm">
 
-          <q-card-section>
-            <form-section-title>Sessions</form-section-title>
-            <p class="text-overline q-mb-none">Choose the sessions you want to attend.</p>
-          </q-card-section>
-          <q-card-section v-for="day in program" v-show="day.sessions.length">
-            <display-5 class="q-pl-lg">{{ day.date.format('dddd, MMM D') }}</display-5>
-            <q-separator class="q-my-sm"></q-separator>
-            <q-list>
-              <q-item v-for="session in day.sessions" tag="label" class="q-py-md">
-                <q-item-section avatar top>
-                  <q-checkbox v-model="obj.sessions" :val="session.id"></q-checkbox>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="q-mb-xs">{{ session.title }}</q-item-label>
-                  <q-item-label caption>
-                    <span class="q-mr-md">
-                      <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
-                      <span>{{ session.type.value }}</span>
-                    </span>
-                    <span>
-                      <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
-                      <span>{{ session.start.format('H:mm') }} - {{ session.end.format('H:mm') }}</span>
-                    </span>
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
+          <q-stepper v-model="step" :keep-alive="true" vertical color="primary" done-color="grey-8" flat :header-nav="registration != null" class="text-body2 q-py-sm">
 
-          <q-btn unelevated color="primary" @click="createOrUpdate" :label="(registration) ? 'Update registration' : 'Create registration'" class="q-my-lg" :disabled="!obj.fee_type || !obj.sessions.length" />
+            <q-step :name="1" icon="payments" title="Select registration fee" :done="obj.fee_type != null">
+              <p>Students might be required to present some kind of identification.
+              <strong v-if="event.is_early">Early registration fees will be available until {{ event.registration_early_deadline }}.</strong></p>
+              <q-list dense class="q-mt-md">
+                <q-item tag="label" class="q-pa-sm">
+                  <q-item-section avatar top>
+                    <q-radio v-model="obj.fee_type" val="regular" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="q-mb-xs">
+                      <span>Regular </span>
+                      <span v-if="event.is_early">(early: EUR {{ event.early_fee }})</span>
+                      <span v-else>(late: EUR {{ event.fee }})</span>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-item tag="label" class="q-pa-sm">
+                  <q-item-section avatar top>
+                    <q-radio v-model="obj.fee_type" val="student" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="q-mb-xs">
+                      <span>Student </span>
+                      <span v-if="event.is_early">(early: EUR {{ event.early_student_fee }})</span>
+                      <span v-else>(late: EUR {{ event.student_fee }})</span>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <q-stepper-navigation>
+                <q-btn v-if="registration" unelevated @click="createOrUpdate()" color="primary" label="Update" class="q-mr-sm"/>
+                <q-btn flat @click="step = 2" color="primary" label="Continue" :disabled="!obj.fee_type" />
+              </q-stepper-navigation>
+            </q-step>
+
+            <q-step :name="2" icon="travel_explore" title="Request invitation letter" caption="Optional" :done="obj.visa_requested">
+              <p>If you need an invitation letter for visa request purposes, you can indicate it here. You will receive an email from us with aditional information about the next steps required.</p>
+              <q-option-group inline v-model="obj.visa_requested" type="radio" :options="[{label: 'Yes, I need an invitation letter', value: true}, {label: 'No, I can join the conference without a visa', value: false}]" class="q-my-sm"></q-option-group>
+              <q-stepper-navigation>
+                <q-btn v-if="registration" unelevated @click="createOrUpdate()" color="primary" label="Update" class="q-mr-sm" />
+                <q-btn flat @click="step = 3" color="primary" label="Continue" :disabled="obj.visa_requested == null" />
+                <q-btn flat @click="step = 1" color="grey-8" label="Back" class="q-ml-sm" />
+              </q-stepper-navigation>
+            </q-step>
+
+            <q-step v-for="day in program" :name="3 + day.idx" icon="category" :title="'Choose sessions on ' + day.date.format('dddd, MMM D')" :done="counters[day.day] > 0">
+              <q-list>
+                <q-item v-for="session in day.sessions" tag="label" class="q-pa-sm" v-show="!session.is_social_event">
+                  <q-item-section avatar top>
+                    <q-checkbox v-model="obj.sessions" :val="session.id" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="q-mb-xs">{{ session.title }}</q-item-label>
+                    <q-item-label caption>
+                      <span class="q-mr-md">
+                        <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
+                        <span>{{ session.type.value }}</span>
+                      </span>
+                      <span>
+                        <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
+                        <span>{{ session.start.format('H:mm') }} - {{ session.end.format('H:mm') }}</span>
+                      </span>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <q-stepper-navigation>
+                <q-btn v-if="registration" unelevated @click="createOrUpdate()" color="primary" label="Update" class="q-mr-sm" />
+                <q-btn flat @click="scrollToStep(4 + day.idx)" color="primary" label="Continue" />
+                <q-btn flat @click="scrollToStep(2 + day.idx)" color="grey-8" label="Back" class="q-ml-sm" />
+              </q-stepper-navigation>
+            </q-step>
+
+            <q-step :name="3 + days" icon="groups_2" title="Select social events you will attend" caption="Optional"  :done="counters['socialEvents'] > 0">
+              <p>Make sure you choose a social event if you want to attend one. We might have limited places for some of the social events, so if you register late you can end up in the waiting list.</p>
+              <q-list>
+                <q-item v-for="session in socialEvents" tag="label" class="q-pa-sm">
+                  <q-item-section avatar top>
+                    <q-checkbox v-model="obj.sessions" :val="session.id" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="q-mb-xs">{{ session.title }}</q-item-label>
+                    <q-item-label caption>
+                      <span class="q-mr-md">
+                        <q-icon size="xs" name="today" class="q-mr-xs"></q-icon>
+                        <span>{{ session.start.format('dddd, MMM D, H:mm') }} - {{ session.end.format('H:mm') }}</span>
+                      </span>
+                      <span>
+                        <q-icon size="xs" name="chair_alt" class="q-mr-xs"></q-icon>
+                        <span>Places: <span v-if="session.max_attendees == 0">unlimited</span><span>{{ session.max_attendees }}</span></span>
+                      </span>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+
+              <q-stepper-navigation>
+                <q-btn v-if="registration" unelevated @click="createOrUpdate()" color="primary" label="Update" class="q-mr-sm" />
+                <q-btn flat @click="step = 4 + days" color="primary" label="Continue" />
+                <q-btn flat @click="step = 2 + days" color="grey-8" label="Back" class="q-ml-sm" />
+              </q-stepper-navigation>
+            </q-step>
+
+            <q-step :name="4 + days" icon="how_to_reg" :title="(registration) ? 'Thank you for registering!' : 'Register for the conference'" :done="registration != null">
+              <span v-if="!obj.sessions.length">Please choose at least one session.</span>
+              <q-stepper-navigation>
+                <q-btn unelevated color="primary" @click="createOrUpdate" :label="(registration) ? 'Update registration' : 'Create registration'" :disabled="!obj.fee_type || !obj.sessions.length" />
+                <q-btn flat @click="step = 3 + days" color="grey-8" label="Back" class="q-ml-sm" />
+              </q-stepper-navigation>
+            </q-step>
+
+          </q-stepper>
         </q-card>
       </div>
     </div>

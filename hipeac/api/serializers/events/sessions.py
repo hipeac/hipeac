@@ -23,7 +23,6 @@ class SessionNestedSerializer(WritableNestedModelSerializer):
             "summary",
             "program",
             "organizers",
-            "max_attendees",
             "extra_attendees_fee",
             "created_at",
             "updated_at",

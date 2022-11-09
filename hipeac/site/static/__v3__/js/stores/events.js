@@ -55,7 +55,7 @@ var EventModule = {
       });
     },
     updateRegistration: function (state, payload) {
-      state.registration = Object.freeze(Hipeac.map.registration(payload));
+      state.registration = Hipeac.map.registration(payload);
     }
   }
 };
