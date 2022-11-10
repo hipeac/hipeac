@@ -5,12 +5,7 @@ var RegistrationMixin = {
       authenticated: +(document.querySelector('html').dataset.user) > 0,
       create_url: document.querySelector('#vars').dataset.registrationUrl,
       now: moment(),
-      obj: null,
-      poster_limit: 3,
-      poster_fields: [
-        {"id": "type", "type": "select", "label": "Type", "options": ["project", "industry", "student"]},
-        {"id": "title", "type": "text", "label": "Poster title"}
-      ]
+      obj: null
     };
   },
   computed: _.extend(
@@ -19,8 +14,15 @@ var RegistrationMixin = {
       if (!this.event) return 0;
       return _.size(this.program);
     },
+    posterSessions: function () {
+      if (!this.event) return [];
+
+      return _.clone(this.event.sessions).filter(function (s) {
+        return s.type.value == 'Poster Session';
+      });
+    },
     socialEvents: function () {
-      if (!this.event) return null;
+      if (!this.event) return [];
 
       return _.clone(this.event.sessions).filter(function (s) {
         return s.is_social_event;
@@ -110,6 +112,7 @@ var RegistrationMixin = {
       } else {
         this.obj = _.clone({
           event: this.event.id,
+          posters: [],
           sessions: []
         });
       }

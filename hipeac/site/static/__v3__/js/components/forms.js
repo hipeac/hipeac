@@ -80,6 +80,77 @@ var HipeacFormComponents = {
     }
   },
 
+  'hipeac-conference-poster-list': {
+    emits: ['update:modelValue'],
+    data: function () {
+      return {
+        stack: []
+      };
+    },
+    props: {
+      addText: {
+        type: String,
+        default: 'Add poster'
+      },
+      modelValue: {
+        type: Array
+      },
+      sessions: {
+        type: Array,
+        required: true
+      }
+    },
+    template: `
+      <div>
+        <div v-for="el in stack" class="row q-col-gutter-xs q-mb-sm items-center">
+          <q-input class="col-8" filled dense v-model="el['title']" label="Poster title"></q-input>
+          <q-select class="col-3" filled dense v-model="el['session']" label="Session" :options="options" emit-value map-options>
+            <template v-slot:option="scope">
+              <q-item v-bind="scope.itemProps">
+                <q-item-section>
+                  <q-item-label>{{ scope.opt.label }}</q-item-label>
+                  <q-item-label caption>{{ scope.opt.title }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+          <div class="col-1 text-center">
+            <hipeac-remove-icon @click.prevent="removeFromStack(idx)" />
+          </div>
+        </div>
+        <q-btn outline @click="addToStack" size="sm" color="green" icon="add" :label="addText"></q-btn>
+      </div>
+    `,
+    computed: {
+      options: function () {
+        return this.sessions.map(function (obj) {
+          return {
+            label: obj.start.format('dddd'),
+            title: obj.title,
+            value: obj.id,
+          }
+        });
+      }
+    },
+    methods: {
+      addToStack: function () {
+        this.stack.push({
+          'title': '',
+          'authors': '',
+          'session': null,
+        });
+        this.$emit('update:modelValue', this.stack);
+      },
+      removeFromStack: function (idx) {
+        this.stack.splice(idx, 1);
+        this.$emit('update:modelValue', this.stack);
+      }
+    },
+    created: function () {
+      this.stack = this.modelValue;
+    }
+  },
+
   'hipeac-text-list': {
     emits: ['update:modelValue'],
     data: function () {

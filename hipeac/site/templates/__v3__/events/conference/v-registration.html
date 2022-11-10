@@ -118,7 +118,7 @@
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="3 + days" icon="groups_2" title="Select social events you will attend" caption="Optional"  :done="counters['socialEvents'] > 0">
+            <q-step :name="3 + days" icon="groups_2" title="Select social events you will attend" caption="Optional" :done="counters['socialEvents'] > 0">
               <p>Make sure you choose a social event if you want to attend one. We might have limited places for some of the social events, so if you register late you can end up in the waiting list.</p>
               <q-list>
                 <q-item v-for="session in socialEvents" tag="label" class="q-pa-sm">
@@ -140,7 +140,6 @@
                   </q-item-section>
                 </q-item>
               </q-list>
-
               <q-stepper-navigation>
                 <q-btn v-if="registration" unelevated @click="createOrUpdate()" color="primary" label="Update" class="q-mr-sm" />
                 <q-btn flat @click="step = 4 + days" color="primary" label="Continue" />
@@ -148,11 +147,21 @@
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="4 + days" icon="how_to_reg" :title="(registration) ? 'Thank you for registering!' : 'Register for the conference'" :done="registration != null">
+            <q-step :name="4 + days" icon="co_present" title="Indicate if you will present a poster" caption="Optional" :done="obj.posters && obj.posters.length > 0">
+              <p>Conference attendees are invited to present a poster at any of the {{ posterSessions.length }} sessions planned during the conference. Posters will be presented in an A0 (portrait).</p>
+              <hipeac-conference-poster-list v-model="obj.posters" :sessions="posterSessions" />
+              <q-stepper-navigation>
+                <q-btn v-if="registration" unelevated @click="createOrUpdate()" color="primary" label="Update" class="q-mr-sm" />
+                <q-btn flat @click="step = 5 + days" color="primary" label="Continue" />
+                <q-btn flat @click="step = 3 + days" color="grey-8" label="Back" class="q-ml-sm" />
+              </q-stepper-navigation>
+            </q-step>
+
+            <q-step :name="5 + days" icon="how_to_reg" :title="(registration) ? 'Thank you for registering!' : 'Register for the conference'" :done="registration != null">
               <span v-if="!obj.sessions.length">Please choose at least one session.</span>
               <q-stepper-navigation>
                 <q-btn unelevated color="primary" @click="createOrUpdate" :label="(registration) ? 'Update registration' : 'Create registration'" :disabled="!obj.fee_type || !obj.sessions.length" />
-                <q-btn flat @click="step = 3 + days" color="grey-8" label="Back" class="q-ml-sm" />
+                <q-btn flat @click="step = 4 + days" color="grey-8" label="Back" class="q-ml-sm" />
               </q-stepper-navigation>
             </q-step>
 

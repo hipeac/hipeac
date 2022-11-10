@@ -1,7 +1,7 @@
 from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
-from hipeac.models import Registration, ConferenceRegistration, CswRegistration, Session
+from hipeac.models import Registration, Session
 from ..users import UserPublicMiniSerializer
 
 
@@ -24,17 +24,3 @@ class RegistrationSerializer(WritableNestedModelSerializer):
             "invoice_sent",
             "visa_sent",
         )
-
-
-class ConferenceRegistrationSerializer(RegistrationSerializer):
-    self = serializers.HyperlinkedIdentityField(view_name="v1:auth-registration-conference-detail", read_only=True)
-
-    class Meta(RegistrationSerializer.Meta):
-        model = ConferenceRegistration
-
-
-class CswRegistrationSerializer(RegistrationSerializer):
-    self = serializers.HyperlinkedIdentityField(view_name="v1:auth-registration-csw-detail", read_only=True)
-
-    class Meta(RegistrationSerializer.Meta):
-        model = CswRegistration
