@@ -1,10 +1,12 @@
 import lxml.html
 import requests
 
+from django.contrib.contenttypes.models import ContentType
 from requests.exceptions import RequestException
 from lxml.cssselect import CSSSelector
 
 from hipeac.models import PublicationConference, Publication, Profile, Link
+from hipeac.models.users import RelatedUser
 
 
 def parse_element(element, year: int):
@@ -50,7 +52,7 @@ def process_conference_publications(conference: PublicationConference):
             entry = Publication.objects.get(dblp_key=publication["dblp_key"])
         except Publication.DoesNotExist:
             entry = Publication(**publication)
-            entry.save()
+
         entry.conference = conference
         entry.save()
 
@@ -84,13 +86,15 @@ def process_user_publications(profile: Profile):
             publications[element.get("id")] = parse_element(element, year)
 
     # populate database
+    ct = ContentType.objects.get_for_model(Publication)
+
     for key, publication in publications.items():
         try:
             entry = Publication.objects.get(dblp_key=publication["dblp_key"])
         except Publication.DoesNotExist:
             entry = Publication(**publication)
             entry.save()
-        entry.authors.add(profile)
-        entry.save()
+
+        _, _ = RelatedUser.objects.get_or_create(content_type=ct, object_id=entry.id, user=profile.user)
 
     return True

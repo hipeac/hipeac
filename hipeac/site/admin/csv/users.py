@@ -4,7 +4,7 @@ from datetime import date
 from django.db import connection
 from django.http import HttpResponse
 
-from hipeac.models import Profile
+from hipeac.models import Member, Membership
 
 
 def csv_users_activity(queryset, filename):
@@ -43,13 +43,13 @@ def csv_users_activity(queryset, filename):
 
     writer.writerow(columns)
 
-    for user in queryset.select_related("profile"):
+    for user in queryset.select_related("profile", "member"):
         affiliates = 0
 
-        if not user.profile.is_member():
+        if user.member.type != Membership.MEMBER:
             continue
         else:
-            affiliates = Profile.objects.filter(advisor_id=user.id).count()
+            affiliates = Member.objects.filter(advisor_id=user.id).count()
 
         # Initialize objects
         organized_activities = {}
@@ -77,11 +77,11 @@ def csv_users_activity(queryset, filename):
         with connection.cursor() as cursor:
             query = """
                 SELECT e.type, EXTRACT(year FROM e.start_date), COUNT(*)
-                FROM hipeac_registration AS r
+                FROM hipeac_event_registration AS r
                 INNER JOIN hipeac_event AS e ON r.event_id = e.id
                 WHERE r.user_id IN (
                     SELECT user_id
-                    FROM hipeac_profile
+                    FROM hipeac_membership_member
                     WHERE user_id = %s OR advisor_id = %s
                 ) AND e.start_date BETWEEN '%s-01-01' AND '%s-12-31'
                 GROUP BY e.type, EXTRACT(year FROM e.start_date)
@@ -102,10 +102,14 @@ def csv_users_activity(queryset, filename):
             query = """
                 SELECT p.year, COUNT(*)
                 FROM hipeac_publication AS p
-                INNER JOIN hipeac_publication_authors AS a ON a.publication_id = p.id
-                WHERE a.profile_id IN (
+                INNER JOIN (
+                    SELECT *
+                    FROM hipeac_rel_user
+                    WHERE content_type_id = 50
+                ) AS a ON p.id = a.object_id
+                WHERE a.user_id IN (
                     SELECT user_id
-                    FROM hipeac_profile
+                    FROM hipeac_membership_member
                     WHERE user_id = %s OR advisor_id = %s
                 ) AND p.year BETWEEN %s AND %s
                 GROUP BY p.year
@@ -119,10 +123,14 @@ def csv_users_activity(queryset, filename):
             query = """
                 SELECT p.year, COUNT(*)
                 FROM hipeac_publication AS p
-                INNER JOIN hipeac_publication_authors AS a ON a.publication_id = p.id
-                WHERE a.profile_id IN (
+                INNER JOIN (
+                    SELECT *
+                    FROM hipeac_rel_user
+                    WHERE content_type_id = 50
+                ) AS a ON p.id = a.object_id
+                WHERE a.user_id IN (
                     SELECT user_id
-                    FROM hipeac_profile
+                    FROM hipeac_membership_member
                     WHERE user_id = %s OR advisor_id = %s
                 ) AND p.conference_id IS NOT NULL AND p.year BETWEEN %s AND %s
                 GROUP BY p.year
@@ -137,15 +145,15 @@ def csv_users_activity(queryset, filename):
         with connection.cursor() as cursor:
             query = """
                 SELECT EXTRACT(year FROM s.start_at), COUNT(*)
-                FROM hipeac_session AS s
+                FROM hipeac_event_session AS s
                 INNER JOIN (
                     SELECT *
-                    FROM hipeac_permission
+                    FROM hipeac_rel_permission
                     WHERE content_type_id = 41
                 ) AS p ON s.id = p.object_id
                 WHERE p.user_id IN (
                     SELECT user_id
-                    FROM hipeac_profile
+                    FROM hipeac_membership_member
                     WHERE user_id = %s OR advisor_id = %s
                 ) AND s.start_at BETWEEN '%s-01-01 00:00' AND '%s-12-31 23:59'
                 GROUP BY EXTRACT(year FROM s.start_at)
@@ -163,7 +171,7 @@ def csv_users_activity(queryset, filename):
                 FROM hipeac_job AS j
                 WHERE j.created_by_id IN (
                     SELECT user_id
-                    FROM hipeac_profile
+                    FROM hipeac_membership_member
                     WHERE user_id = %s OR advisor_id = %s
                 ) AND j.created_at BETWEEN '%s-01-01' AND '%s-12-31'
                 GROUP BY EXTRACT(year FROM j.created_at)
@@ -178,8 +186,12 @@ def csv_users_activity(queryset, filename):
         with connection.cursor() as cursor:
             query = """
                 SELECT EXTRACT(year FROM m.publication_date), COUNT(*)
-                FROM hipeac_magazine_users AS rel
-                INNER JOIN hipeac_magazine AS m ON rel.magazine_id = m.id
+                FROM hipeac_comm_magazine AS m
+                INNER JOIN (
+                    SELECT *
+                    FROM hipeac_rel_user
+                    WHERE content_type_id = 38
+                ) AS rel ON m.id = rel.object_id
                 WHERE rel.user_id = %s
                     AND m.publication_date BETWEEN '%s-01-01' AND '%s-12-31'
                 GROUP BY EXTRACT(year FROM m.publication_date)
@@ -196,8 +208,8 @@ def csv_users_activity(queryset, filename):
         user_data = [
             user.id,
             user.profile.name,
-            user.profile.membership_date,
-            user.profile.membership_tags,
+            user.member.date,
+            user.member.keywords,
             user.email,
             user.profile.institution,
             institution_type,

@@ -78,7 +78,7 @@ class MembershipIndustryNotificator(Notificator):
                 INNER JOIN hipeac_profile AS p ON u.id = p.user_id
                 INNER JOIN hipeac_institution AS i ON p.institution_id = i.id
                 WHERE i.type IN ('industry', 'sme')
-                    AND p.membership_tags NOT LIKE '%member%'
+                    AND u.id NOT IN (SELECT user_id FROM hipeac_membership_member)
             """
             cursor.execute(query)
 
@@ -123,14 +123,24 @@ class MembershipResearcherNotificator(Notificator):
                 INNER JOIN hipeac_profile AS p ON u.id = p.user_id
                 INNER JOIN hipeac_institution AS i ON p.institution_id = i.id
                 INNER JOIN (
-                    SELECT profile_id, count(id) AS publications
-                    FROM hipeac_publication_authors
-                    GROUP BY profile_id
-                ) AS pub ON u.id = pub.profile_id
+                    SELECT user_id, count(id) AS publications
+                    FROM hipeac_rel_user
+                    WHERE user_id NOT IN (SELECT user_id FROM hipeac_membership_member)
+                        AND content_type_id = 50
+                    GROUP BY user_id
+                ) AS pub ON u.id = pub.user_id
+                INNER JOIN (
+                    SELECT rel.user_id, count(rel.id) AS publications
+                    FROM hipeac_rel_user AS rel
+                    INNER JOIN hipeac_publication AS p ON rel.object_id = p.id
+                    WHERE rel.user_id NOT IN (SELECT user_id FROM hipeac_membership_member)
+                    	AND content_type_id = 50 AND p.conference_id IS NOT NULL
+                    GROUP BY user_id
+                ) AS awards ON u.id = pub.user_id
                 WHERE i.type IN ('university', 'lab', 'innovation')
-                    AND p.membership_tags NOT LIKE '%member%'
-                    AND p.membership_tags NOT LIKE '%affiliate%'
-                    AND pub.publications >= 50
+                    AND u.id NOT IN (SELECT user_id FROM hipeac_membership_member)
+                    AND (pub.publications >= 50 OR awards.publications >= 1)
+                GROUP BY u.id;
             """
             cursor.execute(query)
 

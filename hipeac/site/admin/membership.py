@@ -1,15 +1,21 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.forms import ModelForm
 from django.urls import reverse
 from django.utils.html import format_html
 
 from hipeac.functions import send_task
 from hipeac.models.membership import Member, Membership, MembershipRequest
+from .csv.users import csv_users_activity
 from .files import FilesInline
 
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
+    actions = (
+        "export_csv_activity",
+        "extract_publications_from_dblp",
+    )
     date_hierarchy = "date"
     list_display = ("id", "_name", "date", "type", "gender", "institution")
     list_filter = ("type", "gender")
@@ -28,6 +34,22 @@ class MemberAdmin(admin.ModelAdmin):
         return format_html(f'<a href="{url}{obj.user_id}/" target="admin_user" class="text-nowrap">{obj.name}</a>')
 
     _name.short_description = "Name"
+
+    # custom actions
+
+    @admin.action(description="[CSV] Export activity report for selected users")
+    def export_csv_activity(self, request, queryset):
+        qs = get_user_model().objects.filter(id__in=queryset.values_list("user_id", flat=True))
+        return csv_users_activity(qs, "hipeac-users--activity.csv")
+
+    @admin.action(description="[DATA] Extract publications from DBLP")
+    def extract_publications_from_dblp(self, request, queryset):
+        for member in queryset:
+            send_task("hipeac.tasks.dblp.extract_publications_for_user", (member.user_id,))
+        admin.ModelAdmin.message_user(
+            self, request, "Publication extraction has started, " "results from DBLP will be available soon."
+        )
+        return True
 
 
 class MembershipInline(admin.TabularInline):

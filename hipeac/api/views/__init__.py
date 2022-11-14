@@ -7,6 +7,7 @@ from .communication import *
 from .events import *
 from .events_redux import *
 from .files import *
+from .impact import *
 from .membership import *
 from .network import *
 from .recruitment import *

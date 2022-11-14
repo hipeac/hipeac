@@ -6,8 +6,6 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 from hipeac.functions import send_task
 from hipeac.models import Profile, RelatedUser
 from hipeac.tools.csv import ModelCsvWriter
-from .csv.users import csv_users_activity
-from .links import LinksInline
 from .membership import MembershipInline
 
 
@@ -55,7 +53,6 @@ class UserAdmin(AuthUserAdmin):
     actions = (
         "send_profile_update_reminder",
         "export_users_csv",
-        "export_csv_activity",
         "extract_publications_from_dblp",
     )
     list_display = ("id", "username", "name", "institution", "email")
@@ -82,10 +79,6 @@ class UserAdmin(AuthUserAdmin):
     def export_users_csv(self, request, queryset):
         ids = queryset.values_list("id", flat=True)
         return ProfileCsvWriter(filename="hipeac-users.csv", queryset=Profile.objects.filter(user_id__in=ids)).response
-
-    @admin.action(description="[CSV] Export activity report for selected users")
-    def export_csv_activity(self, request, queryset):
-        return csv_users_activity(queryset, "hipeac-users--activity.csv")
 
     @admin.action(description="[DATA] Extract publications from DBLP")
     def extract_publications_from_dblp(self, request, queryset):

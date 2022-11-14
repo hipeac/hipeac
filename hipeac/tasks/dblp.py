@@ -17,12 +17,7 @@ def extract_publications_for_user(user_id):
     process_user_publications(profile)
 
 
-@periodic_task(run_every=crontab(day_of_week="sun", hour=3, minute=0))
+@periodic_task(run_every=crontab(day_of_week="mon", hour=12, minute=0))
 def check_member_publications():
-    for profile in (
-        Profile.objects.exclude(membership_tags__isnull=True)
-        .exclude(membership_tags__exact="")
-        .filter(membership_revocation_date__isnull=True)
-        .prefetch_related("links")
-    ):
+    for profile in Profile.objects.filter(user__member__revocation_date__isnull=True).prefetch_related("links"):
         process_user_publications(profile)

@@ -42,24 +42,12 @@ class PublicationQuerySet(models.QuerySet):
         date = datetime.date(year, 12, 31)
         return (
             self.filter(conference__isnull=False, conference__year=year, itemtype="ScholarlyArticle")
-            .prefetch_related("conference")
-            .order_by("-conference__year", "conference__acronym", "title")
-            .distinct()
-        )
-        return (
-            self.filter(conference__isnull=False, conference__year=year, itemtype="ScholarlyArticle")
             .filter(
+                Q(rel_users__user__memberships__type="member"),
+                Q(rel_users__user__memberships__date__lte=date),
                 (
-                    Q(rel_users__user__profile__membership_tags__contains="member")
-                    & ~Q(rel_users__user__profile__membership_tags__contains="non-eu")
-                ),
-                (
-                    Q(rel_users__user__profile__membership_date__lte=date)
-                    | Q(rel_users__user__profile__membership_date__isnull=True)
-                ),
-                (
-                    Q(rel_users__user__profile__membership_revocation_date__gt=date)
-                    | Q(rel_users__user__profile__membership_revocation_date__isnull=True)
+                    Q(rel_users__user__memberships__revocation_date__gt=date)
+                    | Q(rel_users__user__memberships__revocation_date__isnull=True)
                 ),
             )
             .prefetch_related("conference")
