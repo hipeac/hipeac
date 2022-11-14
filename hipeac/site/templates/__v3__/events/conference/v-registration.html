@@ -158,7 +158,8 @@
             </q-step>
 
             <q-step :name="5 + days" icon="how_to_reg" :title="(registration) ? 'Thank you for registering!' : 'Register for the conference'" :done="registration != null">
-              <span v-if="!obj.sessions.length">Please choose at least one session.</span>
+              <p>Photographs will be taken and videos recorded at HiPEAC {{ event.year }} for publication in HiPEAC communications including the HiPEAC website, HiPEAC magazine and social media channels. By attending the event, you agree to HiPEAC's use of photographs and videos.</p>
+              <strong v-if="!obj.sessions.length">Please choose at least one session.</strong>
               <q-stepper-navigation>
                 <q-btn unelevated color="primary" @click="createOrUpdate" :label="(registration) ? 'Update registration' : 'Create registration'" :disabled="!obj.fee_type || !obj.sessions.length" />
                 <q-btn flat @click="step = 4 + days" color="grey-8" label="Back" class="q-ml-sm" />
