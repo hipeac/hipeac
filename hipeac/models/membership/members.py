@@ -11,7 +11,7 @@ from ..mixins import KeywordsMixin
 
 class Member(KeywordsMixin, models.Model):
     username = models.CharField(max_length=255, unique=True)
-    user = models.OneToOneField(get_user_model(), related_name="member", primary_key=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(get_user_model(), related_name="member", primary_key=True, on_delete=models.DO_NOTHING)
     email = models.EmailField()
     name = models.CharField(max_length=255)
     country = CountryField()

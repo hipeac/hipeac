@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
@@ -17,6 +17,9 @@ from hashlib import md5
 from hipeac.functions import get_images_path, send_task
 from .metadata import Metadata
 from .mixins import ApplicationAreasMixin, ImageMixin, LinksMixin, ProjectsMixin, TopicsMixin
+
+
+User = get_user_model()
 
 
 def validate_membership_tags(value: str):
@@ -46,7 +49,7 @@ class RelatedUser(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     position = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
@@ -68,7 +71,7 @@ class Profile(ApplicationAreasMixin, ImageMixin, LinksMixin, ProjectsMixin, Topi
     Extends Django User model with extra profile fields.
     """
 
-    user = models.OneToOneField(get_user_model(), related_name="profile", primary_key=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name="profile", primary_key=True, on_delete=models.CASCADE)
     country = CountryField(db_index=True)
     gender = models.ForeignKey(
         Metadata,
@@ -132,7 +135,7 @@ class Profile(ApplicationAreasMixin, ImageMixin, LinksMixin, ProjectsMixin, Topi
         return reverse("user", args=[self.username])
 
     def is_member(self) -> bool:
-        return self.membership == "member"
+        return getattr(self, "member", None) is not None
 
     @cached_property
     def is_steering_member(self) -> bool:
@@ -166,7 +169,12 @@ class Profile(ApplicationAreasMixin, ImageMixin, LinksMixin, ProjectsMixin, Topi
         return []
 
 
-@receiver(post_save, sender=get_user_model())
+@receiver(post_delete, sender=User)
+def post_delete_user(sender, instance, *args, **kwargs):
+    send_task("hipeac.tasks.db.refresh_member_view")
+
+
+@receiver(post_save, sender=User)
 def post_save_user(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance, updated_at=timezone.now())

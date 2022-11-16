@@ -18,11 +18,21 @@ class MemberAdmin(admin.ModelAdmin):
     )
     date_hierarchy = "date"
     list_display = ("id", "_name", "date", "type", "gender", "institution")
+    list_display_links = None
     list_filter = ("type", "gender")
     search_fields = ("name", "email", "institution__country")
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related("institution", "second_institution")
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
     # custom fields
 
