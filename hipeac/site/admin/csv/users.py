@@ -21,12 +21,14 @@ def csv_users_activity(queryset, filename):
     columns = [
         "id",
         "Full name",
+        "Gender",
         "Membership date",
         "Membership tags",
         "Email",
         "Affiliation",
-        "Institution type",
         "Institution country",
+        "Institution type",
+        "2nd institution type",
         "Affiliates",
     ]
 
@@ -203,17 +205,22 @@ def csv_users_activity(queryset, filename):
 
         # Make file
 
+        gender = user.profile.gender.value if user.profile.gender else "(not set)"
         institution_country = user.profile.institution.country.name if user.profile.institution else None
         institution_type = user.profile.institution.type if user.profile.institution else None
+        second_institution_type = user.profile.second_institution.type if user.profile.second_institution else None
+
         user_data = [
             user.id,
             user.profile.name,
+            gender,
             user.member.date,
             user.member.keywords,
             user.email,
             user.profile.institution,
-            institution_type,
             institution_country,
+            institution_type,
+            second_institution_type,
             affiliates,
         ]
 

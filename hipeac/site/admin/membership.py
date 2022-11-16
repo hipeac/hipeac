@@ -49,7 +49,11 @@ class MemberAdmin(admin.ModelAdmin):
 
     @admin.action(description="[CSV] Export activity report for selected users")
     def export_csv_activity(self, request, queryset):
-        qs = get_user_model().objects.filter(id__in=queryset.values_list("user_id", flat=True))
+        qs = (
+            get_user_model()
+            .objects.filter(id__in=queryset.values_list("user_id", flat=True))
+            .order_by("first_name", "last_name")
+        )
         return csv_users_activity(qs, "hipeac-users--activity.csv")
 
     @admin.action(description="[DATA] Extract publications from DBLP")
