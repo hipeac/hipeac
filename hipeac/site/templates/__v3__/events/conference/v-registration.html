@@ -46,8 +46,9 @@
           <q-stepper v-model="step" :keep-alive="true" vertical color="primary" done-color="grey-8" flat :header-nav="registration != null" class="text-body2 q-py-sm">
 
             <q-step :name="1" icon="payments" title="Select registration fee" :done="obj.fee_type != null">
-              <p>Students might be required to present some kind of identification.
-              <strong v-if="event.is_early">Early registration fees will be available until {{ event.registration_early_deadline }}.</strong></p>
+              <p>Students might be required to present some kind of identification.<br>
+              <strong v-if="event.is_early" class="text-primary">Early registration fees will be available until {{ event.registration_early_deadline }}.</strong>
+              <strong v-else class="text-red">Early registration fees were only available until {{ event.registration_early_deadline }}.</strong></p>
               <q-list dense class="q-mt-md">
                 <q-item tag="label" class="q-pa-sm">
                   <q-item-section avatar top>
@@ -55,9 +56,7 @@
                   </q-item-section>
                   <q-item-section>
                     <q-item-label class="q-mb-xs">
-                      <span>Regular </span>
-                      <span v-if="event.is_early">(early: EUR {{ event.early_fee }})</span>
-                      <span v-else>(late: EUR {{ event.fee }})</span>
+                      <span>Regular (early: EUR {{ event.early_fee }}; late: EUR {{ event.fee }})</span>
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -67,9 +66,7 @@
                   </q-item-section>
                   <q-item-section>
                     <q-item-label class="q-mb-xs">
-                      <span>Student </span>
-                      <span v-if="event.is_early">(early: EUR {{ event.early_student_fee }})</span>
-                      <span v-else>(late: EUR {{ event.student_fee }})</span>
+                      <span>Student (early: EUR {{ event.early_student_fee }}; late: EUR {{ event.student_fee }})</span>
                     </q-item-label>
                   </q-item-section>
                 </q-item>
