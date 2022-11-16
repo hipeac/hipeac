@@ -24,7 +24,7 @@ class RegistrationPendingNotificator(Notificator):
                     WHERE u.last_login > (CURRENT_DATE - INTERVAL '6 MONTH')
                     AND u.id NOT IN (
                         SELECT user_id
-                        FROM hipeac_registration
+                        FROM hipeac_event_registration
                         WHERE event_id = %s
                     )
                 """

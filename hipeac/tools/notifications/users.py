@@ -182,8 +182,11 @@ class ResearchTopicsPendingNotificator(Notificator):
             query = """
                 SELECT u.id AS user_id
                 FROM auth_user AS u
-                INNER JOIN hipeac_profile AS p ON u.id = p.user_id
-                WHERE p.topics IS NULL OR p.topics = ''
+                WHERE u.id NOT IN (
+                    SELECT object_id
+                    FROM hipeac_rel_topic
+                    WHERE content_type_id = 48
+                )
             """
             cursor.execute(query)
 
