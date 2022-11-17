@@ -9,21 +9,20 @@ from hipeac.models.recruitment import validate_institution
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .metadata import MetadataSerializer
-from .mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
+from .mixins import ApplicationAreasMixin, KeywordsMixin, LinksMixin, TopicsMixin
 
 
 class HipeacCountries(Countries):
     only = get_european_countries() + get_h2020_associated_countries()
 
 
-class JobBaseSerializer(ApplicationAreasMixin, TopicsMixin, WritableNestedModelSerializer):
+class JobBaseSerializer(ApplicationAreasMixin, KeywordsMixin, TopicsMixin, WritableNestedModelSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:job-detail", read_only=True)
     url = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
     href = serializers.CharField(source="get_absolute_url", read_only=True)
     country = CountryField(country_dict=True, countries=HipeacCountries())
     career_levels = MetadataSerializer(many=True)
     employment_type = MetadataSerializer()
-    keywords = serializers.JSONField(read_only=True)
     email = serializers.EmailField(required=False, allow_blank=True)
     add_to_euraxess = serializers.BooleanField(required=True)
 

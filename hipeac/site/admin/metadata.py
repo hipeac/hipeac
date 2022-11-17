@@ -6,11 +6,11 @@ from hipeac.models.metadata import Metadata, ApplicationArea, Topic
 
 @admin.register(Metadata)
 class MetadataAdmin(admin.ModelAdmin):
-    list_display = ("id", "type", "value", "position")
-    search_fields = ("value",)
-
-    def has_module_permission(self, request):
-        return False
+    list_display = ("id", "type", "value", "position", "keywords")
+    list_filter = ("type",)
+    search_fields = ("value", "keywords")
+    # form
+    fieldsets = ((None, {"fields": ("type", "value", "position", "keywords")}),)
 
 
 class ApplicationAreasInline(GenericTabularInline):

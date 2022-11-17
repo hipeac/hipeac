@@ -114,6 +114,14 @@ var Hipeac = {
     job: function (obj) {
       return obj;
     },
+    metadata: function (obj) {
+      obj._q = [
+        obj.value,
+        obj.keywords.join(' '),
+      ].join(' ').toLowerCase();
+
+      return obj;
+    },
     registration: function (obj) {
       obj.fee = obj.base_fee + obj.extra_fees + obj.manual_extra_fees;
       obj.is_paid = obj.saldo >= 0;
@@ -184,14 +192,19 @@ var Hipeac = {
     }
   },
   utils: {
-    filter: function (data, q) {
+    filter: function (data, q, skipN) {
       if (q == '') return data;
+      var skipN = skipN || false;
       var queries = q.toLowerCase().split(' ');
 
       return data.filter(function (obj) {
         var matches = 0;
         _.each(queries, function (q) {
-          if (obj._q.indexOf(q) !== -1) matches++;
+          if (skipN) {
+            if (obj._q.indexOf(q) !== -1 && obj._q.indexOf('-' + q) === -1) matches++;
+          } else {
+            if (obj._q.indexOf(q) !== -1) matches++;
+          }
         });
         return matches == queries.length;
       });
@@ -275,6 +288,15 @@ var Hipeac = {
           app.component(componentName, config);
         });
       });
+    },
+    registerStoreModules: function (app, moduleCollection) {
+      var modules = {};
+      _.each(moduleCollection, function (mod) {
+        modules = _.extend(modules, mod);
+      });
+      app.use(Vuex.createStore({
+        modules: modules
+      }));
     },
     sortText: function (a, b) {
       var a = a.toLowerCase();

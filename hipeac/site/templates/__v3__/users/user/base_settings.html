@@ -1,0 +1,76 @@
+{% extends '__v3__/layout.html' %}
+
+{% load account %}
+{% load compress %}
+{% load hipeac %}
+
+
+{% block subtitle %}{% user_display user %}{% endblock %}
+
+{% block submenu %}
+  <q-toolbar class="container">
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{% user_display user %}</q-toolbar-title>
+    <q-tabs v-if="$q.screen.gt.sm" stretch inline-label no-caps>
+      <q-route-tab href="{% url 'user' user.username %}" label="Public profile"></q-route-tab>
+      <q-route-tab href="{% url 'user_profile' %}" label="Settings" icon="settings" class="q-tab--active q-router-link--exact-active q-router-link--active"></q-route-tab>
+    </q-tabs>
+  </q-toolbar>
+{% endblock %}
+
+{% block page %}
+  <div class="row">
+    <div class="col-12 col-md-3">
+      <hipeac-side-menu :collapse="$q.screen.lt.md" class="q-mt-md">
+        <q-list dense>
+          <q-item-label header>Profile</q-item-label>
+          {% block profile_links %}
+            <q-item clickable tag="a" href="{% url 'user_profile' %}">
+              <q-item-section avatar><q-icon size="xs" name="account_circle"></q-icon></q-item-section>
+              <q-item-section>Personal data</q-item-section>
+            </q-item>
+            <q-item clickable tag="a" href="{% url 'user_profile' %}#/research/">
+              <q-item-section avatar><q-icon size="xs" name="developer_board"></q-icon></q-item-section>
+              <q-item-section>Research interests</q-item-section>
+            </q-item>
+            <!--<q-item-label header>Research</q-item-label>
+            <q-item clickable tag="a" href="{% url 'user_profile' %}#/research/" class="nav-link {% active request 'user_research_group' %}">
+              <i class="material-icons">group_work</i>Research group</q-item>
+            <q-item clickable tag="a" href="{% url 'user_profile' %}" class="nav-link {% active request 'user_research' %}">
+              <i class="material-icons">school</i>My PhD</q-item>-->
+          {% endblock %}
+          <q-item-label header>Account</q-item-label>
+          <q-item clickable tag="a" href="{% url 'account_email' %}" class="nav-link {% active request 'account_email' %}">
+            <q-item-section avatar><q-icon size="xs" name="email"></q-icon></q-item-section>
+            <q-item-section>Emails</q-item-section>
+          </q-item>
+          <q-item clickable tag="a" href="{% url 'socialaccount_connections' %}" class="nav-link {% active request 'socialaccount_connections' %}">
+            <q-item-section avatar><q-icon size="xs" name="whatshot"></q-icon></q-item-section>
+            <q-item-section>Social accounts</q-item-section>
+          </q-item>
+          <q-item clickable tag="a" href="{% url 'account_change_password' %}" class="nav-link {% active request 'account_change_password,account_set_password' %}">
+            <q-item-section avatar><q-icon size="xs" name="vpn_key"></q-icon></q-item-section>
+            <q-item-section>Password</q-item-section>
+          </q-item>
+          <q-item-label header>Documents</q-item-label>
+          <q-item clickable tag="a" href="{% url 'user_certificates' %}" class="nav-link {% active request 'user_certificates' %}">
+            <q-item-section avatar><q-icon size="xs" name="description"></q-icon></q-item-section>
+            <q-item-section>Attendance</q-item-section>
+          </q-item>
+        </q-list>
+      </hipeac-side-menu>
+    </div>
+    <div class="col-12 col-md-9">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js inline %}
+  <script>
+    new Vue({
+      el: '#vue'
+    });
+  </script>
+{% endcompress %}
+{% endblock %}

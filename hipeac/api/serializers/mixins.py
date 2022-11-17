@@ -1,12 +1,18 @@
 from rest_framework import serializers
 
+
+class KeywordsMixin(serializers.ModelSerializer):
+    keywords = serializers.JSONField(read_only=True)
+
+
 from .files import FileSerializer
 from .links import LinkSerializer
-from .metadata import MetadataSerializer
+from .metadata import ApplicationAreaSerializer, MetadataSerializer, TopicSerializer
 
 
 class ApplicationAreasMixin(serializers.ModelSerializer):
     application_areas = MetadataSerializer(many=True, read_only=True)
+    rel_application_areas = ApplicationAreaSerializer(many=True)
 
 
 class FilesMixin(serializers.ModelSerializer):
@@ -19,3 +25,4 @@ class LinksMixin(serializers.ModelSerializer):
 
 class TopicsMixin(serializers.ModelSerializer):
     topics = MetadataSerializer(many=True, read_only=True)
+    rel_topics = TopicSerializer(many=True)

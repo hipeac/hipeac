@@ -2,9 +2,10 @@ from rest_framework import serializers
 
 from hipeac.models import Webinar, WebinarRegistration
 from ..metadata import MetadataSerializer
+from ..mixins import KeywordsMixin
 
 
-class WebinarSerializer(serializers.ModelSerializer):
+class WebinarSerializer(KeywordsMixin, serializers.ModelSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:webinar-detail", read_only=True)
     rel_attendees = serializers.HyperlinkedIdentityField(view_name="v1:webinar-attendees")
     rel_register = serializers.HyperlinkedIdentityField(view_name="v1:webinar-register")
@@ -12,7 +13,6 @@ class WebinarSerializer(serializers.ModelSerializer):
     type = MetadataSerializer()
     application_areas = MetadataSerializer(many=True)
     topics = MetadataSerializer(many=True)
-    keywords = serializers.JSONField(read_only=True)
 
     class Meta:
         model = Webinar

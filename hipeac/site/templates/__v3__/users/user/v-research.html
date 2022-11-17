@@ -1,0 +1,15 @@
+<script type="text/x-template" id="v-research">
+{% verbatim %}
+  <div v-if="user">
+    <q-card class="hipeac__card q-mt-lg q-mb-md">
+      <p class="text-body2">Please complete your profile by selecting the main technology areas and applications in which you are active. This will help others find you and allow you to personalize HiPEAC content based on your interests.</p>
+      <div class="row q-col-gutter-md q-mb-md">
+        <hipeac-metadata-rel-select v-model="user.profile.rel_topics" type="topic" label="Main research topics *" class="col-12" hint="Required. You can type in the box for filtering options" />
+        <hipeac-metadata-rel-select v-model="user.profile.rel_application_areas" type="application_area" label="Application areas" class="col-12" hint="You can type in the box for filtering options" />
+      </div>
+      <hipeac-markdown v-model="user.profile.bio" label="Bio" />
+      <q-btn unelevated color="primary" @click="update" label="Update" :disabled="!user.profile.rel_topics.length" class="q-mt-md" />
+    </q-card>
+  </div>
+{% endverbatim %}
+</script>

@@ -1,0 +1,104 @@
+{% extends '__v3__/users/user/base_settings.html' %}
+
+{% load compress %}
+{% load static %}
+
+
+{% block profile_links %}
+  <q-item clickable :to="{'name': 'profile'}">
+    <q-item-section avatar><q-icon size="xs" name="account_circle"></q-icon></q-item-section>
+    <q-item-section>Personal data</q-item-section>
+  </q-item>
+  <q-item clickable :to="{'name': 'research'}">
+    <q-item-section avatar><q-icon size="xs" name="developer_board"></q-icon></q-item-section>
+    <q-item-section>Research interests</q-item-section>
+  </q-item>
+{% endblock %}
+
+{% block content %}
+  <div id="vars" data-user-url="{% url 'v1:auth-user-account' %}"></div>
+  <router-view></router-view>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-privacy.html' with id='v-privacy' %}
+  {% include './v-profile.html' with id='v-profile' %}
+  {% include './v-research.html' with id='v-research' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js file __v3__user_settings %}
+  <script src="{% static '__v3__/js/components/forms.js' %}"></script>
+  <script src="{% static '__v3__/js/components/users.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/profile.js' %}"></script>
+  <script src="{% static '__v3__/js/stores/user.js' %}"></script>
+  <script>
+    var PrivacyView = {
+      template: '#v-privacy',
+      computed: _.extend(
+        Vuex.mapState('user', ['user']), {
+      }),
+    };
+
+    var ProfileView = {
+      mixins: [ProfileMixin],
+      template: '#v-profile'
+    };
+
+    var ResearchView = {
+      mixins: [ProfileMixin],
+      template: '#v-research'
+    };
+
+    var Router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'profile',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: ProfileView
+        },
+        {
+          name: 'privacy',
+          path: '/privacy/',
+          pathToRegexpOptions: {strict: true},
+          component: PrivacyView
+        },
+        {
+          name: 'research',
+          path: '/research/',
+          pathToRegexpOptions: {strict: true},
+          component: ResearchView
+        }
+      ]
+    });
+
+    var app = Vue.createApp({
+      data: {
+      },
+      mixins: [AppMixin],
+      computed: _.extend(
+        Vuex.mapState('user', ['user']), {
+      }),
+      created: function () {
+        this.$q.loading.show();
+        this.$store.commit('user/getUser');
+      }
+    });
+    Hipeac.utils.registerStoreModules(app, [
+      HipeacCommonStoreModule,
+      HipeacUserStoreModule
+    ]);
+    Hipeac.utils.registerComponents(app, [
+      HipeacCommonComponents,
+      HipeacFormComponents,
+      HipeacUserComponents
+    ]);
+    app.use(Router);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+{% endblock %}

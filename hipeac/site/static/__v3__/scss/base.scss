@@ -123,7 +123,12 @@ html, body {
   }
 
   .q-tab--active .q-tab__label {
-    font-weight: $font-weight-bold;
+    font-weight: $font-weight-bold !important;
+    color: white !important;
+  }
+
+  .q-tab--active.q-tab--inactive {
+    opacity: 1 !important;
   }
 }
 
@@ -395,3 +400,6 @@ img.jobs__logo {
 .q-toggle.transparent.disabled {
   opacity: 0.2 !important;
 }
+
+
+@import '_marked.scss';

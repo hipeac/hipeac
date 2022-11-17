@@ -3,8 +3,7 @@ from django_countries.serializer_fields import CountryField
 from drf_writable_nested import UniqueFieldsMixin, NestedUpdateMixin, WritableNestedModelSerializer
 from rest_framework import serializers
 
-from hipeac.models import Profile, Project
-from ..metadata import MetadataSerializer
+from hipeac.models import Profile, Project, Metadata
 from ..mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
 
 
@@ -15,8 +14,9 @@ class AuthProfileSerializer(
     projects = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), many=True, allow_null=True)
     name = serializers.CharField(read_only=True)
     avatar_url = serializers.CharField(read_only=True)
-    gender = MetadataSerializer(allow_null=True)
-    meal_preference = MetadataSerializer(allow_null=True)
+
+    gender = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all())
+    meal_preference = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all())
 
     class Meta:
         model = Profile

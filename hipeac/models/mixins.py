@@ -59,7 +59,7 @@ class InstitutionsMixin(models.Model):
 
 
 class KeywordsMixin(models.Model):
-    keywords = ArrayField(models.CharField(max_length=190), default=list, editable=False, blank=True)
+    keywords = ArrayField(models.CharField(max_length=190), default=list, blank=True)
 
     class Meta:
         abstract = True

@@ -5,8 +5,10 @@ from django.db import models
 from django.db.utils import ProgrammingError
 from typing import Dict, List
 
+from .mixins import KeywordsMixin
 
-class Metadata(models.Model):
+
+class Metadata(KeywordsMixin, models.Model):
     """
     Metadata used by other models.
     """
@@ -39,7 +41,8 @@ class Metadata(models.Model):
 
     class Meta:
         indexes = [models.Index(fields=["type"])]
-        ordering = ("type", "value")
+        ordering = ("type", "position", "value")
+        verbose_name_plural = "Metadata"
 
     def __str__(self) -> str:
         return self.value

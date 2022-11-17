@@ -359,11 +359,12 @@ var HipeacFormComponents = {
   },
 
   'hipeac-country-select': {
+    setup: function () {
+      Vuex.useStore();
+    },
     emits: ['update:modelValue'],
     data: function () {
       return {
-        storageKey: 'evan_countries',
-        countries: null,
         mutable: null
       };
     },
@@ -376,7 +377,8 @@ var HipeacFormComponents = {
       <q-select dense filled v-model="mutable" :options="options" label="Country" option-value="code"
         option-label="name" />
     `,
-    computed: {
+    computed: _.extend(
+      Vuex.mapState('common', ['countries']), {
       options: function () {
         var c = [];
         if (!this.countries) return c;
@@ -390,17 +392,7 @@ var HipeacFormComponents = {
 
         return c;
       }
-    },
-    methods: {
-      getCountries: function () {
-        var self = this;
-
-        Hipeac.api.request('get', '/api/countries/').then(function (res) {
-          self.countries = res.data;
-          Quasar.SessionStorage.set(self.storageKey, res.data);
-        });
-      }
-    },
+    }),
     watch: {
       'mutable': function (val) {
         this.$emit('update:modelValue', val);
@@ -408,9 +400,187 @@ var HipeacFormComponents = {
     },
     created: function () {
       this.mutable = this.modelValue;
-      this.countries = Quasar.SessionStorage.getItem(this.storageKey);
+      this.$store.commit('common/getCountries');
+    }
+  },
 
-      if (!this.countries) this.getCountries();
+  'hipeac-metadata-select': {
+    setup: function () {
+      Vuex.useStore();
+    },
+    emits: ['update:modelValue'],
+    data: function () {
+      return {
+        mutable: null
+      };
+    },
+    props: {
+      modelValue: {
+        type: Number
+      },
+      label: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      }
+    },
+    template: `
+      <q-select
+        v-model="mutable"
+        :label="label"
+        :options="options"
+        dense
+        filled
+        emit-value
+        map-options
+      />
+    `,
+    computed: _.extend(
+      Vuex.mapState('common', ['metadata']), {
+      options: function () {
+        var o = [];
+        var self = this;
+
+        if (!this.metadata) return o;
+
+        _.each(this.metadata.filter(function (obj) {
+          return obj.type == self.type;
+        }), function (m) {
+          o.push({
+            value: m.id,
+            label: m.value,
+          });
+        });
+
+        return o;
+      }
+    }),
+    watch: {
+      'mutable': function (val) {
+        this.$emit('update:modelValue', val);
+      }
+    },
+    created: function () {
+      this.mutable = this.modelValue;
+      this.$store.commit('common/getMetadata');
+    }
+  },
+
+  'hipeac-metadata-rel-select': {
+    setup: function () {
+      Vuex.useStore();
+    },
+    emits: ['update:modelValue'],
+    data: function () {
+      return {
+        cache: null,
+        mutable: null,
+        options: []
+      };
+    },
+    props: {
+      modelValue: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      },
+      label: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      }
+    },
+    template: `
+      <q-select
+        v-model="mutable"
+        :options="options"
+        :label="label"
+        multiple
+        dense
+        filled
+        emit-value
+        map-options
+        use-chips
+        @filter="search"
+        use-input
+        input-debounce="150"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              No results
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+    `,
+    computed: _.extend(
+      Vuex.mapState('common', ['metadata']), {
+      initialOptions: function () {
+        if (!this.metadata) return [];
+
+        var self = this;
+
+        return this.metadata.filter(function (obj) {
+          return obj.type == self.type;
+        }).map(function (obj) {
+          return {
+            _q: obj._q,
+            value: obj.id,
+            label: obj.value,
+          };
+        });
+      }
+    }),
+    methods: {
+      initOptions: function () {
+        if (!this.initialOptions.length) {
+          setTimeout(function () {
+            this.initOptions();
+          }.bind(this), 25);
+          return;
+        }
+
+        this.options = this.initialOptions;
+      },
+      search: function (q, update, abort) {
+        update(function () {
+          if (q == '' || q.length < 2) {
+            this.options = this.initialOptions;
+          } else {
+            var skipNegatives = true;
+            this.options = Hipeac.utils.filter(this.initialOptions || [], q, skipNegatives);
+          }
+        }.bind(this));
+      },
+      updateCache: function (val) {
+        this.cache = _.clone(val[this.type]);
+      }
+    },
+    watch: {
+      'mutable': function (val) {
+        var map = _.indexBy(this.cache, 'mid');
+
+        this.$emit('update:modelValue', val.map(function (id) {
+          return map[id] || {
+            mid: id
+          };
+        }));
+      }
+    },
+    created: function () {
+      this.cache = _.clone(this.modelValue);
+      this.mutable = _.pluck(this.modelValue, 'mid');
+      this.$store.commit('common/getMetadata');
+      this.initOptions();
+      EventEmitter.on('update:user:rel_cache', this.updateCache);
     }
   },
 
@@ -548,8 +718,7 @@ var HipeacFormComponents = {
     data: function () {
       return {
         dialog: false,
-        stack: [],
-        dietaryOptions: HipeacMetadata.getQuasarOptions('dietary')
+        stack: []
       };
     },
     props: {
@@ -578,7 +747,7 @@ var HipeacFormComponents = {
               <input v-model="mutable" type="hidden" />
               <div v-for="el in stack" class="row q-col-gutter-xs q-mb-sm items-center">
                 <q-input filled dense v-model="el.name" label="name" class="col"></q-input>
-                <q-select filled dense emit-value map-options v-model="el.dietary" :options="dietaryOptions" label="Dietary requirements" class="col" />
+                <hipeac-metadata-select v-model="el.dietary" type="meal_preference" label="Dietary requirements" class="col" />
                 <div class="col-1 text-center">
                   <hipeac-remove-icon @click.prevent="removeFromStack(el)" />
                 </div>

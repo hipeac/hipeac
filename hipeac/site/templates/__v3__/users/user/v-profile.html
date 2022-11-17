@@ -1,0 +1,25 @@
+<script type="text/x-template" id="v-profile">
+{% verbatim %}
+  <div v-if="user">
+    <q-card class="hipeac__card q-mt-lg q-mb-md">
+      <p class="text-body2">The following information will only be used to provide you with a better experience during physical events. We will <strong>never</strong> share your personal information with third parties.</p>
+      <div class="row q-col-gutter-md q-mb-md">
+        <q-input filled dense v-model="user.username" label="Username *" hint="Required. 30 characters or fewer" :rules="[val => !!val || 'Field is required', val => val.length < 30 || 'Max 30 characters']" class="col-12 col-sm-4" />
+        <q-input filled dense v-model="user.first_name" label="First name *" hint="Required" :rules="[val => !!val || 'Field is required']" class="col-12 col-sm-4" />
+        <q-input filled dense v-model="user.last_name" label="Last name *" hint="Required" :rules="[val => !!val || 'Field is required']" class="col-12 col-sm-4" />
+        <hipeac-metadata-select v-model="user.profile.gender" type="gender" label="Gender" class="col-12 col-sm-4" />
+        <hipeac-metadata-select v-model="user.profile.meal_preference" type="meal_preference" label="Dietary requirements" class="col-12 col-sm-4" />
+        <hipeac-country-select v-model="user.profile.country" label="Country of origin" class="col-12 col-sm-4" />
+      </div>
+      <q-btn unelevated color="primary" @click="update" label="Update" :disabled="!user.username || !user.first_name || !user.last_name" class="q-my-md" />
+      <q-separator class="q-my-lg" />
+      <p class="text-caption q-mb-none text-grey-7">
+        <span>User ID: {{ user.id }}</span><br>
+        <span>Date joined: {{ user.date_joined }}</span><br>
+        <span>Last updated: {{ user.profile.updated_at }}</span><br>
+        <span>Last login: {{ user.last_login }}</span>
+      </p>
+    </q-card>
+  </div>
+{% endverbatim %}
+</script>

@@ -146,7 +146,6 @@
             self.$store.commit('updateUserRegistrations', res.data);
             Hipeac.utils.notify('Registration created.');
           }).catch(function (error) {
-            console.log(error);
             if (error.response.status == 403) {
               Hipeac.utils.notify('You need to log in to your HiPEAC account first.', 'warning');
             } else {

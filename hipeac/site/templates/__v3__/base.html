@@ -106,9 +106,10 @@
     {% endcompress %}
     {% compress js file hipeac %}
       <script src="{% static '__v3__/js/base.js' %}"></script>
-      <script src="{% static '__v3__/js/metadata.js' %}"></script>
+      <script src="{% static '__v3__/js/storage.js' %}"></script>
       <script src="{% static '__v3__/js/components/common.js' %}"></script>
       <script src="{% static '__v3__/js/mixins/app.js' %}"></script>
+      <script src="{% static '__v3__/js/stores/common.js' %}"></script>
     {% endcompress %}
     {% block menu_scripts %}{% endblock %}
     {% block extra_scripts %}{% endblock %}

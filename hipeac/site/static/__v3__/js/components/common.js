@@ -165,6 +165,25 @@ var HipeacCommonComponents = {
     }
   },
 
+  'hipeac-side-menu': {
+    props: {
+      collapse: {
+        type: Boolean,
+        default: false
+      }
+    },
+    template: `
+      <div class="text-body2">
+        <q-btn v-if="collapse" color="primary" label="Basic Menu">
+          <q-menu>
+            <slot></slot>
+          </q-menu>
+        </q-btn>
+        <slot v-else></slot>
+      </div>
+    `
+  },
+
   'hipeac-toolbar-menu': {
     data: function () {
       return {

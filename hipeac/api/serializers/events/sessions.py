@@ -5,16 +5,15 @@ from hipeac.functions import truncate_md
 from hipeac.models import Session
 from ..institutions import InstitutionNestedSerializer
 from ..metadata import MetadataSerializer
-from ..mixins import ApplicationAreasMixin, FilesMixin, LinksMixin, TopicsMixin
+from ..mixins import ApplicationAreasMixin, FilesMixin, KeywordsMixin, LinksMixin, TopicsMixin
 from ..projects import ProjectNestedSerializer
 from ..users import UserPublicMiniSerializer
 
 
-class SessionNestedSerializer(WritableNestedModelSerializer):
+class SessionNestedSerializer(KeywordsMixin, WritableNestedModelSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:session-detail", read_only=True)
     url = serializers.URLField(source="get_absolute_url", read_only=True)
     type = MetadataSerializer()
-    keywords = serializers.JSONField(read_only=True)
     main_speaker = UserPublicMiniSerializer(required=False, read_only=True)
 
     class Meta:
