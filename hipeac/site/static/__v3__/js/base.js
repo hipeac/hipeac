@@ -122,6 +122,17 @@ var Hipeac = {
 
       return obj;
     },
+    notification: function (obj) {
+      obj.icon = {
+        'membership_industry': 'accessibility_new',
+        'membership_researcher': 'accessibility_new',
+        'linkedin_account': 'swap_horizontal_circle',
+        'research_topics_pending': 'developer_board',
+        'long_time_no_see': 'waving_hand'
+      }[obj.category] || 'notification_important';
+
+      return obj;
+    },
     registration: function (obj) {
       obj.fee = obj.base_fee + obj.extra_fees + obj.manual_extra_fees;
       obj.is_paid = obj.saldo >= 0;

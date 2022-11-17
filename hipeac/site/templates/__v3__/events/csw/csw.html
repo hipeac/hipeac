@@ -42,12 +42,6 @@
   <script src="{% static '__v3__/js/mixins/session.js' %}"></script>
   <script src="{% static '__v3__/js/stores/events.js' %}"></script>
   <script type="text/javascript">
-    var Store = Vuex.createStore({
-      modules: {
-        events: EventModule
-      }
-    });
-
     var AboutView = {
       template: '#v-about',
       computed: _.extend(
@@ -223,10 +217,16 @@
         this.$store.commit('events/getRegistration');
       }
     });
-    Hipeac.utils.registerComponents(app, [
-      HipeacCommonComponents, HipeacFormComponents, HipeacEventComponents, HipeacUserComponents
+    Hipeac.utils.registerStoreModules(app, [
+      HipeacCommonStoreModule,
+      HipeacEventStoreModule
     ]);
-    app.use(Store);
+    Hipeac.utils.registerComponents(app, [
+      HipeacCommonComponents,
+      HipeacFormComponents,
+      HipeacEventComponents,
+      HipeacUserComponents
+    ]);
     app.use(Router);
     app.use(Quasar);
     app.mount('#vue');

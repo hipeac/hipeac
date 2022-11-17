@@ -17,10 +17,7 @@
       <hipeac-toolbar-menu v-show="$q.screen.gt.sm"></hipeac-toolbar-menu>
       <q-space></q-space>
       {% if user.is_authenticated %}
-        <q-btn outline no-caps color="primary" type="a" href="{% url 'account_login' %}" label="{% user_display user %}">
-          <q-menu anchor="bottom right" self="top right">
-          </q-menu>
-        </q-btn>
+        <hipeac-user-menu username="{% user_display user %}"></hipeac-user-menu>
       {% else %}
         <q-btn outline no-caps type="a" href="{% url 'account_signup' %}" color="green" class="q-mr-sm">Join</q-btn>
         <q-btn outline no-caps type="a" href="{% url 'account_login' %}?next={{ request.path }}" color="primary">Log in</q-btn>

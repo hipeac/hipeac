@@ -44,6 +44,7 @@ def parse_notification(notification: Notification):
     from .events import RegistrationPendingNotificator
     from .users import (
         LinkedInNotificator,
+        LongTimeNoSeeNotificator,
         MembershipIndustryNotificator,
         MembershipResearcherNotificator,
         ResearchTopicsPendingNotificator,
@@ -51,6 +52,7 @@ def parse_notification(notification: Notification):
 
     notification_class = {
         LinkedInNotificator.category: LinkedInNotificator,
+        LongTimeNoSeeNotificator.category: LongTimeNoSeeNotificator,
         MembershipIndustryNotificator.category: MembershipIndustryNotificator,
         MembershipResearcherNotificator.category: MembershipResearcherNotificator,
         RegistrationPendingNotificator.category: RegistrationPendingNotificator,

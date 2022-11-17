@@ -319,21 +319,60 @@ var HipeacCommonComponents = {
       }
     },
     template: `
-      <q-btn v-if="userId > 0" no-caps flat icon-right="account_circle" color="grey-8" :label="username">
-        <q-menu>
-          <q-list style="min-width: 140px">
-            <q-item clickable tag="a" href="/u/dashboard/">
-              <q-item-section>Dashboard</q-item-section>
-            </q-item>
-            <q-separator />
-            <q-item clickable tag="a" href="/u/logout/">
-              <q-item-section>Log out</q-item-section>
-              <q-item-section side><q-icon name="logout" size="xs" /></q-item-section>
+      <div v-if="userId > 0" class="row reverse q-gutter-md">
+        <q-btn no-caps outline color="primary" :label="username">
+          <q-menu anchor="bottom right" self="top right" class="text-body2">
+            <q-list style="min-width: 140px">
+              <q-item clickable tag="a" :href="'/~' + username + '/'">
+                <q-item-section>Public profile</q-item-section>
+              </q-item>
+              <q-item clickable tag="a" href="/accounts/profile/">
+                <q-item-section>Settings</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item clickable tag="a" href="/accounts/logout/">
+                <q-item-section>Sign out</q-item-section>
+                <q-item-section side><q-icon name="logout" size="xs" /></q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+        <hipeac-notifications-btn />
+      </div>
+    `
+  },
+
+  'hipeac-notifications-btn': {
+    setup: function () {
+      Vuex.useStore();
+    },
+    template: `
+      <q-btn round flat :icon="icon" :disable="counter == 0" size="md">
+        <q-badge v-if="counter" rounded color="red-7" floating>{{ counter }}</q-badge>
+        <q-menu anchor="bottom right" self="top right" max-width="300px">
+          <q-list separator padding class="text-body2" style="min-width: 140px" >
+            <q-item-label header>Notifications</q-item-label>
+            <q-item v-for="n in notifications" clickable tag="a" :href="n.message.path">
+              <q-item-section side><q-icon :name="n.icon" size="xs" /></q-item-section>
+              <q-item-section>{{ n.message.text }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
       </q-btn>
-    `
+    `,
+    computed: _.extend(
+      Vuex.mapState('common', ['notifications']), {
+      counter: function () {
+        if (this.notifications == undefined) return 0;
+        return this.notifications.length;
+      },
+      icon: function () {
+        return (this.counter > 0) ? 'notifications_active' : 'notifications_none';
+      }
+    }),
+    created: function () {
+      this.$store.commit('common/getNotifications');
+    }
   },
 
   'hipeac-no-data': {

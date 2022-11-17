@@ -291,8 +291,14 @@
         this.$store.commit('getUserRegistrations');
       }
     });
+    Hipeac.utils.registerStoreModules(app, [
+      HipeacCommonStoreModule
+    ]);
     Hipeac.utils.registerComponents(app, [
-      HipeacCommonComponents, HipeacFormComponents, HipeacEventComponents, HipeacUserComponents
+      HipeacCommonComponents,
+      HipeacFormComponents,
+      HipeacEventComponents,
+      HipeacUserComponents
     ]);
     app.use(Store);
     app.use(Router);

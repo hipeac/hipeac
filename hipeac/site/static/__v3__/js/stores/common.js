@@ -37,6 +37,26 @@ var HipeacCommonStoreModule = {
             } catch (e) {}
           });
         }
+      }),
+      getNotifications: _.once(function (state) {
+        var key = 'notifications';
+        var ttl = 30;
+        var self = this;
+
+        state.notifications = Object.freeze(HipeacStorage.cache.get(key));
+
+        if (state.notifications == undefined) {
+          Hipeac.api.request('get', '/api/v1/user/notifications/').then(function (res) {
+            state.notifications = Object.freeze(res.data.map(function (obj) {
+              return Hipeac.map.notification(obj);
+            }));
+            HipeacStorage.cache.set(key, state.notifications, ttl);
+          });
+        }
+
+        setTimeout(function () {
+          self.commit('common/getNotifications');
+        }, 1000 * 30);
       })
     }
   }

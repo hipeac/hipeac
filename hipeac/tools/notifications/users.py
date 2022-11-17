@@ -59,6 +59,46 @@ class LinkedInNotificator(Notificator):
         }
 
 
+class LongTimeNoSeeNotificator(Notificator):
+    category = "long_time_no_see"
+    discard = True
+
+    def deleteOne(self, *, user_id: int) -> None:
+        Notification.objects.filter(category=self.category, user_id=user_id).delete()
+
+    def process_data(self):
+        self.delete()
+        bulk_notifications = []
+        three_months_ago = timezone.now() - datetime.timedelta(days=90)
+
+        with connection.cursor() as cursor:
+            query = """
+                SELECT u.id AS user_id
+                FROM auth_user AS u
+                WHERE last_login < %s
+            """
+            cursor.execute(query, [three_months_ago])
+
+            for result in cursor.fetchall():
+                bulk_notifications.append(
+                    (
+                        self.category,  # category
+                        result[0],  # user_id
+                        result[0],  # object_id == user_id
+                        self.to_json({"discard_id": result[0]}),  # data
+                        None,  # deadline
+                    )
+                )
+
+        self.insert(bulk_notifications)
+
+    def parse_notification(self, notification: Notification) -> Dict[str, Any]:
+        return {
+            "text": "Long time no see! Please make sure your profile is still up-to-date.",
+            "path": "/accounts/profile/",
+        }
+
+
 class MembershipIndustryNotificator(Notificator):
     category = "membership_industry"
     discard = True
@@ -134,7 +174,7 @@ class MembershipResearcherNotificator(Notificator):
                     FROM hipeac_rel_user AS rel
                     INNER JOIN hipeac_publication AS p ON rel.object_id = p.id
                     WHERE rel.user_id NOT IN (SELECT user_id FROM hipeac_membership_member)
-                    	AND content_type_id = 50 AND p.conference_id IS NOT NULL
+                        AND content_type_id = 50 AND p.conference_id IS NOT NULL
                     GROUP BY user_id
                 ) AS awards ON u.id = pub.user_id
                 WHERE i.type IN ('university', 'lab', 'innovation')
@@ -205,6 +245,6 @@ class ResearchTopicsPendingNotificator(Notificator):
 
     def parse_notification(self, notification: Notification) -> Dict[str, Any]:
         return {
-            "text": "Include your **areas of expertise** in your research profile to help other researchers find you.",
+            "text": "Include your areas of expertise in your profile to help other researchers find you.",
             "path": f"{reverse('user_profile')}#/research/",
         }
