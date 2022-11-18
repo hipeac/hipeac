@@ -33,9 +33,9 @@ class JobManager(models.Manager):
         return (
             super()
             .get_queryset()
-            .select_related("institution", "project", "employment_type")
             .prefetch_related(
                 "career_levels",
+                "employment_type",
                 "rel_application_areas__application_area",
                 "rel_topics__topic",
             )
