@@ -2,7 +2,7 @@ from django_countries.serializer_fields import CountryField
 from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
-from hipeac.models import Institution
+from hipeac.models import Institution, RelatedInstitution
 from .mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
 
 
@@ -46,3 +46,16 @@ class InstitutionNestedSerializer(InstitutionSerializer):
 
 class InstitutionListSerializer(InstitutionNestedSerializer):
     pass
+
+
+class RelatedInstitutionSerializer(serializers.ModelSerializer):
+    oid = serializers.PrimaryKeyRelatedField(source="project", queryset=Institution.objects.all())
+
+    class Meta:
+        model = RelatedInstitution
+        fields = ("id", "oid")
+
+
+class InstitutionsMixin(serializers.ModelSerializer):
+    institutions = InstitutionNestedSerializer(many=True, read_only=True)
+    rel_institutions = RelatedInstitutionSerializer(many=True)

@@ -126,6 +126,7 @@ urlpatterns = [
     re_path(r"^~(?P<slug>[\w.@-]+)/$", views.UserProfile.as_view(), name="user"),
     path("accounts/", include("allauth.urls")),
     path("accounts/profile/", views.UserSettings.as_view(), name="user_profile"),
+    path("accounts/profileold/", views.UserSettingsOld.as_view(), name="user_profile_old"),
     path("accounts/certificates/", views.UserCertificates.as_view(), name="user_certificates"),
     path("accounts/certificates/<uuid:uuid>.pdf", views.UserCertificatePdf.as_view(), name="user_certificate_pdf"),
     # SC

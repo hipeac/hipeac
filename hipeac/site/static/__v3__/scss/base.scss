@@ -275,6 +275,12 @@ code, kbd, pre, samp,
   }
 }
 
+.q-select--with-input.q-field--dense {
+  .q-field__native {
+    margin-top: 4px;
+  }
+}
+
 .text-hipeac {
   color: $hipeac-blue !important;
 }

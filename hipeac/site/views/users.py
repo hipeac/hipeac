@@ -33,6 +33,10 @@ class UserSettings(UserAuthenticatedMixin, generic.TemplateView):
     template_name = "__v3__/users/user/settings.html"
 
 
+class UserSettingsOld(UserSettings):
+    template_name = "users/user/settings.html"
+
+
 class UserCertificates(UserAuthenticatedMixin, generic.ListView):
     template_name = "users/user/certificates.html"
 

@@ -154,13 +154,29 @@
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="5 + days" icon="how_to_reg" :title="(registration) ? 'Thank you for registering!' : 'Register for the conference'" :done="registration != null">
-              <p>Photographs will be taken and videos recorded at HiPEAC {{ event.year }} for publication in HiPEAC communications including the HiPEAC website, HiPEAC magazine and social media channels. By attending the event, you agree to HiPEAC's use of photographs and videos.</p>
+            <q-step :name="5 + days" icon="how_to_reg" :title="(registration) ? 'Thank you for registering!' : 'Register for the conference'" :done="registration != null" class="q-pb-sm">
+              <p class="text-caption"><q-avatar size="md" color="orange-7" text-color="white" icon="photo_camera" class="float-right" />Photographs will be taken and videos recorded at HiPEAC {{ event.year }} for publication in HiPEAC communications including the HiPEAC website, HiPEAC magazine and social media channels. By attending the event, you agree to HiPEAC's use of photographs and videos.</p>
               <strong v-if="!obj.sessions.length">Please choose at least one session.</strong>
-              <q-stepper-navigation>
-                <q-btn unelevated color="primary" @click="createOrUpdate" :label="(registration) ? 'Update registration' : 'Create registration'" :disabled="!obj.fee_type || !obj.sessions.length" />
+              <q-stepper-navigation v-if="!registration">
+                <q-btn unelevated color="primary" @click="createOrUpdate" label="Create registration" :disabled="!obj.fee_type || !obj.sessions.length" />
                 <q-btn flat @click="step = 4 + days" color="grey-8" label="Back" class="q-ml-sm" />
               </q-stepper-navigation>
+              <div v-if="registration && user" class="text-body2">
+                <q-separator class="q-my-lg" />
+                <p>Please take a moment to update your profile. Your name and affiliation will be on your badge and we will use your dietary requirements to provide you with a better experience during the conference. We will <strong>never</strong> share your personal information with third parties.</p>
+                <div class="row q-col-gutter-md q-mt-md q-mb-lg">
+                  <q-input filled dense v-model="user.first_name" label="First name *" type="text" hint="Required." :rules="[val => !!val || 'Field is required']" class="col-12 col-sm-4" />
+                  <q-input filled dense v-model="user.last_name" label="Last name *" type="text" hint="Required." :rules="[val => !!val || 'Field is required']" class="col-12 col-sm-8" />
+                  <hipeac-search-select v-model="user.profile.institution" type="institution" label="Affiliation" class="col-12" />
+                  <hipeac-metadata-select v-model="user.profile.gender" type="gender" label="Gender" class="col-12 col-sm-4" />
+                  <hipeac-metadata-select v-model="user.profile.meal_preference" type="meal_preference" label="Dietary requirements" class="col-12 col-sm-4" />
+                  <hipeac-metadata-rel-select v-model="user.profile.rel_topics" type="topic" label="Main research topics *" class="col-12" hint="Required. You can use these topics to get a personalized conference program." />
+                </div>
+                <q-stepper-navigation>
+                  <q-btn unelevated color="primary" @click="updateUser" label="Update your profile" :disable="!user.first_name || !user.last_name || !user.profile.rel_topics.length" />
+                  <q-btn flat @click="step = 4 + days" color="grey-8" label="Back" class="q-ml-sm" />
+                </q-stepper-navigation>
+              </div>
             </q-step>
 
           </q-stepper>

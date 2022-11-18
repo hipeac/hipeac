@@ -42,9 +42,11 @@
   <script src="{% static '__v3__/js/components/jobs.js' %}"></script>
   <script src="{% static '__v3__/js/components/users.js' %}"></script>
   <script src="{% static '__v3__/js/mixins/query.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/profile.js' %}"></script>
   <script src="{% static '__v3__/js/mixins/registration.js' %}"></script>
   <script src="{% static '__v3__/js/mixins/session.js' %}"></script>
   <script src="{% static '__v3__/js/stores/events.js' %}"></script>
+  <script src="{% static '__v3__/js/stores/user.js' %}"></script>
   <script type="text/javascript">
     var AboutView = {
       data: function () {
@@ -165,7 +167,7 @@
     };
 
     var RegistrationView = {
-      mixins: [RegistrationMixin],
+      mixins: [ProfileMixin, RegistrationMixin],
       template: '#v-registration',
       data: function () {
         return {
@@ -363,11 +365,13 @@
         this.$q.loading.show();
         this.$store.commit('events/getEvent');
         this.$store.commit('events/getRegistration');
+        this.$store.commit('user/getUser');
       }
     });
     Hipeac.utils.registerStoreModules(app, [
       HipeacCommonStoreModule,
-      HipeacEventStoreModule
+      HipeacEventStoreModule,
+      HipeacUserStoreModule
     ]);
     Hipeac.utils.registerComponents(app, [
       HipeacCommonComponents,

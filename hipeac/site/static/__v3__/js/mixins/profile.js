@@ -10,7 +10,7 @@ var ProfileMixin = {
     }
   }),
   methods: {
-    update: function () {
+    updateUser: function () {
       this.$store.commit('user/updateUser', this.user);
     }
   }

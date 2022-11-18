@@ -315,7 +315,7 @@ var HipeacFormComponents = {
     emits: ['update:modelValue'],
     data: function () {
       return {
-        split: 50,
+        split: 51.5,
         mutable: null
       };
     },
@@ -330,9 +330,9 @@ var HipeacFormComponents = {
     },
     template: `
       <div>
-        <q-splitter v-model="split" :horizontal="$q.screen.lt.md" :limits="[40, 80]">
+        <q-splitter v-model="split" :horizontal="$q.screen.lt.md" :limits="[35, 65]">
           <template v-slot:before>
-            <div class="q-pb-lg" :class="{'q-pr-md': !$q.screen.lt.md, 'q-pb-md': $q.screen.lt.md}">
+            <div class="q-pb-lg" :class="{'q-pr-lg': !$q.screen.lt.md, 'q-pb-md': $q.screen.lt.md}">
               <q-input filled dense v-model="mutable" :label="label" type="textarea" autogrow bottom-slots>
                 <template v-slot:hint>
                   <div>You can use Markdown to format your text; you can find more information about the <a href="https://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.</div>
@@ -341,7 +341,7 @@ var HipeacFormComponents = {
             </div>
           </template>
           <template v-slot:after>
-            <div :class="{'q-pl-md': !$q.screen.lt.md, 'q-pt-md': $q.screen.lt.md}">
+            <div :class="{'q-pl-lg': !$q.screen.lt.md, 'q-pt-md': $q.screen.lt.md}">
               <marked :text="mutable" class="text-body2"></marked>
             </div>
           </template>
@@ -510,7 +510,7 @@ var HipeacFormComponents = {
         use-chips
         @filter="search"
         use-input
-        input-debounce="150"
+        input-debounce="100"
       >
         <template v-slot:no-option>
           <q-item>
@@ -580,7 +580,178 @@ var HipeacFormComponents = {
       this.mutable = _.pluck(this.modelValue, 'mid');
       this.$store.commit('common/getMetadata');
       this.initOptions();
-      EventEmitter.on('update:user:rel_cache', this.updateCache);
+      EventEmitter.on('update:user:rel_metadata', this.updateCache);
+    }
+  },
+
+  'hipeac-search-select': {
+    emits: ['update:modelValue'],
+    data: function () {
+      return {
+        mutable: null,
+        options: []
+      };
+    },
+    props: {
+      modelValue: {
+        type: Object
+      },
+      initialOptions: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      },
+      label: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      },
+      clearable: {
+        type: Boolean,
+        default: true
+      }
+    },
+    template: `
+      <q-select
+        v-model="mutable"
+        :options="options"
+        :label="label"
+        dense
+        filled
+        :option-label="optionLabel"
+        @filter="search"
+        use-input
+        input-debounce="200"
+        :clearable="clearable"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              No results
+            </q-item-section>
+          </q-item>
+        </template>
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps">
+            <q-item-section>
+              <q-item-label>{{ scope.opt[optionLabel] }}</q-item-label>
+              <q-item-label caption v-if="scope.opt[optionLabel] != scope.opt.name">{{ scope.opt.name }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+    `,
+    computed: {
+      optionLabel: function () {
+        return {
+          'institution': 'short_name',
+          'project': 'acronym'
+        }[this.type] || 'label';
+      }
+    },
+    methods: {
+      search: function (q, update, abort) {
+        if (q == '' || q.length < 3) {
+          this.options = this.initialOptions || [];
+          abort();
+          return;
+        }
+
+        var self = this;
+        var url = {
+          'institution': '/api/v1/network/institutions/',
+          'project': '/api/v1/network/projects/'
+        }[this.type];
+
+        axios.get(url, {
+          params: {
+            search: q
+          }
+        }).then(function (res) {
+          update(function () {
+            self.options = res.data.results;
+          });
+        });
+      }
+    },
+    watch: {
+      'mutable': function (val) {
+        this.$emit('update:modelValue', val);
+      }
+    },
+    created: function () {
+      this.mutable = this.modelValue;
+      this.options = _.clone(this.initialOptions);
+    }
+  },
+
+  'hipeac-search-rel-select': {
+    emits: ['update:modelValue'],
+    data: function () {
+      return {
+        cache: null,
+        mutable: null
+      };
+    },
+    props: {
+      modelValue: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      },
+      initialOptions: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      },
+      label: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        required: true
+      }
+    },
+    template: `
+      <hipeac-search-select
+        v-model="mutable"
+        :initial-options="initialOptions"
+        :label="label"
+        :type="type"
+        multiple
+        emit-value
+        map-options
+        use-chips
+        :clearable="false"
+      />
+    `,
+    methods: {
+      updateCache: function (val) {
+        this.cache = _.clone(val[this.type]);
+      }
+    },
+    watch: {
+      'mutable': function (val) {
+        var map = _.indexBy(this.cache, 'oid');
+
+        this.$emit('update:modelValue', val.map(function (obj) {
+          return map[obj.id] || {
+            oid: obj.id
+          };
+        }));
+      }
+    },
+    created: function () {
+      this.cache = _.clone(this.modelValue);
+      this.mutable = this.initialOptions;
+      EventEmitter.on('update:user:rel_objects', this.updateCache);
     }
   },
 

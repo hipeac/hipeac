@@ -1,7 +1,7 @@
 from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
-from hipeac.models import Project
+from hipeac.models import Project, RelatedProject
 from .metadata import MetadataSerializer
 from .mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
 
@@ -47,3 +47,16 @@ class ProjectListSerializer(ProjectSerializer):
             "application_areas",
             "topics",
         )
+
+
+class RelatedProjectSerializer(serializers.ModelSerializer):
+    oid = serializers.PrimaryKeyRelatedField(source="project", queryset=Project.objects.all())
+
+    class Meta:
+        model = RelatedProject
+        fields = ("id", "oid")
+
+
+class ProjectsMixin(serializers.ModelSerializer):
+    projects = ProjectNestedSerializer(many=True, read_only=True)
+    rel_projects = RelatedProjectSerializer(many=True)

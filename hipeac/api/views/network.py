@@ -1,4 +1,5 @@
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
@@ -18,9 +19,11 @@ from ..serializers import (
 
 
 class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    filter_backends = (SearchFilter,)
     queryset = Institution.objects.all()
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = InstitutionSerializer
+    search_fields = ("name", "local_name", "colloquial_name")
 
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.defer("description")
@@ -55,6 +58,7 @@ class PartnerViewSet(ListModelMixin, GenericViewSet):
 
 
 class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    filter_backends = (SearchFilter,)
     queryset = (
         Project.objects.select_related("programme")
         .prefetch_related(
@@ -64,9 +68,9 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
         )
         .order_by("acronym")
     )
-    pagination_class = None
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = ProjectSerializer
+    search_fields = ("acronym", "name", "rel_topics__topic__keywords")
 
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.defer("description")
