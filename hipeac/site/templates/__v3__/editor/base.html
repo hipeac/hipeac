@@ -1,0 +1,92 @@
+{% extends '__v3__/layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}Editor - {{ block.super }}{% endblock %}
+
+{% block menu_scripts %}
+  <script type="text/javascript">
+    var HIPEAC_MENU = [];
+  </script>
+{% endblock %}
+
+{% block header %}
+  <div id="vars" data-base-url="{{ base_url }}" data-obj-id="{{ obj_id | default:'0' }}"></div>
+{% endblock %}
+
+{% block submenu_color %}bg-grey-9{% endblock %}
+
+{% block submenu %}
+  <q-toolbar class="container bg-grey-9">
+    <q-btn v-if="obj" type="a" :href="obj.url" flat round v-close-popup icon="arrow_back" class="q-mr-sm"></q-btn>
+    <q-toolbar-title v-if="obj" :class="{'q-pl-none': $q.screen.gt.sm}">
+      <span>{% verbatim %}{{ modelName }} #{{ obj.id }}{% endverbatim %}</span>
+    </q-toolbar-title>
+    <q-space></q-space>
+    <q-btn unelevated @click="update" label="Save" color="primary"></q-btn>
+  </q-toolbar>
+{% endblock %}
+
+{% block scripts %}
+{% compress js file __v3__editor %}
+  <script src="{% static '__v3__/js/components/forms.js' %}"></script>
+  <script type="text/javascript">
+    var VARS = document.querySelector('#vars').dataset;
+
+    var EditorStoreModule = {
+      editor: {
+        namespaced: true,
+        state: {
+          modelName: '{% block model_name %}{% endblock %}',
+          obj: null
+        },
+        mutations: {
+          getObject: function (state) {
+            Hipeac.api.request('GET', VARS.baseUrl + VARS.objId + '/').then(function (res) {
+              state.obj = res.data;
+              Quasar.Loading.hide();
+            });
+          },
+          updateObj: function (state, payload) {
+            Hipeac.api.request('PUT', payload.self, payload).then(function (res) {
+              state.obj = res.data;
+              Hipeac.utils.notify(state.modelName + ' updated.');
+            }).catch(function (error) {
+              Hipeac.utils.notifyApiError(error);
+            });
+          }
+        }
+      }
+    };
+
+    var app = Vue.createApp({
+      mixins: [AppMixin],
+      computed: _.extend(
+        Vuex.mapState('editor', ['modelName', 'obj']), {
+      }),
+      methods: {
+        update: function () {
+          this.$store.commit('editor/updateObj', this.obj);
+        }
+      },
+      created: function () {
+        this.$q.loading.show();
+        this.$store.commit('editor/getObject');
+      }
+    });
+    Hipeac.utils.registerStoreModules(app, [
+      HipeacCommonStoreModule,
+      EditorStoreModule
+    ]);
+    Hipeac.utils.registerComponents(app, [
+      HipeacCommonComponents,
+      HipeacFormComponents
+    ]);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+{% endblock %}

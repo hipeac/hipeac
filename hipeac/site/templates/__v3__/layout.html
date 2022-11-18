@@ -29,7 +29,7 @@
 {% block page_container %}
   <q-page-container>
     <q-page :class="{'q-py-xs q-px-lg': $q.screen.gt.sm, 'q-py-none bg-white': $q.screen.lt.md}" style="margin-top: 56px">
-      <q-page-sticky expand position="top" class="hipeac__submenu">
+      <q-page-sticky expand position="top" class="hipeac__submenu {% block submenu_color %}{% endblock %}">
         {% block submenu %}{% endblock %}
       </q-page-sticky>
       <div class="container">

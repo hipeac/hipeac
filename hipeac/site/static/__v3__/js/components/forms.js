@@ -315,7 +315,6 @@ var HipeacFormComponents = {
     emits: ['update:modelValue'],
     data: function () {
       return {
-        split: 51.5,
         mutable: null
       };
     },
@@ -330,22 +329,20 @@ var HipeacFormComponents = {
     },
     template: `
       <div>
-        <q-splitter v-model="split" :horizontal="$q.screen.lt.md" :limits="[35, 65]">
-          <template v-slot:before>
-            <div class="q-pb-lg" :class="{'q-pr-lg': !$q.screen.lt.md, 'q-pb-md': $q.screen.lt.md}">
-              <q-input filled dense v-model="mutable" :label="label" type="textarea" autogrow bottom-slots>
-                <template v-slot:hint>
-                  <div>You can use Markdown to format your text; you can find more information about the <a href="https://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.</div>
-                </template>
-              </q-input>
+        <div class="row q-col-gutter-lg">
+          <div class="col-12 col-md-6 align-items-stretch">
+            <q-input filled dense v-model="mutable" :label="label" type="textarea" autogrow bottom-slots>
+              <template v-slot:hint>
+                <div>You can use Markdown to format your text; you can find more information about the <a href="https://commonmark.org/help/" target="_blank" rel="noopener">Markdown syntax here</a>.</div>
+              </template>
+            </q-input>
+          </div>
+          <div class="col-12 col-md-6 align-items-stretch">
+            <div v-if="$q.screen.gt.sm" class="marked-preview bg-grey-1 text-body2 full-height">
+              <marked :text="mutable"></marked>
             </div>
-          </template>
-          <template v-slot:after>
-            <div :class="{'q-pl-lg': !$q.screen.lt.md, 'q-pt-md': $q.screen.lt.md}">
-              <marked :text="mutable" class="text-body2"></marked>
-            </div>
-          </template>
-        </q-splitter>
+          </div>
+        </div>
       </div>
     `,
     watch: {
@@ -514,8 +511,8 @@ var HipeacFormComponents = {
       >
         <template v-slot:no-option>
           <q-item>
-            <q-item-section class="text-grey">
-              No results
+            <q-item-section class="text-grey-7 text-caption">
+              <span>No results found. <a href="mailto:missing@hipeac.net">Contact us</a> if you think something is missing in our list.</span>
             </q-item-section>
           </q-item>
         </template>
@@ -630,8 +627,8 @@ var HipeacFormComponents = {
       >
         <template v-slot:no-option>
           <q-item>
-            <q-item-section class="text-grey">
-              No results
+            <q-item-section class="text-grey-7 text-caption">
+              <span>No results found. <a href="mailto:missing@hipeac.net">Contact us</a> if you think something is missing in our list.</span>
             </q-item-section>
           </q-item>
         </template>

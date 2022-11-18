@@ -10,9 +10,9 @@
         <hipeac-metadata-select v-model="user.profile.gender" type="gender" label="Gender" class="col-12 col-sm-4" />
         <hipeac-metadata-select v-model="user.profile.meal_preference" type="meal_preference" label="Dietary requirements" class="col-12 col-sm-4" />
         <hipeac-country-select v-model="user.profile.country" label="Country of origin" class="col-12 col-sm-4" />
-        <hipeac-search-select v-model="user.profile.institution" type="institution" label="Main institution" class="col-12 col-sm-6" />
-        <hipeac-search-select v-model="user.profile.second_institution" type="institution" label="Second institution" class="col-12 col-sm-6" />
-        <hipeac-markdown v-model="user.profile.bio" label="Bio" class="col"/>
+        <hipeac-search-select v-model="user.profile.institution" type="institution" label="Main institution" class="col-12 col-md-6" />
+        <hipeac-search-select v-model="user.profile.second_institution" type="institution" label="Second institution" class="col-12 col-md-6" />
+        <hipeac-markdown v-model="user.profile.bio" label="Bio" class="col" />
       </div>
       <q-btn unelevated color="primary" @click="updateUser" label="Update" :disabled="!user.username || !user.first_name || !user.last_name" class="q-mt-lg" />
       <q-separator class="q-my-lg" />

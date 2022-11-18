@@ -1,12 +1,12 @@
-from drf_writable_nested import WritableNestedModelSerializer
+from drf_writable_nested import NestedUpdateMixin, WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.functions import truncate_md
 from hipeac.models import Session
-from ..institutions import InstitutionNestedSerializer
+from ..institutions import InstitutionsMixin
 from ..metadata import MetadataSerializer
 from ..mixins import ApplicationAreasMixin, FilesMixin, KeywordsMixin, LinksMixin, TopicsMixin
-from ..projects import ProjectNestedSerializer
+from ..projects import ProjectsMixin
 from ..users import UserPublicMiniSerializer
 
 
@@ -36,13 +36,11 @@ class SessionListSerializer(ApplicationAreasMixin, TopicsMixin, SessionNestedSer
         return truncate_md(obj.summary, limit=350) if obj.summary else ""
 
 
-class SessionSerializer(FilesMixin, LinksMixin, SessionListSerializer):
+class SessionSerializer(FilesMixin, InstitutionsMixin, LinksMixin, ProjectsMixin, SessionListSerializer):
     rel_attendees = serializers.HyperlinkedIdentityField(view_name="v1:session-attendees")
     event = serializers.HyperlinkedIdentityField(view_name="v1:event-detail", read_only=True)
     date = serializers.DateField(read_only=True)
     editor_href = serializers.URLField(source="get_editor_url", read_only=True)
-    projects = ProjectNestedSerializer(many=True, read_only=True)
-    institutions = InstitutionNestedSerializer(many=True, read_only=True)
     is_industrial_session = serializers.BooleanField(read_only=True)
 
     class Meta(SessionNestedSerializer.Meta):

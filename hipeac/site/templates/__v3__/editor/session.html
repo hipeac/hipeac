@@ -1,0 +1,19 @@
+{% extends './base.html' %}
+
+
+{% block model_name %}Session{% endblock %}
+
+{% block page %}
+  <q-card class="hipeac__card q-mt-lg q-mb-md">
+    <div v-if="obj" class="row q-col-gutter-lg">
+      <q-input filled v-model="obj.title" label="Title *" class="col"></q-input>
+      <hipeac-markdown v-model="obj.summary" label="Summary" class="col-12"></hipeac-markdown>
+      <hipeac-markdown v-model="obj.program" :show-hint="false" label="Program" class="col-12"></hipeac-markdown>
+      <hipeac-markdown v-model="obj.organizers" :show-hint="false" label="Organizers" class="col-12"></hipeac-markdown>
+      <hipeac-metadata-rel-select v-model="obj.rel_topics" type="topic" label="Session topics" class="col-12 col-md-6"></hipeac-metadata-rel-select>
+      <hipeac-metadata-rel-select v-model="obj.rel_application_areas" type="application_area" label="Application areas" class="col-12 col-md-6"></hipeac-metadata-rel-select>
+      <hipeac-search-rel-select v-model="obj.rel_institutions" :initial-options="obj.institutions" type="institution" :label="(obj.type.value == 'Industrial Session') ? 'Companies presenting' : 'Institutions involved'" class="col-12 col-sm-6"></hipeac-search-rel-select>
+      <hipeac-search-rel-select v-model="obj.rel_projects" :initial-options="obj.projects" type="project" :label="(obj.type.value == 'Industrial Session') ? 'Projects presenting' : 'Projects involved'" class="col-12 col-sm-6"></hipeac-search-rel-select>
+    </div>
+  </q-card>
+{% endblock %}

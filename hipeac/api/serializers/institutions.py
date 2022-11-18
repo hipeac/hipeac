@@ -49,7 +49,7 @@ class InstitutionListSerializer(InstitutionNestedSerializer):
 
 
 class RelatedInstitutionSerializer(serializers.ModelSerializer):
-    oid = serializers.PrimaryKeyRelatedField(source="project", queryset=Institution.objects.all())
+    oid = serializers.PrimaryKeyRelatedField(source="institution", queryset=Institution.objects.all())
 
     class Meta:
         model = RelatedInstitution

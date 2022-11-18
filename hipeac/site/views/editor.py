@@ -11,6 +11,9 @@ class EditorBaseView(generic.TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
+        model_name = self.get_model_name(**self.kwargs)
+        if model_name == "session":
+            return f"__v3__/editor/{model_name}.html"
         return ["".join(["editor/", self.get_model_name(**self.kwargs), ".html"])]
 
     def get_context_data(self, **kwargs):
