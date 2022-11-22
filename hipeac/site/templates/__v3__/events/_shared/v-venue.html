@@ -6,13 +6,17 @@
         <q-card class="hipeac__card full-height q-pa-lg">
           <display-5>Venues</display-5>
           <div v-if="event.venue">
+            <q-badge color="primary" class="float-right q-mt-sm">Main venue</q-badge>
             <display-2 class="q-mb-xs">{{ event.venue.name }}</display-2>
-            <p class="q-mb-md"><small>Main venue</small></p>
             <marked v-if="event.venue.description" :text="event.venue.description" class="text-sm"></marked>
           </div>
-          <div v-for="venue in event.extra_venues" class="mb-5">
-            <display-2 class="q-mb-md">{{ venue.name }}</display-2>
-            <marked v-if="venue.description" :text="venue.description" class="text-sm"></marked>
+          <div v-if="event.extra_venues.length">
+            <q-separator class="q-my-xl" />
+            <q-badge color="grey-7" class="float-right q-mt-sm">Other venues</q-badge>
+            <div v-for="venue in event.extra_venues" class="mb-5">
+              <display-3 class="q-mb-md">{{ venue.name }}</display-3>
+              <marked v-if="venue.description" :text="venue.description" class="text-sm"></marked>
+            </div>
           </div>
         </q-card>
       </div>

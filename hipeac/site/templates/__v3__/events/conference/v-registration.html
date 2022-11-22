@@ -15,26 +15,34 @@
             <span>Registration ID: {{ registration.id }}</span><br>
             <span>Created: {{ registration.created_at }}</span><br>
             <span>Last updated: {{ registration.updated_at }}</span>
-            <q-separator class="q-my-md"></q-separator>
+            <q-separator class="q-my-lg" />
             <strong>Base fee: <span v-if="registration.base_fee == 0">FREE</span><span v-else>EUR {{ registration.base_fee }}</span> ({{ registration.fee_type }})</strong><br>
             <strong v-if="registration.extra_fees > 0">Extras: EUR {{ registration.extra_fees }}</strong>
           </p>
           <q-banner v-if="conflicts" class="bg-yellow-1 q-py-md q-px-lg q-mb-lg">
             <template v-slot:avatar>
-              <q-icon name="error_outline" color="orange" size="md"></q-icon>
+              <q-icon name="error_outline" color="orange" size="md" />
             </template>
             <span>You have registered for multiple simultaneous sessions, please check your selection so that session organizers can have a better idea of the number of attendees. Thank you!</span><br>
           </q-banner>
-          <q-card-section v-if="registration.fee > 0 && event.allows_payments" class="q-ma-sm">
-            <q-btn v-if="registration.is_paid" outline type="a" :href="registration.payment_url" color="primary" label="View payment info"></q-btn>
-            <span v-else>
-              <q-btn v-if="!registration.invoice_requested" outline type="a" :href="registration.payment_url" color="primary" label="Proceed with payment"></q-btn>
-              <button v-else class="float-right btn btn-outline-secondary" disabled>
-                <span>Invoice is being prepared</span>
-                <q-icon name="receipt" size="sm" class="q-ml-sm"></q-icon>
-              </button>
-            </span>
-          </q-card-section>
+          <div v-if="event.allows_payments">
+            <q-card-section v-if="registration.fee > 0" class="q-ma-sm">
+              <q-btn v-if="registration.is_paid" outline type="a" :href="registration.payment_url" color="primary" label="View payment info" />
+              <span v-else>
+                <q-btn v-if="!registration.invoice_requested" outline type="a" :href="registration.payment_url" color="primary" label="Proceed with payment" />
+                <button v-else class="float-right btn btn-outline-secondary" disabled>
+                  <span>Invoice is being prepared</span>
+                  <q-icon name="receipt" size="sm" class="q-ml-sm" />
+                </button>
+              </span>
+            </q-card-section>
+          </div>
+          <q-banner v-else class="bg-yellow text-dark">
+            <template v-slot:avatar>
+              <q-icon name="payment" color="primary" />
+            </template>
+            Payments will open on <span class="text-no-wrap">{{ event.payments.format('MMMM D, YYYY') }}</span>
+          </q-banner>
         </q-card>
         <q-card v-else class="hipeac__card full-height">
           <display-2 class="q-mt-none">New registration</display-2>
@@ -97,11 +105,11 @@
                     <q-item-label class="q-mb-xs">{{ session.title }}</q-item-label>
                     <q-item-label caption>
                       <span class="q-mr-md">
-                        <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs"></q-icon>
+                        <q-icon size="xs" name="lens" :color="session.color" class="q-mr-xs" />
                         <span>{{ session.type.value }}</span>
                       </span>
                       <span>
-                        <q-icon size="xs" name="schedule" class="q-mr-xs"></q-icon>
+                        <q-icon size="xs" name="schedule" class="q-mr-xs" />
                         <span>{{ session.start.format('H:mm') }} - {{ session.end.format('H:mm') }}</span>
                       </span>
                     </q-item-label>
@@ -126,11 +134,11 @@
                     <q-item-label class="q-mb-xs">{{ session.title }}</q-item-label>
                     <q-item-label caption>
                       <span class="q-mr-md">
-                        <q-icon size="xs" name="today" class="q-mr-xs"></q-icon>
+                        <q-icon size="xs" name="today" class="q-mr-xs" />
                         <span>{{ session.start.format('dddd, MMM D, H:mm') }} - {{ session.end.format('H:mm') }}</span>
                       </span>
                       <span>
-                        <q-icon size="xs" name="chair_alt" class="q-mr-xs"></q-icon>
+                        <q-icon size="xs" name="chair_alt" class="q-mr-xs" />
                         <span>Places: <span v-if="session.max_attendees == 0">unlimited</span><span>{{ session.max_attendees }}</span></span>
                       </span>
                     </q-item-label>

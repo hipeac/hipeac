@@ -81,6 +81,7 @@ var Hipeac = {
         obj.end = getMoment(obj.end_date, obj.tz);
       }
 
+      obj.payments = (obj.payments_activation) ? getMoment(obj.payments_activation, obj.tz) : null;
       obj.year = moment(obj.start_date).year();
       obj.registration_start = getMoment(obj.registration_start_date, obj.tz);
       obj.registrations_round = (obj.registrations_count)
