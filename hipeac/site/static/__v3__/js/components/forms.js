@@ -413,7 +413,7 @@ var HipeacFormComponents = {
     },
     props: {
       modelValue: {
-        type: Number
+        type: [Number, Array]
       },
       label: {
         type: String,
@@ -878,6 +878,87 @@ var HipeacFormComponents = {
           });
         });
       }
+    }
+  },
+
+  'hipeac-link-list': {
+    emits: ['update:modelValue'],
+    data: function () {
+      return {
+        websites: [
+          "website",
+          "dblp",
+          "twitter",
+          "linkedin",
+          "github",
+          "youtube",
+          "easychair",
+          "cordis",
+          "other",
+        ],
+        stack: []
+      };
+    },
+    props: {
+      modelValue: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      },
+      label: {
+        type: String,
+        default: ''
+      }
+    },
+    template: `
+      <div>
+        <input v-model="mutable" type="hidden" />
+        <div v-for="el in stack" class="row q-col-gutter-xs q-mb-sm items-center">
+          <q-select filled dense v-model="el.type" :options="websites" label="Type" class="col-4 col-md-3" />
+          <q-input filled dense v-model="el.url" type="url" label="URL" class="col"></q-input>
+          <div class="col-1 text-center">
+            <hipeac-remove-icon @click.prevent="removeFromStack(el)" />
+          </div>
+        </div>
+        <q-btn outline @click="addToStack" size="sm" color="green" icon="add" label="Add new link"></q-btn>
+      </div>
+    `,
+    computed: {
+      disableSave: function () {
+        if (this.stack.length == 0) return true;
+        return _.contains(_.pluck(this.stack, 'name'), '');
+      },
+      mutable: {
+        get: function () {
+          return this.modelValue;
+        },
+        set: function (val) {
+          this.$emit('update:modelValue', val);
+        }
+      }
+    },
+    methods: {
+      addToStack: function () {
+        this.stack.push({
+          'type': 'website',
+          'url': ''
+        });
+      },
+      removeFromStack: function (item) {
+        this.stack = _.without(this.stack, item);
+      }
+    },
+    watch: {
+      'stack': {
+        deep: true,
+        handler: function (val) {
+          this.$emit('update:modelValue', val);
+        }
+      }
+    },
+    created: function () {
+      this.stack = this.modelValue;
     }
   },
 

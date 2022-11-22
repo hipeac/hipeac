@@ -6,7 +6,7 @@
 {% block page %}
   <q-card class="hipeac__card q-mt-lg q-mb-md">
     <div v-if="obj" class="row q-col-gutter-lg">
-      <q-input filled v-model="obj.title" label="Title *" class="col"></q-input>
+      <q-input filled v-model="obj.title" label="Title *" type="text" class="col"></q-input>
       <hipeac-markdown v-model="obj.summary" label="Summary" class="col-12"></hipeac-markdown>
       <hipeac-markdown v-model="obj.program" :show-hint="false" label="Program" class="col-12"></hipeac-markdown>
       <hipeac-markdown v-model="obj.organizers" :show-hint="false" label="Organizers" class="col-12"></hipeac-markdown>
@@ -16,4 +16,8 @@
       <hipeac-search-rel-select v-model="obj.rel_projects" :initial-options="obj.projects" type="project" :label="(obj.type.value == 'Industrial Session') ? 'Projects presenting' : 'Projects involved'" class="col-12 col-sm-6"></hipeac-search-rel-select>
     </div>
   </q-card>
+{% endblock %}
+
+{% block save_button %}
+  <q-btn v-if="obj" unelevated @click="save" label="Save" color="primary" :disable="!obj.title"></q-btn>
 {% endblock %}

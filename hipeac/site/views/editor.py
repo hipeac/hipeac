@@ -12,7 +12,7 @@ class EditorBaseView(generic.TemplateView):
 
     def get_template_names(self):
         model_name = self.get_model_name(**self.kwargs)
-        if model_name == "session":
+        if model_name in {"job", "session"}:
             return f"__v3__/editor/{model_name}.html"
         return ["".join(["editor/", self.get_model_name(**self.kwargs), ".html"])]
 

@@ -1,0 +1,43 @@
+{% extends './base.html' %}
+
+
+{% block model_name %}Job{% endblock %}
+
+{% block back_url %}{% url 'jobs' %}{% endblock %}
+
+{% block page %}
+  <q-card v-if="obj" class="hipeac__card q-mt-lg q-mb-md">
+    <div class="row q-col-gutter-lg">
+      <q-input filled v-model="obj.title" label="Job title *" type="text" class="col-12" hint="Required."></q-input>
+      <hipeac-search-select v-model="obj.institution" type="institution" label="Institution *" class="col-12 col-md-6" hint="Required."></hipeac-search-select>
+      <hipeac-search-select v-model="obj.project" type="project" label="Related EU project" class="col-12 col-md-6" hint="Optional."></hipeac-search-select>
+      <hipeac-metadata-select v-model="obj.employment_type" type="employment_type" label="Employment type *" class="col-12 col-sm-6 col-md-3"></hipeac-metadata-select>
+      <q-input filled dense v-model.trim="obj.positions" type="number" label="Positions" class="col-12 col-sm-6 col-md-3"></q-input>
+      <q-input filled dense v-model="obj.location" label="Location" type="text" class="col-12 col-sm-6 col-md-3"></q-input>
+      <hipeac-country-select v-model="obj.country" label="Country" class="col-12 col-sm-6 col-md-3"></hipeac-country-select>
+      <hipeac-markdown v-model="obj.description" label="Description *" class="col-12"></hipeac-markdown>
+      <hipeac-metadata-rel-select v-model="obj.rel_topics" type="topic" label="Topics" class="col-12 col-md-6"></hipeac-metadata-rel-select>
+      <hipeac-metadata-rel-select v-model="obj.rel_application_areas" type="application_area" label="Application areas" class="col-12 col-md-6"></hipeac-metadata-rel-select>
+      <hipeac-metadata-select v-model="obj.career_levels" multiple use-chips type="job_position" label="Career levels" class="col-12 col-md-6"></hipeac-metadata-select>
+      <q-input filled dense v-model="obj.email" label="Contact email" type="email" class="col-12 col-md-3"></q-input>
+    </div>
+    <div>
+      <p class="q-mt-lg q-mb-md">You can add links to external websites here, to complete the job information. If no external website is added, a contact email will be required.</p>
+      <hipeac-link-list v-model="obj.links" label="External links" />
+    </div>
+    <q-list class="bg-blue-1 rounded-borders q-mt-xl q-mb-none">
+      <q-item tag="label" class="q-pa-md">
+        <q-item-section avatar>
+          <q-checkbox v-model="obj.add_to_euraxess" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label><strong>Add this job to EURAXESS. </strong> Backed by the European Union, member states and associated countries, <a href="https://euraxess.ec.europa.eu/" taregt="_blank">EURAXESS</a> supports researcher mobility and career development, while enhancing scientific collaboration between Europe and the world.</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
+  </q-card>
+{% endblock %}
+
+{% block save_button %}
+  <q-btn v-if="obj" unelevated @click="save" label="Save" color="primary" :disable="!obj.institution || !obj.employment_type || !obj.title || !obj.description"></q-btn>
+{% endblock %}

@@ -14,19 +14,22 @@
 {% endblock %}
 
 {% block header %}
-  <div id="vars" data-base-url="{{ base_url }}" data-obj-id="{{ obj_id | default:'0' }}"></div>
+  <div id="vars" data-back-url="{% block back_url %}/{% endblock %}" data-base-url="{{ base_url }}" data-obj-id="{{ obj_id | default:'0' }}"></div>
 {% endblock %}
 
 {% block submenu_color %}bg-grey-9{% endblock %}
 
 {% block submenu %}
   <q-toolbar class="container bg-grey-9">
-    <q-btn v-if="obj" type="a" :href="obj.url" flat round v-close-popup icon="arrow_back" class="q-mr-sm"></q-btn>
-    <q-toolbar-title v-if="obj" :class="{'q-pl-none': $q.screen.gt.sm}">
+    <q-btn v-if="backUrl" type="a" :href="backUrl" flat round v-close-popup icon="arrow_back" class="q-mr-sm"></q-btn>
+    <q-toolbar-title v-if="isNew" :class="{'q-pl-none': $q.screen.gt.sm}">
+      <span>Create {% verbatim %}{{ modelName }}{% endverbatim %}</span>
+    </q-toolbar-title>
+    <q-toolbar-title v-else :class="{'q-pl-none': $q.screen.gt.sm}">
       <span>{% verbatim %}{{ modelName }} #{{ obj.id }}{% endverbatim %}</span>
     </q-toolbar-title>
     <q-space></q-space>
-    <q-btn unelevated @click="update" label="Save" color="primary"></q-btn>
+    {% block save_button %}<q-btn unelevated @click="save" label="Save" color="primary"></q-btn>{% endblock %}
   </q-toolbar>
 {% endblock %}
 
@@ -41,18 +44,34 @@
         namespaced: true,
         state: {
           modelName: '{% block model_name %}{% endblock %}',
+          isNew: +VARS.objId == 0,
           obj: null
         },
         mutations: {
           getObject: function (state) {
+            if (state.isNew) {
+              state.obj = {};
+              Quasar.Loading.hide();
+              return;
+            }
+
             Hipeac.api.request('GET', VARS.baseUrl + VARS.objId + '/').then(function (res) {
               state.obj = res.data;
               Quasar.Loading.hide();
             });
           },
-          updateObj: function (state, payload) {
-            Hipeac.api.request('PUT', payload.self, payload).then(function (res) {
+          saveObj: function (state, payload) {
+            if (state.isNew) {
+              var url = VARS.baseUrl;
+              var method = 'POST';
+            } else {
+              var url = payload.self;
+              var method = 'PUT';
+            }
+
+            Hipeac.api.request(method, url, payload).then(function (res) {
               state.obj = res.data;
+              state.isNew = false;
               Hipeac.utils.notify(state.modelName + ' updated.');
             }).catch(function (error) {
               Hipeac.utils.notifyApiError(error);
@@ -65,11 +84,16 @@
     var app = Vue.createApp({
       mixins: [AppMixin],
       computed: _.extend(
-        Vuex.mapState('editor', ['modelName', 'obj']), {
+        Vuex.mapState('editor', ['isNew', 'modelName', 'obj']), {
+        backUrl: function () {
+          return (this.obj && _.has(this.obj, 'url'))
+            ? this.obj.url
+            : VARS.backUrl;
+        }
       }),
       methods: {
-        update: function () {
-          this.$store.commit('editor/updateObj', this.obj);
+        save: function () {
+          this.$store.commit('editor/saveObj', this.obj);
         }
       },
       created: function () {

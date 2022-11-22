@@ -8,7 +8,6 @@ from hipeac.models import Job, JobEvaluation
 from hipeac.models.recruitment import validate_institution
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
-from .metadata import MetadataSerializer
 from .mixins import ApplicationAreasMixin, KeywordsMixin, LinksMixin, TopicsMixin
 
 
@@ -21,10 +20,10 @@ class JobBaseSerializer(ApplicationAreasMixin, KeywordsMixin, TopicsMixin, Writa
     url = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
     href = serializers.CharField(source="get_absolute_url", read_only=True)
     country = CountryField(country_dict=True, countries=HipeacCountries())
-    career_levels = MetadataSerializer(many=True)
-    employment_type = MetadataSerializer()
     email = serializers.EmailField(required=False, allow_blank=True)
     add_to_euraxess = serializers.BooleanField(required=True)
+    institution = InstitutionNestedSerializer()
+    project = ProjectNestedSerializer(required=False, allow_null=True)
 
     class Meta:
         model = Job
@@ -32,8 +31,7 @@ class JobBaseSerializer(ApplicationAreasMixin, KeywordsMixin, TopicsMixin, Writa
 
 
 class JobNestedSerializer(JobBaseSerializer):
-    institution = InstitutionNestedSerializer()
-    project = ProjectNestedSerializer(required=False, allow_null=True)
+    pass
 
 
 class JobSerializer(LinksMixin, JobBaseSerializer):

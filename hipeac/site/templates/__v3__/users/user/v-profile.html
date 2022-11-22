@@ -12,7 +12,11 @@
         <hipeac-country-select v-model="user.profile.country" label="Country of origin" class="col-12 col-sm-4" />
         <hipeac-search-select v-model="user.profile.institution" type="institution" label="Main institution" class="col-12 col-md-6" />
         <hipeac-search-select v-model="user.profile.second_institution" type="institution" label="Second institution" class="col-12 col-md-6" />
-        <hipeac-markdown v-model="user.profile.bio" label="Bio" class="col" />
+        <hipeac-markdown v-model="user.profile.bio" label="Bio" class="col-12" />
+      </div>
+      <div class="q-mb-lg">
+        <p class="q-mt-xl q-mb-md">You can add links to external websites here, to complete your profile. If you include your <a href="https://dblp.org/" target="_blank">DBLP</a> profile we will show your publications on your HiPEAC profile page.</p>
+        <hipeac-link-list v-model="user.profile.links" label="External links" />
       </div>
       <q-btn unelevated color="primary" @click="updateUser" label="Update" :disabled="!user.username || !user.first_name || !user.last_name" class="q-mt-lg" />
       <q-separator class="q-my-lg" />

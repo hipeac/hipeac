@@ -170,15 +170,25 @@ var HipeacCommonComponents = {
       collapse: {
         type: Boolean,
         default: false
+      },
+      label: {
+        type: String,
+        default: 'Menu'
       }
     },
     template: `
       <div class="text-body2">
-        <q-btn v-if="collapse" color="primary" label="Basic Menu">
+        <q-expansion-item
+          v-if="collapse"
+          dense
+          switch-toggle-side
+          expand-separator
+          :label="label"
+        >
           <q-menu>
             <slot></slot>
           </q-menu>
-        </q-btn>
+        </q-expansion-item>
         <slot v-else></slot>
       </div>
     `
@@ -756,7 +766,7 @@ var HipeacCommonComponents = {
       }
     },
     template: `
-      <q-btn v-if="show && type == 'btn'" flat round icon="edit" type="a" :href="url"></q-btn>
+      <q-btn v-if="show && type == 'btn'" flat round icon="edit" type="a" :href="url" target="_editor"></q-btn>
     `,
     created: function () {
       var self = this;
