@@ -10,10 +10,13 @@ from .permissions import PermissionsInline
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ("id", "acronym", "name")
+    date_hierarchy = "created_at"
+    list_display = ("id", "is_visible", "acronym", "name")
+    list_filter = ("is_visible", "created_at")
     search_fields = ("acronym", "name")
     # form
     raw_id_fields = ("coordinator", "coordinating_institution", "communication_officer")
+    readonly_fields = ("created_by",)
     inlines = (PartnersInline, ApplicationAreasInline, TopicsInline, LinksInline, PermissionsInline)
 
 

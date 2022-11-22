@@ -21,4 +21,5 @@ class ProjectDetail(SlugMixin, generic.DetailView):
             .prefetch_related(
                 "rel_application_areas__application_area", "rel_institutions__institution", "rel_topics__topic", "links"
             )
+            .filter(is_visible=True)
         )

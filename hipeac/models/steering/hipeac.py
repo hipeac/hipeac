@@ -9,8 +9,6 @@ class Hipeac(Project):
     A HiPEAC project.
     """
 
-    is_visible = models.BooleanField(default=False)
-
     class Meta:
         db_table = "hipeac_self"
 

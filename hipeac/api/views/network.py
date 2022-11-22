@@ -1,7 +1,7 @@
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from hipeac.models import HipeacPartner, Institution, Project, Video
 from ..permissions import HasAdminPermissionOrReadOnly
@@ -57,7 +57,7 @@ class PartnerViewSet(ListModelMixin, GenericViewSet):
     serializer_class = HipeacPartnerListSerializer
 
 
-class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class ProjectViewSet(ModelViewSet):
     filter_backends = (SearchFilter,)
     queryset = (
         Project.objects.select_related("programme")
@@ -72,14 +72,17 @@ class ProjectViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
     serializer_class = ProjectSerializer
     search_fields = ("acronym", "name", "rel_topics__topic__keywords")
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
     def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.defer("description")
+        self.queryset = self.queryset.defer("description").filter(is_visible=True)
         self.serializer_class = ProjectListSerializer
         return super().list(request, *args, **kwargs)
 
     @action(detail=False, serializer_class=ProjectMiniSerializer)
     def all(self, request, *args, **kwargs):
-        self.queryset = self.queryset.only("id", "programme", "acronym", "name", "image")
+        self.queryset = self.queryset.only("id", "programme", "acronym", "name", "image").filter(is_visible=True)
         return super().list(request, *args, **kwargs)
 
     @action(

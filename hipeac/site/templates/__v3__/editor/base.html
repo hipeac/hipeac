@@ -26,7 +26,7 @@
       <span>Create {% verbatim %}{{ modelName }}{% endverbatim %}</span>
     </q-toolbar-title>
     <q-toolbar-title v-else :class="{'q-pl-none': $q.screen.gt.sm}">
-      <span>{% verbatim %}{{ modelName }} #{{ obj.id }}{% endverbatim %}</span>
+      <span v-if="obj">{% verbatim %}{{ modelName }} #{{ obj.id }}{% endverbatim %}</span>
     </q-toolbar-title>
     <q-space></q-space>
     {% block save_button %}<q-btn unelevated @click="save" label="Save" color="primary"></q-btn>{% endblock %}

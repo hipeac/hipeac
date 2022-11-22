@@ -22,13 +22,13 @@
       <q-input filled dense v-model="obj.email" label="Contact email" type="email" class="col-12 col-md-3"></q-input>
     </div>
     <div>
-      <p class="q-mt-lg q-mb-md">You can add links to external websites here, to complete the job information. If no external website is added, a contact email will be required.</p>
+      <p class="text-body2 q-mt-lg q-mb-md">You can add links to external websites here, to complete the job information. If no external website is added, a contact email will be required.</p>
       <hipeac-link-list v-model="obj.links" label="External links" />
     </div>
-    <q-list class="bg-blue-1 rounded-borders q-mt-xl q-mb-none">
+    <q-list class="text-body2 bg-blue-1 rounded-borders q-mt-xl q-mb-none">
       <q-item tag="label" class="q-pa-md">
         <q-item-section avatar>
-          <q-checkbox v-model="obj.add_to_euraxess" />
+          <q-checkbox v-model="obj.add_to_euraxess"></q-checkbox>
         </q-item-section>
         <q-item-section>
           <q-item-label><strong>Add this job to EURAXESS. </strong> Backed by the European Union, member states and associated countries, <a href="https://euraxess.ec.europa.eu/" taregt="_blank">EURAXESS</a> supports researcher mobility and career development, while enhancing scientific collaboration between Europe and the world.</q-item-label>

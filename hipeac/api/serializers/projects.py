@@ -1,17 +1,20 @@
 from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
-from hipeac.models import Project, RelatedProject
-from .metadata import MetadataSerializer
+from hipeac.models import Metadata, Project, RelatedProject
+from .institutions import InstitutionNestedSerializer, InstitutionsMixin
 from .mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
 
 
-class ProjectSerializer(ApplicationAreasMixin, LinksMixin, TopicsMixin, WritableNestedModelSerializer):
+class ProjectSerializer(
+    ApplicationAreasMixin, InstitutionsMixin, LinksMixin, TopicsMixin, WritableNestedModelSerializer
+):
     self = serializers.HyperlinkedIdentityField(view_name="v1:project-detail", read_only=True)
     url = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
     href = serializers.CharField(source="get_absolute_url", read_only=True)
-    programme = MetadataSerializer(allow_null=True)
-    ec_project_id = serializers.CharField(read_only=True)
+    programme = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all())
+    ec_project_id = serializers.CharField(allow_null=True, read_only=True)
+    coordinating_institution = InstitutionNestedSerializer()
 
     class Meta:
         model = Project

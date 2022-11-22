@@ -22,6 +22,7 @@ from .mixins import (
     TopicsMixin,
 )
 from .metadata import Metadata
+from .permissions import Permission
 
 
 class ProjectManager(models.Manager):
@@ -50,6 +51,7 @@ class Project(
     FP7/H2020 projects related to HiPEAC.
     """
 
+    is_visible = models.BooleanField(default=False)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     name = models.CharField(max_length=8)
@@ -82,6 +84,10 @@ class Project(
         validators=[FileExtensionValidator(allowed_extensions=["png"])],
     )
 
+    created_by = models.ForeignKey(
+        "auth.User", null=True, blank=True, on_delete=models.SET_NULL, related_name="posted_projects"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = ProjectManager()
@@ -91,6 +97,12 @@ class Project(
 
     def __str__(self) -> str:
         return self.acronym
+
+    def can_be_managed_by(self, user) -> bool:
+        return (
+            self.created_by_id == user.id
+            or self.institution.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+        )
 
     def get_absolute_url(self) -> str:
         return reverse("project", args=[self.id, self.slug])

@@ -628,7 +628,8 @@ var HipeacFormComponents = {
         <template v-slot:no-option>
           <q-item>
             <q-item-section class="text-grey-7 text-caption">
-              <span>No results found. <a href="mailto:missing@hipeac.net">Contact us</a> if you think something is missing in our list.</span>
+              <span v-if="type == 'project'">No results found. <a href="mailto:missing@hipeac.net">Contact us</a> if you are missing a project, or <a href="/editor/new/project/">submit a new project</a>.</span>
+              <span v-else>No results found. <a href="mailto:missing@hipeac.net">Contact us</a> if you think something is missing in our list.</span>
             </q-item-section>
           </q-item>
         </template>

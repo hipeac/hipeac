@@ -1,0 +1,41 @@
+{% extends './base.html' %}
+
+
+{% block model_name %}Project{% endblock %}
+
+{% block back_url %}{% url 'network' %}#/projects/{% endblock %}
+
+{% block page %}
+  <q-card v-if="obj" class="hipeac__card q-mt-lg q-mb-md">
+    <div class="row q-col-gutter-lg">
+      <q-input filled v-model="obj.acronym" label="Acronym *" type="text" class="col-12 col-md-3" hint="Required."></q-input>
+      <q-input filled v-model="obj.name" label="Project name *" type="text" class="col-12 col-md-9" hint="Required."></q-input>
+      <hipeac-metadata-select v-model="obj.programme" type="project_programme" label="Programme *" class="col-12 col-md-3" hint="Required."></hipeac-metadata-select>
+      <hipeac-datepicker v-model="obj.start_date" label="Start" class="col-12 col-md-3"></hipeac-datepicker>
+      <hipeac-datepicker v-model="obj.end_date" label="End" class="col-12 col-md-3"></hipeac-datepicker>
+      <hipeac-search-select v-model="obj.coordinating_institution" type="institution" label="Coordinating institution *" class="col-12 col-md-6" hint="Required."></hipeac-search-select>
+      <hipeac-search-rel-select v-model="obj.rel_institutions" :initial-options="obj.institutions || []" type="institution" label="Consortium" class="col-12 col-md-6"></hipeac-search-rel-select>
+      <hipeac-markdown v-model="obj.description" label="Description *" class="col-12"></hipeac-markdown>
+      <hipeac-metadata-rel-select v-model="obj.rel_topics" type="topic" label="Topics" class="col-12 col-md-6"></hipeac-metadata-rel-select>
+      <hipeac-metadata-rel-select v-model="obj.rel_application_areas" type="application_area" label="Application areas" class="col-12 col-md-6"></hipeac-metadata-rel-select>
+    </div>
+    <div>
+      <p class="text-body2 q-mt-lg q-mb-md">You can add links to external websites here, to complete the project information. Is recommended to at least include the official website and the CORDIS page for this project.</p>
+      <hipeac-link-list v-model="obj.links" label="External links" />
+    </div>
+    <q-list class="text-body2 bg-red-1 rounded-borders q-mt-xl q-mb-none">
+      <q-item class="q-pa-md">
+        <q-item-section avatar>
+          <q-icon name="play_circle_filled" color="red"></q-icon>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label><a href="mailto:communication@hipeac.net?subject=HiPEAC expert videos" target="_blank"><strong>Contact us</strong></a> if you have YouTube videos related to this project that you would like to share with the HiPEAC community. All videos appear on the project profile and we sometimes add them to the <a href="{% url 'press' %}#/videos/" target="_blank">HiPEAC experts page</a> too!</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
+  </q-card>
+{% endblock %}
+
+{% block save_button %}
+  <q-btn v-if="obj" unelevated @click="save" label="Save" color="primary" :disable="!obj.acronym || !obj.name || !obj.programme || !obj.coordinating_institution"></q-btn>
+{% endblock %}

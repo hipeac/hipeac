@@ -4,8 +4,8 @@
 {% block model_name %}Session{% endblock %}
 
 {% block page %}
-  <q-card class="hipeac__card q-mt-lg q-mb-md">
-    <div v-if="obj" class="row q-col-gutter-lg">
+  <q-card v-if="obj" class="hipeac__card q-mt-lg q-mb-md">
+    <div class="row q-col-gutter-lg">
       <q-input filled v-model="obj.title" label="Title *" type="text" class="col"></q-input>
       <hipeac-markdown v-model="obj.summary" label="Summary" class="col-12"></hipeac-markdown>
       <hipeac-markdown v-model="obj.program" :show-hint="false" label="Program" class="col-12"></hipeac-markdown>
@@ -14,6 +14,10 @@
       <hipeac-metadata-rel-select v-model="obj.rel_application_areas" type="application_area" label="Application areas" class="col-12 col-md-6"></hipeac-metadata-rel-select>
       <hipeac-search-rel-select v-model="obj.rel_institutions" :initial-options="obj.institutions" type="institution" :label="(obj.type.value == 'Industrial Session') ? 'Companies presenting' : 'Institutions involved'" class="col-12 col-sm-6"></hipeac-search-rel-select>
       <hipeac-search-rel-select v-model="obj.rel_projects" :initial-options="obj.projects" type="project" :label="(obj.type.value == 'Industrial Session') ? 'Projects presenting' : 'Projects involved'" class="col-12 col-sm-6"></hipeac-search-rel-select>
+    </div>
+    <div>
+      <p class="text-body2 q-mt-lg q-mb-md">You can add links to external websites here, to complete the session information.</p>
+      <hipeac-link-list v-model="obj.links" label="External links" />
     </div>
   </q-card>
 {% endblock %}
