@@ -4,7 +4,6 @@ from rest_framework import serializers
 from hipeac.models import Article, Clipping, Dissemination, Quote, Magazine, Video
 from .generic import ImageSerializer
 from .institutions import InstitutionNestedSerializer
-from .metadata import MetadataSerializer
 from .mixins import ApplicationAreasMixin, TopicsMixin
 from .users import UserPublicMiniSerializer
 

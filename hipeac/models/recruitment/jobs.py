@@ -8,7 +8,7 @@ from django.utils import timezone
 from django_countries.fields import CountryField
 from typing import Tuple
 
-from hipeac.models import Metadata, Permission
+from hipeac.models import Institution, Metadata, Permission
 from hipeac.models.countries import HipeacCountries
 from hipeac.validators import validate_no_badwords
 from ..mixins import ApplicationAreasMixin, EditorMixin, KeywordsMixin, LinksMixin, TopicsMixin
@@ -18,14 +18,18 @@ def validate_institution(institution, user) -> None:
     if user.is_staff or user.groups.filter(name="External recruiters").exists():
         return
 
-    if not institution:
-        raise ValidationError("Please select a valid institution.")
+    try:
+        institution = Institution.objects.get(id=institution["id"])
+    except Institution.DoesNotExist:
+        raise ValidationError("Institution does not exist.")
 
     ids = [institution.id] + list(institution.children.values_list("id", flat=True))
     if institution.parent_id:
         ids.append(institution.parent_id)
     if user.profile.institution_id not in ids and user.profile.second_institution_id not in ids:
-        raise ValidationError("You cannot create a job position for this institution.")
+        raise ValidationError(
+            "You can only create a job position for your institution. Please check your affiliation."
+        )
 
 
 class JobManager(models.Manager):
@@ -106,10 +110,10 @@ class Job(ApplicationAreasMixin, EditorMixin, KeywordsMixin, LinksMixin, TopicsM
         )
 
     def deadline_is_near(self) -> bool:
-        return (self.deadline - timezone.now().date()).days < 7
+        return (self.deadline - timezone.now().date()).days < 7 if self.deadline else False
 
     def is_closed(self) -> bool:
-        return self.deadline < timezone.now().date()
+        return self.deadline < timezone.now().date() if self.deadline else False
 
     def get_absolute_url(self) -> str:
         return reverse("job", args=[self.id, self.slug])

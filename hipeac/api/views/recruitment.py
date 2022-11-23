@@ -4,6 +4,7 @@ from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from hipeac.models import Job, JobEvaluation, Video
+from hipeac.models.recruitment import validate_institution
 from ..permissions import HasAdminPermissionOrReadOnly
 from ..serializers import JobNestedSerializer, JobSerializer, JobEvaluationSerializer, VideoListSerializer
 
@@ -13,13 +14,22 @@ class JobViewSet(ModelViewSet):
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = JobSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+    def _validate(self, request, *args, **kwargs):
+        try:
+            validate_institution(request.data.get("institution"), request.user)
+        except Exception as e:
+            raise ValidationError({"institution": [str(e)]})
+
+        if request.data.get("email", "") == "" and not request.data.get("links"):
+            raise ValidationError({"contact_data": ["Please add an email or related website."]})
 
     def create(self, request, *args, **kwargs):
-        if self.request.data.get("email", "") == "" and not self.request.data.get("links"):
-            raise ValidationError({"contact_data": ["Please add an email or related website."]})
+        self._validate(request)
         return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        self._validate(request)
+        return super().update(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
         self.queryset = Job.objects.active().defer("description")

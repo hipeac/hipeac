@@ -5,7 +5,6 @@ from rest_framework import serializers
 
 from hipeac.functions import get_european_countries, get_h2020_associated_countries
 from hipeac.models import Job, JobEvaluation
-from hipeac.models.recruitment import validate_institution
 from .institutions import InstitutionNestedSerializer
 from .projects import ProjectNestedSerializer
 from .mixins import ApplicationAreasMixin, KeywordsMixin, LinksMixin, TopicsMixin
@@ -22,7 +21,7 @@ class JobBaseSerializer(ApplicationAreasMixin, KeywordsMixin, TopicsMixin, Writa
     country = CountryField(country_dict=True, countries=HipeacCountries())
     email = serializers.EmailField(required=False, allow_blank=True)
     add_to_euraxess = serializers.BooleanField(required=True)
-    institution = InstitutionNestedSerializer()
+    institution = InstitutionNestedSerializer(required=True)
     project = ProjectNestedSerializer(required=False, allow_null=True)
 
     class Meta:
@@ -37,10 +36,6 @@ class JobNestedSerializer(JobBaseSerializer):
 class JobSerializer(LinksMixin, JobBaseSerializer):
     class Meta(JobBaseSerializer.Meta):
         exclude = ("share", "reminder_sent_for", "evaluation_sent_for", "created_by")
-
-    def validate_institution(self, data):
-        validate_institution(data, self.context["request"].user)
-        return data
 
 
 class JobEvaluationSerializer(serializers.ModelSerializer):

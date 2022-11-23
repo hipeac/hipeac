@@ -14,7 +14,7 @@
       <hipeac-metadata-select v-model="obj.employment_type" type="employment_type" label="Employment type *" class="col-12 col-sm-6 col-md-3"></hipeac-metadata-select>
       <q-input filled dense v-model.trim="obj.positions" type="number" label="Positions" class="col-12 col-sm-6 col-md-3"></q-input>
       <q-input filled dense v-model="obj.location" label="Location" type="text" class="col-12 col-sm-6 col-md-3"></q-input>
-      <hipeac-country-select v-model="obj.country" label="Country" class="col-12 col-sm-6 col-md-3"></hipeac-country-select>
+      <hipeac-country-select v-model="obj.country" :eu-only="true" label="Country" class="col-12 col-sm-6 col-md-3"></hipeac-country-select>
       <hipeac-markdown v-model="obj.description" label="Description *" class="col-12"></hipeac-markdown>
       <hipeac-metadata-rel-select v-model="obj.rel_topics" type="topic" label="Topics" class="col-12 col-md-6"></hipeac-metadata-rel-select>
       <hipeac-metadata-rel-select v-model="obj.rel_application_areas" type="application_area" label="Application areas" class="col-12 col-md-6"></hipeac-metadata-rel-select>

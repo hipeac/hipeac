@@ -266,10 +266,3 @@ NOCAPTCHA = True  # For using reCAPTCHA v2
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 CRISPY_FAIL_SILENTLY = False
-
-
-COUNTRIES_OVERRIDE = {
-    "CZ": "Czech Republic",  # EURAXESS value
-    "US": "United States",
-    "XK": "Kosovo",
-}

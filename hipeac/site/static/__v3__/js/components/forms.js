@@ -362,17 +362,22 @@ var HipeacFormComponents = {
     emits: ['update:modelValue'],
     data: function () {
       return {
+        eu: ['AL', 'AM', 'AT', 'BE', 'BA', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FO', 'FI', 'FR', 'GE', 'DE', 'GR', 'HU', 'IS', 'IE', 'IL', 'IT', 'LV', 'LT', 'LU', 'MT', 'MD', 'ME', 'NL', 'MK', 'NO', 'PL', 'PT', 'RO', 'RS', 'SK', 'SI', 'ES', 'SE', 'CH', 'TN', 'TR', 'UA', 'GB'],
         mutable: null
       };
     },
     props: {
       modelValue: {
         type: Object
+      },
+      euOnly: {
+        type: Boolean,
+        default: false
       }
     },
     template: `
       <q-select dense filled v-model="mutable" :options="options" label="Country" option-value="code"
-        option-label="name" />
+        option-label="name" :hint="(euOnly) ? 'EU countries and associated countries only' : undefined" />
     `,
     computed: _.extend(
       Vuex.mapState('common', ['countries']), {
@@ -387,7 +392,14 @@ var HipeacFormComponents = {
           });
         });
 
-        return c;
+        if (this.euOnly) {
+          var euCodes = this.eu;
+          return c.filter(function (country) {
+            return _.includes(euCodes, country.code);
+          });
+        } else {
+          return c;
+        }
       }
     }),
     watch: {
