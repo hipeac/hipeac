@@ -59,7 +59,7 @@ class ApplicationArea(models.Model):
 
     class Meta:
         db_table = "hipeac_rel_application_area"
-        ordering = ("application_area__position",)
+        ordering = ("application_area__position", "application_area__value")
         unique_together = ("content_type", "object_id", "application_area")
 
 
@@ -72,7 +72,7 @@ class Topic(models.Model):
 
     class Meta:
         db_table = "hipeac_rel_topic"
-        ordering = ("topic__position",)
+        ordering = ("topic__position", "topic__value")
         unique_together = ("content_type", "object_id", "topic")
 
 
