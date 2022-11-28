@@ -178,10 +178,11 @@
                   <hipeac-search-select v-model="user.profile.institution" type="institution" label="Affiliation" class="col-12" />
                   <hipeac-metadata-select v-model="user.profile.gender" type="gender" label="Gender" class="col-12 col-sm-4" />
                   <hipeac-metadata-select v-model="user.profile.meal_preference" type="meal_preference" label="Dietary requirements" class="col-12 col-sm-4" />
+                  <hipeac-country-select v-model="user.profile.country" label="Country of origin *" class="col-12 col-sm-4" />
                   <hipeac-metadata-rel-select v-model="user.profile.rel_topics" type="topic" label="Main research topics *" class="col-12" hint="Required. You can use these topics to get a personalized conference program." />
                 </div>
                 <q-stepper-navigation>
-                  <q-btn unelevated color="primary" @click="updateUser" label="Update your profile" :disable="!user.first_name || !user.last_name || !user.profile.rel_topics.length" />
+                  <q-btn unelevated color="primary" @click="updateUser" label="Update your profile" :disable="!user.profile.country || !user.first_name || !user.last_name || !user.profile.rel_topics.length" />
                   <q-btn flat @click="step = 4 + days" color="grey-8" label="Back" class="q-ml-sm" />
                 </q-stepper-navigation>
               </div>

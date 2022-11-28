@@ -1,0 +1,26 @@
+{% extends './base.html' %}
+
+
+{% block model_name %}Institution{% endblock %}
+
+{% block page %}
+  <q-card v-if="obj" class="hipeac__card q-mt-lg q-mb-md">
+    <div class="row q-col-gutter-lg">
+      <q-input filled v-model="obj.name" label="Institution name *" type="text" class="col-12" hint="Required."></q-input>
+      <q-input filled dense v-model="obj.location" label="Location" type="text" class="col-12 col-sm-6 col-md-3"></q-input>
+      <hipeac-country-select v-model="obj.country" label="Country *" class="col-12 col-sm-6 col-md-3"></hipeac-country-select>
+      <!--<hipeac-search-select v-model="obj.parent" type="institution" label="Parent" class="col-12 col-md-6" hint="Optional."></hipeac-search-select>-->
+      <hipeac-markdown v-model="obj.description" label="Description *" class="col-12"></hipeac-markdown>
+      <hipeac-metadata-rel-select v-model="obj.rel_topics" type="topic" label="Topics" class="col-12 col-md-6"></hipeac-metadata-rel-select>
+      <hipeac-metadata-rel-select v-model="obj.rel_application_areas" type="application_area" label="Application areas" class="col-12 col-md-6"></hipeac-metadata-rel-select>
+    </div>
+    <div>
+      <p class="text-body2 q-mt-lg q-mb-md">You can add links to external websites here.</p>
+      <hipeac-link-list v-model="obj.links" label="External links" />
+    </div>
+  </q-card>
+{% endblock %}
+
+{% block save_button %}
+  <q-btn v-if="obj" unelevated @click="save" label="Save" color="primary" :disable="!obj.name || !obj.description"></q-btn>
+{% endblock %}

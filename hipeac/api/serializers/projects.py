@@ -12,7 +12,7 @@ class ProjectSerializer(
     self = serializers.HyperlinkedIdentityField(view_name="v1:project-detail", read_only=True)
     url = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
     href = serializers.CharField(source="get_absolute_url", read_only=True)
-    programme = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all())
+    programme = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all(), allow_null=True)
     ec_project_id = serializers.CharField(allow_null=True, read_only=True)
     coordinating_institution = InstitutionNestedSerializer()
 
