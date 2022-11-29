@@ -14,6 +14,9 @@ class JobViewSet(ModelViewSet):
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = JobSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
     def _validate(self, request, *args, **kwargs):
         try:
             validate_institution(request.data.get("institution"), request.user)
