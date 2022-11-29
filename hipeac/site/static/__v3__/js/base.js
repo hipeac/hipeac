@@ -115,6 +115,20 @@ var Hipeac = {
     job: function (obj) {
       return obj;
     },
+    jobfair: function (obj) {
+      obj.tz = (obj.is_virtual) ? moment.tz.guess(true) : 'Europe/Brussels';
+      obj.start = getMoment(obj.start_date, obj.tz);
+      obj.end = getMoment(obj.end_date, obj.tz);
+      obj.year = moment(obj.start_date).year();
+
+      /*obj.registration_start = getMoment(obj.registration_start_date, obj.tz);
+      obj.registrations_round = (obj.registrations_count)
+        ? Math.floor(obj.registrations_count / 10) * 10
+        : 0;
+      obj.google_mid = null;*/
+
+      return obj;
+    },
     metadata: function (obj) {
       obj._q = [
         obj.value,

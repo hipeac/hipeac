@@ -105,6 +105,10 @@ class UsersInline(GenericTabularInline):
     raw_id_fields = ("user",)
 
 
+class ManagersInline(UsersInline):
+    verbose_name = "manager"
+
+
 class MembersInline(UsersInline):
     verbose_name = "member"
 

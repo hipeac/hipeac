@@ -2,7 +2,6 @@ from commonmark import commonmark as marked
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.syndication.views import Feed
-from django.http import response
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -12,7 +11,7 @@ from typing import List
 from hipeac.models import Job, JobEvaluation, PhdMobility
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
 from hipeac.tools.euraxess import EuraxessXMLGenerator
-from .mixins import SlugMixin
+from ..mixins import SlugMixin
 
 
 class CollaborationAwardees(generic.ListView):

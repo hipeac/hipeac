@@ -4,11 +4,13 @@ from django.urls import path
 from typing import Optional
 
 from hipeac.models.events import Event
-from hipeac.models.recruitment import PhdMobility, Job, JobEvaluation
+from hipeac.models.recruitment import PhdMobility, Job, JobEvaluation, JobFair
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
 from .generic import custom_titled_filter
+from .institutions import InstitutionsInline
 from .links import LinksInline
 from .metadata import ApplicationAreasInline, TopicsInline
+from .permissions import PermissionsInline
 from .widgets import MarkdownEditorWidget
 
 
@@ -125,3 +127,9 @@ class JobAdmin(admin.ModelAdmin):
     evaluated.short_description = "Evaluated"
     positive_evaluation.boolean = True
     positive_evaluation.short_description = "Evaluation"
+
+
+@admin.register(JobFair)
+class JobFairAdmin(admin.ModelAdmin):
+    date_hierarchy = "start_date"
+    inlines = (InstitutionsInline, PermissionsInline)

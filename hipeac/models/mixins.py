@@ -128,10 +128,13 @@ class PermissionsMixin(models.Model):
     class Meta:
         abstract = True
 
-    def can_be_managed_by(self, user) -> bool:
+    def _can_be_managed_by(self, user) -> bool:
         from hipeac.models import Permission
 
         return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+
+    def can_be_managed_by(self, user) -> bool:
+        return self._can_be_managed_by(user)
 
 
 class ProjectsMixin(models.Model):

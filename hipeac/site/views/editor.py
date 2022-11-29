@@ -12,9 +12,9 @@ class EditorBaseView(generic.TemplateView):
 
     def get_template_names(self):
         model_name = self.get_model_name(**self.kwargs)
-        if model_name in {"institution", "job", "project", "session"}:
-            return f"__v3__/editor/{model_name}.html"
-        return ["".join(["editor/", self.get_model_name(**self.kwargs), ".html"])]
+        if model_name in {"jobevaluation"}:
+            return ["".join(["editor/", self.get_model_name(**self.kwargs), ".html"])]
+        return f"__v3__/editor/{model_name}.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -26,6 +26,7 @@ class EditorBaseView(generic.TemplateView):
                     "session": "/events/sessions/",
                     "job": "/jobs/",
                     "jobevaluation": "/jobs/evaluations/",
+                    "jobfair": "/jobfairs/",
                     "project": "/network/projects/",
                     "institution": "/network/institutions/",
                 }[self.get_model_name(**kwargs)],

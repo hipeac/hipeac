@@ -27,9 +27,7 @@ def validate_institution(institution, user) -> None:
     if institution.parent_id:
         ids.append(institution.parent_id)
     if user.profile.institution_id not in ids and user.profile.second_institution_id not in ids:
-        raise ValidationError(
-            "You can only create a job position for your institution. Please check your affiliation."
-        )
+        raise ValidationError("You can only create a job position for your institution. Please check your affiliation.")
 
 
 class JobManager(models.Manager):

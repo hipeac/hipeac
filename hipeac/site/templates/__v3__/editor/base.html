@@ -86,8 +86,8 @@
       computed: _.extend(
         Vuex.mapState('editor', ['isNew', 'modelName', 'obj']), {
         backUrl: function () {
-          return (this.obj && _.has(this.obj, 'url'))
-            ? this.obj.url
+          return (this.obj && _.has(this.obj, 'href'))
+            ? this.obj.href
             : VARS.backUrl;
         }
       }),

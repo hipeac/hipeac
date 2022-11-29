@@ -113,7 +113,7 @@ class Session(EditorMixin, SessionAbstractModel):
         validate_date(self.start_at.date(), self.event)
 
     def can_be_managed_by(self, user) -> bool:
-        return self.main_speaker_id == user.id or self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+        return self.main_speaker_id == user.id or self._can_be_managed_by(user)
 
     def get_absolute_url(self) -> str:
         return "".join([self.event.get_absolute_url(), f"#/program/sessions/{self.id}/"])

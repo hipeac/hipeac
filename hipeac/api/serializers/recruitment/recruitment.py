@@ -5,9 +5,9 @@ from rest_framework import serializers
 
 from hipeac.functions import get_european_countries, get_h2020_associated_countries
 from hipeac.models import Job, JobEvaluation
-from .institutions import InstitutionNestedSerializer
-from .projects import ProjectNestedSerializer
-from .mixins import ApplicationAreasMixin, KeywordsMixin, LinksMixin, TopicsMixin
+from ..institutions import InstitutionNestedSerializer
+from ..projects import ProjectNestedSerializer
+from ..mixins import ApplicationAreasMixin, KeywordsMixin, LinksMixin, TopicsMixin
 
 
 class HipeacCountries(Countries):

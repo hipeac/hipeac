@@ -11,7 +11,6 @@ from django_countries.fields import CountryField
 from hipeac.functions import get_images_path, send_task
 from hipeac.validators import validate_no_badwords
 from .mixins import ApplicationAreasMixin, EditorMixin, ImageMixin, LinksMixin, PermissionsMixin, TopicsMixin
-from .permissions import Permission
 
 
 class Institution(
@@ -68,7 +67,7 @@ class Institution(
         return self.name
 
     def can_be_managed_by(self, user) -> bool:
-        return self.acl.filter(user_id=user.id, level__gte=Permission.ADMIN).exists()
+        return self._can_be_managed_by(user)
 
     def get_absolute_url(self) -> str:
         return reverse("institution", args=[self.id, self.slug])

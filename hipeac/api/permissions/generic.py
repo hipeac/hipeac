@@ -1,12 +1,21 @@
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 
-class HasAdminPermissionOrReadOnly(IsAuthenticatedOrReadOnly):
+class HasManagerPermission(IsAuthenticated):  # new naming conventions; TODO: change other
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_staff or obj.can_be_managed_by(request.user)
+
+
+class HasManagerPermissionOrReadOnly(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
 
         return request.user.is_staff or obj.can_be_managed_by(request.user)
+
+
+class HasAdminPermissionOrReadOnly(HasManagerPermissionOrReadOnly):  # legacy
+    pass
 
 
 class HasManagementPermission(IsAuthenticated):

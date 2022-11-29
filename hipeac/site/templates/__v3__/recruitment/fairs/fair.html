@@ -1,0 +1,226 @@
+{% extends '__v3__/layout.html' %}
+
+{% load compress %}
+{% load hipeac %}
+{% load static %}
+
+
+{% block head_title %}{{ jobfair }} - {{ block.super }}{% endblock %}
+
+{% block submenu %}
+  <q-toolbar class="container">
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ jobfair }} job fair</q-toolbar-title>
+    <hipeac-submenu-tabs v-if="fair" :menu="menu" :checks="{'registration': !!registration}"></hipeac-submenu-tabs>
+    <editor-link type="btn" url="{{ jobfair.get_editor_url }}" target="_blank"></editor-link>
+  </q-toolbar>
+{% endblock %}
+
+{% block page %}
+  <div id="vars" data-fair-id="{{ jobfair.id }}" data-fair-url="{% url 'v1:jobfair-detail' jobfair.id %}" data-registration-url="{% url 'v1:auth-registration-jobfair-list' %}"></div>
+  <router-view></router-view>
+  <hipeac-submenu-fabs v-if="fair" :menu="menu" :checks="{'registration': !!registration}"></hipeac-submenu-fabs>
+{% endblock %}
+
+{% block vue_templates %}
+  {% include './v-about.html' %}
+  {% include './v-jobs.html' %}
+  {% include './v-registration.html' %}
+{% endblock %}
+
+{% block scripts %}
+{% compress js file __v3__conference %}
+  <script src="{% static '__v3__/js/components/forms.js' %}"></script>
+  <script src="{% static '__v3__/js/components/events.js' %}"></script>
+  <script src="{% static '__v3__/js/components/jobs.js' %}"></script>
+  <script src="{% static '__v3__/js/components/users.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/query.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/profile.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/registration.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/session.js' %}"></script>
+  <script src="{% static '__v3__/js/stores/events.js' %}"></script>
+  <script src="{% static '__v3__/js/stores/user.js' %}"></script>
+  <script type="text/javascript">
+    var VARS = document.querySelector('#vars').dataset;
+
+    var AppStoreModule = {
+      app: {
+        namespaced: true,
+        state: {
+          fair: null,
+          registration: null,
+        },
+        mutations: {
+          getFair: function (state) {
+            Hipeac.api.request('GET', VARS.fairUrl).then(function (res) {
+              state.fair = Object.freeze(Hipeac.map.jobfair(res.data));
+              Quasar.Loading.hide();
+            });
+          },
+          getRegistration: function (state) {
+            if (!USER_IS_AUTHENTICATED) return;
+
+            Hipeac.api.request('GET', VARS.registrationUrl).then(function (res) {
+              var reg = _.findWhere(res.data, {fair: +VARS.fairId});
+              state.registration = (reg) ? reg : null;
+            });
+          },
+          updateRegistration: function (state, payload) {
+            state.registration = Hipeac.map.registration(payload);
+          }
+        }
+      }
+    };
+
+    var AboutView = {
+      template: '#v-about',
+      computed: _.extend(
+        Vuex.mapState('app', ['fair']), {
+      }),
+    };
+
+    var JobsView = {
+      template: '#v-jobs',
+      computed: _.extend(
+        Vuex.mapState('app', ['fair']), {
+      }),
+      created: function () {
+        // this.$store.commit('events/getJobs');
+      }
+    };
+
+    var RegistrationView = {
+      mixins: [ProfileMixin],
+      template: '#v-registration',
+      props: ['id'],
+      data: function () {
+        return {
+          authenticated: +(document.querySelector('html').dataset.user) > 0,
+          create_url: document.querySelector('#vars').dataset.registrationUrl,
+          now: moment(),
+          obj: null,
+          step: 1,
+        };
+      },
+      computed: _.extend(
+        Vuex.mapState('app', ['fair', 'registration']), {
+      }),
+      methods: {
+        scrollToStep: function (step) {
+          this.step = step;
+          window.scrollTo(0, 0);
+        },
+        createOrUpdate: function () {
+          var self = this;
+
+          if (_.has(this.obj, 'self')) {
+            Hipeac.api.update(this.obj, function (res) {
+              self.$store.commit('events/updateRegistration', res.data);
+            }, 'Registration updated.');
+          } else {
+            Hipeac.api.create(this.create_url, this.obj, function (res) {
+              self.$store.commit('events/updateRegistration', res.data);
+            }, 'Registration created.');
+          }
+        },
+        sync: function () {
+          var self = this;
+
+          if (!this.fair || this.registration === undefined) {
+            setTimeout(function () { self.sync() }, 25);
+            return;
+          }
+
+          if (this.registration) {
+            this.obj = _.clone(this.registration);
+          } else {
+            this.obj = _.clone({
+              fair: this.fair.id,
+              jobs: []
+            });
+          }
+        }
+      },
+      watch: {
+        'registration': function (val) {
+          this.obj = val;
+        }
+      },
+      mounted: function () {
+        this.sync();
+      }
+    };
+
+    var Router = VueRouter.createRouter({
+      history: VueRouter.createWebHashHistory(),
+      linkActiveClass: 'active',
+      routes: [
+        {
+          name: 'about',
+          path: '/',
+          pathToRegexpOptions: {strict: true},
+          component: AboutView
+        },
+        {
+          name: 'jobs',
+          path: '/recruitment/',
+          pathToRegexpOptions: {strict: true},
+          component: JobsView
+        },
+        {
+          name: 'registration',
+          path: '/registration/:id?/',
+          pathToRegexpOptions: {strict: true},
+          component: RegistrationView
+        },
+      ]
+    });
+
+    var app = Vue.createApp({
+      data: {
+        menu: [
+          {
+            label: 'About',
+            to: {name: 'about'},
+            exact: true
+          },
+          {
+            label: 'Jobs',
+            to: {name: 'jobs'},
+            exact: true
+          },
+          {
+            label: 'Registration',
+            to: {name: 'registration'},
+            exact: true,
+            icon: 'fact_check'
+          }
+        ]
+      },
+      mixins: [AppMixin],
+      computed: _.extend(
+        Vuex.mapState('app', ['fair', 'registration']), {
+      }),
+      created: function () {
+        this.$q.loading.show();
+        this.$store.commit('app/getFair');
+        this.$store.commit('app/getRegistration');
+        this.$store.commit('user/getUser');
+      }
+    });
+    Hipeac.utils.registerStoreModules(app, [
+      AppStoreModule,
+      HipeacCommonStoreModule,
+      HipeacUserStoreModule
+    ]);
+    Hipeac.utils.registerComponents(app, [
+      HipeacCommonComponents,
+      HipeacFormComponents,
+      HipeacJobComponents,
+      HipeacUserComponents
+    ]);
+    app.use(Router);
+    app.use(Quasar);
+    app.mount('#vue');
+  </script>
+{% endcompress %}
+{% endblock %}

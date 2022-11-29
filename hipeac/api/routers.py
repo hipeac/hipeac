@@ -40,6 +40,12 @@ class Router(DefaultRouter):
         )
         self.register(r"user/registrations/csw", views.CswRegistrationViewSet, basename="auth-registration-csw")
 
+        # job fairs
+        self.register("jobfairs", views.JobFairViewSet, basename="jobfair")
+        self.register(
+            "user/registrations/fairs", views.JobFairRegistrationViewSet, basename="auth-registration-jobfair"
+        )
+
         self.register(r"events/events", views.EventViewSet, basename="event")
         self.register(r"events/roadshows", views.RoadshowViewSet, basename="roadshow")
         self.register(r"events/sessions", views.SessionViewSet, basename="session")

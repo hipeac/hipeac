@@ -5,8 +5,8 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from hipeac.models import Job, JobEvaluation, Video
 from hipeac.models.recruitment import validate_institution
-from ..permissions import HasAdminPermissionOrReadOnly
-from ..serializers import JobNestedSerializer, JobSerializer, JobEvaluationSerializer, VideoListSerializer
+from ...permissions import HasAdminPermissionOrReadOnly
+from ...serializers import JobNestedSerializer, JobSerializer, JobEvaluationSerializer, VideoListSerializer
 
 
 class JobViewSet(ModelViewSet):

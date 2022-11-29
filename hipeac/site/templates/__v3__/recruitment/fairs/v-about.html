@@ -1,0 +1,30 @@
+<script type="text/x-template" id="v-about">
+{% verbatim %}
+  <div v-if="fair">
+    <q-card class="hipeac__card q-mt-lg">
+      <div class="row q-col-gutter-y-lg q-col-gutter-x-xl reverse" :class="{'q-col-gutter-xl': $q.screen.gt.sm}">
+        <div class="col-12 col-md-4">
+          <q-list separator>
+            <q-item v-if="fair.is_virtual" class="text-dark">
+              <q-item-section avatar><q-icon name="monitor" /></q-item-section>
+              <q-item-section>Virtual fair</q-item-section>
+            </q-item>
+            <q-item v-else class="text-dark">
+              <q-item-section avatar>
+                <country-flag :code="fair.country.code"></country-flag>
+              </q-item-section>
+              <q-item-section>{{ fair.city }}, {{ fair.country.name }}</q-item-section>
+            </q-item>
+            <hipeac-highlight-item :to="{name: 'program'}" icon="date_range">{{ fair.start.format('MMMM D') }} - {{ fair.end.format('D, YYYY') }}</hipeac-highlight-item>
+            <hipeac-highlight-item v-if="registration" :to="{name: 'registration'}" icon="fact_check" color="green-7">Registered</hipeac-highlight-item>
+            <hipeac-highlight-item v-else :to="{name: 'registration'}" icon="fact_check" color="primary">Register</hipeac-highlight-item>
+          </q-list>
+        </div>
+        <div class="col-12 col-md-8">
+          <marked :text="fair.presentation" class="catchphrase text-weight-light"></marked>
+        </div>
+      </div>
+    </q-card>
+  </div>
+{% endverbatim %}
+</script>
