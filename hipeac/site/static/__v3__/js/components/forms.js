@@ -931,10 +931,13 @@ var HipeacFormComponents = {
         <input v-model="mutable" type="hidden" />
         <div v-for="el in stack" class="row q-col-gutter-xs q-mb-sm items-center">
           <q-select filled dense v-model="el.type" :options="websites" label="Type" class="col-4 col-md-3" />
-          <q-input filled dense v-model="el.url" type="url" label="URL" class="col"></q-input>
-          <div class="col-1 text-center">
-            <hipeac-remove-icon @click.prevent="removeFromStack(el)" />
-          </div>
+          <q-input filled dense v-model="el.url" type="url" label="URL" class="col">
+            <template v-slot:append>
+              <q-btn flat size="sm" @click.prevent="removeFromStack(el)" class="q-px-sm">
+                <hipeac-remove-icon></hipeac-remove-icon>
+              </q-btn>
+            </template>
+          </q-input>
         </div>
         <q-btn outline @click="addToStack" size="sm" color="green" icon="add" label="Add new link"></q-btn>
       </div>
