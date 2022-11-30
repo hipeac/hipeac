@@ -26,7 +26,10 @@ var HipeacUserStoreModule = {
         }).catch(function (error) {
           Hipeac.utils.notifyApiError(error);
         });
-      }
+      },
+      replaceUser: function (state, obj) {
+        state.user = obj;
+      },
     }
   }
 };

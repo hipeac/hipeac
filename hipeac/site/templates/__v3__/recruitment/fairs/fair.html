@@ -30,14 +30,10 @@
 {% block scripts %}
 {% compress js file __v3__conference %}
   <script src="{% static '__v3__/js/components/forms.js' %}"></script>
-  <script src="{% static '__v3__/js/components/events.js' %}"></script>
   <script src="{% static '__v3__/js/components/jobs.js' %}"></script>
   <script src="{% static '__v3__/js/components/users.js' %}"></script>
-  <script src="{% static '__v3__/js/mixins/query.js' %}"></script>
   <script src="{% static '__v3__/js/mixins/profile.js' %}"></script>
-  <script src="{% static '__v3__/js/mixins/registration.js' %}"></script>
-  <script src="{% static '__v3__/js/mixins/session.js' %}"></script>
-  <script src="{% static '__v3__/js/stores/events.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/uploader.js' %}"></script>
   <script src="{% static '__v3__/js/stores/user.js' %}"></script>
   <script type="text/javascript">
     var VARS = document.querySelector('#vars').dataset;
@@ -89,11 +85,12 @@
     };
 
     var RegistrationView = {
-      mixins: [ProfileMixin],
+      mixins: [ProfileMixin, UploaderMixin],
       template: '#v-registration',
       props: ['id'],
       data: function () {
         return {
+          showUploader: false,
           authenticated: +(document.querySelector('html').dataset.user) > 0,
           create_url: document.querySelector('#vars').dataset.registrationUrl,
           now: moment(),
@@ -103,8 +100,34 @@
       },
       computed: _.extend(
         Vuex.mapState('app', ['fair', 'registration']), {
+        cvFile: function () {
+          if (!this.user) return null;
+          return _.find(this.user.profile.files, function (file) {
+            return _.contains(file.keywords, "cv");
+          });
+        },
+        cvUrl: function () {
+          return (this.cvFile) ? this.cvFile.url : '[none]';
+        },
+        uploadUrl: function () {
+          if (!this.user) return null;
+          return '/api/v1/user/account/files/?keyword=cv';
+        }
       }),
       methods: {
+        removeCvFile: function () {
+          var file = this.cvFile;
+          var self = this;
+          Hipeac.api.remove(file, function (res) {
+            self.user.profile.files = _.reject(_.clone(self.user.profile.files), function (f) {
+              return f.self == file.self;
+            });
+          });
+          this.update();
+        },
+        updateObj: function (obj) {
+          this.$store.commit('user/replaceUser', obj);
+        },
         scrollToStep: function (step) {
           this.step = step;
           window.scrollTo(0, 0);
@@ -114,11 +137,11 @@
 
           if (_.has(this.obj, 'self')) {
             Hipeac.api.update(this.obj, function (res) {
-              self.$store.commit('events/updateRegistration', res.data);
+              self.$store.commit('app/updateRegistration', res.data);
             }, 'Registration updated.');
           } else {
             Hipeac.api.create(this.create_url, this.obj, function (res) {
-              self.$store.commit('events/updateRegistration', res.data);
+              self.$store.commit('app/updateRegistration', res.data);
             }, 'Registration created.');
           }
         },

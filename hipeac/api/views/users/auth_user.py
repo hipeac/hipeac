@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from ..mixins import FilesMixin
 from ...serializers import (
     AuthUserSerializer,
     NotificationSerializer,
@@ -14,7 +15,7 @@ from ...serializers import (
 )
 
 
-class AuthUserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class AuthUserViewSet(FilesMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = AuthUserSerializer
 
@@ -29,6 +30,7 @@ class AuthUserViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
                 "profile__second_institution",
             )
             .prefetch_related(
+                "profile__files",
                 "profile__links",
                 "profile__rel_application_areas__application_area",
                 "profile__rel_projects__project",

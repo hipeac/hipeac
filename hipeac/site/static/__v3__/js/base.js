@@ -1,4 +1,5 @@
 var DJANGO_VARS = document.querySelector('html').dataset;
+var USER_IS_AUTHENTICATED = (+(DJANGO_VARS.user) > 0);
 
 
 var getMoment = function (dt, tz) {

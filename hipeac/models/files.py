@@ -4,12 +4,14 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from .mixins import KeywordsMixin
+
 
 def get_upload_path(instance, filename):
     return f"{instance.type}/{instance.content_type_id}/{instance.object_id}/{filename}".lower()
 
 
-class File(models.Model):
+class File(KeywordsMixin, models.Model):
     PUBLIC = "public"
     PRIVATE = "private"
     TYPE_CHOICES = (

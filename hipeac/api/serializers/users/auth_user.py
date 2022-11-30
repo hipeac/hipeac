@@ -5,12 +5,18 @@ from rest_framework import serializers
 
 from hipeac.models import Profile, Metadata
 from ..institutions import InstitutionNestedSerializer
-from ..mixins import ApplicationAreasMixin, LinksMixin, TopicsMixin
+from ..mixins import ApplicationAreasMixin, FilesMixin, LinksMixin, TopicsMixin
 from ..projects import ProjectsMixin
 
 
 class AuthProfileSerializer(
-    ApplicationAreasMixin, LinksMixin, ProjectsMixin, TopicsMixin, UniqueFieldsMixin, WritableNestedModelSerializer
+    ApplicationAreasMixin,
+    FilesMixin,
+    LinksMixin,
+    ProjectsMixin,
+    TopicsMixin,
+    UniqueFieldsMixin,
+    WritableNestedModelSerializer,
 ):
     country = CountryField(country_dict=True)
     name = serializers.CharField(read_only=True)

@@ -860,19 +860,21 @@ var HipeacFormComponents = {
       }
     },
     template: `
-      <q-list dense class="q-gutter-y-xs">
-        <q-item v-for="item in items" class="bg-grey-2 rounded-borders">
-          <q-item-section class="text-caption">
-            <q-item-label :lines="1">{{ item.filename }}</q-item-label>
-          </q-item-section>
-          <q-item-section side>
-            <div class="text-grey-8 q-gutter-sm">
-              <q-btn flat dense icon="visibility" size="sm" type="a" :href="item.url" target="_blank" />
-              <q-btn flat dense icon="backspace" color="red-12" size="sm" @click.prevent="remove(item)" />
-            </div>
-          </q-item-section>
-        </q-item>
-      </q-list>
+      <div>
+        <q-list dense class="q-gutter-y-xs">
+          <q-item v-for="item in items" class="bg-grey-2 rounded-borders">
+            <q-item-section class="text-caption">
+              <q-item-label :lines="1">{{ item.filename }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <div class="text-grey-8 q-gutter-sm">
+                <q-btn flat dense icon="visibility" size="sm" type="a" :href="item.url" target="_blank" />
+                <q-btn flat dense icon="backspace" color="red-12" size="sm" @click.prevent="remove(item)" />
+              </div>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
     `,
     computed: {
       items: function () {

@@ -43,7 +43,19 @@
                   <hipeac-search-select v-model="user.profile.institution" type="institution" label="Affiliation" class="col-12" />
                   <hipeac-metadata-select v-model="user.profile.gender" type="gender" label="Gender" class="col-12 col-sm-4" />
                   <hipeac-country-select v-model="user.profile.country" label="Country of origin *" class="col-12 col-sm-4" />
-                  <hipeac-metadata-rel-select v-model="user.profile.rel_topics" type="topic" label="Main research topics *" class="col-12" hint="Required. You can use these topics to get a personalized conference program." />
+                  <hipeac-metadata-rel-select v-model="user.profile.rel_topics" type="topic" label="Main research topics *" class="col-12" hint="Required." />
+                  <q-input readonly filled dense v-model="cvUrl" type="text" label="CV" hint="File needs to be in PDF format." class="col-12">
+                    <template v-slot:append>
+                      <q-btn v-if="cvFile" flat size="sm" @click.prevent="removeCvFile" class="q-px-sm">
+                        <hipeac-remove-icon></hipeac-remove-icon>
+                      </q-btn>
+                      <q-btn v-else-if="!showUploader" unelevated size="sm" color="primary" label="Upload" @click.prevent="showUploader = true"></q-btn>
+                      <q-btn v-else unelevated size="sm" color="blue-grey" label="Hide" @click.prevent="showUploader = false"></q-btn>
+                    </template>
+                  </q-input>
+                  <div v-show="showUploader && !cvFile" class="col-12">
+                    <q-uploader dense ref="uploader" flat auto-upload accept=".pdf" :max-file-size="3145728" :factory="uploaderFactory" :max-files="1" @failed="uploadFailed" @rejected="uploadRejected" @uploaded="uploaded" class="full-width" />
+                  </div>
                 </div>
                 <q-stepper-navigation>
                   <q-btn unelevated color="primary" @click="updateUser" label="Update your profile" :disable="!user.profile.country || !user.first_name || !user.last_name || !user.profile.rel_topics.length" />

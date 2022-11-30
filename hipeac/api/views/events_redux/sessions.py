@@ -1,17 +1,17 @@
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.parsers import FileUploadParser
 from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import AcacesRegistration, Event, Session
-from ...permissions import HasAdminPermissionOrReadOnly, HasRegistrationForRelatedEvent
+from ..mixins import FilesMixin
+from ...permissions import HasManagerPermissionOrReadOnly, HasRegistrationForRelatedEvent
 from ...serializers import RegistrationListSerializer, SessionListSerializer, SessionSerializer, VideoListSerializer
 
 
-class SessionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class SessionViewSet(FilesMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = Session.objects.all()
     pagination_class = None
-    permission_classes = (HasAdminPermissionOrReadOnly,)
+    permission_classes = (HasManagerPermissionOrReadOnly,)
     serializer_class = SessionSerializer
 
     def list(self, request, *args, **kwargs):

@@ -16,7 +16,7 @@ from hashlib import md5
 
 from hipeac.functions import get_images_path, send_task
 from .metadata import Metadata
-from .mixins import ApplicationAreasMixin, ImageMixin, LinksMixin, ProjectsMixin, TopicsMixin
+from .mixins import ApplicationAreasMixin, FilesMixin, ImageMixin, LinksMixin, ProjectsMixin, TopicsMixin
 
 
 User = get_user_model()
@@ -66,7 +66,7 @@ class ProfileQuerySet(models.QuerySet):
         return self.filter(user__is_active=True, is_public=True)
 
 
-class Profile(ApplicationAreasMixin, ImageMixin, LinksMixin, ProjectsMixin, TopicsMixin, models.Model):
+class Profile(ApplicationAreasMixin, FilesMixin, ImageMixin, LinksMixin, ProjectsMixin, TopicsMixin, models.Model):
     """
     Extends Django User model with extra profile fields.
     """

@@ -36,6 +36,7 @@
 {% block scripts %}
 {% compress js file __v3__editor %}
   <script src="{% static '__v3__/js/components/forms.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/uploader.js' %}"></script>
   <script type="text/javascript">
     var VARS = document.querySelector('#vars').dataset;
 
@@ -55,7 +56,11 @@
               return;
             }
 
-            Hipeac.api.request('GET', VARS.baseUrl + VARS.objId + '/').then(function (res) {
+            Hipeac.api.request('GET', VARS.baseUrl + VARS.objId + '/', {
+              headers:{
+                'Cache-Control': 'no-cache',
+              }
+            }).then(function (res) {
               state.obj = res.data;
               Quasar.Loading.hide();
             });
@@ -82,12 +87,12 @@
     };
 
     var app = Vue.createApp({
-      mixins: [AppMixin],
+      mixins: [AppMixin, UploaderMixin],
       computed: _.extend(
         Vuex.mapState('editor', ['isNew', 'modelName', 'obj']), {
         backUrl: function () {
-          return (this.obj && _.has(this.obj, 'href'))
-            ? this.obj.href
+          return (this.obj)
+            ? (_.has(this.obj, 'href') ? this.obj.href : this.obj.url)
             : VARS.backUrl;
         }
       }),
