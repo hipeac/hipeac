@@ -5,6 +5,7 @@ from django.utils.html import format_html
 
 from hipeac.functions import send_task
 from hipeac.models.impact import PublicationConference, TechTransferApplication, TechTransferAward, TechTransferCall
+from hipeac.site.pdfs.awards import TechTransferCallPdfMaker
 from .users import TeamMemberInline
 
 
@@ -60,6 +61,7 @@ class TechTransferApplicationAdmin(admin.ModelAdmin):
 
 @admin.register(TechTransferCall)
 class TechTransferCallAdmin(admin.ModelAdmin):
+    actions = ("export_pdf",)
     list_display = ("id", "start_date", "end_date", "applications_link")
 
     def get_queryset(self, request):
@@ -74,3 +76,14 @@ class TechTransferCallAdmin(admin.ModelAdmin):
         return format_html(f'<a href="{url}?call__id__exact={obj.id}">{obj.applications__count}</a>')
 
     applications_link.short_description = "Applications"
+
+    # actions
+
+    def pdf_response(self, calls, filename: str = "hipeac--calls.pdf", as_attachment: bool = False):
+        maker = TechTransferCallPdfMaker(calls=calls, filename=filename, as_attachment=as_attachment)
+        return maker.response
+
+    def export_pdf(self, request, queryset):
+        return self.pdf_response(queryset)
+
+    export_pdf.short_description = "[PDF] Generate printable document for selected calls"
