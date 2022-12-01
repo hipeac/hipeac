@@ -944,11 +944,11 @@ Vue.component('attachments-table', {
     },
     template: '' +
         '<table v-if="attachments.length" class="table table-sm mb-0">' +
-            '<tr v-for="file in attachments" :key="file.id" @click="openFile(file.file)" class="pointer">' +
+            '<tr v-for="file in attachments" :key="file.id" @click="openFile(file.url)" class="pointer">' +
                 '<td class="sm"><i class="material-icons sm">description</i></td>' +
                 '<td>{{ file.description }}</td>' +
                 '<td class="text-right">' +
-                    '<a :href="file.file" target="_blank"><i class="material-icons sm">get_app</i></a>' +
+                    '<a :href="file.url" target="_blank"><i class="material-icons sm">get_app</i></a>' +
                 '</td>' +
             '</tr>' +
         '</table>' +

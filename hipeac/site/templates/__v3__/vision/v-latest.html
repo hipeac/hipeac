@@ -129,13 +129,13 @@
           <q-item-label caption>https://www.hipeac.net{{ vision.download_url }}</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item v-for="file in vision.files" clickable tag="a" :href="file.file" target="_blank">
+      <q-item v-for="file in vision.files" clickable tag="a" :href="file.url" target="_blank">
         <q-item-section avatar>
           <q-avatar color="blue-2" text-color="white" icon="file_download" />
         </q-item-section>
         <q-item-section>
           <q-item-label>{{ file.description }}</q-item-label>
-          <q-item-label caption>{{ file.file }}</q-item-label>
+          <q-item-label caption>{{ file.url }}</q-item-label>
         </q-item-section>
       </q-item>
       <q-item clickable tag="a" href="https://zenodo.org/record/7143895" target="_blank">
