@@ -18,5 +18,6 @@ class EventSerializerMixin(LinksMixin, metaclass=serializers.SerializerMetaclass
     breaks = BreakSerializer(many=True, read_only=True)
     is_early = serializers.BooleanField(read_only=True)
     is_open_for_registration = serializers.BooleanField(read_only=True)
+    allows_payments = serializers.BooleanField(read_only=True)
     venue = VenueSerializer(read_only=True)
     extra_venues = VenueSerializer(many=True, read_only=True)
