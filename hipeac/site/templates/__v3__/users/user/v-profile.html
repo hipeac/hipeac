@@ -9,7 +9,7 @@
         <q-input filled dense v-model="user.last_name" label="Last name *" type="text" hint="Required." :rules="[val => !!val || 'Field is required']" class="col-12 col-sm-4" />
         <hipeac-metadata-select v-model="user.profile.gender" type="gender" label="Gender" class="col-12 col-sm-4" />
         <hipeac-metadata-select v-model="user.profile.meal_preference" type="meal_preference" label="Dietary requirements" class="col-12 col-sm-4" />
-        <hipeac-country-select v-model="user.profile.country" label="Country of origin *" class="col-12 col-sm-4" />
+        <hipeac-country-select v-model="user.profile.country" label="Country of origin *" class="col-12 col-sm-4" hint="Required." />
         <hipeac-search-select v-model="user.profile.institution" type="institution" label="Main institution" class="col-12 col-md-6" />
         <hipeac-search-select v-model="user.profile.second_institution" type="institution" label="Second institution" class="col-12 col-md-6" />
         <hipeac-markdown v-model="user.profile.bio" label="Bio" class="col-12" />
@@ -18,7 +18,7 @@
         <p class="text-body2 q-mt-xl q-mb-md">You can add links to external websites here, to complete your profile. If you include your <a href="https://dblp.org/" target="_blank">DBLP</a> profile we will show your publications on your HiPEAC profile page.</p>
         <hipeac-link-list v-model="user.profile.links" label="External links" />
       </div>
-      <q-btn unelevated color="primary" @click="updateUser" label="Update" :disabled="!user.username || !user.first_name || !user.last_name" class="q-mt-lg" />
+      <q-btn unelevated color="primary" @click="updateUser" label="Update" :disabled="!user.username || !user.first_name || !user.last_name || !user.profile.country" class="q-mt-lg" />
       <q-separator class="q-my-lg" />
       <p class="text-caption q-mb-none text-grey-7">
         <span>User ID: {{ user.id }}</span><br>

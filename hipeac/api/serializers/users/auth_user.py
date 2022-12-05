@@ -24,8 +24,8 @@ class AuthProfileSerializer(
     institution = InstitutionNestedSerializer(allow_null=True)
     second_institution = InstitutionNestedSerializer(allow_null=True)
 
-    gender = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all())
-    meal_preference = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all())
+    gender = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all(), allow_null=True)
+    meal_preference = serializers.PrimaryKeyRelatedField(queryset=Metadata.objects.all(), allow_null=True)
 
     class Meta:
         model = Profile
