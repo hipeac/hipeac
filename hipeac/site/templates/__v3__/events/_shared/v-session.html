@@ -14,6 +14,7 @@
               <q-tab v-if="session.is_keynote && session.main_speaker" name="bio" label="Bio" />
               <q-tab v-if="session.program" name="program" label="Program" />
               <q-tab v-if="registration" name="attendees" label="Attendees" />
+              <q-tab v-if="session.files.length" name="files" label="Files" />
             </q-tabs>
             <q-space></q-space>
             <editor-link v-if="session.editor_href" type="btn" :url="session.editor_href" target="_blank" />
@@ -51,16 +52,16 @@
                   <div class="col-12 col-md-8">
                     <display-2 class="q-mb-md">{{ session.title }}</display-2>
                     <marked v-if="session.summary" :text="session.summary" />
-                    <div v-if="session.institutions.length || session.projects.length">
+                    <div v-if="session.is_industrial_session && (session.institutions.length || session.projects.length)">
                       <q-separator class="q-my-xl" />
-                      <div  class="row items-center q-col-gutter-lg text-center">
+                      <div class="row items-center q-col-gutter-lg text-center q-mb-lg">
                         <div v-for="institution in session.institutions" :key="institution.id" class="col-6 col-sm-3">
-                          <a v-if="institution.images" :href="institution.href">
+                          <a v-if="institution.images" :href="institution.href" target="_blank">
                             <img :src="institution.images.lg" class="sponsor">
                           </a>
                         </div>
                          <div v-for="project in session.projects" :key="project.id" class="col-6 col-sm-3">
-                          <a v-if="project.images" :href="project.href">
+                          <a v-if="project.images" :href="project.href" target="_blank">
                             <img :src="project.images.lg" class="sponsor">
                           </a>
                         </div>
@@ -77,6 +78,21 @@
                     <hipeac-session-breaks v-if="event" :session="session" :breaks="event.breaks" class="q-mb-lg" />
                     <hipeac-session-application-areas :session="session" class="q-mb-lg" />
                     <hipeac-session-topics :session="session" />
+                    <div v-if="!session.is_industrial_session">
+                      <q-separator class="q-my-xl" />
+                      <div class="row items-center q-col-gutter-lg text-center q-mb-lg">
+                        <div v-for="institution in session.institutions" :key="institution.id" class="col-6 col-sm-3 col-md-6">
+                          <a v-if="institution.images" :href="institution.href" target="_blank">
+                            <img :src="institution.images.lg" class="sponsor">
+                          </a>
+                        </div>
+                         <div v-for="project in session.projects" :key="project.id" class="col-6 col-sm-3 col-md-6">
+                          <a v-if="project.images" :href="project.href" target="_blank">
+                            <img :src="project.images.lg" class="sponsor">
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </q-tab-panel>
@@ -102,6 +118,20 @@
 
               <q-tab-panel name="attendees">
                 <attendees-list v-if="registration" :users="sessionAttendees" :show-profile-link="true" event-name="attendees-query-changed"></attendees-list>
+              </q-tab-panel>
+
+              <q-tab-panel name="files">
+                <q-list>
+                  <q-item v-for="file in session.files" clickable tag="a" :href="file.url" target="_blank">
+                    <q-item-section avatar>
+                      <q-avatar color="blue-2" text-color="white" icon="file_download" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>{{ file.description }}</q-item-label>
+                      <q-item-label caption>{{ file.url }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
               </q-tab-panel>
 
             </q-tab-panels>
