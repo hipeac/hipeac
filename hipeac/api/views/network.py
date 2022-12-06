@@ -70,7 +70,7 @@ class ProjectViewSet(ModelViewSet):
     )
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = ProjectSerializer
-    search_fields = ("acronym", "name", "rel_topics__topic__keywords")
+    search_fields = ("acronym", "name")
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
