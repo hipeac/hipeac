@@ -19,7 +19,7 @@ class JobBaseSerializer(ApplicationAreasMixin, KeywordsMixin, TopicsMixin, Writa
     url = serializers.CharField(source="get_absolute_url", read_only=True)  # deprecated
     href = serializers.CharField(source="get_absolute_url", read_only=True)
     country = CountryField(country_dict=True, countries=HipeacCountries())
-    email = serializers.EmailField(required=False, allow_blank=True)
+    email = serializers.EmailField(required=False, allow_null=True, allow_blank=True)
     add_to_euraxess = serializers.BooleanField(required=True)
     institution = InstitutionNestedSerializer(required=True)
     project = ProjectNestedSerializer(required=False, allow_null=True)
