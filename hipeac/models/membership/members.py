@@ -29,3 +29,6 @@ class Member(KeywordsMixin, models.Model):
 
     def get_absolute_url(self) -> Optional[str]:
         return reverse("user", args=[self.username]) if self.is_public else None
+
+    def affiliates(self):
+        return [aff.user for aff in self.user._affiliates.all()]

@@ -12,7 +12,7 @@ class MemberViewSet(ListModelMixin, GenericViewSet):
     serializer_class = MemberSerializer
 
     def list(self, request, *args, **kwargs):
-        self.queryset = self.queryset.filter(type__in=[Membership.MEMBER, Membership.ASSOCIATED_MEMBER])
+        self.queryset = self.queryset.filter(type__in=[Membership.MEMBER, Membership.ASSOCIATED_MEMBER]).select_related('user__profile').prefetch_related('user__profile__institution', 'user___affiliates__user')
         return super().list(request, *args, **kwargs)
 
     @action(detail=False)

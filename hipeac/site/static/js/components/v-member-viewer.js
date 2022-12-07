@@ -67,17 +67,27 @@ Vue.component('member-viewer', {
         '<table class="table table-sm">' +
           '<tr v-for="member in filteredMembers" :key="member.user">' +
             '<td v-if="selectedUser == member.user" @click="selectedUser = 0" class="pointer">' +
-              '<icon name="expand_less" class="sm mr-2"></icon>' +
+              '<icon name="expand_less" class="sm mr-2" :class="{\'text-white\': !member.affiliates.length}"></icon>' +
               '{{ member.name }}' +
-            '</td>' +
-            '<td v-else @click="selectedUser = member.user" class="pointer">' +
-              '<icon name="expand_more" class="sm mr-2"></icon>' +
-              '{{ member.name }}' +
-              '<span v-if="member.institution && selectedUser != member.user">' +
+              '<span v-if="member.institution">' +
                 ', <institution-icon :type="member.institution.type" class="sm"></institution-icon> ' +
                 '<small>{{ member.institution.short_name }}</small>' +
               '</span>' +
-              '<small v-if="member.second_institution && selectedUser != member.user">' +
+              '<small v-if="member.second_institution">' +
+                ' / {{ member.second_institution.short_name }}' +
+              '</small>' +
+              '<ul v-if="member.affiliates.length" class="mt-2">' +
+                '<li v-for="aff in member.affiliates" class="text-sm">{{ aff.first_name }} {{ aff.last_name }}</li>' +
+              '</ul>' +
+            '</td>' +
+            '<td v-else @click="selectedUser = member.user" class="pointer">' +
+              '<icon name="expand_more" class="sm mr-2" :class="{\'text-white\': !member.affiliates.length}"></icon>' +
+              '{{ member.name }}' +
+              '<span v-if="member.institution">' +
+                ', <institution-icon :type="member.institution.type" class="sm"></institution-icon> ' +
+                '<small>{{ member.institution.short_name }}</small>' +
+              '</span>' +
+              '<small v-if="member.second_institution">' +
                 ' / {{ member.second_institution.short_name }}' +
               '</small>' +
             '</td>' +

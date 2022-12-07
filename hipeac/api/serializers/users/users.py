@@ -106,3 +106,11 @@ class UserPublicMembershipSerializer(UserPublicSerializer):
 
 class UserPublicListSerializer(UserPublicSerializer):
     profile = ProfileNestedSerializer()
+
+
+class UserOnlySerializer(UserPublicSerializer):
+    profile = None
+
+    class Meta:
+        model = get_user_model()
+        fields = ("first_name", "last_name")

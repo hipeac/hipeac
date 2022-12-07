@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from hipeac.models.membership import Member
 from ..institutions import InstitutionMiniSerializer
+from ..users import UserOnlySerializer
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -10,6 +11,7 @@ class MemberSerializer(serializers.ModelSerializer):
     institution = InstitutionMiniSerializer()
     second_institution = InstitutionMiniSerializer()
     url = serializers.CharField(source="get_absolute_url", read_only=True)
+    affiliates = UserOnlySerializer(many=True, read_only=True)
 
     class Meta:
         model = Member
