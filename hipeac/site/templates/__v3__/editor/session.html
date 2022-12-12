@@ -23,7 +23,7 @@
     <h6>Session files</h6>
     <div class="row q-col-gutter-lg">
       <div class="col-12 text-body2">You can include session files here. All files need to be uploaded as a PDF and they will be shared with all attendees of the event. Files will <strong>not</strong> be accessible by regular HiPEAC users not attending this event.</div>
-      <q-uploader ref="uploader" flat auto-upload accept=".pdf" :max-file-size="3145728" :max-files="20" :factory="uploaderFactory" @failed="uploadFailed" @rejected="uploadRejected" @uploaded="uploaded" class="col-12 col-md-6"></q-uploader>
+      <q-uploader ref="uploader" flat auto-upload accept=".pdf" :max-file-size="maxFileSize" :max-files="20" :factory="uploaderFactory" @failed="uploadFailed" @rejected="uploadRejected" @uploaded="uploaded" class="col-12 col-md-6"></q-uploader>
       <hipeac-file-list :files="obj.files" class="col-12 col-md-6"></hipeac-file-list>
     </div>
   </q-card>

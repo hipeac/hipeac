@@ -1,5 +1,8 @@
 var UploaderMixin = {
   computed: {
+    maxFileSize: function () {
+      return 6000000;
+    },
     humanMaxFileSize: function () {
       var u = 0;
       var bytes = _.clone(this.maxFileSize);
