@@ -104,6 +104,9 @@ class Event(ImageMixin, LinksMixin, VideosMixin, models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def can_be_viewed_by(self, user) -> bool:
+        return user.id in self.committees.values_list("rel_users__user_id", flat=True)
+
     def get_absolute_url(self) -> str:
         if self.type == self.ACACES:
             return reverse("acaces", args=[self.year])

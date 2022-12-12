@@ -41,7 +41,6 @@ class EventStats(generic.TemplateView):
                 "height": 380,
                 "margin": pgo.Margin(l=30, r=10, b=80, t=20, pad=5),
                 "legend": {"x": 0, "y": 1},
-                "orientation": 0,
             }
 
         def get_registrations_data(event):
@@ -184,44 +183,27 @@ class EventStats(generic.TemplateView):
         # MEMBERSHIP
         # ----------
 
-        """
-
         def get_membership_data(event):
             y_dict = {
-                "MEMB": 0,
-                "ASSO": 0,
-                "AFFI": 0,
-                "APHD": 0,
-                "STAF": 0,
-                "None": 0,
+                "member": 0,
+                "associated_member": 0,
+                "affiliated_member": 0,
+                "affiliated_phd": 0,
+                "none": 0,
             }
             for r in (
-                Registration.objects.select_related("user__profile")
-                .filter(event_id=event.id, user__profile__membership_revocation_date__isnull=True)
-                .values("user__profile__membership_tags")
+                Registration.objects.select_related("user__member")
+                .filter(event_id=event.id)
+                .values("user__member__type")
             ):
-                if not r["user__profile__membership_tags"]:
-                    y_dict["None"] += 1
-                    continue
-                if "member" in r["user__profile__membership_tags"]:
-                    if "non-eu" in r["user__profile__membership_tags"]:
-                        y_dict["ASSO"] += 1
-                        continue
-                    y_dict["MEMB"] += 1
-                    continue
-                if "affiliated" in r["user__profile__membership_tags"]:
-                    if "phd" in r["user__profile__membership_tags"]:
-                        y_dict["APHD"] += 1
-                        continue
-                    if "staff" in r["user__profile__membership_tags"]:
-                        y_dict["STAF"] += 1
-                        continue
-                    y_dict["AFFI"] += 1
-                    continue
+                if r["user__member__type"] is None:
+                    y_dict["none"] += 1
+                else:
+                    y_dict[r["user__member__type"]] += 1
 
             return list(y_dict.values())
 
-        membership_types = ["Member", "Assoc. member", "Affil. member", "Affil. PhD", "Staff", "(none)"]
+        membership_types = ["Member", "Assoc. member", "Affil. member", "Affil. PhD", "None"]
 
         previous_trace = pgo.Bar(
             x=membership_types,
@@ -242,8 +224,6 @@ class EventStats(generic.TemplateView):
 
         figure = pgo.Figure(data=[current_trace, previous_trace], layout=layout)
         context["plots"]["membership"] = poff.plot(figure, auto_open=False, output_type="div")
-
-        """
 
         # ---------
         # COUNTRIES
