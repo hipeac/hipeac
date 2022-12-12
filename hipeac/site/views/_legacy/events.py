@@ -77,7 +77,7 @@ class EventStats(generic.TemplateView):
 
             return output
 
-        previous_conf = Event.objects.get(start_date__year=self.event.year - 1, type=self.event.type)
+        previous_conf = Event.objects.get(start_date__year=self.event.year - 3, type=self.event.type)
         registrations = {
             "previous": get_registrations_data(previous_conf),
             "current": get_registrations_data(self.event),
