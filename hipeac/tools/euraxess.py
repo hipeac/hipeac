@@ -64,6 +64,7 @@ class EuraxessXMLGenerator:
                     etree.SubElement(field, "sub-research-field").text = topic
 
             researcher_profiles = self.parse_topics(metadata.to_representation(job.career_levels))
+
             if len(researcher_profiles) == 0:
                 etree.SubElement(desc, "researcher-profile").text = "Established Researcher (R3)"  # TODO: check default
             else:
