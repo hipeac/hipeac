@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -50,9 +51,9 @@ class InstitutionViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, G
 
 
 class PartnerViewSet(ListModelMixin, GenericViewSet):
-    queryset = HipeacPartner.objects.filter(hipeac__is_visible=True).prefetch_related(
-        "institution", "representative__profile"
-    )
+    queryset = HipeacPartner.objects.filter(
+        hipeac__start_date__lte=timezone.now().date(), hipeac__end_date__gt=timezone.now().date()
+    ).prefetch_related("institution", "representative__profile__institution")
     pagination_class = None
     serializer_class = HipeacPartnerListSerializer
 
