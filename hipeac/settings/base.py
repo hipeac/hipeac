@@ -266,3 +266,14 @@ NOCAPTCHA = True  # For using reCAPTCHA v2
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 CRISPY_FAIL_SILENTLY = False
+
+
+# https://pypi.python.org/pypi/django-countries
+# See for official/existing codes: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Decoding_table
+# We change these to avoid issues with the EURAXESS XML feed
+
+COUNTRIES_OVERRIDE = {
+    "CZ": "Czech Republic",
+    "US": "United States",
+    "XK": "Kosovo",  # https://en.wikipedia.org/wiki/Kosovo
+}
