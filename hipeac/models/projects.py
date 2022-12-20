@@ -100,7 +100,9 @@ class Project(
 
     def can_be_managed_by(self, user) -> bool:
         return (
-            self.created_by_id == user.id or self._can_be_managed_by(user) or self.institution.can_be_managed_by(user)
+            self.created_by_id == user.id
+            or self._can_be_managed_by(user)
+            or self.coordinating_institution.can_be_managed_by(user)
         )
 
     def get_absolute_url(self) -> str:
