@@ -57,11 +57,11 @@ class TestForAdministrator(TestForAuthenticated):
             self.test_data = {
                 "title": "Session title",
                 "type": {"id": session_type.id},
-                "application_areas": [],
-                "topics": [],
-                "projects": [],
-                "institutions": [],
                 "links": [],
+                "rel_application_areas": [],
+                "rel_topics": [],
+                "rel_projects": [],
+                "rel_institutions": [],
             }
 
     @pytest.fixture(autouse=True)

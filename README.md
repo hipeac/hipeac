@@ -1,5 +1,4 @@
-HiPEAC.net
-==========
+# HiPEAC.net
 
 [![github-actions-badge]][github-actions]
 [![codecov-badge]][codecov]
@@ -9,42 +8,48 @@ HiPEAC.net
 
 The HiPEAC api/website uses [Django][django] and the [Django REST Framework][drf].
 
-Application dependencies
-------------------------
+### Application dependencies
 
 The application uses [Pipenv][pipenv] to manage Python packages. While in development, you will need to install
 all dependencies (includes packages like `debug_toolbar`):
 
-    $ pipenv install --dev
-    $ pipenv shell
+```bash
+pipenv install --dev
+pipenv shell
+```
 
 Update dependencies (and manually update `requirements.txt`):
 
-    $ pipenv update --dev && pipenv lock -r
+```bash
+pipenv update --dev && pipenv lock && pipenv requirements
+```
 
-Running the server
-------------------
+### Running the server
 
-    $ python manage.py migrate 
-    $ python manage.py runserver
+```bash
+python manage.py migrate 
+python manage.py runserver
+```
 
-Running tests
--------------
+### Running tests
 
-    $ pytest --cov=hipeac --cov-report=term
+```bash
+pytest --cov=hipeac --cov-report=term
+```
 
-Run Celery
-----------
+### Run Celery
 
-    $ celery worker -B -A hipeac
+```bash
+celery worker -B -A hipeac
+```
 
-Style guide
------------
+### Style guide
 
-Tab size is 4 spaces. Max line length is 120. You should run `flake8` and `black` before committing any change.
+Tab size is 4 spaces. Max line length is 120. You should run `black` before committing any change.
 
-    $ flake8 hipeac
-    $ black hipeac
+```bash
+black hipeac
+```
 
 
 [codecov]: https://codecov.io/gh/hipeac/hipeac

@@ -13,6 +13,15 @@ class JobViewSet(ModelViewSet):
     queryset = Job.objects.all()
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = JobSerializer
+    http_method_names = [
+        "get",
+        "post",
+        "put",
+        "delete",
+        "head",
+        "options",
+        "trace",
+    ]
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)

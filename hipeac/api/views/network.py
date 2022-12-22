@@ -1,8 +1,8 @@
 from django.utils import timezone
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.viewsets import GenericViewSet
 
 from hipeac.models import HipeacPartner, Institution, Project, Video
 from ..permissions import HasAdminPermissionOrReadOnly
@@ -58,7 +58,7 @@ class PartnerViewSet(ListModelMixin, GenericViewSet):
     serializer_class = HipeacPartnerListSerializer
 
 
-class ProjectViewSet(ModelViewSet):
+class ProjectViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     filter_backends = (SearchFilter,)
     queryset = (
         Project.objects.select_related("programme")

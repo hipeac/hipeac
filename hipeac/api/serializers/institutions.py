@@ -16,7 +16,7 @@ class InstitutionSerializer(ApplicationAreasMixin, LinksMixin, TopicsMixin, Writ
 
     class Meta:
         model = Institution
-        read_only_fields = ("image", "images")
+        read_only_fields = ("type", "image", "images")
         exclude = ("colloquial_name",)
 
 
@@ -27,6 +27,8 @@ class InstitutionMiniSerializer(InstitutionSerializer):
 
 
 class InstitutionNestedSerializer(InstitutionSerializer):
+    country = CountryField(country_dict=True, read_only=True)
+
     class Meta:
         model = Institution
         fields = (
@@ -42,6 +44,7 @@ class InstitutionNestedSerializer(InstitutionSerializer):
             "country",
             "images",
         )
+        read_only_fields = ("name", "type", "image", "images")
 
 
 class InstitutionListSerializer(InstitutionNestedSerializer):

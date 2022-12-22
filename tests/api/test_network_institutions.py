@@ -63,9 +63,9 @@ class TestForAdministrator(TestForAuthenticated):
                 "name": "Institution",
                 "type": Institution.UNIVERSITY,
                 "country": "BE",
-                "application_areas": [],
-                "topics": [],
                 "links": [],
+                "rel_application_areas": [],
+                "rel_topics": [],
             }
 
     @pytest.fixture(autouse=True)

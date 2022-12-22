@@ -53,19 +53,22 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
             self.recruiter = baker.make_recipe("hipeac.user")
 
         if not self.test_data:
+            career_level = baker.make_recipe("hipeac.career_level")
             employment_type = baker.make_recipe("hipeac.employment_type")
             self.test_data = {
                 "title": "Job title",
                 "description": "Job description.",
                 "deadline": str(now.add(months=1).date),
                 "employment_type": employment_type.id,
+                "career_levels": [career_level.id],
                 "country": "BE",
                 "email": "recruitment@hipeac.net",
-                "institution": self.recruiter.profile.institution_id,
+                "institution": {"id": self.recruiter.profile.institution.id},
                 "project": None,
-                "career_levels": [],
                 "links": [],
                 "add_to_euraxess": True,
+                "rel_application_areas": [],
+                "rel_topics": [],
             }
 
     def test_create(self, api_client):
@@ -79,7 +82,7 @@ class TestForAdministrator(TestForAuthenticated):
         api_client.force_authenticate(user=self.recruiter)
         self.job = api_client.post(self.list_url, self.test_data).json()
         detail_url = self.get_detail_url(self.job["id"])
-        assert api_client.patch(detail_url, {"title": "New title"}).status_code == status.HTTP_200_OK
+        assert api_client.patch(detail_url, {"title": "New title"}).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert api_client.post(detail_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
         assert api_client.put(detail_url, self.test_data).status_code == status.HTTP_200_OK
 

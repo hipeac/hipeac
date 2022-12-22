@@ -46,14 +46,17 @@ class TestForAuthenticated(TestForAnonymous):
         full_data = {
             "username": "hipeac",
             "first_name": "HiPEAC",
-            "last_name": "6",
+            "last_name": "7",
             "profile": {
                 "country": "BE",
-                "application_areas": [],
-                "topics": [],
-                "projects": [],
-                "links": [],
+                "gender": self.user.profile.gender,
                 "meal_preference": None,
+                "institution": {"id": self.user.profile.institution.id},
+                "second_institution": None,
+                "links": [],
+                "rel_application_areas": [],
+                "rel_topics": [],
+                "rel_projects": [],
             },
         }
         assert api_client.patch(self.account_url, {"username": "hipeac"}).status_code == status.HTTP_200_OK

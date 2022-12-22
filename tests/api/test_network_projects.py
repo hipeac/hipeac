@@ -41,9 +41,29 @@ class TestForAnonymous:
 
 
 class TestForAuthenticated(UserMixin, TestForAnonymous):
+    test_data = None
+
+    @pytest.fixture(autouse=True)
+    def setup_test_data(self, db):
+        if not self.test_data:
+            coordinating_institution = baker.make_recipe("hipeac.institution")
+            programme = baker.make_recipe("hipeac.project_programme")
+            self.test_data = {
+                "acronym": "PRJ",
+                "name": "Project",
+                "coordinating_institution": {
+                    "id": coordinating_institution.id
+                },
+                "programme": programme.id,
+                "links": [],
+                "rel_application_areas": [],
+                "rel_topics": [],
+                "rel_institutions": [],
+            }
+
     def test_create(self, api_client):
         api_client.force_authenticate(user=self.user)
-        assert api_client.post(self.list_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+        assert api_client.post(self.list_url, self.test_data).status_code == status.HTTP_201_CREATED
 
     def test_delete(self, api_client):
         api_client.force_authenticate(user=self.user)
@@ -66,4 +86,3 @@ class TestForAdministrator(TestForAuthenticated):
         detail_url = self.get_detail_url(self.project.id)
         assert api_client.patch(detail_url, {"name": "name"}).status_code == status.HTTP_200_OK
         assert api_client.post(detail_url).status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-        # assert api_client.put(self.list_url, {'name': 'name'}).status_code == status.HTTP_202_ACCEPTED

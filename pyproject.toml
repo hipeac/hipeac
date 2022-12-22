@@ -7,3 +7,7 @@ omit = ["*apps.py", "*migrations/*", "*settings/*", "*tests/*", "*migratedata.py
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "raise NotImplementedError", "def __repr__", "def __str__"]
 show_missing = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=hipeac --cov-report=html"
+DJANGO_SETTINGS_MODULE = "hipeac.settings.test"

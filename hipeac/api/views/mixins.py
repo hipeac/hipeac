@@ -21,7 +21,7 @@ class FilesMixin:
         if obj._meta.model_name == "user":
             obj = obj.profile
 
-        file_keywords = [request.query_params.get("keyword", '')]
+        file_keywords = [request.query_params.get("keyword", "")]
         file_type = request.query_params.get("type", File.PRIVATE)
         file_type = file_type if file_type in [File.PUBLIC, File.PRIVATE] else File.PRIVATE
         file = File(content_object=obj, type=file_type, keywords=file_keywords, file=request.data["file"])

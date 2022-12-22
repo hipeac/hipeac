@@ -13,7 +13,7 @@ from ..users import UserPublicMiniSerializer
 class SessionNestedSerializer(KeywordsMixin, WritableNestedModelSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:session-detail", read_only=True)
     url = serializers.URLField(source="get_absolute_url", read_only=True)
-    type = MetadataSerializer()
+    type = MetadataSerializer(read_only=True)
     main_speaker = UserPublicMiniSerializer(required=False, read_only=True)
 
     class Meta:
