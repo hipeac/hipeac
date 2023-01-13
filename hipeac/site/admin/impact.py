@@ -42,6 +42,7 @@ class TechTransferAwardInline(admin.StackedInline):
 @admin.register(TechTransferApplication)
 class TechTransferApplicationAdmin(admin.ModelAdmin):
     list_display = ("id", "call", "title", "awarded")
+    list_filter = ("call",)
     search_fields = ("title",)
     # form
     raw_id_fields = ("call", "applicant")

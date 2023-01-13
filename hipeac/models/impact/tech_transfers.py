@@ -106,12 +106,13 @@ class TechTransferAward(UsersMixin, models.Model):
     """
 
     application = models.OneToOneField("hipeac.TechTransferApplication", related_name="award", on_delete=models.CASCADE)
-    awardee = models.OneToOneField(
+    awardee = models.ForeignKey(
         "auth.User",
         null=True,
         on_delete=models.SET_NULL,
-        related_name="tech_transfer_award",
+        related_name="tech_transfer_awards",
     )
+    has_price_money = models.BooleanField(default=True, help_text="Only once per awardee.")
     summary = models.TextField("Summary", help_text="Summary to show online.", null=True, blank=True)
     origin_institution = models.ForeignKey(
         "hipeac.Institution", related_name="originated_tech_transfers", null=True, on_delete=models.SET_NULL
@@ -122,3 +123,13 @@ class TechTransferAward(UsersMixin, models.Model):
 
     class Meta:
         db_table = "hipeac_tech_transfer_award"
+
+    def clean(self):
+        """
+        Validates the model before saving.
+        """
+        if (
+            self.has_price_money
+            and TechTransferAward.objects.filter(awardee=self.awardee, has_price_money=True).exists()
+        ):
+            raise ValidationError("Prize money can only be given once to an awardee.")
