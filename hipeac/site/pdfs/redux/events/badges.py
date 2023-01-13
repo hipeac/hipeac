@@ -214,3 +214,56 @@ class BadgesPdfMaker:
     @property
     def response(self) -> PdfResponse:
         return self._response
+
+
+class JobFairBadgesPdfMaker:
+    def __init__(self, *, registrations, filename: str, as_attachment: bool = True):
+        self._response = PdfResponse(filename=filename, as_attachment=as_attachment)
+        self.registrations = (
+            registrations.select_related("user__profile__institution")
+            .prefetch_related("fair__event")
+            .order_by("user__first_name", "user__last_name")
+        )
+        self.make_pdf()
+
+    def make_pdf(self):
+        side_margin = 6 * mm  # a minimum on the sides for the printers
+
+        with Wrapdf(margins=[10 * mm, 0, 10 * mm, side_margin]) as pdf:
+            i = 0
+
+            fair = self.registrations.first().fair
+            event = fair.event if fair.event else fair
+
+            for reg in self.registrations:
+                i += 1
+                badge_color = STEM_COLOR
+                event_info = (
+                    f"{date_filter(event.start_date, ('F j'))}-{date_filter(event.end_date, ('j'))}, "
+                    f"{event.city}, {event.country.name}"
+                )
+                institution = reg.user.profile.institution.name if reg.user.profile.institution else ""
+                country = reg.user.profile.institution.country.name if reg.user.profile.institution else ""
+
+                draw = draw_badge(
+                    event_name=event.name,
+                    event_hashtag=fair.event.hashtag if fair.event else None,
+                    event_info=event_info,
+                    attendee_name=reg.user.profile.name,
+                    color=badge_color,
+                    institution=institution,
+                    country=country,
+                    show_social=False,
+                    one_logo=False,
+                )
+
+                pdf.parts.append(draw)
+
+                if i % 3 == 0:
+                    pdf.add_page_break()
+
+            self._response.write(pdf.get())
+
+    @property
+    def response(self) -> PdfResponse:
+        return self._response

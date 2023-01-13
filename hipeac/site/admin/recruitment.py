@@ -4,8 +4,9 @@ from django.urls import path
 from typing import Optional
 
 from hipeac.models.events import Event
-from hipeac.models.recruitment import PhdMobility, Job, JobEvaluation, JobFair
+from hipeac.models.recruitment import PhdMobility, Job, JobEvaluation, JobFair, JobFairRegistration
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
+from hipeac.site.pdfs.redux.events.badges import JobFairBadgesPdfMaker
 from .generic import custom_titled_filter
 from .institutions import InstitutionsInline
 from .links import LinksInline
@@ -133,3 +134,17 @@ class JobAdmin(admin.ModelAdmin):
 class JobFairAdmin(admin.ModelAdmin):
     date_hierarchy = "start_date"
     inlines = (InstitutionsInline, PermissionsInline)
+
+
+@admin.register(JobFairRegistration)
+class JobFairRegistrationAdmin(admin.ModelAdmin):
+    actions = ("pdf_badges",)
+    date_hierarchy = "created_at"
+    list_filter = ("fair",)
+
+    # custom actions
+
+    @admin.action(description="ℹ️ Download badges")
+    def pdf_badges(self, request, queryset):
+        maker = JobFairBadgesPdfMaker(registrations=queryset, filename="badges.pdf")
+        return maker.response
