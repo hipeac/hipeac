@@ -194,6 +194,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.template.context_processors.request",
                 "django.contrib.messages.context_processors.messages",
+                "hipeac.context_processors.app",
                 "hipeac.context_processors.sentry",
             ],
         },
