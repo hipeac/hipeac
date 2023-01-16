@@ -1,15 +1,10 @@
 from django.contrib import admin, messages
 from django.db.models import Count
 
-from hipeac.functions import send_task
 from hipeac.models.events import Session
-from hipeac.site.emails.events.events import (
-    SessionProceedingsEmail,
-    SessionReminderEmail,
-    SessionSpeakersReminderEmail,
-)
 from hipeac.site.sheets.events.registrations import RegistrationsSheet
 from ..communication import VideosInline
+from ..generic import include_email_actions
 from ..files import FilesInline
 from ..institutions import InstitutionsInline
 from ..links import LinksInline
@@ -21,7 +16,9 @@ from ..users import SpeakersInline
 
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
+    email_actions = ["events.session.organizers."]
     actions = ("excel_overview", "send_reminder", "send_speakers_reminder", "send_proceedings_reminder")
+    date_hierarchy = "start_at"
     list_display = ("id", "title", "start_at", "end_at", "type", "registrations_count")
     list_filter = ("type", ("event", admin.RelatedOnlyFieldListFilter))
     search_fields = ("title",)
@@ -54,6 +51,13 @@ class SessionAdmin(admin.ModelAdmin):
             .annotate(Count("registrations", distinct=True))
         )
 
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if self.email_actions:
+            for prefix in self.email_actions:
+                actions = include_email_actions(actions, prefix)
+        return actions
+
     # custom actions
 
     @admin.action(description="🔡 Attendees overview")
@@ -65,33 +69,6 @@ class SessionAdmin(admin.ModelAdmin):
         return RegistrationsSheet(
             filename=f"{queryset.first().id}-session-overview.xlsx", queryset=queryset.first().registrations
         ).response
-
-    @admin.action(description="➡️ Ask proceedings to organizers")
-    def send_proceedings_reminder(self, request, queryset):
-        for instance in queryset:
-            if instance.acl.count() == 0:
-                continue
-            email = SessionProceedingsEmail(instance=instance)
-            send_task("hipeac.tasks.emails.send_from_template", email.data)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    @admin.action(description="➡️ Send reminder to organizers")
-    def send_reminder(self, request, queryset):
-        for instance in queryset:
-            if instance.acl.count() == 0:
-                continue
-            email = SessionReminderEmail(instance=instance)
-            send_task("hipeac.tasks.emails.send_from_template", email.data)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
-
-    @admin.action(description="➡️ Send speakers reminder to organizers")
-    def send_speakers_reminder(self, request, queryset):
-        for instance in queryset:
-            if instance.acl.count() == 0:
-                continue
-            email = SessionSpeakersReminderEmail(instance=instance)
-            send_task("hipeac.tasks.emails.send_from_template", email.data)
-        admin.ModelAdmin.message_user(self, request, "Emails are being sent.")
 
     # custom fields
 

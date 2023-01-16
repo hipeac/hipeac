@@ -112,6 +112,11 @@ class Session(EditorMixin, SessionAbstractModel):
     def clean(self) -> None:
         validate_date(self.start_at.date(), self.event)
 
+    def get_email_class(self):
+        from hipeac.emails.events import SessionEmail
+
+        return SessionEmail
+
     def can_be_managed_by(self, user) -> bool:
         return self.main_speaker_id == user.id or self._can_be_managed_by(user)
 

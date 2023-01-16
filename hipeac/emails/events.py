@@ -9,5 +9,5 @@ class RegistrationEmail(TemplateEmail):
 
 class SessionEmail(TemplateEmail):
     def __init__(self, email_code: str, instance: Session) -> None:
-        admin_emails = [admin.user.email for admin in self.instance.acl.all()]
+        admin_emails = [admin.user.email for admin in instance.acl.all()]
         super().__init__(email_code, to=admin_emails, instance=instance)
