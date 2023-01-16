@@ -95,6 +95,16 @@ class SessionAbstractModel(
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        if self.id:
+            self.keywords = (
+                [institution.short_name for institution in self.institutions]
+                + ["".join(["project:", slugify(project.acronym)]) for project in self.projects]
+                + [f"{speaker.first_name} {speaker.last_name}" for speaker in self.users]
+                + ([f"{self.main_speaker.first_name} {self.main_speaker.last_name}"] if self.main_speaker else [])
+            )
+        super().save(*args, **kwargs)
+
     def __str__(self) -> str:
         date = self.start_at.strftime("%a %-H:%M")
         return f"{date}: {self.title}"

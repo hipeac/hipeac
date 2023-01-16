@@ -6,6 +6,14 @@ var getMoment = function (dt, tz) {
   return moment.utc(dt).tz(tz || 'Europe/Brussels');
 };
 
+var getChildKeywords = function (collection) {
+  var keywords = [];
+  collection.forEach(function (item) {
+    keywords.push(item.keywords);
+  });
+  return _.flatten(keywords);
+};
+
 
 function modelFromUrl(url) {
   var m = url.split('/api/v1/')[1].split('/')[0];
@@ -187,6 +195,8 @@ var Hipeac = {
       obj._q = [
         obj.title,
         obj.keywords.join(' '),
+        getChildKeywords(obj.topics).join(' '),
+        getChildKeywords(obj.application_areas).join(' '),
         'day:' + obj.start.format('dddd'),
         'type:' + slugify(obj.type.value),
       ].join(' ').toLowerCase();

@@ -54,7 +54,7 @@ class InstitutionsMixin(models.Model):
         abstract = True
 
     @cached_property
-    def institutions(self):
+    def institutions(self) -> list:
         return [rel.institution for rel in self.rel_institutions.all()]
 
 
@@ -144,7 +144,7 @@ class ProjectsMixin(models.Model):
         abstract = True
 
     @cached_property
-    def projects(self):
+    def projects(self) -> list:
         return [rel.project for rel in self.rel_projects.all()]
 
 
@@ -155,7 +155,7 @@ class UsersMixin(models.Model):
         abstract = True
 
     @cached_property
-    def users(self):
+    def users(self) -> list:
         return [rel.user for rel in self.rel_users.all()]
 
 
