@@ -15,9 +15,10 @@ from svglib.svglib import svg2rlg
 from .styles import PDF_STYLES, HIPEAC_BLUE
 
 
-H2020 = "European Union’s Horizon 2020 research and innovation programme under grant agreement number 779656"
-DEFAULT_FOOTER = f"""<strong>© {timezone.now().year} HiPEAC</strong>, European Network on High Performance
-and Embedded Architecture and Compilation.<br />The HiPEAC project has received funding from the {H2020}."""
+H2020 = (
+    "European Union's Horizon Europe research and innovation funding programme under grant agreement number 101069836"
+)
+DEFAULT_FOOTER = f"""<strong>© {timezone.now().year} HiPEAC</strong>, High Performance, Edge And Cloud computing.<br />The HiPEAC project has received funding from the {H2020}."""
 
 
 class HeaderNote(Flowable):

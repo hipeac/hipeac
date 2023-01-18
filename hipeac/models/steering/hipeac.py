@@ -29,4 +29,4 @@ class HipeacPartner(models.Model):
 
     class Meta:
         db_table = "hipeac_self_partner"
-        ordering = ("hipeac", "position")
+        ordering = ("hipeac", "position", "institution__name")

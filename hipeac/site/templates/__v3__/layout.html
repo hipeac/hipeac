@@ -43,12 +43,13 @@
 {% block footer %}
   <q-footer class="bg-transparent text-grey-8 q-py-xl" :class="{'q-px-xl': $q.screen.gt.sm}">
     <div class="container">
-      <div class="row q-col-gutter-md justify-between text-caption" :class="{'reverse': $q.screen.gt.sm}">
-        <div class="col-12 col-md-2" :class="{'text-right': $q.screen.gt.sm}">
-          <img src="{% static 'images/eu-flag.svg' %}" style="width:60px">
+      <div class="row q-col-gutter-lg justify-between text-caption" :class="{'reverse': $q.screen.gt.sm}">
+        <div class="col-12 col-md-3" :class="{'text-right': $q.screen.gt.sm}">
+          <img src="{% static 'images/eu-horizon.svg' %}" style="height:40px">
         </div>
-        <div class="col-12 col-md-10">
-          <p class="text-caption"><strong>&copy; 2004-{% now 'Y' %} HiPEAC, European Network on High-performance Embedded Architecture and Compilation</strong><br>The HiPEAC project has received funding from the European Union's Horizon2020 research and innovation programme under grant agreement number 871174.</p>
+        <div class="col-12 col-md-9">
+          <p class="text-caption q-mb-sm"><strong>&copy; 2004-{% now 'Y' %} High Performance, Edge And Cloud computing</strong></p>
+          <p class="text-caption">The HiPEAC project has received funding from the European Union's Horizon Europe research and innovation funding programme under grant agreement number 101069836. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union. Neither the European Union nor the granting authority can be held responsible for them.</p>
           <div class="q-gutter-x-md">
             <a href="/privacy-policy/" class="inherit">Privacy policy</a>
             <a href="/disclaimer/" class="inherit">Disclaimer</a>

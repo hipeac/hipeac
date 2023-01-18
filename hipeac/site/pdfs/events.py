@@ -5,15 +5,11 @@ from hipeac.tools.zoom import attendee_report
 
 
 def get_programme(date):
+    """TODO: return programme based on date, from Hipeac model."""
     return (
-        "European Network on High Performance and Embedded Architecture and Compilation",
-        "Horizon2020 research and innovation",
-        "779656",
-    )
-    return (
-        "European Network on High Performance and Embedded Architecture and Compilation",
-        "FP7 ICT Cooperation",
-        "779656",
+        "European Network on High Performance, Edge And Cloud computing",
+        "Horizon Europe research and innovation",
+        "101069836",
     )
 
 
