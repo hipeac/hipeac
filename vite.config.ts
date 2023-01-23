@@ -1,7 +1,15 @@
+const fs = require('fs');
 const { resolve } = require('path');
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+
+// read apps folder and create a list of entries
+const apps = fs.readdirSync(resolve(__dirname, './vue/src/apps'));
+const appsToBuild = {};
+apps.forEach((app) => {
+  appsToBuild[app] = resolve(__dirname, `./vue/src/apps/${app}/main.ts`);
+});
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,9 +26,9 @@ export default defineConfig({
     },
   },
   resolve: {
-    extensions: ['.vue', '.js', '.json'],
-    alias:{
-      '@' : resolve(__dirname, './vue/src')
+    extensions: ['.vue', '.ts', '.js', '.json'],
+    alias: {
+      '@': resolve(__dirname, './vue/src'),
     },
   },
   build: {
@@ -30,22 +38,15 @@ export default defineConfig({
     emptyOutDir: true,
     target: 'es2015',
     rollupOptions: {
-      input: {
-        home: resolve('./vue/src/apps/home/main.ts'),
-      },
+      input: appsToBuild,
       output: {
         chunkFileNames: undefined,
         manualChunks: {
-          helpers: ['axios', 'date-fns', 'lodash-es', '@sentry/vue'],
+          helpers: ['axios', '@sentry/vue'],
           quasar: ['quasar'],
           vue: ['vue', 'vue-router', 'pinia']
         }
       },
     },
-  },
-  define: {
-    __VUE_I18N_FULL_INSTALL__: true,
-    __VUE_I18N_LEGACY_API__: false,
-    __INTLIFY_PROD_DEVTOOLS__: false,
   },
 })

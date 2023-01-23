@@ -1,18 +1,21 @@
 from django.views import generic
 
-from hipeac.api.serializers.communication import VideoListSerializer
-from hipeac.models.communication.videos import Video
-from .inertia import render_inertia
+from hipeac.api.serializers import EventListSerializer
+from hipeac.api.serializers.v2 import ArticleListSerializer, VideoListSerializer
+from hipeac.models import Article, Event, Video
+from .inertia import InertiaView
 
 
-class HomeView(generic.View):
-    def get(self, request, *args, **kwargs):
+class HomeView(InertiaView):
+    vue_entry_point = "apps/home/main.ts"
+
+    def get_props(self, request, *args, **kwargs):
+        articles = Article.objects.published().order_by("-publication_date")[:10]
+        events = Event.objects.filter().order_by("-start_date")[:14]
         video = Video.objects.filter(shows_on_homepage=True).first()
 
-        return render_inertia(
-            request,
-            "apps/home/main.ts",
-            props={
-                "video": VideoListSerializer(video, context={"request": request}).data if video else None,
-            },
-        )
+        return {
+            "articles": ArticleListSerializer(articles, many=True, context={"request": request}).data,
+            "events": EventListSerializer(events, many=True, context={"request": request}).data,
+            "video": VideoListSerializer(video, context={"request": request}).data if video else None,
+        }

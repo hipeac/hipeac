@@ -59,8 +59,7 @@ payment_patterns = (
 )
 
 urlpatterns = [
-    path("__vite__", views.HomeView.as_view(), name="homepage_vite"),
-    path("", TemplateView.as_view(template_name="flatpages/homepage.html"), name="homepage"),
+    path("", views.HomeView.as_view(), name="homepage"),
     # Recruitment
     path("jobs/euraxess.xml", views.JobsEuraxessXML.as_view(), name="jobs_euraxess_xml"),
     path("jobs/", flatpage, {"url": "/jobs/"}, name="jobs"),

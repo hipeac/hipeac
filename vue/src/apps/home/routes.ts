@@ -7,7 +7,8 @@ const routes: RouteRecordRaw[] = [
     strict: true,
     components: {
       default: () => import('./HomeApp.vue'),
-    }
+      menu: () => import('./HomeMenu.vue'),
+    },
   },
 ];
 

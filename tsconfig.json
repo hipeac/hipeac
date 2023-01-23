@@ -18,8 +18,18 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Vite */
+    "paths": {
+      "@/*": ["./vue/src/*"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": [
+    "vue/src/**/*.ts",
+    "vue/src/**/*.d.ts",
+    "vue/src/**/*.tsx",
+    "vue/src/**/*.vue"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

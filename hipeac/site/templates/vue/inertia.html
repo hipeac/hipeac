@@ -10,11 +10,11 @@
   <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Roboto+Slab:wght@600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" type="text/css" rel="stylesheet">
     {% compress css file base %}
-      <link href="{% static 'vendor/quasar@2.11.10/quasar.prod.css' %}" type="text/css" rel="stylesheet">
-      <link href="{% static '__v3__/scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
+      <link href="{% static '__inertia__/vendor/quasar@2.11.10/quasar.prod.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static '__inertia__/scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
       <link href="{% static 'css/flags.css' %}" type="text/css" rel="stylesheet">
     {% endcompress %}
     <title>{{ page_title }}</title>

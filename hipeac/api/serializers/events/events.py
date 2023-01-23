@@ -111,10 +111,11 @@ class EventNestedSerializer(serializers.ModelSerializer):
     name = serializers.CharField(read_only=True)
     images = serializers.DictField(read_only=True)
     dates = serializers.ListField()
+    is_finished = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Event
-        exclude = ("coordinating_institution", "logistics", "image")
+        exclude = ("coordinating_institution", "logistics", "image", "presentation", "wbs_element", "ingenico_salt")
 
 
 class EventListSerializer(EventNestedSerializer):
@@ -140,7 +141,7 @@ class EventSerializer(LinksMixin, EventNestedSerializer):
 
     class Meta:
         model = Event
-        exclude = ()
+        exclude = ("wbs_element", "ingenico_salt")
 
 
 class RoadshowNestedSerializer(serializers.ModelSerializer):
