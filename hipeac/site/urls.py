@@ -135,7 +135,7 @@ urlpatterns = [
     # Mailing lists
     path("sympa/<slug:mailing_list>/", views.DataSourceView.as_view(), name="datasource"),
     # Media
-    re_path(r"media/private(?P<path>((/\w+?)+/))(?P<filename>[\w.-]+)", views.FirewallView.as_view()),
+    re_path(r"media/private(?P<path>((/\w+?)+/))(?P<filename>[\w.-]+)", views.PrivateFileView.as_view()),
     # Old redirects and legacy links
     path("mobility/collaboration/awardees/", views.CollaborationAwardees.as_view(), name="collaboration_awardees"),
     path("mobility/internships/awardees/", views.InternshipAwardees.as_view(), name="internship_awardees"),

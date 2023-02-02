@@ -4,7 +4,7 @@ from django.urls import path
 from typing import Optional
 
 from hipeac.models.events import Event
-from hipeac.models.recruitment import PhdMobility, Job, JobEvaluation, JobFair, JobFairRegistration
+from hipeac.models.recruitment import PhdMobility, Job, JobEvaluation, JobFair, JobFairCompany, JobFairRegistration
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
 from hipeac.site.pdfs.redux.events.badges import JobFairBadgesPdfMaker
 from .generic import custom_titled_filter
@@ -130,10 +130,18 @@ class JobAdmin(admin.ModelAdmin):
     positive_evaluation.short_description = "Evaluation"
 
 
+class JobFairCompaniesInline(admin.TabularInline):
+    model = JobFairCompany
+    extra = 0
+    verbose_name = "company recruiter"
+    # form
+    raw_id_fields = ("institution", "users")
+
+
 @admin.register(JobFair)
 class JobFairAdmin(admin.ModelAdmin):
     date_hierarchy = "start_date"
-    inlines = (InstitutionsInline, PermissionsInline)
+    inlines = (InstitutionsInline, PermissionsInline, JobFairCompaniesInline)
 
 
 @admin.register(JobFairRegistration)

@@ -38,9 +38,7 @@ def create_hotel_action(hotel: AcacesHotel) -> callable:
 
 
 def include_hotel_actions(actions: dict, event) -> dict:
-    print(event)
     for hotel in event.hotels.order_by("name"):
-        print(hotel)
         action = create_hotel_action(hotel)
         actions[action.__name__] = (action, action.__name__, action.short_description)
 

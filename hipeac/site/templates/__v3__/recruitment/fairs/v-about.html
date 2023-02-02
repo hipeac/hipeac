@@ -25,6 +25,17 @@
         </div>
       </div>
     </q-card>
+    <div v-if="fair.institutions" class="row q-col-gutter-md q-mt-none">
+      <div class="col-12 col-md align-items-stretch">
+        <q-card class="hipeac__card full-height">
+          <div class="row items-center justify-center q-col-gutter-xl text-center">
+            <div v-for="institution in fair.institutions" :key="institution.id" class="col-6 col-sm-3 col-md-2">
+              <img v-if="institution && institution.images" :src="institution.images.lg" class="sponsor">
+            </div>
+          </div>
+        </q-card>
+      </div>
+    </div>
   </div>
 {% endverbatim %}
 </script>

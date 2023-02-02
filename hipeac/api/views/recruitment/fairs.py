@@ -1,20 +1,27 @@
+from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 
 from hipeac.models import JobFair, JobFairRegistration
-from ...permissions import HasManagerPermission, HasManagerPermissionOrReadOnly
-from ...serializers.recruitment import JobFairSerializer, JobFairRegistrationSerializer
+from ...permissions import HasManagerPermission, HasManagerPermissionOrReadOnly, HasJobFairRecruiterPermission
+from ...serializers.recruitment import (
+    JobFairSerializer,
+    JobFairRegistrationSerializer,
+    JobNestedSerializer,
+    JobApplicantRegistrationSerializer,
+)
 
 # from ..serializers import SessionAccessLinkSerializer
 
 
-class JobFairViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class JobFairViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = JobFair.objects.all()
     permission_classes = (HasManagerPermissionOrReadOnly,)
     serializer_class = JobFairSerializer
@@ -26,12 +33,32 @@ class JobFairViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     @action(
         detail=True,
         pagination_class=None,
-        serializer_class=JobFairSerializer,  # TODO: fix
+        permission_classes=(HasJobFairRecruiterPermission,),
+    )
+    def applicants(self, request, *args, **kwargs):
+        company_ids = (
+            self.get_object().companies.filter(users__id=request.user.id).values_list("institution_id", flat=True)
+        )
+        jobs = self.get_object().get_jobs(company_ids=company_ids)
+        applicants = self.get_object().registrations.filter(jobs__in=jobs).distinct()
+
+        return Response(
+            {
+                "companies": company_ids,
+                "registrations": JobApplicantRegistrationSerializer(
+                    applicants, many=True, context={"request": request}
+                ).data,
+                "jobs": JobNestedSerializer(jobs, many=True, context={"request": request}).data,
+            }
+        )
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        serializer_class=JobNestedSerializer,
     )
     def jobs(self, request, *args, **kwargs):
-        self.queryset = self.get_object().registrations.prefetch_related(
-            "rel_institutions__institution", "rel_projects__project"
-        )
+        self.queryset = self.get_object().jobs
         return super().list(request, *args, **kwargs)
 
 

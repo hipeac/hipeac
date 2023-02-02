@@ -1,20 +1,27 @@
 import os
 
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views.generic import View
 from mimetypes import guess_type
 
-from hipeac.models import Magazine, Vision, VisionArticle
+from hipeac.models import File, Magazine, Vision, VisionArticle
 
 
 class SendfileView(View):
     """
     Serves `private` assets.
     """
+
+    def get_object(self):
+        if not hasattr(self, "object"):
+            self.object = get_object_or_404(File, file=self.request.path.replace("/media/", ""))
+        return self.object
 
     def get_path_and_filename(self, *args, **kwargs):
         return kwargs.get("path"), kwargs.get("filename")
@@ -32,6 +39,18 @@ class SendfileView(View):
             response["Content-Encoding"] = guessed_encoding
 
         return response
+
+
+class PrivateFileView(SendfileView):
+    """
+    Serves `private` files, checking basic permissions beforehand.
+    """
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        if not self.get_object().content_object.files_viewable_by_user(self.request.user):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 
 class FirewallView(SendfileView):

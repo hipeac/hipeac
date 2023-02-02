@@ -1,8 +1,17 @@
+{% load humanize %}
+{% load static %}
+
+
 <script type="text/x-template" id="v-jobs">
 {% verbatim %}
   <div v-if="fair">
-    <q-card class="hipeac__card q-mt-lg">
-      Coming soon...
+    <q-card class="hipeac__card q-my-lg">
+      <div class="catchphrase">
+        <p class="q-ma-none">Delegates from the companies whose current job vacancies are shown below will be at {{ fair.name }}.<br><span v-if="registration">You can <strong>apply for a job position</strong> from the list below, and we will share your contact information and CV with the companies!</span><span v-else><router-link :to="{name: 'registration'}">Register for the job fair</router-link> to be able to apply for positions!</span></p>
+      </div>
+    </q-card>
+    <job-cards v-if="registration" :items="jobs || []" :popup="true" :manage-stack="true" v-model="registration.jobs" />
+    <job-cards v-else :items="jobs || []" :popup="true" />
   </div>
 {% endverbatim %}
 </script>

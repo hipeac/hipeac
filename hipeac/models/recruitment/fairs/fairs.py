@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django_countries.fields import CountryField
 
 from hipeac.models.mixins import EditorMixin, InstitutionsMixin, LinksMixin, PermissionsMixin
@@ -42,3 +44,22 @@ class JobFair(EditorMixin, InstitutionsMixin, LinksMixin, PermissionsMixin, mode
 
     def is_open_for_registration(self) -> bool:
         return timezone.now().date() < self.end_date
+
+    @cached_property
+    def jobs(self):
+        return self.get_jobs()
+
+    def get_jobs(self, company_ids: list = None):
+        from hipeac.models import Job
+
+        if company_ids is None:
+            company_ids = [institution.id for institution in self.institutions]
+
+        return (
+            Job.objects.active()
+            .filter(
+                (Q(institution__in=company_ids) | Q(institution__parent_id__in=company_ids)),
+            )
+            .prefetch_related("institution")
+            .order_by("institution__name", "deadline")
+        )

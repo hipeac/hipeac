@@ -168,6 +168,19 @@ class Profile(ApplicationAreasMixin, FilesMixin, ImageMixin, LinksMixin, Project
     def membership_tags(self) -> list:
         return []
 
+    @cached_property
+    def cv(self) -> "hipeac.File":
+        return self.files.filter(keywords__contains=["cv"]).first()
+
+    def files_viewable_by_user(self, user) -> bool:
+        if self.user_id == user.id:
+            return True
+
+        fair_job_ids = self.user.job_fair_registrations.values_list("jobs", flat=True)
+        recruiter_job_ids = user.job_fairs.values_list("institution__jobs", flat=True)
+        intersection = set(fair_job_ids).intersection(set(recruiter_job_ids))
+        return len(intersection) > 0
+
 
 @receiver(post_delete, sender=User)
 def post_delete_user(sender, instance, *args, **kwargs):

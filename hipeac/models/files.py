@@ -28,6 +28,8 @@ class File(KeywordsMixin, models.Model):
     position = models.PositiveSmallIntegerField(default=0)
     description = models.TextField(null=True, blank=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         db_table = "hipeac_rel_file"
         indexes = [models.Index(fields=["file"])]
@@ -37,3 +39,6 @@ class File(KeywordsMixin, models.Model):
         if os.path.isfile(self.file.path):
             os.remove(self.file.path)
         super().delete(*args, **kwargs)
+
+    def files_viewable_by_user(self, user) -> bool:
+        return user.is_authenticated

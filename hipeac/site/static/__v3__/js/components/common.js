@@ -352,6 +352,33 @@ var HipeacCommonComponents = {
     `
   },
 
+  'hipeac-metadata': {
+    props: {
+      metadata: {
+        type: Array,
+        default: function () {
+          return [];
+        }
+      },
+      title: {
+        type: String,
+        default: 'Metadata'
+      },
+      badgeColor: {
+        type: String,
+        default: 'primary'
+      }
+    },
+    template: `
+      <div v-if="metadata.length">
+        <display-5 style="margin:0">{{ title }}</display-5>
+        <div class="q-gutter-x-sm q-mt-sm">
+          <q-badge v-for="item in metadata" :label="item.value" :color="badgeColor" />
+        </div>
+      </div>
+    `
+  },
+
   'hipeac-notifications-btn': {
     setup: function () {
       Vuex.useStore();

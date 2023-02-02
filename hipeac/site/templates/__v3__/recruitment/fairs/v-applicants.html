@@ -1,0 +1,47 @@
+<script type="text/x-template" id="v-applicants">
+{% verbatim %}
+  <div v-if="recruitment_data">
+    <q-card class="hipeac__card q-mt-lg">
+      <div class="row q-col-gutter-y-lg q-col-gutter-x-xl reverse" :class="{'q-col-gutter-xl': $q.screen.gt.sm}">
+        <div class="col-12 col-md">
+          <hipeac-search-bar v-model="query" placeholder="Search by name, affiliation, country..." />
+          <q-table flat :dense="$q.screen.gt.sm" row-key="id" :rows="applicants || []" :columns="table.columns" :pagination="table.pagination" :filter="query" :filter-method="customFilter">
+            <template v-slot:body-cell-country="props">
+              <q-td auto-width :props="props">
+                <country-flag v-if="props.row.profile.country" :code="props.row.profile.country.code"></country-flag>
+              </q-td>
+            </template>
+            <template v-slot:body-cell-gender="props">
+              <q-td auto-width :props="props">
+                <span v-if="props.row.profile.gender">{{ props.row.profile.gender.value }}</span>
+              </q-td>
+            </template>
+            <template v-slot:body-cell-cv="props">
+              <q-td auto-width :props="props">
+                <a v-if="props.row.profile.cv" :href="props.row.profile.cv.url" target="cv" >See CV</a>
+              </q-td>
+            </template>
+            <template v-slot:body-cell-jobs="props">
+              <q-td auto-width :props="props">
+                <q-badge color="primary">{{ props.row.jobs.length }}</q-badge>
+                <q-icon @click="cloneObj(props.row)" name="visibility" color="dark" class="q-ml-xs cursor-pointer" />
+              </q-td>
+            </template>
+          </q-table>
+          <hipeac-editor size="lg" :obj="obj" position="standard">
+            <display-3>{{ obj.name }}</display-3>
+            <span>is interested in these jobs:</span>
+            <ul>
+              <li v-for="job in obj.jobs" :key="job.id">{{ job.title }} (#{{ job.id }})</li>
+            </ul>
+            <div class="row q-col-gutter-lg q-mt-lg">
+              <hipeac-metadata :metadata="obj.profile.topics" title="Topics of interest" class="col-12 col-md-6" />
+              <hipeac-metadata :metadata="obj.profile.application_areas" title="Application areas" class="col-12 col-md-6"/>
+            </div>
+          </hipeac-editor>
+        </div>
+      </div>
+    </q-card>
+  </div>
+{% endverbatim %}
+</script>
