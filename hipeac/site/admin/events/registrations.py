@@ -150,6 +150,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     def change_view(self, request, object_id, form_url="", extra_context=None):
         obj = self.get_object(request, object_id)
         extra_context = extra_context or {}
+        extra_context["is_paid"] = obj.is_paid
         extra_context["has_letter"] = InvitationLetter.objects.filter(registration_id=object_id).exists()
         extra_context["payment_delegated_url"] = obj.get_payment_delegated_url() if not obj.is_paid else None
         return super().change_view(request, object_id, form_url, extra_context=extra_context)

@@ -2,7 +2,7 @@
 
 {% block object-tools-items %}
   {% if is_paid %}
-    <li><a href="{% url 'registration_receipt' object_id %}" target="_blank">Receipt</a></li>
+    <li><a href="{% url 'registration_payment:receipt' object_id %}" target="_blank">Receipt</a></li>
   {% endif %}
   {% if has_letter %}
     <li><a href="{% url 'admin:registration_pdf_letter' object_id %}" target="_blank" rel="noopener">Invitation Letter</a></li>
