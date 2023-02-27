@@ -52,7 +52,7 @@ class TestForAuthenticated(UserMixin, TestForAnonymous):
                 "acronym": "PRJ",
                 "name": "Project",
                 "coordinating_institution": {
-                    "id": coordinating_institution.id
+                    "id": coordinating_institution.id,
                 },
                 "programme": programme.id,
                 "links": [],

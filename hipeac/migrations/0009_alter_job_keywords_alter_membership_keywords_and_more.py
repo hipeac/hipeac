@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("hipeac", "0008_alter_metadata_options_metadata_keywords"),
     ]

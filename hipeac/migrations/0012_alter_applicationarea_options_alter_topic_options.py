@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("hipeac", "0011_remove_hipeac_is_visible_project_created_at_and_more"),
     ]

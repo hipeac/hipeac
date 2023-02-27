@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("hipeac", "0009_alter_job_keywords_alter_membership_keywords_and_more"),
     ]
