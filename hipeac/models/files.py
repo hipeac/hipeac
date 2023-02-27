@@ -39,6 +39,3 @@ class File(KeywordsMixin, models.Model):
         if os.path.isfile(self.file.path):
             os.remove(self.file.path)
         super().delete(*args, **kwargs)
-
-    def files_viewable_by_user(self, user) -> bool:
-        return user.is_authenticated

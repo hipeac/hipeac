@@ -39,6 +39,9 @@ class FilesMixin(models.Model):
     class Meta:
         abstract = True
 
+    def files_viewable_by_user(self, user) -> bool:
+        return user.is_authenticated
+
 
 class ImagesMixin(models.Model):
     images = GenericRelation("hipeac.Image")

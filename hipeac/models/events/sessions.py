@@ -130,6 +130,11 @@ class Session(EditorMixin, SessionAbstractModel):
     def can_be_managed_by(self, user) -> bool:
         return self.main_speaker_id == user.id or self._can_be_managed_by(user)
 
+    def files_viewable_by_user(self, user) -> bool:
+        return user.is_authenticated and (
+            self.can_be_managed_by(user) or self.event.registrations.filter(user=user).exists()
+        )
+
     def get_absolute_url(self) -> str:
         return "".join([self.event.get_absolute_url(), f"#/program/sessions/{self.id}/"])
 
