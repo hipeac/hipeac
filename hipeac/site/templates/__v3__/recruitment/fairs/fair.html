@@ -166,7 +166,9 @@
           var jobs = _.indexBy(this.recruitment_data.jobs, 'id');
 
           return this.recruitment_data.registrations.map(function (obj) {
-            var objobs = obj.jobs.map(function (j) {
+            var objobs = obj.jobs.filter(function (j) {
+              return j in jobs;
+            }).map(function (j) {
               return jobs[j];
             });
 

@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
