@@ -46,7 +46,7 @@ class ProfileMembershipSerializer(TopicsMixin, ProfileSerializer):
         fields = ("name", "institution", "second_institution", "advisor", "topics")
 
 
-class ProfileNestedSerializer(ProfileSerializer):
+class ProfileNestedSerializer(TopicsMixin, ProfileSerializer):
     institution = InstitutionMiniSerializer(read_only=True)
     second_institution = InstitutionMiniSerializer(read_only=True)
 
