@@ -23,6 +23,10 @@ class Conference(Event):
         from hipeac.models import Job
 
         sponsors = self.sponsors.values_list("institution_id", "project_id")
+
+        if not sponsors:
+            return Job.objects.none()
+
         a, b = map(list, zip(*sponsors))
         institution_ids, project_ids = list(filter(None, a)), list(filter(None, b))
 
