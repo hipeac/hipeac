@@ -1,9 +1,3 @@
-interface HipeacImages {
-  th: string;
-  md: string;
-  lg: string;
-}
-
 interface HipeacSession extends ApiObject {
   rel_attendees: ApiEndpoint;
   title: string;

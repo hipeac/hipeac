@@ -18,3 +18,8 @@ class HomeView(InertiaView):
             "events": EventListSerializer(events, many=True, context={"request": request}).data,
             "video": VideoListSerializer(video, context={"request": request}).data if video else None,
         }
+
+
+class JobsView(InertiaView):
+    page_title = "Jobs"
+    vue_entry_point = "apps/jobs/main.ts"

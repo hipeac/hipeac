@@ -11,14 +11,25 @@
           :to="item.to"
           :class="{ 'q-px-xs': !item.label }"
         >
-          <q-icon v-if="item.icon" :name="item.icon" size="20px" :class="{ 'q-mr-sm': item.label }" />
-          <div v-if="item.label" class="q-tab__label">{{ item.label }}</div>
-          <q-icon
-            v-if="!item.icon && item.href"
-            name="arrow_forward_ios"
-            size="13px"
-            :class="{ 'q-ml-sm': item.label }"
+          <q-btn
+            v-if="item.btnColor"
+            unelevated
+            no-caps
+            :color="item.btnColor"
+            :label="item.label"
+            :icon="item.icon"
+            class="q-pl-sm"
           />
+          <div v-else class="flex items-center">
+            <q-icon v-if="item.icon" :name="item.icon" size="20px" :class="{ 'q-mr-sm': item.label }" />
+            <div v-if="item.label" class="q-tab__label">{{ item.label }}</div>
+            <q-icon
+              v-if="!item.icon && item.href"
+              name="arrow_forward_ios"
+              size="13px"
+              :class="{ 'q-ml-sm': item.label }"
+            />
+          </div>
         </q-route-tab>
       </q-tabs>
     </q-toolbar>
@@ -33,14 +44,17 @@
         :to="item.to"
         :class="{ 'q-px-xs': !item.label }"
       >
-        <q-icon v-if="item.icon" :name="item.icon" size="20px" :class="{ 'q-mr-sm': item.label }" />
-        <div v-if="item.label" class="q-tab__label">{{ item.label }}</div>
-        <q-icon
-          v-if="!item.icon && item.href"
-          name="arrow_forward_ios"
-          size="13px"
-          :class="{ 'q-ml-sm': item.label }"
-        />
+        <q-btn v-if="item.btnColor" unelevated no-caps :color="item.btnColor" :label="item.label" />
+        <div v-else class="flex items-center">
+          <q-icon v-if="item.icon" :name="item.icon" size="20px" :class="{ 'q-mr-sm': item.label }" />
+          <div v-if="item.label" class="q-tab__label">{{ item.label }}</div>
+          <q-icon
+            v-if="!item.icon && item.href"
+            name="arrow_forward_ios"
+            size="13px"
+            :class="{ 'q-ml-sm': item.label }"
+          />
+        </div>
       </q-route-tab>
     </q-tabs>
   </q-toolbar>
@@ -55,6 +69,7 @@ interface MenuItem {
   readonly to?: object;
   readonly icon?: string;
   readonly exact?: boolean;
+  readonly btnColor?: string;
 }
 
 defineProps({

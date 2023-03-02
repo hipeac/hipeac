@@ -1,23 +1,15 @@
-<style lang="scss">
-.hipeac__article_list {
-  .q-focus-helper {
-    display: none;
-  }
-}
-</style>
-
 <template>
   <div>
-    <h6 class="q-mb-md">Latest news</h6>
+    <h6>Latest news</h6>
     <q-separator />
-    <q-list separator class="hipeac__article_list">
+    <q-list separator class="hipeac__custom-list">
       <q-item v-for="item in visibleItems" :key="item.id" :href="item.url" class="q-px-none q-py-md">
         <q-item-section>
           <small class="q-mb-xs"
             ><strong>{{ item.type_display }}</strong
             >, {{ item.date }}</small
           >
-          <span>{{ item.title }}</span>
+          <h6 class="item-title q-mt-xs">{{ item.title }}</h6>
         </q-item-section>
         <q-item-section side>
           <q-icon name="arrow_forward_ios" size="xs" />

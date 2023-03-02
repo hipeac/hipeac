@@ -1,23 +1,10 @@
-<style lang="scss">
-.hipeac__event_list {
-  .q-focus-helper {
-    display: none;
-  }
-
-  .q-avatar {
-    height: 48px;
-    width: 48px;
-  }
-}
-</style>
-
 <template>
   <div>
     <div v-for="(data, is_finished) in visibleItems" :key="is_finished">
-      <h6 v-if="is_finished === 'false'" class="q-mb-md">Upcoming events</h6>
-      <h6 v-else class="q-mb-md">Past events</h6>
+      <h6 v-if="is_finished === 'false'">Upcoming events</h6>
+      <h6 v-else>Past events</h6>
       <q-separator />
-      <q-list separator class="hipeac__event_list q-mb-lg">
+      <q-list separator class="hipeac__custom-list q-mb-lg">
         <q-item v-for="item in data" :key="item.id" :href="item.url" class="q-px-none q-py-md">
           <q-item-section avatar>
             <q-avatar rounded class="bg-grey-4">
@@ -25,7 +12,7 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            {{ item.name }}
+            <h6 class="item-title q-mb-xs">{{ item.name }}</h6>
             <small>
               <q-icon v-if="item.is_virtual" name="monitor" size="13px" class="q-mb-xs q-mr-xs" />
               <span v-else

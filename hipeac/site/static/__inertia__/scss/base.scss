@@ -70,8 +70,33 @@ html, body {
   }
 }
 
+.hipeac__layout {
+  h6 {
+    font-family: inherit !important;
+    text-transform: none;
+    font-size: 18px;
+    padding-top: 12px;
+  }
+}
 
+.hipeac__custom-list {
+  .q-focus-helper {
+    display: none;
+  }
 
+  .q-avatar {
+    height: 48px;
+    width: 48px;
+  }
+
+  .item-title {
+    font-size: 1.05rem;
+    font-weight: normal;
+    line-height: 1.3;
+    text-wrap: balance;
+    padding: 0 !important;
+  }
+}
 
 /* Quasar tweaks */
 
@@ -84,6 +109,13 @@ html, body {
   }
 }
 
+.on-left {
+  margin-right: 8px;
+}
+
+.q-tabs.square .q-tabs__content {
+  border-radius: 0 !important;
+}
 
 /* TODO: revise vvvvvvvv */
 
@@ -238,6 +270,7 @@ h5 {
 }
 
 h6 {
+  font-size: 1.05rem;
   text-transform: uppercase;
   font-size: .9rem;
   margin-bottom: .5rem;
@@ -254,6 +287,7 @@ code, kbd, pre, samp,
   line-height: 1.35;
 }
 
+h5, h6,
 .text-h5, .text-h6 {
   line-height: 1.35;
 }
@@ -310,6 +344,7 @@ code, kbd, pre, samp,
     font-size: 1.15rem;
   }
 
+  h6,
   .text-h6 {
     font-size: 1.05rem;
     line-height: 1.3;

@@ -16,9 +16,33 @@ interface Metadata {
   value: string;
   position: number;
   keywords: string[];
+  // -----
+  count?: number;
+}
+
+interface ApplicationArea extends Metadata {
+  type: 'application_area';
+}
+
+interface CareerLevel extends Metadata {
+  type: 'job_position';
+}
+
+interface EmploymentType extends Metadata {
+  type: 'employment_type';
+}
+
+interface Topic extends Metadata {
+  type: 'topic';
+}
+
+interface HipeacImages {
+  th: string;
+  md: string;
+  lg: string;
 }
 
 interface QuasarOption {
-  value: number | string;
+  value: number | string | null;
   label: string;
 }
