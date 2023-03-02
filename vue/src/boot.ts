@@ -4,7 +4,7 @@ import { createApp, h } from 'vue';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { createPinia } from 'pinia';
 import { createInertiaApp } from '@inertiajs/vue3';
-import { Quasar, Dialog, Notify } from 'quasar';
+import { Quasar, Dialog, Notify, Loading } from 'quasar';
 import * as Sentry from '@sentry/vue';
 
 import { axios, api } from './axios.ts';
@@ -28,7 +28,7 @@ const bootApp = (routes: RouteRecordRaw[]) => {
       const app = createApp({ render: () => h(App, props) });
       app.use(plugin);
       app.use(Quasar, {
-        plugins: { Dialog, Notify },
+        plugins: { Dialog, Notify, Loading },
       });
       app.use(Router);
       app.use(Store);

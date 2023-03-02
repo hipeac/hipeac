@@ -62,7 +62,8 @@ urlpatterns = [
     path("", views.HomeView.as_view(), name="homepage"),
     # Recruitment
     path("jobs/euraxess.xml", views.JobsEuraxessXML.as_view(), name="jobs_euraxess_xml"),
-    path("jobs/", flatpage, {"url": "/jobs/"}, name="jobs"),
+    path("jobs1/", flatpage, {"url": "/jobs/"}, name="jobs__old"),
+    path("jobs/", views.JobsView.as_view(), name="jobs"),
     path("jobs/feed/", views.JobsFeed(), name="jobs_feed"),
     path("jobs/management/", views.JobManagementView.as_view(), name="jobs_management"),
     path("jobs/<int:pk>.pdf", views.JobsPdf.as_view(), name="job_pdf"),
