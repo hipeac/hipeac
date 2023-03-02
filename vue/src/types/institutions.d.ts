@@ -4,4 +4,5 @@ interface Institution extends ApiObject {
   short_name: string;
   country: Country;
   url: Url;
+  images: HipeacImages | null;
 }
