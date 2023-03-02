@@ -69,6 +69,7 @@ class ProjectViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin, Updat
         )
         .order_by("acronym")
     )
+    pagination_class = None
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = ProjectSerializer
     search_fields = ("acronym", "name")
