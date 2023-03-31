@@ -18,3 +18,20 @@ class Email(models.Model):
 
     def __str__(self) -> str:
         return self.code
+
+
+class EmailRecipient(models.Model):
+    """
+    Email recipients are used to send custom emails to users.
+    These have no connection with HiPEAC accounts/emails, but they can be used easily by the Email model.
+    """
+
+    code = models.CharField(max_length=64)
+    email = models.EmailField()
+    name = models.CharField(max_length=128)
+
+    class Meta:
+        db_table = "hipeac_email_recipient"
+
+    def __str__(self) -> str:
+        return f"{self.email} ({self.code})"
