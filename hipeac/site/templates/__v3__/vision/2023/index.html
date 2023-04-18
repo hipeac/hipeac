@@ -8,8 +8,8 @@
 
 {% block submenu %}
   <q-toolbar class="container">
-    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">{{ flatpage.title }} <span v-if="$route.path.indexOf('/latest/') > -1 && vision">{% verbatim %}{{ vision.year }}{% endverbatim %}</span></q-toolbar-title>
-    <hipeac-submenu-tabs :menu="menu"></hipeac-submenu-tabs>
+    <q-toolbar-title :class="{'q-pl-none': $q.screen.gt.sm}">HiPEAC Vision <span v-if="$route.path.indexOf('/latest/') > -1 && vision">{% verbatim %}{{ vision.year }}{% endverbatim %}</span></q-toolbar-title>
+    <hipeac-submenu-tabs v-show="answered" :menu="menu"></hipeac-submenu-tabs>
   </q-toolbar>
 {% endblock %}
 
@@ -27,7 +27,8 @@
 
 {% block scripts %}
 {% compress js inline %}
-  <script src="{% static 'js_v2/mixins/query.js' %}"></script>
+  <script src="{% static '__v3__/js/storage.js' %}"></script>
+  <script src="{% static '__v3__/js/mixins/query.js' %}"></script>
   <script>
     var VARS = document.querySelector('#vars').dataset;
 
@@ -36,7 +37,8 @@
         namespaced: true,
         state: {
           visions: null,
-          dissemination: null
+          dissemination: null,
+          targetGroup: HipeacStorage.cache.get('vision.target_group')
         },
         getters: {
           vision: function (state) {
@@ -74,7 +76,10 @@
                 }[k] || 'grey-8'
               };
             });
-          }
+          },
+          answered: function (state, getters) {
+            return state.targetGroup !== undefined;
+          },
         },
         mutations: {
           getVisions: function (state) {
@@ -89,6 +94,10 @@
             Hipeac.api.request('GET', VARS.visionDissemination).then(function (res) {
               state.dissemination = Object.freeze(res.data);
             });
+          },
+          setTargetGroup: function (state, tg) {
+            HipeacStorage.cache.set('vision.target_group', tg, 90 * 24 * 60 * 60);
+            state.targetGroup = tg;
           }
         }
       }
@@ -113,20 +122,67 @@
     var LatestWrapperView = {
       template: '#v-latest-wrapper',
       computed: _.extend(
-        Vuex.mapState('vision', ['visions']),
-        Vuex.mapGetters('vision', ['vision']), {
+        Vuex.mapState('vision', ['visions', 'targetGroup']),
+        Vuex.mapGetters('vision', ['vision', 'answered']), {
       })
     };
 
     var LatestView = {
+      data: function () {
+        return {
+          colors: {
+            'policy': 'blue-8',
+            'research': 'purple-8',
+            'industry': 'orange-8',
+            'education': 'pink-8',
+            'users': 'green-8'
+          }
+        };
+      },
       template: '#v-latest',
       computed: _.extend(
         Vuex.mapState('vision', ['visions']),
-        Vuex.mapGetters('vision', ['vision', 'groupedArticles', 'dimensions']), {
+        Vuex.mapGetters('vision', ['vision', 'groupedArticles', 'dimensions', 'answered']), {
         dimensionData: function () {
           return _.indexBy(this.dimensions, 'name');
         }
-      })
+      }),
+      methods: {
+        selectTargetGroup: function (tg) {
+          this.$store.commit('vision/setTargetGroup', tg);
+          this.$router.push({ name: 'highlights' });
+        }
+      }
+    };
+
+    var VisionHighlightsView = {
+      data: function () {
+        return {
+          target: null,
+          options: [
+            { label: 'Policy highlights of the HiPEAC Vision', value: 'policy', icon: 'assured_workload', color: 'blue-8' },
+            { label: 'Key takeaways of the HiPEAC Vision for industry', value: 'industry', icon: 'factory', color: 'orange-8' },
+            { label: 'Key takeaways of the HiPEAC Vision for researchers', value: 'research', icon: 'developer_board', color: 'purple-8' },
+            { label: 'HiPEAC Vision for educators', value: 'education', icon: 'school', color: 'pink-8' },
+            { label: 'HiPEAC Vision for the general public', value: 'users', icon: 'family_restroom', color: 'green-8' }
+          ]
+        };
+      },
+      template: '#v-highlights',
+      computed: _.extend(
+        Vuex.mapState('vision', ['targetGroup']), {
+        selectedOption: function () {
+          return _.find(this.options, { value: this.target });
+        }
+      }),
+      watch: {
+        target: function (val) {
+          if (val) this.$store.commit('vision/setTargetGroup', val);
+        }
+      },
+      created: function () {
+        this.target = this.targetGroup;
+      }
     };
 
     var VisionArticleView = {
@@ -192,6 +248,12 @@
               component: LatestView
             },
             {
+              name: 'highlights',
+              path: 'highlights/',
+              pathToRegexpOptions: {strict: true},
+              component: VisionHighlightsView
+            },
+            {
               name: 'articles',
               path: 'articles/',
               pathToRegexpOptions: {strict: true},
@@ -248,7 +310,8 @@
       },
       mixins: [AppMixin],
       computed: _.extend(
-        Vuex.mapGetters('vision', ['vision']), {
+        Vuex.mapState('vision', ['targetGroup']),
+        Vuex.mapGetters('vision', ['vision', 'answered']), {
       }),
       created: function () {
         this.$q.loading.show();

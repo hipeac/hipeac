@@ -404,5 +404,30 @@ img.jobs__logo {
   opacity: 0.2 !important;
 }
 
+.display {
+  width: 100%;
+  text-align: center;
+  line-height: 1.4;
+  font-weight: $font-weight-light;
+  margin: 3rem 0;
+
+  @media (max-width: $mobile-breakpoint) {
+      margin: 2rem 0;
+  }
+}
+
+.display-lg {
+  font-size: 1.75rem;
+  font-weight: $font-weight-light;
+
+  span {
+      background: linear-gradient(to bottom, transparent 80%, $hipeac-yellow 1%, $hipeac-yellow);
+  }
+
+  @media (max-width: $mobile-breakpoint) {
+      font-size: 1.6rem;
+  }
+}
+
 
 @import '_marked.scss';

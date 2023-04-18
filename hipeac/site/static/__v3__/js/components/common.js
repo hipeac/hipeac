@@ -100,6 +100,10 @@ var HipeacCommonComponents = {
     }
   },
 
+  'display-lg': {
+    template: '<h2 class="display display-lg"><span><slot></slot></span></h2>'
+  },
+
   'display-2': {
     template: '<h3 class="q-mt-none q-mb-sm text-h5 text-weight-light"><slot></slot></h3>'
   },
@@ -136,7 +140,7 @@ var HipeacCommonComponents = {
       }
     },
     template: `
-      <q-btn flat type="a" :href="href" class="full-width" color="primary">
+      <q-btn type="a" :href="href" class="full-width" color="primary">
         <q-icon name="download" size="xs" class="q-mr-sm" />{{ title }}</q-btn>
     `
   },

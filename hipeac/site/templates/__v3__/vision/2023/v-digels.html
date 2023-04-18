@@ -1,0 +1,36 @@
+{% load static %}
+
+
+<script type="text/x-template" id="v-digels">
+  <display-lg>Digels: your personal guide to the "next web"</display-lg>
+  <q-card class="hipeac__card q-my-lg">
+    <div class="row q-col-gutter-xl">
+      <div class="col-12 col-md-8">
+        <q-video
+          :ratio="16/9"
+          src="https://www.youtube.com/embed/jIjf9G09tNo?rel=0"
+          class="rounded-borders"
+        />
+      </div>
+      <div class="col-6 col-md self-end" :class="{'order-first': $q.screen.gt.sm}">
+        <img src="{% static 'images/digels-girl.png' %}" class="full-width" />
+      </div>
+      <div class="col-6 col-md self-start">
+        <img src="{% static 'images/digel.png' %}" class="full-width" />
+      </div>
+    </div>
+  </q-card>
+  <div class="row q-q-col-gutter-xl">
+    <div class="col-12 col-md-8 d-flex align-items-stretch">
+       <q-card class="hipeac__card full-height text-h6 text-weight-light">
+        <p>The digital world that is enveloping us is an increasingly complex maze where we risk losing our way, either through error or malicious intent. It is high time this digital world offered us a trusted, easily programmable digital guide capable of escorting us to our intended destination, by composing, integrating, and augmenting digital resources through efficient orchestration to meet our requirements.</p>
+      </q-card>
+    </div>
+    <div class="col-12 col-md-4 d-flex align-items-stretch">
+      <q-card class="hipeac__card full-height">
+        <p>Want to find out what the future of the web looks like? Read more in the HiPEAC Vision:</p>
+        <q-btn unelevated color="primary" href="https://doi.org/10.5281/zenodo.7461766" target="_blank" class="full-width">Download Digels article</q-btn>
+      </q-card>
+    </div>
+  </div>
+</script>

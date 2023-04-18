@@ -5,16 +5,13 @@
 <script type="text/x-template" id="v-latest-wrapper">
 {% verbatim %}
   <div v-if="vision">
-    <q-card class="hipeac__card q-my-lg" style="padding-bottom: 0">
-      <q-card-section class="text-center q-py-none">
-        <marked :text="vision.introduction" class="text-h6 text-weight-light q-my-none"></marked>
-        <download-btn unelevated v-if="!$q.screen.gt.sm && vision.download_url" :href="vision.download_url" title="Download full document" class="q-mt-lg" />
-      </q-card-section>
+    <q-card v-show="answered" class="hipeac__card q-my-lg">
       <q-tabs no-caps inline-label class="bg-white text-blue-9 q-mt-lg">
-        <q-route-tab exact :to="{name: 'latest'}" icon="book" label="Overview"></q-route-tab>
-        <q-route-tab exact :to="{name: 'articles'}" icon="article" label="Articles"></q-route-tab>
-        <q-route-tab exact :to="{name: 'downloads'}" icon="download" label="Other downloads"></q-route-tab>
-        <q-route-tab exact :to="{name: 'dissemination'}" icon="monitor" label="Dissemination"></q-route-tab>
+        <q-route-tab exact :to="{name: 'latest'}" icon="book" label="Overview" />
+        <q-route-tab exact :to="{name: 'highlights'}" icon="photo_filter" label="Highlights" />
+        <q-route-tab exact :to="{name: 'articles'}" icon="article" label="Articles" />
+        <q-route-tab exact :to="{name: 'downloads'}" icon="download" label="Other downloads" />
+        <q-route-tab exact :to="{name: 'dissemination'}" icon="monitor" label="Dissemination" />
       </q-tabs>
     </q-card>
     <router-view></router-view>
@@ -24,13 +21,13 @@
 
 <script type="text/x-template" id="v-latest">
 {% verbatim %}
-  <div v-if="visions">
+  <div v-if="visions" class="q-mt-lg">
     <div class="row q-col-gutter-lg">
-      <div class="col-12 col-md-8">
-        <q-card class="hipeac__card">
+      <div class="col-12 col-md">
+        <q-card class="hipeac__card full-height">
           <q-card-section class="q-py-none">
-            <display-5>Summary</display-5>
-            <marked :text="vision.summary"></marked>
+            <download-btn outline color="primary" :href="vision.download_url" title="Download full document" class="q-mb-lg" />
+            <marked :text="vision.introduction" class="catchphrase-first q-my-none"></marked>
             <div v-if="vision.youtube_url" class="q-mt-xl">
               <display-5>Video</display-5>
               <youtube-embed :url="vision.youtube_url"></youtube-embed>
@@ -48,13 +45,10 @@
           </q-card-section>
         </q-card>
       </div>
-      <div class="col-12 col-md-4">
-        <q-card v-if="$q.screen.gt.sm && vision.download_url" class="hipeac__card q-mb-lg">
-          <download-btn flat :href="vision.download_url" title="Download full document" />
-        </q-card>
-        <q-card class="hipeac__card">
+      <div v-if="answered" class="col-12 col-md-5 align-items-stretch">
+        <q-card class="hipeac__card full-height">
           <q-card-section class="q-py-none">
-            <display-5>Dimensions</display-5>
+            <display-5>The six races</display-5>
             <q-list dense separator>
               <q-item v-for="articles, dimension in groupedArticles" :key="dimension" clickable :to="{name: 'articles', query: {q: dimensionData[dimension].key}}">
                 <q-item-section>{{ dimension }}</q-item-section>
@@ -67,9 +61,95 @@
           </q-card-section>
         </q-card>
       </div>
+      <div v-else class="col-12 col-md-6 align-items-stretch">
+        <q-card class="hipeac__card full-height">
+          <h2 class="text-weight-light q-mb-lg text-center">What can the HiPEAC Vision<br>do for you?</h2>
+          <h5>I'm interested in...</h5>
+          <q-list class="q-mt-md">
+            <q-item clickable @click="selectTargetGroup('policy')">
+              <q-item-section avatar>
+                <q-icon size="md" :color="colors['policy']" name="assured_workload" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>How technology developments impact <strong>policy</strong></q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="arrow_forward_ios" color="grey-8" size="xs" />
+              </q-item-section>
+            </q-item>
+            <q-item clickable @click="selectTargetGroup('industry')">
+              <q-item-section avatar>
+                <q-icon size="md" :color="colors['industry']" name="factory" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>The technology trends that will <strong>disrupt industry</strong></q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="arrow_forward_ios" color="grey-8" size="xs" />
+              </q-item-section>
+            </q-item>
+            <q-item clickable @click="selectTargetGroup('research')">
+              <q-item-section avatar>
+                <q-icon size="md" :color="colors['research']" name="developer_board" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Future <strong>research</strong> directions in computing systems</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="arrow_forward_ios" color="grey-8" size="xs" />
+              </q-item-section>
+            </q-item>
+            <q-item clickable @click="selectTargetGroup('education')">
+              <q-item-section avatar>
+                <q-icon size="md" :color="colors['education']" name="school" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>What should I <strong>teach my students</strong> about future computing systems</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="arrow_forward_ios" color="grey-8" size="xs" />
+              </q-item-section>
+            </q-item>
+            <q-item clickable @click="selectTargetGroup('users')">
+              <q-item-section avatar>
+                <q-icon size="md" :color="colors['users']" name="family_restroom" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>How technology developments will affect <strong>me and my family</strong></q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="arrow_forward_ios" color="grey-8" size="xs" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-card>
+      </div>
     </div>
   </div>
 {% endverbatim %}
+</script>
+
+<script type="text/x-template" id="v-highlights">
+  <q-card class="hipeac__card q-pa-lg" v-if="targetGroup">
+    <q-select filled dense v-model="target" :options="options" class="full-width q-mb-lg" map-options emit-value>
+      <template v-slot:prepend>
+        <q-icon v-if="selectedOption" :name="selectedOption.icon" :color="selectedOption.color" class="q-mr-md" />
+      </template>
+      <template v-slot:option="scope">
+        <q-item v-bind="scope.itemProps" :class="{ 'text-body2': $q.screen.gt.sm }">
+          <q-item-section avatar>
+            <q-icon :name="scope.opt.icon" size="xs" color="grey-7" />
+          </q-item-section>
+          <q-item-section>{% verbatim %}{{ scope.opt.label }}{% endverbatim %}</q-item-section>
+        </q-item>
+      </template>
+    </q-select>
+    <div v-if="target == 'policy'">{% include './v-highlights-policy.html' %}</div>
+    <div v-else-if="target == 'industry'">{% include './v-highlights-industry.html' %}</div>
+    <div v-else-if="target == 'research'">{% include './v-highlights-research.html' %}</div>
+    <div v-else-if="target == 'education'">{% include './v-highlights-education.html' %}</div>
+    <div v-else-if="target == 'users'">{% include './v-highlights-users.html' %}</div>
+  </q-card>
 </script>
 
 <script type="text/x-template" id="v-articles">

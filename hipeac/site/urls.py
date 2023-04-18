@@ -94,6 +94,7 @@ urlpatterns = [
     path("magazine/<int:pk>/", views.MagazineDownload.as_view(), name="magazine_download_old"),
     path("magazine/<int:pk>.pdf", views.MagazineDownload.as_view(), name="magazine_download"),
     path("vision/", flatpage, {"url": "/vision/"}, name="vision"),
+    path("vision/v23/", views.VisionDetail.as_view(), name="vision_2023"),
     path("vision/<int:year>/", views.VisionDownload.as_view(), name="vision_download_old"),
     path("vision/<int:year>.pdf", views.VisionDownload.as_view(), name="vision_download"),
     path("vision/<int:year>/<int:id>.pdf", views.VisionArticleDownload.as_view(), name="vision_article_download"),

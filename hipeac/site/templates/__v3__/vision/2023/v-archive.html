@@ -1,0 +1,17 @@
+<script type="text/x-template" id="{{ id }}">
+  {% verbatim %}
+    <q-card class="hipeac__card q-my-lg" v-if="visions" style="padding-bottom: 0">
+      <q-list>
+        <q-item v-for="vision in pastVisions" clickable tag="a" :href="vision.download_url" target="_blank" class="q-py-lg">
+          <q-item-section thumbnail>
+            <q-img :src="vision.images[0].image" :width="($q.screen.gt.sm) ? '128' : '64'" class="rounded-borders" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label><display-5>{{ vision.title }}</display-5></q-item-label>
+            <q-item-label class="text-body2">{{ vision.introduction }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-card>
+  {% endverbatim %}
+</script>
