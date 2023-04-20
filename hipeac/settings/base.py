@@ -207,8 +207,18 @@ MESSAGE_TAGS = {
 
 
 # Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/dev/ref/settings/#storages
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 # https://docs.djangoproject.com/en/2.0/howto/static-files/deployment/
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(SITE_ROOT, "www", "static")
@@ -218,7 +228,6 @@ STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "compressor.finders.CompressorFinder",
 )
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 COMPRESS_STORAGE = "compressor.storage.GzipCompressorFileStorage"
 COMPRESS_OFFLINE = True
