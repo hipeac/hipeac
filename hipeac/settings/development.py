@@ -40,3 +40,8 @@ REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = (  # noqa
 # https://github.com/johnsensible/django-sendfile
 
 SENDFILE_BACKEND = "sendfile.backends.development"
+
+
+# https://github.com/MrBin99/django-vite
+
+DJANGO_VITE_DEV_MODE = True

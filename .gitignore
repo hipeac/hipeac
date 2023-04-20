@@ -1,6 +1,8 @@
 .DS_Store
 ._*
 
+# Django
+
 __pycache__
 *.py[cod]
 *$py.class
@@ -14,3 +16,9 @@ celerybeat-schedule
 dev.db
 htmlcov
 test-reports
+
+# Vue
+
+.vite
+node_modules
+vue/dist

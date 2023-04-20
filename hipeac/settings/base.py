@@ -2,12 +2,14 @@ import os
 
 from django.contrib.messages import constants as messages
 from kombu import Queue
+from pathlib import Path
 from urllib.parse import urlparse
 
 
-PACKAGE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-PROJECT_ROOT = os.path.abspath(os.path.join(PACKAGE_ROOT, os.pardir))
-SITE_ROOT = os.path.join(PACKAGE_ROOT, "site")
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+PACKAGE_ROOT = BASE_DIR / "hipeac"
+SITE_ROOT = PACKAGE_ROOT / "site"
 
 
 # General configuration
@@ -35,6 +37,9 @@ INSTALLED_APPS = [
     "captcha",
     "compressor",
     "crispy_forms",
+    "crispy_bootstrap4",
+    "django_vite",
+    "inertia",
     # auth
     "allauth",
     "allauth.account",
@@ -71,6 +76,7 @@ MIDDLEWARE = [
     "django.middleware.cache.FetchFromCacheMiddleware",
     "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
+    "inertia.middleware.InertiaMiddleware",
 ]
 
 ROOT_URLCONF = "hipeac.urls"
@@ -179,10 +185,17 @@ REST_FRAMEWORK = {
 
 # https://docs.djangoproject.com/en/2.1/topics/templates/
 
+INERTIA_LAYOUT = SITE_ROOT / "templates" / "vue" / "inertia.html"
+DJANGO_VITE_ASSETS_PATH = BASE_DIR / "vue" / "dist"
+DJANGO_VITE_STATIC_URL_PREFIX = "vite"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(SITE_ROOT, "templates")],
+        "DIRS": [
+            SITE_ROOT / "templates",
+            PACKAGE_ROOT / "admin" / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "debug": DEBUG,
@@ -221,8 +234,11 @@ STORAGES = {
 }
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(SITE_ROOT, "www", "static")
-STATICFILES_DIRS = (os.path.join(SITE_ROOT, "static"),)
+STATIC_ROOT = SITE_ROOT / "www" / "static"
+STATICFILES_DIRS = [
+    SITE_ROOT / "static",
+    ("vite", DJANGO_VITE_ASSETS_PATH),
+]
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -246,7 +262,7 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 # https://docs.djangoproject.com/en/2.0/ref/settings/#media-root
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(SITE_ROOT, "www", "media")
+MEDIA_ROOT = SITE_ROOT / "www" / "media"
 
 
 # http://docs.celeryproject.org/en/latest/getting-started/first-steps-with-celery.html#celerytut-configuration

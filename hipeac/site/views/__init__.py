@@ -10,6 +10,7 @@ from .editor import *
 from .events import *
 from .firewall import *
 from .institutions import *
+from .pages import *
 from .projects import *
 from .recruitment import *
 from .steering import *

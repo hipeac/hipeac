@@ -1,0 +1,33 @@
+{% spaceless %}
+{% load compress %}
+{% load django_vite %}
+{% load i18n %}
+{% load static %}
+
+
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}" prefix="og: http://ogp.me/ns#">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" type="text/css" rel="stylesheet">
+    {% compress css file base %}
+      <link href="{% static 'vendor/quasar@2.11.10/quasar.prod.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static '__v3__/scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
+      <link href="{% static 'css/flags.css' %}" type="text/css" rel="stylesheet">
+    {% endcompress %}
+    <title>{{ page_title }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta property="og:site_name" content="HiPEAC">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+
+    {% vite_hmr_client %}
+    {% vite_asset vue_entry_point %}
+  </head>
+  <body>
+    {% block inertia %}{% endblock %}
+  </body>
+</html>
+{% endspaceless %}
