@@ -1,55 +1,13 @@
-<style lang="scss">
-.hipeac__home_app {
-  h1 {
-    text-align: center;
-    font-family: 'Roboto Slab', Georgia, 'Times New Roman', Times, serif;
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: #222;
-
-    @media (min-width: 768px) {
-      width: 90%;
-      text-align: left;
-      font-size: 2.5rem;
-      line-height: 1.1;
-    }
-  }
-
-  h2 {
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: 300;
-    line-height: 1.4;
-
-    @media (min-width: 768px) {
-      width: 90%;
-      text-align: left;
-      font-size: 1.35rem;
-      padding-left: 24px;
-    }
-
-    span {
-      background: linear-gradient(to bottom, transparent 80%, #ffe800 1%, #ffe800);
-    }
-  }
-
-  .q-focus-helper {
-    display: none;
-  }
-}
-</style>
-
 <template>
-  <div class="hipeac__home_app">
-    <div class="row q-col-gutter-lg items-center">
-      <div class="col-12 col-md-7">
-        <h1 class="q-mb-lg">Bridging industry and academia in computing systems since 2004</h1>
-        <h2>
-          <span
-            >Spanning the compute continuum from edge to cloud, HiPEAC is a network of around 2,000 world-class
-            computing systems researchers, industry representatives and students.</span
-          >
-        </h2>
+  <div>
+    <div class="row q-col-gutter-lg">
+      <div class="col-12 col-md-7" :class="{ 'q-py-lg': $q.screen.gt.sm }">
+        <big-display
+          title="Bridging industry and academia in computing systems since 2004"
+          subtitle="Spanning the compute continuum from edge to cloud, HiPEAC is a network of around 2,000 world-class
+            computing systems researchers, industry representatives and students."
+          class="q-mt-xl"
+        />
       </div>
       <div class="col-12 col-md q-pt-xl q-pb-lg">
         <q-card flat bordered class="full-height">
@@ -87,7 +45,7 @@
           <div class="row q-col-gutter-xl">
             <div class="col-12 col-md-7">
               <div v-if="$page.props.video" class="q-mb-lg">
-                <h6 class="q-mb-md">Latest from H<span class="text-lowercase">i</span>PEAC TV</h6>
+                <h6 class="q-mb-md">Latest from HiPEAC TV</h6>
                 <q-video
                   :ratio="16 / 9"
                   :src="`https://www.youtube.com/embed/${$page.props.video.youtube_id}?rel=0`"
@@ -116,6 +74,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
+import BigDisplay from '@/components/BigDisplay.vue';
 import ArticleList from '@/components/communication/ArticleList.vue';
 import EventBanner from '@/components/events/EventBanner.vue';
 import EventList from '@/components/events/EventList.vue';

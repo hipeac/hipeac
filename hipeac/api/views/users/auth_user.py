@@ -49,11 +49,13 @@ class AuthUserViewSet(FilesMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         )
 
     @action(methods=["get"], detail=False)
+    @method_decorator(never_cache)
     def notifications(self, request, *args, **kwargs):
         notifications = request.user.notifications.active()
         return Response(NotificationSerializer(notifications, many=True).data)
 
     @action(methods=["get"], detail=False)
+    @method_decorator(never_cache)
     def webinars(self, request, *args, **kwargs):
         webinars = request.user.webinarregistration_registrations.upcoming()
         return Response(WebinarRegistrationListSerializer(webinars, many=True).data)

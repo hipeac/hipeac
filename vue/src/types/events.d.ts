@@ -9,6 +9,31 @@ interface HipeacEventImages {
   lg: string;
 }
 
+interface HipeacSession extends ApiObject {
+  rel_attendees: ApiEndpoint;
+  title: string;
+  summary: string;
+  start_at: string;
+  end_at: string;
+  type: {
+    id: number;
+    value: string;
+  };
+  program: string | null;
+  main_speaker: object | null;
+  // -----
+  _q?: string;
+  _registered?: boolean;
+  has_ended?: boolean;
+  start?: Date;
+  end?: Date;
+  start_day?: string;
+  start_time?: string;
+  end_day?: string;
+  end_time?: string;
+  color?: string;
+}
+
 interface HipeacEvent {
   id: number;
   self: string;

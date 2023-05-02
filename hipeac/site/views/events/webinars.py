@@ -3,12 +3,12 @@ from django.views import generic
 
 from hipeac.models import WebinarProposal
 from hipeac.site.forms import WebinarProposalForm
+from ..inertia import InertiaView
 
 
-class WebinarList(generic.TemplateView):
-    """Displays the general webinars page, not linked to an event."""
-
-    template_name = "__v3__/events/webinars/webinars.html"
+class WebinarsView(InertiaView):
+    page_title = "Webinars"
+    vue_entry_point = "apps/webinars/main.ts"
 
 
 class WebinarProposalView(SuccessMessageMixin, generic.FormView):

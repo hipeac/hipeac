@@ -4,7 +4,7 @@ import { createApp, h } from 'vue';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { createPinia } from 'pinia';
 import { createInertiaApp } from '@inertiajs/vue3';
-import { Quasar } from 'quasar';
+import { Quasar, Dialog, Notify } from 'quasar';
 import * as Sentry from '@sentry/vue';
 
 import { axios, api } from './axios.ts';
@@ -27,11 +27,25 @@ const bootApp = (routes: RouteRecordRaw[]) => {
       // app
       const app = createApp({ render: () => h(App, props) });
       app.use(plugin);
-      app.use(Quasar, {});
+      app.use(Quasar, {
+        plugins: { Dialog, Notify },
+      });
       app.use(Router);
       app.use(Store);
 
       // axios
+      api.interceptors.request.use(
+        (config) => {
+          if (['post', 'put', 'patch', 'delete'].includes(config.method?.toLowerCase() || '')) {
+            config.headers['X-CSRFTOKEN'] = props.initialPage.props.django_csrf_token;
+          }
+          config.headers['Accept-Language'] = props.initialPage.props.django_locale;
+          return config;
+        },
+        (error) => {
+          return Promise.reject(error);
+        }
+      );
       app.config.globalProperties.$axios = axios;
       app.config.globalProperties.$api = api;
 

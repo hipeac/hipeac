@@ -1,3 +1,18 @@
+type ApiEndpoint = string;
+
+interface ApiObject {
+  id: number;
+  self: ApiEndpoint;
+}
+
+interface ApiObjectUpdated {
+  id: number;
+  updated_at: string;
+  updated_by: UserTiny | null;
+}
+
+type Url = string;
+
 interface DjangoPermission {
   id: number;
   name: string;

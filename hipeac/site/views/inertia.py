@@ -6,13 +6,11 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.views.generic import View
 from inertia import render
-from typing import Dict, Optional
 
-from hipeac.api.serializers import UserPublicSerializer
 from hipeac.templatetags.hipeac import active
 
 
-def render_inertia(request, vue_entry_point: str, *, props: Optional[Dict] = None, page_title: Optional[str] = None):
+def render_inertia(request, vue_entry_point: str, *, props: dict | None, page_title: str | None = None):
     """
     Render a Vue component with Inertia.
     It adds some basic props that can be helpful.
@@ -48,17 +46,17 @@ def render_inertia(request, vue_entry_point: str, *, props: Optional[Dict] = Non
 
 
 class InertiaView(View):
-    page_title: Optional[str] = None
-    vue_entry_point = None
+    page_title: str | None = None
+    vue_entry_point: str
 
-    def get_page_title(self, request, *args, **kwargs) -> Optional[str]:
-        return self.page_title
+    def get_page_title(self, request, *args, **kwargs) -> str | None:
+        return f"{self.page_title} - HiPEAC" if self.page_title != "HiPEAC" else None
 
-    def get_props(self, request, *args, **kwargs):
+    def get_props(self, request, *args, **kwargs) -> dict:
         return {}
 
     def get(self, request, *args, **kwargs):
-        if self.vue_entry_point is None:
+        if not self.vue_entry_point:
             raise NotImplementedError("`vue_entry_point` must be set")
 
         return render_inertia(

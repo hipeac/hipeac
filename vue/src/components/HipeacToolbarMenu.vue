@@ -6,7 +6,7 @@
         <q-route-tab
           v-for="(item, i) in menu"
           :key="i"
-          :exact="true"
+          :exact="item.exact"
           :href="item.href"
           :to="item.to"
           :class="{ 'q-px-xs': !item.label }"
@@ -34,6 +34,7 @@ interface MenuItem {
   readonly href?: string;
   readonly to?: object;
   readonly icon?: string;
+  readonly exact?: boolean;
 }
 
 defineProps({

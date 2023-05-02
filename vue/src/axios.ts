@@ -14,22 +14,4 @@ declare module '@vue/runtime-core' {
 // for each client)
 const api = axios.create({ baseURL: '/api/v1/' });
 
-api.interceptors.request.use(
-  (config) => {
-    config.headers['Accept-Language'] = 'en';
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-api.interceptors.response.use(
-  (res) => res,
-  (error) => {
-    // notify.apiError(error);
-    return Promise.reject(error);
-  }
-);
-
 export { api, axios };

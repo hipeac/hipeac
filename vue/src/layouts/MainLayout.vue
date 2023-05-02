@@ -73,8 +73,8 @@
     <q-footer class="bg-transparent text-grey-8 q-py-xl" :class="{ 'q-px-xl': $q.screen.gt.sm }">
       <div class="container">
         <div class="row q-col-gutter-lg justify-between text-caption" :class="{ reverse: $q.screen.gt.sm }">
-          <div class="col-12 col-md-3" :class="{ 'text-right': $q.screen.gt.sm }">
-            <img src="@/assets/eu-horizon.svg" style="height: 40px" />
+          <div class="col-12 col-md-3 q-pt-xl" :class="{ 'text-right': $q.screen.gt.sm }">
+            <img src="https://www.hipeac.net/static/images/eu-horizon.8f515cd9f737.svg" style="height: 40px" />
           </div>
           <div class="col-12 col-md-9">
             <p class="text-caption q-mb-sm">
@@ -86,6 +86,35 @@
               of the author(s) only and do not necessarily reflect those of the European Union. Neither the European
               Union nor the granting authority can be held responsible for them.
             </p>
+            <div class="q-gutter-x-lg q-my-md text-grey">
+              <a
+                href="https://www.linkedin.com/company/hipeac/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                class="inherit"
+              >
+                <q-icon :name="iconLinkedIn" size="sm" />
+              </a>
+              <a
+                href="https://www.youtube.com/@hipeac"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                class="inherit"
+              >
+                <q-icon :name="iconYouTube" size="sm" />
+              </a>
+              <a
+                href="https://twitter.com/hipeac"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+                class="inherit"
+              >
+                <q-icon :name="iconX" size="sm" />
+              </a>
+            </div>
             <div class="q-gutter-x-md">
               <a href="/privacy-policy/" class="inherit">Privacy policy</a>
               <a href="/disclaimer/" class="inherit">Disclaimer</a>
@@ -104,6 +133,8 @@
 import { ref } from 'vue';
 
 import UserMenu from '@/components/UserMenu.vue';
+
+import { iconLinkedIn, iconYouTube, iconX } from '@/icons';
 
 // get basic info from Django
 defineProps<{

@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import HipeacToolbarMenu from '@/components/HipeacToolbarMenu.vue';
 
-import { iconLinkedIn, iconTwitter, iconYouTube } from '@/icons/index.ts';
+import { iconLinkedIn, iconYouTube, iconX } from '@/icons/index.ts';
 
 const title = 'Welcome to HiPEAC';
 const menu = [
@@ -23,11 +23,6 @@ const menu = [
   },
   {
     label: null,
-    href: '/twitter/',
-    icon: iconTwitter,
-  },
-  {
-    label: null,
     href: '/linkedin/',
     icon: iconLinkedIn,
   },
@@ -35,6 +30,11 @@ const menu = [
     label: null,
     href: '/youtube/',
     icon: iconYouTube,
+  },
+  {
+    label: null,
+    href: '/twitter/',
+    icon: iconX,
   },
 ];
 </script>
