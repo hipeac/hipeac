@@ -68,6 +68,7 @@
                   self: state.event.grants_per_country[c].self,
                   registrations: 1,
                   admitted: (obj.status == 1) ? 1 : 0,
+                  places: state.event.grants_per_country[c].available_places,
                   grants: state.event.grants_per_country[c].available_grants,
                   grants_requested: (obj.grant_requested) ? 1 : 0,
                   grants_assigned: (obj.grant_assigned) ? 1 : 0,
@@ -106,6 +107,7 @@
             courses: {},
             registrations: data.reduce(function (i, o) { return i + o.registrations }, 0),
             admitted: data.reduce(function (i, o) { return i + o.admitted }, 0),
+            places_available: data.reduce(function (i, o) { return i + o.places }, 0),
             grants_available: data.reduce(function (i, o) { return i + o.grants }, 0),
             grants_requested: data.reduce(function (i, o) { return i + o.grants_requested }, 0),
             grants_assigned: data.reduce(function (i, o) { return i + o.grants_assigned }, 0),
@@ -321,14 +323,25 @@
           }).catch(function (error) {
             Hipeac.utils.notifyApiError(error);
           });
+        },
+        updateCountryPlaces: function (endpoint, places) {
+          var self = this;
+          Hipeac.api.request('put', endpoint, {available_places: places}).then(function (res) {
+            Hipeac.utils.notifySuccess('Available places updated.');
+            self.$store.commit('getEvent');
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
         }
       },
       created: function () {
         this.syncEvent();
         this.$root.$on('country-grants-updated', this.updateCountryGrants);
+        this.$root.$on('country-places-updated', this.updateCountryPlaces);
       },
       beforeDestroy () {
         this.$root.$off('country-grants-updated');
+        this.$root.$off('country-places-updated');
       }
     };
 
@@ -556,11 +569,19 @@
         }
       }),
       methods: {
-        disableToggle: function (row) {
+        disableAdmitToggle: function (row) {
           if (!this.event) return true;
           return this.grantsPerCountry
+              && this.grantsPerCountry[row.country_code]
+              && (this.grantsPerCountry[row.country_code].admitted >= this.grantsPerCountry[row.country_code].places)
+              && !row.admitted;
+        },
+        disableGrantToggle: function (row) {
+          if (!this.event) return true;
+          return !row.grant_requested || (this.grantsPerCountry
+              && this.grantsPerCountry[row.country_code]
               && (this.grantsPerCountry[row.country_code].grants_assigned >= this.grantsPerCountry[row.country_code].grants)
-              && !row.grant_assigned;
+              && !row.grant_assigned);
         },
         update: function (row) {
           var self = this;
