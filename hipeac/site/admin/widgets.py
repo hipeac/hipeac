@@ -5,7 +5,7 @@ class MarkdownEditorWidget(forms.Textarea):
     template_name = "admin/widgets/toast_editor.html"
 
     class Media:
-        ver = "3.1.3"
+        ver = "3.2.2"
         js = (
             f"__v3__/vendor/toast-ui-editor@{ver}/toastui-editor-all.min.js",
             f"__v3__/vendor/toast-ui-editor@{ver}/django.js",

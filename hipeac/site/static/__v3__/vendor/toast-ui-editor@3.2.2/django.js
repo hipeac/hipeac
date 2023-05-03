@@ -13,7 +13,8 @@ window.django_toast_editor = {
         ['quote'],
         ['ul', 'ol'],
         ['image', 'link'],
-      ]
+      ],
+      height: 'auto',
     });
 
     editor.on('change', function () {
