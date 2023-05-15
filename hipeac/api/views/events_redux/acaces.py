@@ -3,9 +3,11 @@ from django.views.decorators.cache import never_cache
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.response import Response
 
 from hipeac.api.serializers.events.acaces import AcacesSerializer
 from hipeac.models import Acaces, AcacesCourse, AcacesGrant, AcacesRegistration
+from hipeac.models.emails import Email
 from ...permissions import AcacesManagementPermission, HasAdminPermissionOrReadOnly, HasRegistrationForRelatedEvent
 from ...serializers import (
     AcacesCourseSerializer,
@@ -117,3 +119,13 @@ class AcacesRegistrationManagementViewSet(UpdateModelMixin, GenericViewSet):
     queryset = AcacesRegistration.objects.all()
     permission_classes = (AcacesManagementPermission,)
     serializer_class = AcacesRegistrationManagementSerializer
+
+    @action(detail=True, methods=["post"])
+    def email(self, request, *args, **kwargs):
+        email_code = kwargs.get("email_code", "events.acaces.registration.admitted")
+
+        try:
+            self.get_object().get_email_class()(email_code, self.get_object()).send()
+            return Response({"status": "ok"})
+        except Email.DoesNotExist:
+            return Response({"status": "error", "message": "Email not found"}, status=400)

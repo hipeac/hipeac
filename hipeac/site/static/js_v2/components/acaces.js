@@ -108,6 +108,7 @@ Vue.component('acaces-countries-table', {
             </q-td>
             <q-td key="admitted" :props="props">
               <samp>{{ props.row.admitted }}</samp>
+              <q-icon name="circle" size="10px" :color="(props.row.admitted < props.row.places) ? 'orange' : 'green'" class="q-ml-xs"></q-icon>
             </q-td>
           </q-tr>
         </template>

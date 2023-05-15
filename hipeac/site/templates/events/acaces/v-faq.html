@@ -4,13 +4,18 @@
     <div class="col-12 col-md-6">
       <q-card class="hipeac__card q-my-lg" :class="{'q-pa-md': $q.screen.gt.xs }">
         <h5 class="q-mb-md">How much is the registration fee for the Summer School?</h5>
-        <p>
-            The Summer School has a fee of 800 EUR if you are considering to share a room <em>(270,00 EUR as registration fee + 500,00 EUR for the room + VAT)</em>, and 1000 EUR for a single room <em>(270,00 EUR as registration fee + 688,68 EUR for the room + VAT)</em>.<br>
+        <p v-if="event.id > 6810">
+            The Summer School has a fee of 1300 EUR for a single room <em>(400 EUR as registration fee + 900 EUR for the room incl. VAT)</em>, and 1100 EUR if you are considering to share a room <em>(400,00 EUR as registration fee + 700 EUR for the room incl. VAT)</em>.<br>
+            <br>
+            You can always apply for a grant if you register before the "Early registration deadline".
+        </p>
+        <p v-else>
+            The Summer School has a fee of 1000 EUR for a single room <em>(270,00 EUR as registration fee + 688,68 EUR for the room + VAT)</em>, and 800 EUR if you are considering to share a room <em>(270,00 EUR as registration fee + 500,00 EUR for the room + VAT)</em>.<br>
             <br>
             You can always apply for a grant if you register before the "Early registration deadline".
         </p>
         <h5 class="q-mb-md">What does the ACACES grant cover?</h5>
-        <p>The grant covers the registration fee of 1000 EUR. This includes:</p>
+        <p>The grant covers the registration fee of {{ event.fee }} EUR. This includes:</p>
         <ul style="margin-left:1rem">
             <li>hotel for 6 nights ({{ event.startDate.format('D') }}-{{ event.endDate.format('D MMMM, YYYY') }})</li>
             <li>tuition and course notes</li>
@@ -32,7 +37,7 @@
         <h5 class="q-mb-md">
           I have won a super deluxe holiday on Hawai in the national lottery. Can I get my registration money back?</h5>
         <p>
-          If you tell us <strong>before July 1</strong>, we will pay you 900 euro back (the remaining 100 euro is to cover administrative and money transfer costs). If you tell us after July 1, we cannot refund you, because we won't be able to find another participant to replace you.
+          If you tell us <strong>before July 1</strong>, we will pay you {{ event.fee - 100 }} euro back (the remaining 100 euro is to cover administrative and money transfer costs). If you tell us after July 1, we cannot refund you, because we won't be able to find another participant to replace you.
         </p>
       </q-card>
     </div>

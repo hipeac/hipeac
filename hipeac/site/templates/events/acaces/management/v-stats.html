@@ -119,6 +119,11 @@
                     <stats-progress :value="(mainStats.courses[course.id] / mainStats.registrations) * 100" :color="course.color">{{ mainStats.courses[course.id] }}</stats-progress>
                   </q-item-section>
                   <q-item-section>{{ course.title }}</q-item-section>
+                  <q-item-section side>
+                      <router-link :to="{name: 'registrations', query: {q: 'course.id:' + course.id}}" class="q-ml-xs">
+                        <q-icon name="pageview" size="xs" color="grey-5"></q-icon>
+                      </router-link>
+                    </q-item-section>
                 </q-item>
               </div>
             </q-list>

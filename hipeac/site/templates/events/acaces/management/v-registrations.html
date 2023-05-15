@@ -97,6 +97,7 @@
               </q-tab>
             </q-tabs>
             <q-space></q-space>
+            <q-btn v-if="obj.status == 1 && !obj.accepted" no-caps flat icon="email" label="Send acceptance email" @click="sendAcceptanceEmail" />
             <q-btn flat round icon="edit" type="a" :href="'/admin/hipeac/acacesregistration/' + obj.id + '/change/'" target="acaces-admin" />
             <q-btn flat round v-close-popup icon="close" />
           </q-toolbar>

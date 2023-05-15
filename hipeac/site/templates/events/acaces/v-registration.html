@@ -7,7 +7,7 @@
         <template v-slot:avatar>
           <q-icon name="check" size="md" />
         </template>
-        You have been admitted into the HiPEAC Summer School, but in order to complete your registration you need to accept your invitation first. You can also reject the invitation, of course. <span v-if="obj.grant_requested"><strong v-if="obj.grant_assigned">Please note that your grant request has been <u>accepted</u>.</strong><strong v-else-if="obj.grant_assigned == null">Please note that <u>no decision has been made yet</u> about your grant request.</strong><strong v-else>Please note that your grant request has been <u>rejected</u>.</strong></span>
+        You have been admitted into the HiPEAC Summer School, but in order to complete your registration you need to accept your invitation first. You can also reject the invitation, of course. <span v-if="obj.grant_requested"><br><strong v-if="obj.grant_assigned">Please note that your grant request has been <u>accepted</u>.</strong><strong v-else-if="obj.grant_assigned == null">Please note that <u>no decision has been made yet</u> about your grant request.</strong><strong v-else>Please note that your grant request has been <u>rejected</u>.</strong></span>
         <template v-slot:action>
           <q-btn @click="accept" flat label="Accept invitation" color="white" />
           <q-btn @click="reject" flat label="Reject" color="white" />
@@ -18,7 +18,7 @@
         <template v-slot:avatar>
           <q-icon name="check" size="md" />
         </template>
-        You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}! <strong v-if="obj.grant_assigned">Remember that as a grant recipient you only need to take care of the travel expenses, the rest is already covered.</strong>.
+        You have accepted your invitation to the HiPEAC Summer School. See you soon in {{ event.city }}! <strong v-if="obj.grant_assigned">Remember that as a grant recipient you only need to take care of the travel expenses, the rest is already covered.</strong> <span v-else-if="obj.grant_requested"><br><strong v-if="obj.grant_assigned">Please note that your grant request has been <u>accepted</u>.</strong><strong v-else-if="obj.grant_assigned == null">Please note that <u>no decision has been made yet</u> about your grant request.</strong><strong v-else>Please note that your grant request has been <u>rejected</u>.</strong></span>
       </q-banner>
 
       <q-banner v-if="obj.id && obj.accepted === false" rounded class="bg-red text-white">
@@ -35,12 +35,13 @@
               <q-icon name="meeting_room" size="md" />
             </template>
             Your hotel:
-            <strong v-if="obj.assigned_hotel == 8">Silva Splendid Spa Hotel</strong>
-            <strong v-if="obj.assigned_hotel == 9">Silva Splendid Spa Hotel</strong>
-            <strong v-if="obj.assigned_hotel == 5">Ambasciatori Place Hotel</strong>
-            <strong v-if="obj.assigned_hotel == 7">Hotel San Giorgio</strong>
-            <strong v-if="obj.assigned_hotel == 6">Hotel Imperiale</strong>
-            <strong v-if="obj.assigned_hotel == 10">Hotel Touring</strong>
+            <strong v-if="obj.assigned_hotel == 14">Silva Splendid Spa Hotel</strong>
+            <strong v-else-if="obj.assigned_hotel == 15">Silva Splendid Spa Hotel</strong>
+            <strong v-else-if="obj.assigned_hotel == 11">Ambasciatori Place Hotel</strong>
+            <strong v-else-if="obj.assigned_hotel == 13">Hotel San Giorgio</strong>
+            <strong v-else-if="obj.assigned_hotel == 12">Hotel Imperiale</strong>
+            <strong v-else-if="obj.assigned_hotel == 16">Hotel Touring</strong>
+            <span v-else>(not assigned yet)</span>
           </q-banner>
         </div>
       </div>
@@ -71,20 +72,20 @@
     <q-card-section v-else-if="obj !== undefined">
       <q-banner rounded inline-actions class="bg-orange-1 text-dark q-py-md q-mb-lg text-body2" v-if="event">
         <template v-slot:avatar><q-icon name="help_outline" size="sm" /></template>
-        The Summer School has a fee of {{ event.fee - event.shared_room_discount }} EUR if you are considering to share a room, and {{ event.fee }} EUR for a single room. <strong v-if="event.grant_request_deadline"><br>You can always apply for a grant if you register before {{ event.grant_request_deadline }}.</strong>
+        The Summer School has a fee of {{ event.fee - event.shared_room_discount }} EUR if you are considering to share a room, and {{ event.fee }} EUR for a single room. <strong v-if="event.grant_request_deadline && !grantRequestDeadlinePassed"><br>You will be eligible for a grant if you register before {{ event.grant_request_deadline }}.</strong>
       </q-banner>
 
       <div v-if="obj">
 
         <div v-if="obj.id && obj.accepted">
           <display-2 class="q-my-lg">Travel information</display-2>
-          <!--<display-4 class="q-mt-lg">Arriving to Fiuggi</display-4>
+          <display-4 class="q-mt-lg">Arriving to Fiuggi</display-4>
           <p class="q-my-sm">What flights/trains to Rome will you take? Bus to Fiuggi?</p>
           <div class="row q-col-gutter-md">
             <q-input filled v-model="obj.arrival_flight" type="text" label="Flight/train to Rome (FCO/CIA/Termini  DD/MM hh:mm)" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
             <q-select filled emit-value map-options v-model="obj.arrival_bus" :options="busOptions['acaces']" label="Bus to Fiuggi" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-select>
             <q-input filled v-model="obj.phone_number" type="text" label="Your phone number" class="q-mt-sm q-mb-md col-12 col-md" @input="save"></q-input>
-          </div>-->
+          </div>
           <display-4 class="q-mt-lg">Returning home</display-4>
           <p class="q-my-sm">What flights/trains will you take? What bus would you need to take?</p>
           <div class="row q-col-gutter-md">
@@ -121,8 +122,8 @@
         <display-4 class="q-mt-lg">Motivation</display-4>
         <p class="q-mb-sm">What is your main motivation to follow the summer school? <span class="text-red">*</span></p>
         <q-input filled autogrow v-model="obj.motivation" type="textarea" class="q-mt-sm q-mb-md"></q-input>
-        <p class="q-mb-sm">Are you requesting a grant?</p>
-        <q-option-group inline v-model="obj.grant_requested" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]"></q-option-group>
+        <p class="q-mb-sm">Are you requesting a grant? <small v-if="grantRequestDeadlinePassed">(deadline: {{ event.grant_request_deadline }})</small></p>
+        <q-option-group inline v-model="obj.grant_requested" type="radio" :options="[{label: 'Yes', value: true}, {label: 'No', value: false}]" :disable="grantRequestDeadlinePassed"></q-option-group>
 
         <div v-if="courses.length">
           <display-4 class="q-mt-lg">Course selection</display-4>

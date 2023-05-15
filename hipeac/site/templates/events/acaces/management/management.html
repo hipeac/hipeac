@@ -61,8 +61,9 @@
           _.each(state.registrations, function (obj) {
             try {
               var c = (obj.user.profile.institution && obj.user.profile.institution.country)
-                        ? obj.user.profile.institution.country.code
-                        : obj.user.profile.country.code;
+                ? obj.user.profile.institution.country.code
+                : ((obj.user.profile.country) ? obj.user.profile.country.code : obj.custom_data.profile.country.value);
+
               if (!_.has(countries, c)) {
                 countries[c] = {
                   self: state.event.grants_per_country[c].self,
@@ -138,7 +139,6 @@
 
             // we want to see how many of the courses from DISCOVER-US have been selected
             var dus = [97, 100, 104, 106];
-            var course_ids = obj.courses.map(function (c) { return c.id });
             obj.dus_selection = _.intersection(obj.courses, dus).length;
 
             var w = _.without(obj.history, VIRTUAL_ACACES);
@@ -147,16 +147,19 @@
             obj.acaces_last = (w.length) ? _.max(w) : null;
             obj.country = (obj.user.profile.institution)
               ? obj.user.profile.institution.country
-              : obj.user.profile.country;
+              : ((obj.user.profile.country) ? obj.user.profile.country : {
+                code: obj.custom_data.profile.country.value,
+                name: obj.custom_data.profile.country.label
+              });
             obj.country_code = (obj.user.profile.institution)
               ? obj.user.profile.institution.country.code
-              : obj.user.profile.country.code;
+              : ((obj.user.profile.country) ? obj.user.profile.country.code : obj.custom_data.profile.country.value);
             obj.dietary_requirements = obj.user.profile.meal_preference_id && obj.user.profile.meal_preference_id != 7;
             obj.user_gender = (obj.user.profile.gender) ? obj.user.profile.gender.value.toLowerCase() : null;
             obj.user_name = obj.user.profile.name;
             obj.user_affiliation = (obj.user.profile.institution)
               ? obj.user.profile.institution.short_name
-              : obj.custom_data.profile.institution;
+              : (obj.custom_data.profile.institution || '-');
             obj.advisor = (obj.custom_data.profile && obj.custom_data.profile.advisor)
               ? obj.custom_data.profile.advisor
               : '-';
@@ -181,6 +184,10 @@
               'room.shared:' + (obj.roommate_requested ? 'yes' : 'no'),
               'industry:' + (obj.from_industry ? 'yes' : 'no'),
             ].join(' ').toLowerCase();
+
+            _.each(obj.courses, function (id) {
+              obj._q += ' course.id:' + id;
+            });
 
             _.each(obj.grants, function (y) {
               obj._q += ' grant.assigned:' + y;
@@ -523,7 +530,7 @@
               }
             ],
             pagination: {
-              rowsPerPage: 50
+              rowsPerPage: 0
             }
           }
         }
@@ -582,6 +589,14 @@
         }
       }),
       methods: {
+        sendAcceptanceEmail: function () {
+          if (!this.obj) return;
+          Hipeac.api.request('post', this.obj.self + 'email/').then(function (res) {
+            Hipeac.utils.notifySuccess('Email sent.');
+          }).catch(function (error) {
+            Hipeac.utils.notifyApiError(error);
+          });
+        },
         disableAdmitToggle: function (row) {
           if (!this.event) return true;
           return this.grantsPerCountry

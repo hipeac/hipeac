@@ -23,7 +23,6 @@ class RegistrationAbstractModel(models.Model):
     class Meta:
         abstract = True
         indexes = [models.Index(fields=["uuid"])]
-        ordering = ("-created_at",)
 
     def __str__(self) -> str:
         return str(self.uuid)

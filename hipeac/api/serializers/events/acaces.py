@@ -85,6 +85,8 @@ class AcacesRegistrationManagementSerializer(AcacesRegistrationSerializer):
     self = serializers.HyperlinkedIdentityField(view_name="v1:acaces-registration-management-detail", read_only=True)
     grants = serializers.SerializerMethodField(read_only=True)
 
+    _granted_users = None
+
     class Meta(AcacesRegistrationSerializer.Meta):
         read_only_fields = RegistrationSerializer.Meta.read_only_fields + (
             "assigned_hotel",
@@ -92,10 +94,14 @@ class AcacesRegistrationManagementSerializer(AcacesRegistrationSerializer):
             "gelato",
         )
 
+    def _get_granted_users(self, obj):
+        if not self._granted_users:
+            self._granted_users = (
+                AcacesRegistration.objects.filter(grant_assigned=True, accepted=True)
+                .exclude(event_id=obj.event_id)
+                .values("user_id", "created_at")
+            )
+        return self._granted_users
+
     def get_grants(self, obj):
-        return (
-            date.year
-            for date in AcacesRegistration.objects.filter(user_id=obj.user_id, grant_assigned=True, accepted=True)
-            .exclude(event_id=obj.event_id)
-            .values_list("created_at", flat=True)
-        )
+        return [reg["created_at"].year for reg in self._get_granted_users(obj) if reg["user_id"] == obj.user_id]

@@ -413,6 +413,10 @@
       computed: _.extend(
         Vuex.mapGetters(['slots', 'trackList']),
         Vuex.mapState(['countries', 'user', 'event', 'courses']), {
+        grantRequestDeadlinePassed: function () {
+          if (!this.event) return false;
+          return moment(this.event.grant_request_deadline).isBefore(moment());
+        },
         busOptions: function () {
           if (!this.event) return [];
           var options = {
