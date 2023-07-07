@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.template.defaultfilters import slugify
 from typing import Dict, List
 
@@ -197,5 +198,67 @@ class AcacesCourseSheet(ModelExcelWriter):
                 )
 
             sheets.append({"title": slugify(f"slot-{course.slot}-{course.title}")[:30], "data": data})
+
+        return sheets
+
+
+class AcacesRegistrationsSheet(ModelExcelWriter):
+    def get_sheets(self) -> List[Dict]:
+        acaces = self.queryset
+
+        data = [
+            [
+                "badge_1",
+                "badge_2",
+                "country",
+                "poster_title",
+                "poster_authors",
+                "s1c1",
+                "l1",
+                "s2c1",
+                "l2",
+                "s3c1",
+                "l3",
+                "s4c1",
+                "l4",
+            ]
+        ]
+        sheets = []
+
+        for registration in acaces.registrations.filter(
+            acacesregistration__status=1, acacesregistration__accepted=True
+        ):
+            user_data = [
+                registration.user.profile.name,
+                str(registration.user.profile.institution),
+                registration.user.profile.institution.country.name
+                if registration.user.profile.institution and registration.user.profile.institution.country
+                else "",
+            ]
+
+            try:
+                poster = registration.acacesregistration.poster
+            except ObjectDoesNotExist:
+                poster = None
+
+            if poster:
+                user_data.append(poster.title)
+                user_data.append(poster.authors)
+            else:
+                user_data.append("")
+                user_data.append("")
+
+            for slot in range(1, 5):
+                course = registration.acacesregistration.courses.filter(slot=slot).first()
+                if course:
+                    user_data.append(course.title)
+                    user_data.append(", ".join([user.profile.name for user in course.teachers]))
+                else:
+                    user_data.append("")
+                    user_data.append("")
+
+            data.append(user_data)
+
+        sheets.append({"title": "Courses", "data": data})
 
         return sheets

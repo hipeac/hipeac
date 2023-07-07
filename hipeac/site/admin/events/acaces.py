@@ -14,14 +14,16 @@ from hipeac.models.events.acaces import (
 )
 from hipeac.models.metadata import Metadata
 from hipeac.site.pdfs.redux.events.acaces import merge_abstract_pdfs
-from .events import EventAdmin
-from .registrations import RegistrationAdmin
+from hipeac.site.sheets.events.acaces import AcacesRegistrationsSheet
+
 from ..communication import RecordingsInline
 from ..files import FilesInline
 from ..links import LinksInline
 from ..metadata import ApplicationAreasInline, TopicsInline
 from ..users import TeachersInline
 from ..widgets import MarkdownEditorWidget
+from .events import EventAdmin
+from .registrations import RegistrationAdmin
 
 
 def create_hotel_action(hotel: AcacesHotel) -> callable:
@@ -89,7 +91,7 @@ class AcacesPosterInline(admin.StackedInline):
 
 @admin.register(Acaces)
 class AcacesAdmin(EventAdmin):
-    actions = EventAdmin.actions + ("download_abstracts",)
+    actions = EventAdmin.actions + ("download_abstracts", "download_course_selection")
     list_display = EventAdmin.list_display + ("courses_link",)
     # form
     fieldsets = EventAdmin.fieldsets + (
@@ -113,6 +115,15 @@ class AcacesAdmin(EventAdmin):
 
         acaces = queryset.first()
         return merge_abstract_pdfs(acaces, filename=f"acaces{acaces.year}-abstracts.pdf", as_attachment=True)
+
+    @admin.action(description="🔽 Download course selection")
+    def download_course_selection(self, request, queryset):
+        if queryset.count() > 1:
+            messages.error(request, "Please select only one event.")
+            return
+
+        acaces = queryset.first()
+        return AcacesRegistrationsSheet(filename=f"acaces{acaces.year}-course-selection.xlsx", queryset=acaces).response
 
     # custom fields
 
@@ -163,6 +174,7 @@ class AcacesRegistrationAdmin(RegistrationAdmin):
             "grant_requested",
             "grant_assigned",
             "roommate_requested",
+            ("roommate", admin.EmptyFieldListFilter),
             "user__profile__meal_preference",
         )
         + RegistrationAdmin.list_filter
