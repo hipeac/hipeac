@@ -158,23 +158,24 @@
     var VisionHighlightsView = {
       data: function () {
         return {
-          target: null,
-          options: [
-            { label: 'Policy highlights of the HiPEAC Vision', value: 'policy', icon: 'assured_workload', color: 'blue-8' },
-            { label: 'Key takeaways of the HiPEAC Vision for industry', value: 'industry', icon: 'factory', color: 'orange-8' },
-            { label: 'Key takeaways of the HiPEAC Vision for researchers', value: 'research', icon: 'developer_board', color: 'purple-8' },
-            { label: 'HiPEAC Vision for educators', value: 'education', icon: 'school', color: 'pink-8' },
-            { label: 'HiPEAC Vision for the general public', value: 'users', icon: 'family_restroom', color: 'green-8' }
-          ]
+          colors: {
+            'policy': 'blue-8',
+            'research': 'purple-8',
+            'industry': 'orange-8',
+            'education': 'pink-8',
+            'users': 'green-8'
+          }
         };
       },
       template: '#v-highlights',
       computed: _.extend(
         Vuex.mapState('vision', ['targetGroup']), {
-        selectedOption: function () {
-          return _.find(this.options, { value: this.target });
-        }
       }),
+      methods: {
+        selectTargetGroup: function (tg) {
+          this.$store.commit('vision/setTargetGroup', tg);
+        }
+      },
       watch: {
         target: function (val) {
           if (val) this.$store.commit('vision/setTargetGroup', val);
