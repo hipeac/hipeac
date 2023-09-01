@@ -71,3 +71,18 @@ $sidenav-border-color: #dee2e6;
         }
     }
 }
+
+.hipeac__sc-minutes {
+  blockquote {
+    padding: .5em 1em;
+    background-color: aliceblue;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em;
+
+    ul {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+  }
+}

@@ -19,7 +19,7 @@
             <a href="/">
               <img src="@/assets/hipeac.svg" class="logo q-mt-xs" />
             </a>
-            <p v-for="item in hipeac_menu" :key="item[1]" class="text-h4 text-grey-8 text-weight-light">
+            <p v-for="item in site_menu" :key="item[1]" class="text-h4 text-grey-8 text-weight-light">
               <a :href="item[1]" :class="item[2]" class="flat">{{ item[0] }}</a>
             </p>
           </div>
@@ -43,7 +43,7 @@
         <q-btn-group stretch flat v-show="$q.screen.gt.sm">
           <q-btn
             no-caps
-            v-for="item in hipeac_menu"
+            v-for="item in site_menu"
             :key="item[1]"
             :href="item[1]"
             :label="item[0]"
@@ -75,7 +75,7 @@
       <div class="container">
         <div class="row q-col-gutter-lg justify-between text-caption" :class="{ reverse: $q.screen.gt.sm }">
           <div class="col-12 col-md-3 q-pt-xl" :class="{ 'text-right': $q.screen.gt.sm }">
-            <img src="https://www.hipeac.net/static/images/eu-horizon.8f515cd9f737.svg" style="height: 40px" />
+            <img src="@/assets/eu-horizon.svg" style="height: 40px" />
           </div>
           <div class="col-12 col-md-9">
             <p class="text-caption q-mb-sm">
@@ -149,7 +149,7 @@ const props = defineProps<{
   django_debug: boolean;
   django_user: DjangoAuthenticatedUser | null;
   git_commit_hash: string;
-  hipeac_menu: Array<[string, string, string]>;
+  site_menu: Array<[string, string, string]>;
 }>();
 
 const contactEmail = 'info@hipeac.net';

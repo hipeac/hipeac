@@ -17,10 +17,15 @@
       <link href="{% static '__inertia__/scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
       <link href="{% static 'css/flags.css' %}" type="text/css" rel="stylesheet">
     {% endcompress %}
+    {% if site_name == "Computing Continuum" %}
+      {% compress css file cc %}
+        <link href="{% static '__inertia__/scss/cc.scss' %}" type="text/x-scss" rel="stylesheet">
+      {% endcompress %}
+    {% endif %}
     <title>{{ page_title }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta property="og:site_name" content="HiPEAC">
+    <meta property="og:site_name" content="{{ site_name }}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
 
     {% vite_hmr_client %}

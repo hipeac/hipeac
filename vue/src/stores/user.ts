@@ -4,7 +4,6 @@ import { pick } from 'lodash-es';
 
 import { api } from '@/axios.ts';
 
-
 function mapNotification(obj: UserNotification) {
   return {
     ...obj,

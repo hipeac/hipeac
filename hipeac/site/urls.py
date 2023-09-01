@@ -132,6 +132,7 @@ urlpatterns = [
     path("accounts/certificates/<uuid:uuid>.pdf", views.UserCertificatePdf.as_view(), name="user_certificate_pdf"),
     # SC
     path("sc/", views.SteeringCommittee.as_view(), name="steering"),
+    path("sc2/", views.SteeringCommitteeVue.as_view(), name="steering_vue"),
     # Mailing lists
     path("sympa/<slug:mailing_list>/", views.DataSourceView.as_view(), name="datasource"),
     # Media

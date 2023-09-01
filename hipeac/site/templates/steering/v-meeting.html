@@ -37,9 +37,9 @@
     </div>
     <p class="text-sm">
       <a is="editor-button" :url="'/admin/hipeac/meeting/' + meeting.id + '/change/'" class="float-right ml-4 mb-2"></a>
-      <a v-if="meeting.file" :href="meeting.file" target="_blank" class="btn btn-sm btn-outline-secondary mr-2"><icon name="get_app" class="sm mr-1"></icon>Download meeting minutes</a>
+      <a v-if="meeting.minutes" :href="meeting.minutes" target="_blank" class="btn btn-sm btn-outline-secondary mr-2"><icon name="get_app" class="sm mr-1"></icon>Download meeting minutes</a>
     </p>
-    <marked :text="meeting.description" class="with-h mt-5"></marked>
+    <marked :text="meeting.description" class="with-h mt-5 hipeac__sc-minutes"></marked>
     <div v-if="meeting.files.length" class="mt-5 rounded steering-box-ml bg-light p-3 text-sm">
       <display-sm class="mb-3">Attachments</display-sm>
       <attachments-table :attachments="meeting.files"></attachments-table>

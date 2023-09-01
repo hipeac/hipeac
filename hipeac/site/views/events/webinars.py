@@ -3,12 +3,13 @@ from django.views import generic
 
 from hipeac.models import WebinarProposal
 from hipeac.site.forms import WebinarProposalForm
+
 from ..inertia import InertiaView
 
 
 class WebinarsView(InertiaView):
     page_title = "Webinars"
-    vue_entry_point = "apps/webinars/main.ts"
+    vue_entry_point = "apps/hipeac/webinars/main.ts"
 
 
 class WebinarProposalView(SuccessMessageMixin, generic.FormView):

@@ -11,6 +11,8 @@ from django.utils import timezone
 
 from hipeac.functions import get_images_path, send_task
 from hipeac.validators import validate_no_badwords
+
+from .metadata import Metadata
 from .mixins import (
     ApplicationAreasMixin,
     EditorMixin,
@@ -21,8 +23,6 @@ from .mixins import (
     PermissionsMixin,
     TopicsMixin,
 )
-from .metadata import Metadata
-from .permissions import Permission
 
 
 class ProjectManager(models.Manager):
@@ -54,7 +54,6 @@ class Project(
     is_visible = models.BooleanField(default=False)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
-    name = models.CharField(max_length=8)
     acronym = models.CharField(max_length=50)
     name = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True, validators=[validate_no_badwords])

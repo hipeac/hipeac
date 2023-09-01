@@ -4,6 +4,10 @@ from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
 from django.views import generic
 
+from hipeac.tools.stats.recruitment import get_jobs_per_month
+
+from .inertia import InertiaView
+
 
 class UserIsSteeringMemberMixin:
     @method_decorator(login_required)
@@ -17,3 +21,13 @@ class UserIsSteeringMemberMixin:
 
 class SteeringCommittee(UserIsSteeringMemberMixin, generic.TemplateView):
     template_name = "steering/steering.html"
+
+
+class SteeringCommitteeVue(UserIsSteeringMemberMixin, InertiaView):
+    vue_entry_point = "apps/hipeac/steering/main.ts"
+
+    def get_props(self, request, *args, **kwargs):
+        return {
+            "vue_template": "dark",
+            "stats_jobs_per_month": get_jobs_per_month(),
+        }

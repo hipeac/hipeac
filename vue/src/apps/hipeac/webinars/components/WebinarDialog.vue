@@ -4,12 +4,7 @@
       <div class="col-12 col-md-4">
         <div v-if="!obj.has_ended" class="q-gutter-sm">
           <span v-if="!user">
-            <q-btn
-              outline
-              no-caps
-              :href="`/accounts/login/?next=${$page.url}`"
-              color="primary"
-              class="full-width"
+            <q-btn outline no-caps :href="`/accounts/login/?next=${$page.url}`" color="primary" class="full-width"
               >Log in to your account first</q-btn
             >
           </span>

@@ -9,10 +9,13 @@ import * as Sentry from '@sentry/vue';
 
 import { axios, api } from './axios.ts';
 
-const bootApp = (routes: RouteRecordRaw[]) => {
+const bootApp = (site: string, routes: RouteRecordRaw[]) => {
   createInertiaApp({
     resolve: () => {
-      return import('./layouts/MainLayout.vue');
+      if (site === 'cc') {
+        return import('./layouts/CcLayout.vue' as string);
+      }
+      return import('./layouts/HipeacLayout.vue' as string);
     },
     setup({ el, App, props, plugin }) {
       // router

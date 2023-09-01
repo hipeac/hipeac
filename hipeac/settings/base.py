@@ -19,7 +19,6 @@ TEST = False
 
 ADMINS = (("eillarra", "e@illarra.com"),)
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "DJANGO_SECRET_KEY")
-SITE_ID = int(os.environ.get("SITE_ID", 1))
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
@@ -60,6 +59,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "hipeac.middleware.CurrentSiteMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",

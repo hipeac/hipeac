@@ -48,7 +48,11 @@ class PrivateFileView(SendfileView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not self.get_object().content_object.files_viewable_by_user(self.request.user):
+        # TODO: specific files skip permission
+        if "steering" in kwargs.get("path"):
+            if not self.request.user.groups.filter(name="Steering Committee").exists():
+                raise PermissionDenied
+        elif not self.get_object().content_object.files_viewable_by_user(self.request.user):
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 

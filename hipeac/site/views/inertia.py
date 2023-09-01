@@ -10,6 +10,25 @@ from inertia import render
 from hipeac.templatetags.hipeac import active
 
 
+def get_site_menu(request):
+    if request.site.name == "Computing Continuum":
+        return [
+            ("About", reverse("about"), active(request, "about,project")),
+        ]
+
+    return [
+        ("Network", reverse("network"), active(request, "network,user,institution,project")),
+        ("Events", reverse("events"), active(request, "events,acaces,conference,conference_v2,csw,roadshow")),
+        ("Webinars", reverse("webinars"), active(request, "webinars")),
+        ("Jobs", reverse("jobs"), active(request, "jobs,job")),
+        ("Vision", reverse("vision"), active(request, "vision")),
+        ("Awards", reverse("awards"), active(request, "awards")),
+        ("TV", "/tv/", ""),
+        ("News", reverse("news"), active(request, "news,article")),
+        ("Press room", reverse("press"), active(request, "press")),
+    ]
+
+
 def render_inertia(request, vue_entry_point: str, *, props: dict | None, page_title: str | None = None):
     """
     Render a Vue component with Inertia.
@@ -24,22 +43,13 @@ def render_inertia(request, vue_entry_point: str, *, props: dict | None, page_ti
             "django_debug": settings.DEBUG,
             "django_user": request.user if request.user.is_authenticated else None,
             "git_commit_hash": os.environ.get("GIT_REV", "None"),
-            "hipeac_menu": [
-                ("Network", reverse("network"), active(request, "network,user,institution,project")),
-                ("Events", reverse("events"), active(request, "events,acaces,conference,conference_v2,csw,roadshow")),
-                ("Webinars", reverse("webinars"), active(request, "webinars")),
-                ("Jobs", reverse("jobs"), active(request, "jobs,job")),
-                ("Vision", reverse("vision"), active(request, "vision")),
-                ("Awards", reverse("awards"), active(request, "awards")),
-                ("TV", "/tv/", ""),
-                ("News", reverse("news"), active(request, "news,article")),
-                ("Press room", reverse("press"), active(request, "press")),
-            ],
+            "site_menu": get_site_menu(request),
             "vue_template": "light",
         }
         | (props or {}),
         template_data={
-            "page_title": page_title or "HiPEAC",
+            "site_name": request.site.name,
+            "page_title": page_title or request.site.name,
             "vue_entry_point": vue_entry_point,
         },
     )

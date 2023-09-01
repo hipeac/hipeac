@@ -9,7 +9,7 @@ from hashlib import sha512
 
 def get_absolute_uri():
     protocol = "https://" if settings.SESSION_COOKIE_SECURE else "http://"
-    return protocol + Site.objects.get_current().domain
+    return protocol + "www.hipeac.net"
 
 
 class Ingenico:

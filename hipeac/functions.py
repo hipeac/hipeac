@@ -11,7 +11,7 @@ from typing import Dict
 
 def get_absolute_uri() -> str:
     protocol = "https://" if settings.SESSION_COOKIE_SECURE else "http://"
-    return protocol + Site.objects.get_current().domain
+    return protocol + "www.hipeac.net"
 
 
 def get_asset_path(instance, filename):

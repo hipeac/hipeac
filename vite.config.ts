@@ -5,10 +5,12 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
 // read apps folder and create a list of entries
-const apps = fs.readdirSync(resolve(__dirname, './vue/src/apps'));
 const appsToBuild = {};
-apps.forEach((app) => {
-  appsToBuild[app] = resolve(__dirname, `./vue/src/apps/${app}/main.ts`);
+['hipeac', 'cc'].forEach((site) => {
+  const apps = fs.readdirSync(resolve(__dirname, `./vue/src/apps/${site}`));
+  apps.forEach((app) => {
+    appsToBuild[`${site}-${app}`] = resolve(__dirname, `./vue/src/apps/${site}/${app}/main.ts`);
+  });
 });
 
 // https://vitejs.dev/config/

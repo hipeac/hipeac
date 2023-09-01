@@ -299,6 +299,11 @@
     "@sentry/types" "7.81.1"
     "@sentry/utils" "7.81.1"
 
+"@toast-ui/chart@^4.6.1":
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/@toast-ui/chart/-/chart-4.6.1.tgz#1d7e11e7167f4c44536a8b5901e61492942077c1"
+  integrity sha512-F35IkHS0U9zqN6xIV1Yj3/wh8KGlZyzT3bwVGBJh/82DMDMn8rD2Us8X7xBMBGcZ3E15qkfnKjrATxU5ZoGAnA==
+
 "@types/json-schema@^7.0.9":
   version "7.0.15"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"

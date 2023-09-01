@@ -7,7 +7,7 @@ from .base import *  # noqa
 DEBUG = False
 
 APP_DOMAIN = "hipeac.net"
-ALLOWED_HOSTS = (os.environ.get("DJANGO_ALLOWED_HOST", "www.hipeac.net"),)
+ALLOWED_HOSTS = [os.environ.get("DJANGO_ALLOWED_HOST", "www.hipeac.net"), "computing-continuum.eu"]
 MEDIA_ROOT = "/storage/"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
