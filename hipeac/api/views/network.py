@@ -69,7 +69,6 @@ class ProjectViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin, Updat
         )
         .order_by("acronym")
     )
-    pagination_class = None
     permission_classes = (HasAdminPermissionOrReadOnly,)
     serializer_class = ProjectSerializer
     search_fields = ("acronym", "name")
@@ -82,9 +81,9 @@ class ProjectViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin, Updat
         self.serializer_class = ProjectListSerializer
         return super().list(request, *args, **kwargs)
 
-    @action(detail=False, serializer_class=ProjectMiniSerializer)
+    @action(detail=False, pagination_class=None, serializer_class=ProjectListSerializer)
     def all(self, request, *args, **kwargs):
-        self.queryset = self.queryset.only("id", "programme", "acronym", "name", "image").filter(is_visible=True)
+        self.queryset = self.queryset.filter(is_visible=True)
         return super().list(request, *args, **kwargs)
 
     @action(

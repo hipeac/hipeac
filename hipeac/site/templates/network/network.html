@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block content %}
-  <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}" data-partner-list="{% url 'v1:partner-list' %}" data-project-list="{% url 'v1:project-list' %}" class="container">
+  <div id="urls" data-member-list="{% url 'v1:member-list' %}" data-member-affiliates="{% url 'v1:member-affiliates' %}" data-partner-list="{% url 'v1:partner-list' %}" data-project-list="{% url 'v1:project-all' %}" class="container">
     <div is="router-view"></div>
   </div>
 {% endblock %}
