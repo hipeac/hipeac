@@ -6,9 +6,10 @@ from zoomus import ZoomClient
 
 class Zoomer:
     def __init__(self) -> None:
-        api_key = os.environ.get("ZOOM_API_KEY")
-        api_secret = os.environ.get("ZOOM_API_SECRET")
-        self.client = ZoomClient(api_key, api_secret)  # noqa
+        client_id = os.environ.get("ZOOM_CLIENT_ID")
+        client_secret = os.environ.get("ZOOM_CLIENT_SECRET")
+        account_id = os.environ.get("ZOOM_ACCOUNT_ID")
+        self.client = ZoomClient(client_id, client_secret, account_id)
 
     def post_webinar_registrant(self, webinar_id: int, user_data: dict) -> Optional[str]:
         """
