@@ -31,7 +31,7 @@ def contain(img: Image, width: int = 300, height: int = 200) -> Image:
 def generate_square_thumbnail(img: Image, side: int = 200, padding: int = 20, bg_color="white") -> Image:
     size = (side, side)
     img = img.convert("RGBA")
-    img.thumbnail((size[0] - padding * 2, size[1] - padding * 2), Image.ANTIALIAS)
+    img.thumbnail((size[0] - padding * 2, size[1] - padding * 2), Image.LANCZOS)
     background = Image.new("RGB", size, bg_color)
     background.paste(img, (int((size[0] - img.size[0]) / 2), int((size[1] - img.size[1]) / 2)), mask=img)
     return background
@@ -39,7 +39,7 @@ def generate_square_thumbnail(img: Image, side: int = 200, padding: int = 20, bg
 
 def resize(img: Image, max_width: int = 300, max_height: int = 200) -> Image:
     img = img.convert("RGBA")
-    img.thumbnail((max_width, max_height), Image.ANTIALIAS)
+    img.thumbnail((max_width, max_height), Image.LANCZOS)
     return img
 
 
