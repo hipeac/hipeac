@@ -1,8 +1,3 @@
-interface Country {
-  name: string;
-  code: string;
-}
-
 interface HipeacEventImages {
   th: string;
   md: string;
@@ -56,4 +51,9 @@ interface HipeacEvent {
   registration_deadline: string;
   registrations_count: number;
   images: HipeacEventImage | null;
+}
+
+interface HipeacEventAttendee {
+  created_at: string;
+  user: User;
 }

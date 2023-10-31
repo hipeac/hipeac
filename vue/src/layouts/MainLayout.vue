@@ -132,12 +132,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import { useCommonStore } from '@/stores/common';
+
 import UserMenu from '@/components/UserMenu.vue';
 
 import { iconLinkedIn, iconYouTube, iconX } from '@/icons';
 
+const commonStore = useCommonStore();
+
 // get basic info from Django
-defineProps<{
+const props = defineProps<{
   django_csrf_token: string;
   django_debug: boolean;
   django_user: DjangoAuthenticatedUser | null;
@@ -148,4 +152,6 @@ defineProps<{
 const contactEmail = 'info@hipeac.net';
 const visibleDialogMenu = ref(false);
 const year = new Date().getFullYear();
+
+commonStore.init(props.django_user);
 </script>

@@ -8,46 +8,46 @@ import { mapSession } from '@/utils/mapper';
 
 export const useStore = defineStore('webinars', () => {
   const commonStore = useCommonStore();
-  const { now } = storeToRefs(commonStore);
+  const { now, user } = storeToRefs(commonStore);
 
   const allWebinars = ref<HipeacWebinar[]>([]);
   const allRegistrations = ref<HipeacWebinarRegistration[]>([]);
 
-  async function init(djangoUser: DjangoAuthenticatedUser | null) {
+  async function init() {
     await fetchWebinars();
 
-    if (djangoUser) {
+    if (user.value) {
       await fetchRegistrations();
     }
   }
 
   async function fetchRegistrations() {
-    await api.get('/user/webinars/').then((response) => {
-      allRegistrations.value = response.data;
+    await api.get('/user/webinars/').then((res) => {
+      allRegistrations.value = res.data;
     });
   }
 
   async function fetchWebinars() {
-    await api.get('/webinars').then((response) => {
-      allWebinars.value = response.data.map((webinar: HipeacWebinar) => mapSession(webinar) as HipeacWebinar);
+    await api.get('/webinars').then((res) => {
+      allWebinars.value = res.data.map((webinar: HipeacWebinar) => mapSession(webinar) as HipeacWebinar);
     });
   }
 
-  function addRegistration(reg: HipeacWebinarRegistration) {
-    allRegistrations.value.push(cloneDeep(reg));
+  function addRegistration(registration: HipeacWebinarRegistration) {
+    allRegistrations.value.push(cloneDeep(registration));
   }
 
-  function removeRegistration(reg: HipeacWebinarRegistration) {
-    const index = allRegistrations.value.findIndex((r) => r.id === reg.id);
+  function removeRegistration(registration: HipeacWebinarRegistration) {
+    const index = allRegistrations.value.findIndex((r) => r.id === registration.id);
     if (index !== -1) {
       allRegistrations.value.splice(index, 1);
     }
   }
 
   const registrations = computed<HipeacWebinarRegistration[]>(() => {
-    return allRegistrations.value.map((reg) => ({
-      ...reg,
-      Webinar: allWebinars.value.find((webinar) => webinar.id === reg.webinar),
+    return allRegistrations.value.map((registration) => ({
+      ...registration,
+      Webinar: allWebinars.value.find((webinar) => webinar.id === registration.webinar),
     }));
   });
 

@@ -24,7 +24,7 @@
           </q-tab>
           <q-tab v-if="obj.main_speaker" name="speaker" label="Main speaker" />
           <q-tab v-if="obj.program" name="program" label="Program" />
-          <!--<q-tab v-if="obj._registered" name="attendees" label="Attendees" />-->
+          <q-tab v-if="obj._registered" name="attendees" label="Attendees" />
         </q-tabs>
         <q-space />
         <!--<editor-link v-if="session.editor_href" type="btn" :url="session.editor_href" target="_blank" />-->
@@ -66,7 +66,7 @@
             {{ obj.program }}
           </q-tab-panel>
           <q-tab-panel name="attendees">
-            <!--<attendees-list :session="obj" />-->
+            <attendees-list :session="obj" />
           </q-tab-panel>
         </q-tab-panels>
       </q-page>

@@ -56,7 +56,7 @@ function register() {
 
 function unregister() {
   api.post(props.obj.rel_unregister).then(() => {
-    store.removeRegistration(registration.value);
+    if (registration.value) store.removeRegistration(registration.value);
     notify.info('You have been unregistered from the webinar.');
   });
 }
