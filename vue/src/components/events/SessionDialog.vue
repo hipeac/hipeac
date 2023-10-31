@@ -1,9 +1,13 @@
 <style lang="scss">
+.q-dialog__inner--minimized {
+  padding: 0;
+}
+
 .hipeac__session-dialog-layout {
   height: 800px;
 
   .q-dialog__inner--minimized > & {
-    width: 1000px !important;
+    width: 1100px !important;
     max-width: 100vw;
   }
 
@@ -50,7 +54,7 @@
     </q-header>
     <q-page-container>
       <q-page>
-        <q-tab-panels v-model="tab" :swipeable="$q.screen.lt.md" horizontal :class="{ 'q-pa-sm': $q.screen.gt.sm }">
+        <q-tab-panels v-model="tab" :swipeable="$q.screen.lt.md" horizontal class="q-pa-sm">
           <q-tab-panel name="main">
             <div class="row q-col-gutter-x-xl q-col-gutter-y-lg">
               <div class="col-12 col-md">

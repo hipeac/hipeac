@@ -2,25 +2,25 @@
 .hipeac__big_display {
   h1 {
     font-family: 'Roboto Slab', Georgia, 'Times New Roman', Times, serif;
-    font-size: 1.75rem;
+    font-size: 1.65rem;
     font-weight: 600;
     color: #222;
 
     @media (min-width: 768px) {
-      width: 90%;
-      font-size: 2.5rem;
+      width: 85%;
+      font-size: 2.35rem;
       line-height: 1.1;
     }
   }
 
   h2 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 300;
     line-height: 1.4;
 
     @media (min-width: 768px) {
       width: 90%;
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       padding-left: 24px;
     }
 

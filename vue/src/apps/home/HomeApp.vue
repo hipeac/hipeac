@@ -1,24 +1,30 @@
 <template>
   <div>
-    <div class="row q-col-gutter-lg">
+    <div class="row q-col-gutter-y-xl">
       <div class="col-12 col-md-7" :class="{ 'q-py-lg': $q.screen.gt.sm }">
         <big-display
           title="Bridging industry and academia in computing systems since 2004"
           subtitle="Spanning the compute continuum from edge to cloud, HiPEAC is a network of around 2,000 world-class
             computing systems researchers, industry representatives and students."
-          class="q-mt-xl"
+          class="q-mt-md"
+          :class="{ 'q-mt-xl': $q.screen.gt.sm }"
         />
       </div>
-      <div class="col-12 col-md q-pt-xl q-pb-lg">
+      <div class="col-12 col-md" :class="{ 'q-pt-xl q-pb-lg': $q.screen.gt.sm }">
         <q-card flat bordered class="full-height">
           <q-tabs v-model="tab" no-caps switch-indicator indicator-color="primary">
             <q-tab name="industry"><h5>For industry</h5></q-tab>
             <q-tab name="academia"><h5>For academia</h5></q-tab>
           </q-tabs>
-          <q-tab-panels v-model="tab" class="q-px-sm">
+          <q-tab-panels v-model="tab">
             <q-tab-panel v-for="(text, type) in texts" :key="type" :name="type">
               <q-list>
-                <q-item v-for="(item, index) in text.items" :key="index" :href="item[2]" class="q-px-none q-py-md">
+                <q-item
+                  v-for="(item, index) in text.items"
+                  :key="index"
+                  :href="item[2]"
+                  class="q-pa-md rounded-borders"
+                >
                   <q-item-section avatar>
                     <q-avatar color="grey-3" text-color="dark" :icon="item[0]" />
                   </q-item-section>
@@ -52,7 +58,7 @@
                   class="rounded-borders"
                 />
               </div>
-              <article-list :items="$page.props.articles" :max="10" />
+              <article-list :items="($page.props.articles as HipeacArticle[])" :max="10" show-more />
             </div>
             <div class="col-12 col-md">
               <a

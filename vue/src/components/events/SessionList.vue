@@ -17,7 +17,7 @@
     All times are displayed in your local time zone: <strong>{{ tz }}</strong>
   </div>
   <session-simple-list :sessions="(queriedRows as HipeacSession[])" />
-  <q-dialog v-if="dialogComponent" v-model="dialogVisible">
+  <q-dialog v-if="dialogComponent" v-model="dialogVisible" position="bottom">
     <component :is="dialogComponent" :obj="selectedObj" />
   </q-dialog>
 </template>

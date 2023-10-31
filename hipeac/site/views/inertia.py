@@ -50,7 +50,7 @@ class InertiaView(View):
     vue_entry_point: str
 
     def get_page_title(self, request, *args, **kwargs) -> str | None:
-        return f"{self.page_title} - HiPEAC" if self.page_title != "HiPEAC" else None
+        return f"{self.page_title} - HiPEAC" if self.page_title and self.page_title != "HiPEAC" else None
 
     def get_props(self, request, *args, **kwargs) -> dict:
         return {}

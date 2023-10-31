@@ -16,9 +16,10 @@
           tag="a"
           :href="reg.zoom_access_link"
           target="_blank"
+          class="q-pa-md rounded-borders"
         >
           <q-item-section avatar>
-            <q-avatar color="grey" text-color="white" icon="launch" />
+            <q-avatar color="grey-3" text-color="dark" icon="present_to_all" />
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ reg.Webinar?.title }}</q-item-label>

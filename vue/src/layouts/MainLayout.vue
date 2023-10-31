@@ -16,7 +16,9 @@
         <q-card-section>
           <q-btn unelevated round icon="close" color="white" text-color="dark" v-close-popup />
           <div class="q-gutter-y-md text-center q-pb-xl">
-            <img src="@/assets/hipeac.svg" class="logo q-mt-xs" />
+            <a href="/">
+              <img src="@/assets/hipeac.svg" class="logo q-mt-xs" />
+            </a>
             <p v-for="item in hipeac_menu" :key="item[1]" class="text-h4 text-grey-8 text-weight-light">
               <a :href="item[1]" :class="item[2]" class="flat">{{ item[0] }}</a>
             </p>
@@ -64,8 +66,7 @@
       >
         <router-view name="menu" />
         <div class="container">
-          <router-view class="q-py-lg q-pb-xl" />
-          <div class="q-mt-xl text-transparent">.</div>
+          <router-view class="q-py-lg q-pb-xl" :class="{ 'q-py-xl': $q.screen.gt.sm }" />
         </div>
       </q-page>
     </q-page-container>

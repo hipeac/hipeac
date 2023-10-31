@@ -152,7 +152,9 @@ const overviewText = computed<string>(() => {
   }
 
   if (countryCount === 1 && institutionCount === 1) {
-    return `${attendees} from ${institutions.values().next().value}, <span class="text-no-wrap">${countries.values().next().value}</span>.`;
+    return `${attendees} from ${institutions.values().next().value}, <span class="text-no-wrap">${
+      countries.values().next().value
+    }</span>.`;
   } else if (countryCount === 1) {
     return `${attendees} from <span class="text-no-wrap">${institutionCount} institutions</span> in ${
       countries.values().next().value

@@ -1,11 +1,11 @@
 <template>
   <div v-for="session in sessions" :key="session.id" class="row">
     <div class="col-12 border-top"></div>
-    <div class="col-2 q-py-md q-px-sm text-center">
+    <div class="col-3 col-sm-2 q-py-md q-px-sm text-center">
       <h4 class="text-h6 text-weight-light">{{ session.start_day }}</h4>
     </div>
     <div
-      class="col-10 border-left q-py-md q-pl-lg col-pointer"
+      class="col border-left q-py-md q-pl-lg col-pointer"
       @click="router.push({ params: { sessionId: session.id } })"
     >
       <!--<hipeac-profile-item v-if="keynotesDict[session.id] && keynotesDict[session.id].main_speaker" :profile="keynotesDict[session.id].main_speaker.profile" class="q-px-none q-pt-none q-mb-sm"></hipeac-profile-item>-->
