@@ -4,17 +4,20 @@ from django.db import models
 from django.db.models import Q
 from django_countries.fields import CountryField
 
-from ..mixins import UsersMixin
+from ..mixins import LinksMixin, UsersMixin
 
 
-class PublicationConference(models.Model):
+class PublicationConference(LinksMixin, models.Model):
     """
     Conferences taken in account for HiPEAC Paper Awards.
     We need this model to have a relation of DBLP urls to scrap, per year.
     """
 
     CONFERENCES = (
-        ("ASPLOS", "Conference on Architectural Support for Programming Languages and Operating Systems"),
+        (
+            "ASPLOS",
+            "Conference on Architectural Support for Programming Languages and Operating Systems",
+        ),
         ("DAC", "Design Automation Conference"),
         ("FCCM", "Symposium on Field-Programmable Custom Computing Machines"),
         ("HPCA", "International Symposium on High Performance Computer Architecture"),
@@ -27,7 +30,6 @@ class PublicationConference(models.Model):
     acronym = models.CharField(max_length=16, choices=CONFERENCES)
     year = models.PositiveSmallIntegerField(db_index=True)
     country = CountryField()
-    url = models.URLField("DBLP event page")
 
     class Meta:
         db_table = "hipeac_publication_conference"
@@ -41,7 +43,11 @@ class PublicationQuerySet(models.QuerySet):
     def awarded(self, *, year: int):
         date = datetime.date(year, 12, 31)
         return (
-            self.filter(conference__isnull=False, conference__year=year, itemtype="ScholarlyArticle")
+            self.filter(
+                conference__isnull=False,
+                conference__year=year,
+                itemtype="ScholarlyArticle",
+            )
             .filter(
                 Q(rel_users__user__memberships__type="member"),
                 Q(rel_users__user__memberships__date__lte=date),
@@ -70,7 +76,11 @@ class Publication(UsersMixin, models.Model):
     url = models.URLField("Electronic edition", null=True, blank=True)
     itemtype = models.CharField(null=True, blank=True, max_length=200)
     conference = models.ForeignKey(
-        PublicationConference, null=True, blank=True, related_name="publications", on_delete=models.SET_NULL
+        PublicationConference,
+        null=True,
+        blank=True,
+        related_name="publications",
+        on_delete=models.SET_NULL,
     )
 
     objects = PublicationQuerySet.as_manager()

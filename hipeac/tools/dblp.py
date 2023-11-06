@@ -1,11 +1,10 @@
 import lxml.html
 import requests
-
 from django.contrib.contenttypes.models import ContentType
-from requests.exceptions import RequestException
 from lxml.cssselect import CSSSelector
+from requests.exceptions import RequestException
 
-from hipeac.models import PublicationConference, Publication, Profile, Link
+from hipeac.models import Link, Profile, Publication, PublicationConference
 from hipeac.models.users import RelatedUser
 
 
@@ -29,13 +28,13 @@ def parse_element(element, year: int):
     }
 
 
-def process_conference_publications(conference: PublicationConference):
-    publications = {}
-
+def process_conference_url(conference: PublicationConference, url: str):
     try:
-        r = requests.get(conference.url)
-    except RequestException as e:
-        return str(e)
+        r = requests.get(url)
+    except RequestException as exc:
+        return str(exc)
+
+    publications = {}
 
     # Build the DOM Tree.
     tree = lxml.html.fromstring(r.text)
@@ -47,7 +46,7 @@ def process_conference_publications(conference: PublicationConference):
         publications[element.get("id")] = parse_element(element, conference.year)
 
     # populate database
-    for key, publication in publications.items():
+    for _, publication in publications.items():
         try:
             entry = Publication.objects.get(dblp_key=publication["dblp_key"])
         except Publication.DoesNotExist:
@@ -55,6 +54,12 @@ def process_conference_publications(conference: PublicationConference):
 
         entry.conference = conference
         entry.save()
+
+
+def process_conference_publications(conference: PublicationConference):
+    for link in conference.links.all():
+        if link.type == Link.DBLP:
+            process_conference_url(conference, link.url)
 
     return True
 
@@ -95,6 +100,8 @@ def process_user_publications(profile: Profile):
             entry = Publication(**publication)
             entry.save()
 
-        _, _ = RelatedUser.objects.get_or_create(content_type=ct, object_id=entry.id, user=profile.user)
+        _, _ = RelatedUser.objects.get_or_create(
+            content_type=ct, object_id=entry.id, user=profile.user
+        )
 
     return True
