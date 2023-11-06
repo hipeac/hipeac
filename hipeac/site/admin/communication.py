@@ -10,12 +10,14 @@ from hipeac.models.communication import (
     Magazine,
     MagazineRecipient,
     Quote,
-    Video,
     RelatedVideo,
+    Video,
 )
+
 from .files import FilesInline
-from .institutions import InstitutionsInline
 from .images import ImagesInline
+from .institutions import InstitutionsInline
+from .links import LinksInline
 from .metadata import ApplicationAreasInline, TopicsInline
 from .projects import ProjectsInline
 from .users import UsersInline
@@ -51,11 +53,11 @@ class ClippingAdmin(admin.ModelAdmin):
 
 @admin.register(Dissemination)
 class DisseminationAdmin(admin.ModelAdmin):
-    date_hierarchy = "date"
-    list_display = ("id", "event", "type", "date")
-    list_filter = ("type", "date")
+    date_hierarchy = "start_date"
+    list_display = ("id", "event", "type", "start_date")
+    list_filter = ("type", "start_date")
     # form
-    inlines = (FilesInline,)
+    inlines = (ApplicationAreasInline, TopicsInline, InstitutionsInline, FilesInline, LinksInline, ImagesInline)
 
 
 @admin.register(Magazine)

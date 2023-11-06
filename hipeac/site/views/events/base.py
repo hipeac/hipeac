@@ -1,17 +1,13 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.db import IntegrityError
 from django.template.defaultfilters import date as date_filter
 from django.utils.decorators import method_decorator
-from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse_lazy
 from django.views import generic
 
-from hipeac.models import Event, Roadshow, Registration, Coupon, SessionProposal
-from hipeac.tools.payments.legacy import Ogone, process_ogone_parameters, OGONE_URL, OGONE_PSPID
-from hipeac.services.pdf import PdfResponse, Pdf, H2020
+from hipeac.models import Dissemination, Event, Registration, SessionProposal
+from hipeac.services.pdf import H2020, Pdf, PdfResponse
 from hipeac.site.forms import SessionProposalForm, ThematicSessionProposalForm
 from hipeac.site.views.mixins import SlugMixin
 
@@ -61,11 +57,11 @@ class RoadshowDetail(SlugMixin, generic.DetailView):
     If the slug doesn't match we make a 301 Permanent Redirect.
     """
 
-    model = Roadshow
+    model = Dissemination
     template_name = "events/roadshow/roadshow.html"
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("rel_institutions__institution")
+        return super().get_queryset().filter(type="roadshow").prefetch_related("rel_institutions__institution")
 
     def get_object(self, queryset=None):
         if not hasattr(self, "object"):
@@ -85,7 +81,7 @@ class RegistrationReceiptPdfView(generic.DetailView):
         if not self.get_object().is_paid:
             messages.error(request, "Receipt can only be viewed once the registration has been paid.")
             raise PermissionDenied
-        if not request.user.is_staff and not self.get_object().user.id == request.user.id:
+        if not request.user.is_staff and self.get_object().user.id != request.user.id:
             messages.error(request, "You don't have the necessary permissions to view this file.")
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)

@@ -1,12 +1,13 @@
 from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from hipeac.models import Article, Clipping, Quote, Magazine, Video
+from hipeac.models import Article, Clipping, Magazine, Quote, Video
+
 from ..serializers import (
     ArticleListSerializer,
     ClippingListSerializer,
-    QuoteListSerializer,
     MagazineListSerializer,
+    QuoteListSerializer,
     VideoListSerializer,
 )
 

@@ -1,27 +1,24 @@
 from django.db import IntegrityError
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.parsers import FileUploadParser
 from rest_framework.viewsets import GenericViewSet
-
 
 from hipeac.models import (
     AcacesRegistration,
     Event,
     File,
     Registration,
-    Roadshow,
     Session,
     SessionAccessLink,
 )
+
 from ..permissions import (
-    HasAdminPermissionOrReadOnly,
     HasManagementPermission,
     HasRegistrationForEvent,
-    HasRegistrationForRelatedEvent,
     RegistrationPermission,
 )
 from ..serializers import (
@@ -32,13 +29,12 @@ from ..serializers import (
     EventListSerializer,
     EventManagementSerializer,
     EventSerializer,
-    JobNestedSerializer,
     RegistrationListSerializer,
     RegistrationManagementSerializer,
     SessionListSerializer,
-    SessionSerializer,
     VideoListSerializer,
 )
+
 
 # from ..serializers import SessionAccessLinkSerializer
 

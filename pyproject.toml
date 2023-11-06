@@ -11,3 +11,14 @@ show_missing = true
 [tool.pytest.ini_options]
 addopts = "--cov=hipeac --cov-report=html"
 DJANGO_SETTINGS_MODULE = "hipeac.settings.test"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.isort]
+lines-after-imports = 2
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+ignore = ["B026", "SIM105"]

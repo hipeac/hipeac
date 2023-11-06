@@ -7,7 +7,8 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
 import hipeac.site.views as views
-from .sitemaps import EventSitemap, InstitutionSitemap, JobSitemap, ProjectSitemap, RoadshowSitemap, SessionSitemap
+
+from .sitemaps import EventSitemap, InstitutionSitemap, JobSitemap, ProjectSitemap, SessionSitemap
 
 
 sitemaps = {
@@ -16,7 +17,6 @@ sitemaps = {
     "institutions": InstitutionSitemap,
     "jobs": JobSitemap,
     "projects": ProjectSitemap,
-    "roadshows": RoadshowSitemap,
     "sessions": SessionSitemap,
 }
 

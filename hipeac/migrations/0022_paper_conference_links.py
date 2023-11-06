@@ -9,9 +9,11 @@ def url_to_links(apps, schema_editor):
     Link = apps.get_model("hipeac", "Link")
 
     for conference in PublicationConference.objects.all():
+        ct = ContentType.objects.get_for_model(PublicationConference)
+
         if conference.url:
             Link.objects.create(
-                content_type=ContentType.objects.get_for_model(PublicationConference),
+                content_type=ct,
                 object_id=conference.id,
                 type="dblp",
                 url=conference.url,

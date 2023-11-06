@@ -4,7 +4,7 @@
 {% load hipeac %}
 
 
-{% block head_title %}{{ roadshow }} - {{ block.super }}{% endblock %}
+{% block head_title %}{{ dissemination }} - {{ block.super }}{% endblock %}
 
 {% block subtitle %}
   <span>HiPEAC Roadshow</span>
@@ -19,14 +19,14 @@
         <div class="hipeac-card">
           <div class="row">
             <div class="col-12 col-md-8 pr-md-5">
-              <small class="display display-sm">{{ roadshow.start_date }}</small>
-              <h2 class="display-lg mt-3 mb-4">{{ roadshow.name }}</h2>
+              <small class="display display-sm">{{ dissemination.start_date }}</small>
+              <h2 class="display-lg mt-3 mb-4">{{ dissemination.name }}</h2>
               <div class="marked">
-                {{ roadshow.description | markdown }}
+                {{ dissemination.description | markdown }}
               </div>
             </div>
             <div class="col-12 col-md-4">
-              {% include 'components/links.html' with title='More information' items=roadshow.get_ordered_links %}
+              {% include 'components/links.html' with title='More information' items=dissemination.get_ordered_links %}
             </div>
           </div>
         </div>
@@ -47,15 +47,15 @@
     {
       "@context": "http://schema.org",
       "@type": "Event",
-      "name": "{{ roadshow.name }}",
+      "name": "{{ dissemination.name }}",
       "url": "{{ request.build_absolute_uri }}",
-      "startDate": "{{ roadshow.start_date | date:'c' }}",
-      "endDate": "{{ roadshow.end_date | date:'c' }}",
+      "startDate": "{{ dissemination.start_date | date:'c' }}",
+      "endDate": "{{ dissemination.end_date | date:'c' }}",
       "location": {
         "@type": "Place",
         "address": {
           "@type": "PostalAddress",
-          "addressCountry": "{{ roadshow.country.code }}"
+          "addressCountry": "{{ dissemination.country.code }}"
         }
       }
     }

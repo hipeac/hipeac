@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 
-from hipeac.models import Event, Roadshow, Session
+from hipeac.models import Event, Session
 
 
 class EventSitemap(Sitemap):
@@ -9,17 +9,6 @@ class EventSitemap(Sitemap):
 
     def items(self):
         return Event.objects.only("id", "city", "start_date", "end_date")
-
-    def lastmod(self, obj):
-        return obj.end_date
-
-
-class RoadshowSitemap(Sitemap):
-    changefreq = "monthly"
-    priority = 1.0
-
-    def items(self):
-        return Roadshow.objects.only("id", "name", "end_date")
 
     def lastmod(self, obj):
         return obj.end_date

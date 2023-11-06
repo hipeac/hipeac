@@ -1,7 +1,7 @@
 # flake8: noqa
 
 from .communication import *
-from .emails import *
+from .emails import *  # check
 from .events import *
 from .files import *
 from .images import *
@@ -14,7 +14,6 @@ from .notifications import *
 from .pages import *
 from .permissions import *
 from .projects import *
-from .roadshows import *
 from .recruitment import *
 from .users import *
 from .steering import *

@@ -3,22 +3,22 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.models import (
-    Committee,
+    AcacesCourse,
+    AcacesCourseSession,
     Break,
+    Committee,
     Event,
     Registration,
     Session,
-    Roadshow,
-    AcacesCourse,
-    AcacesCourseSession,
 )
-from .sessions import SessionListSerializer
-from .venues import VenueSerializer
+
 from ..files import FileSerializer
 from ..institutions import InstitutionNestedSerializer
 from ..metadata import MetadataSerializer
 from ..mixins import FilesMixin, LinksMixin
 from ..users import UserManagementSerializer, UserPublicMiniSerializer, UserPublicSerializer
+from .sessions import SessionListSerializer
+from .venues import VenueSerializer
 
 
 """
@@ -142,24 +142,6 @@ class EventSerializer(LinksMixin, EventNestedSerializer):
     class Meta:
         model = Event
         exclude = ("wbs_element", "ingenico_salt")
-
-
-class RoadshowNestedSerializer(serializers.ModelSerializer):
-    url = serializers.CharField(source="get_absolute_url", read_only=True)
-    country = CountryField(country_dict=True)
-    institutions = InstitutionNestedSerializer(many=True)
-
-    class Meta:
-        model = Roadshow
-        exclude = ()
-
-
-class RoadshowListSerializer(RoadshowNestedSerializer):
-    pass
-
-
-class RoadshowSerializer(RoadshowNestedSerializer):
-    pass
 
 
 class CourseSessionListSerializer(serializers.ModelSerializer):
