@@ -9,4 +9,4 @@ class Webinar(SessionAbstractModel):
         ordering = ["start_at"]
 
     def is_open_for_registration(self) -> bool:
-        return timezone.now() <= self.start_at and self.zoom_webinar_id
+        return (timezone.now() <= self.start_at) and self.zoom_webinar_id is not None
