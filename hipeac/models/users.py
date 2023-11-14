@@ -132,7 +132,10 @@ class Profile(ApplicationAreasMixin, FilesMixin, ImageMixin, LinksMixin, Project
         return f"{self.name} ({self.username})"
 
     def get_absolute_url(self) -> str:
-        return reverse("user", args=[self.username])
+        try:
+            return reverse("user", args=[self.username])
+        except Exception:
+            return reverse("homepage")
 
     def is_member(self) -> bool:
         return getattr(self, "member", None) is not None

@@ -124,7 +124,7 @@ urlpatterns = [
     path("editor/new/<slug:model>/", never_cache(views.EditorCreateView.as_view()), name="editor_create"),
     path("editor/<int:ct>/<int:pk>/", never_cache(views.EditorView.as_view()), name="editor"),
     # Users
-    re_path(r"^~(?P<slug>[\w.@-]+)/$", views.UserProfile.as_view(), name="user"),
+    re_path(r"^~(?P<slug>[\w.@+-]+)/$", views.UserProfile.as_view(), name="user"),
     path("accounts/", include("allauth.urls")),
     path("accounts/profile/", views.UserSettings.as_view(), name="user_profile"),
     path("accounts/profileold/", views.UserSettingsOld.as_view(), name="user_profile_old"),
