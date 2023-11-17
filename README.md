@@ -1,54 +1,59 @@
 # HiPEAC.net
 
-[![github-actions-badge]][github-actions]
+[![github-tests-badge]][github-tests]
 [![codecov-badge]][codecov]
 [![codefactor-badge]][codefactor]
 [![license-badge]](LICENSE)
 
 
+## Backend
+
 The HiPEAC api/website uses [Django][django] and the [Django REST Framework][drf].
 
 ### Application dependencies
 
-The application uses [Pipenv][pipenv] to manage Python packages. While in development, you will need to install
-all dependencies (includes packages like `debug_toolbar`):
+The application uses [Poetry][poetry] to manage application dependencies.
 
 ```bash
-pipenv install --dev
-pipenv shell
+poetry lock
+poetry install --no-root
 ```
 
-Update dependencies (and manually update `requirements.txt`):
+### Run the app in development mode
 
 ```bash
-pipenv update --dev && pipenv lock && pipenv requirements
-```
-
-### Running the server
-
-```bash
-python manage.py migrate 
 python manage.py runserver
 ```
 
-### Running tests
-
-```bash
-pytest --cov=hipeac --cov-report=term
-```
-
-### Run Celery
+### Run Celery worker
 
 ```bash
 celery worker -B -A hipeac
 ```
 
-### Style guide
-
-Tab size is 4 spaces. Max line length is 120. You should run `black` before committing any change.
+### Run the tests
 
 ```bash
-black hipeac
+pytest --cov=hipeac --cov-report=term
+```
+
+### Style guide
+
+Tab size is 4 spaces. Max line length is 120. You should run `ruff` before committing any change.
+
+```bash
+ruff format . && ruff check metis
+```
+
+## Frontend
+
+Some parts of the website are developed as one page applications with [Vue][vue] (`vue` folder).
+When working on these, it is necessary to start a node server in parallel, so Django can access the
+modules via [Inertia][inertia].
+
+```bash
+yarn
+yarn dev
 ```
 
 
@@ -56,10 +61,12 @@ black hipeac
 [codecov-badge]: https://codecov.io/gh/hipeac/hipeac/branch/master/graph/badge.svg
 [codefactor]: https://www.codefactor.io/repository/github/hipeac/hipeac
 [codefactor-badge]: https://www.codefactor.io/repository/github/hipeac/hipeac/badge
-[github-actions]: https://github.com/hipeac/hipeac/actions?query=workflow%3A%22tests%22
-[github-actions-badge]: https://github.com/hipeac/hipeac/workflows/tests/badge.svg
+[github-tests]: https://github.com/hipeac/hipeac/actions?query=workflow%3A%22tests%22
+[github-tests-badge]: https://github.com/hipeac/hipeac/workflows/tests/badge.svg
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 
 [django]: https://www.djangoproject.com/
 [drf]: https://www.django-rest-framework.org/
-[pipenv]: https://docs.pipenv.org/#install-pipenv-today
+[inertia]: https://inertiajs.com/
+[poetry]: https://python-poetry.org/
+[vue]: https://vuejs.org/

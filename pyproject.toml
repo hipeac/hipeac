@@ -1,5 +1,71 @@
-[tool.black]
-line-length = 120
+[tool.poetry]
+name = "hipeac"
+version = "2.0.0"
+description = ""
+authors = ["Eneko Illarramendi <eneko@illarra.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "~3.10.0"
+celery = "==4.4.7"
+carbonize = "*"
+cloudscraper = "*"
+commonmark = "*"
+coreapi = "*"
+crispy-bootstrap4 = "*"
+cssselect = "*"
+django = {extras = ["bcrypt"], version = "*"}
+djangorestframework = "*"
+djangorestframework-csv = "*"
+django-allauth = "*"
+django-anymail = "*"
+django-compression-middleware = "*"
+django-compressor = "*"
+django-cors-headers = "*"
+django-countries = "*"
+django-crispy-forms = "*"
+django-dnt = "*"
+django-libsass = "*"
+django-recaptcha = "*"
+django-vite = "==2.1.3"
+drf-writable-nested = "*"
+environs = "*"
+gevent = "*"
+google-cloud-language = "*"
+grpcio = "*"
+gunicorn = "*"
+hiredis = "*"
+huey = "*"
+inertia-django = "*"
+lxml = "*"
+openpyxl = "*"
+pillow = "*"
+plotly = "*"
+psycopg = "*"
+pypdf2 = "*"
+redis = "*"
+requests = "*"
+reportlab = "*"
+sentry-sdk = "*"
+svglib = "*"
+twitter = "*"
+whitenoise = "*"
+zoomus = "*"
+
+[tool.poetry.group.dev.dependencies]
+django-debug-toolbar = "*"
+django-stubs = "*"
+djangorestframework-stubs = "*"
+flake8 = "*"
+flake8-mypy = "*"
+maya = "*"
+model-bakery = "*"
+mysqlclient = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-django = "*"
+ruff = "*"
+sqlalchemy = "*"
 
 [tool.coverage.run]
 omit = ["*apps.py", "*migrations/*", "*settings/*", "*tests/*", "*migratedata.py", "*urls.py", "*wsgi.py", "manage.py"]
@@ -13,7 +79,7 @@ addopts = "--cov=hipeac --cov-report=html"
 DJANGO_SETTINGS_MODULE = "hipeac.settings.test"
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py310"
 line-length = 120
 
 [tool.ruff.isort]

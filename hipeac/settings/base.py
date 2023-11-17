@@ -1,9 +1,9 @@
 import os
+from pathlib import Path
+from urllib.parse import urlparse
 
 from django.contrib.messages import constants as messages
 from kombu import Queue
-from pathlib import Path
-from urllib.parse import urlparse
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.staticfiles",
     # helpers
-    "captcha",
+    "django_recaptcha",
     "compressor",
     "crispy_forms",
     "crispy_bootstrap4",
