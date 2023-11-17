@@ -11,3 +11,7 @@ interface User extends ApiObject {
   profile: Profile;
   url: Url;
 }
+
+interface UserNotification extends ApiObject {
+  text: string;
+}

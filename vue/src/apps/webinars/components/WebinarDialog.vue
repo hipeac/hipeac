@@ -3,7 +3,17 @@
     <template #side-col>
       <div class="col-12 col-md-4">
         <div v-if="!obj.has_ended" class="q-gutter-sm">
-          <q-btn v-if="!registration" @click="register" unelevated no-caps color="primary" class="full-width"
+          <span v-if="!user">
+            <q-btn
+              outline
+              no-caps
+              :href="`/accounts/login/?next=${$page.url}`"
+              color="primary"
+              class="full-width"
+              >Log in to your account first</q-btn
+            >
+          </span>
+          <q-btn v-else-if="!registration" @click="register" unelevated no-caps color="primary" class="full-width"
             >Register</q-btn
           >
           <q-btn v-else @click="unregister" outline no-caps color="negative" class="full-width">Unregister</q-btn>
@@ -30,6 +40,7 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { api } from '@/axios';
+import { useUserStore } from '@/stores/user';
 import { notify } from '@/utils/notify';
 import { useStore } from '../store';
 
@@ -42,6 +53,7 @@ const props = defineProps<{
 }>();
 
 const { registrations } = storeToRefs(store);
+const { user } = storeToRefs(useUserStore());
 
 const registration = computed<HipeacWebinarRegistration | null>(() => {
   return registrations.value.find((reg) => reg.webinar == props.obj.id) || null;

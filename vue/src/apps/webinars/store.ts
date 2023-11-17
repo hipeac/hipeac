@@ -4,11 +4,12 @@ import { cloneDeep } from 'lodash-es';
 
 import { api } from '@/axios.ts';
 import { useCommonStore } from '@/stores/common';
+import { useUserStore } from '@/stores/user';
 import { mapSession } from '@/utils/mapper';
 
 export const useStore = defineStore('webinars', () => {
-  const commonStore = useCommonStore();
-  const { now, user } = storeToRefs(commonStore);
+  const { now } = storeToRefs(useCommonStore());
+  const { user } = storeToRefs(useUserStore());
 
   const allWebinars = ref<HipeacWebinar[]>([]);
   const allRegistrations = ref<HipeacWebinarRegistration[]>([]);

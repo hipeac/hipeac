@@ -7,10 +7,8 @@ import { storage } from '@/utils/storage';
 export const useCommonStore = defineStore('common', () => {
   const metadata = ref<Metadata[]>([]);
   const now = ref<Date>(new Date());
-  const user = ref<DjangoAuthenticatedUser | null>(null);
 
-  async function init(djangoUser: DjangoAuthenticatedUser | null) {
-    user.value = djangoUser;
+  async function init() {
     await fetchMetadata();
   }
 
@@ -42,6 +40,5 @@ export const useCommonStore = defineStore('common', () => {
     init,
     metadataByType,
     now,
-    user,
   };
 });
