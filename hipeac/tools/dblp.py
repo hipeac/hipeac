@@ -43,6 +43,8 @@ def process_conference_url(conference: PublicationConference, url: str):
     sel = CSSSelector("ul.publ-list > li")
 
     for element in sel(tree):
+        if element.get("id") is None:
+            continue
         publications[element.get("id")] = parse_element(element, conference.year)
 
     # populate database
@@ -93,15 +95,13 @@ def process_user_publications(profile: Profile):
     # populate database
     ct = ContentType.objects.get_for_model(Publication)
 
-    for key, publication in publications.items():
+    for _, publication in publications.items():
         try:
             entry = Publication.objects.get(dblp_key=publication["dblp_key"])
         except Publication.DoesNotExist:
             entry = Publication(**publication)
             entry.save()
 
-        _, _ = RelatedUser.objects.get_or_create(
-            content_type=ct, object_id=entry.id, user=profile.user
-        )
+        _, _ = RelatedUser.objects.get_or_create(content_type=ct, object_id=entry.id, user=profile.user)
 
     return True
