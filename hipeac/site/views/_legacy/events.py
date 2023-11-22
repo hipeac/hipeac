@@ -1,7 +1,7 @@
+from collections import OrderedDict
+
 import plotly.graph_objs as pgo
 import plotly.offline as poff
-
-from collections import OrderedDict
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 from django_countries import countries
 
-from hipeac.models import Event, Registration, Institution
+from hipeac.models import Event, Institution, Registration
 
 
 class EventStats(generic.TemplateView):
@@ -77,7 +77,7 @@ class EventStats(generic.TemplateView):
 
             return output
 
-        previous_conf = Event.objects.get(start_date__year=self.event.year - 3, type=self.event.type)
+        previous_conf = Event.objects.get(start_date__year=self.event.year - 1, type=self.event.type)
         registrations = {
             "previous": get_registrations_data(previous_conf),
             "current": get_registrations_data(self.event),
