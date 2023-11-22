@@ -59,7 +59,7 @@
             <div class="row q-col-gutter-x-xl q-col-gutter-y-lg">
               <div class="col-12 col-md">
                 <h3 class="q-mb-md">{{ obj.title }}</h3>
-                {{ obj.summary }}
+                <marked-div :text="obj.summary" />
               </div>
               <slot name="side-col">
                 <div class="col-12 col-md-4"></div>
@@ -67,7 +67,7 @@
             </div>
           </q-tab-panel>
           <q-tab-panel name="program">
-            {{ obj.program }}
+            <marked-div :text="obj.program" />
           </q-tab-panel>
           <q-tab-panel name="attendees">
             <attendees-list :session="obj" />
@@ -84,6 +84,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import MarkedDiv from '@/components/MarkedDiv.vue';
 import AttendeesList from './AttendeesList.vue';
 
 defineProps<{
