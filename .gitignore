@@ -1,12 +1,16 @@
 .DS_Store
 ._*
 
-# Django
+# Python
+
+.python-version
+.venv
 
 __pycache__
 *.py[cod]
 *$py.class
 .mypy_cache
+.ruff_cache
 .vscode
 
 .coverage
