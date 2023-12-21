@@ -1,8 +1,8 @@
 # https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/
 
 import os
-import sentry_sdk
 
+import sentry_sdk
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from sentry_sdk.integrations.django import DjangoIntegration

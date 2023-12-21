@@ -6,7 +6,7 @@ from .inertia import InertiaView
 
 
 class HomeView(InertiaView):
-    vue_entry_point = "apps/hipeac/home/main.ts"
+    vue_entry_point = "apps/home/main.ts"
 
     def get_props(self, request, *args, **kwargs):
         articles = Article.objects.published().order_by("-publication_date")[:10]

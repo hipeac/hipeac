@@ -24,7 +24,7 @@ class SteeringCommittee(UserIsSteeringMemberMixin, generic.TemplateView):
 
 
 class SteeringCommitteeVue(UserIsSteeringMemberMixin, InertiaView):
-    vue_entry_point = "apps/hipeac/steering/main.ts"
+    vue_entry_point = "apps/steering/main.ts"
 
     def get_props(self, request, *args, **kwargs):
         return {

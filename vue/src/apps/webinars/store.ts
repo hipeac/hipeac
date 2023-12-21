@@ -29,7 +29,7 @@ export const useStore = defineStore('webinars', () => {
   }
 
   async function fetchWebinars() {
-    await api.get('/webinars').then((res) => {
+    await api.get('/webinars/').then((res) => {
       allWebinars.value = res.data.map((webinar: HipeacWebinar) => mapSession(webinar) as HipeacWebinar);
     });
   }

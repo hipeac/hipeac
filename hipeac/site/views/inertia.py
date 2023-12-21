@@ -11,11 +11,6 @@ from hipeac.templatetags.hipeac import active
 
 
 def get_site_menu(request):
-    if request.site.name == "Computing Continuum":
-        return [
-            ("About", reverse("about"), active(request, "about,project")),
-        ]
-
     return [
         ("Network", reverse("network"), active(request, "network,user,institution,project")),
         ("Events", reverse("events"), active(request, "events,acaces,conference,conference_v2,csw,roadshow")),
@@ -48,8 +43,7 @@ def render_inertia(request, vue_entry_point: str, *, props: dict | None, page_ti
         }
         | (props or {}),
         template_data={
-            "site_name": request.site.name,
-            "page_title": page_title or request.site.name,
+            "page_title": page_title or "HiPEAC",
             "vue_entry_point": vue_entry_point,
         },
     )

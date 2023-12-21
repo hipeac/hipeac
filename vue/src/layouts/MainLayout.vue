@@ -1,14 +1,3 @@
-<style lang="scss">
-.hipeac__layout {
-  h6 {
-    font-family: inherit !important;
-    text-transform: none;
-    font-size: 20px;
-    padding-top: 12px;
-  }
-}
-</style>
-
 <template>
   <q-layout view="hHh LpR lff" class="hipeac__layout">
     <q-dialog v-model="visibleDialogMenu" position="top" full-width full-height>

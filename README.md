@@ -16,7 +16,7 @@ The application uses [Poetry][poetry] to manage application dependencies.
 
 ```bash
 poetry lock
-poetry install --no-root
+poetry install --sync --no-root
 ```
 
 ### Run the app in development mode

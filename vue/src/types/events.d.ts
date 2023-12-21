@@ -1,4 +1,4 @@
-interface HipeacEventImages {
+interface HipeacImages {
   th: string;
   md: string;
   lg: string;
@@ -50,7 +50,7 @@ interface HipeacEvent {
   registration_early_deadline: string;
   registration_deadline: string;
   registrations_count: number;
-  images: HipeacEventImage | null;
+  images: HipeacImages | null;
 }
 
 interface HipeacEventAttendee {

@@ -9,7 +9,7 @@ from ..inertia import InertiaView
 
 class WebinarsView(InertiaView):
     page_title = "Webinars"
-    vue_entry_point = "apps/hipeac/webinars/main.ts"
+    vue_entry_point = "apps/webinars/main.ts"
 
 
 class WebinarProposalView(SuccessMessageMixin, generic.FormView):

@@ -29,7 +29,12 @@
           <q-item clickable tag="a" href="/sc/#/membership-requests/">
             <q-item-section>Membership requests</q-item-section>
           </q-item>
-          <q-item clickable tag="a" href="https://cloud.hipeac.net/index.php/apps/files/files/57011?dir=/HiPEAC7" target="_blank">
+          <q-item
+            clickable
+            tag="a"
+            href="https://cloud.hipeac.net/index.php/apps/files/files/57011?dir=/HiPEAC7"
+            target="_blank"
+          >
             <q-item-section>File repository</q-item-section>
             <q-item-section side><q-icon name="cloud_queue" size="xs" /></q-item-section>
           </q-item>

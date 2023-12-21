@@ -43,13 +43,16 @@
     <div class="row q-col-gutter-lg q-mt-none">
       <div class="col-12 col-md-4 d-flex align-items-stretch">
         <q-card flat bordered class="q-px-lg q-pt-sm q-pb-lg full-height">
-          <event-list :items="$page.props.events" :min="8" :max="14" />
+          <event-list :items="events" :min="8" :max="14" />
         </q-card>
       </div>
       <div class="col-12 col-md d-flex align-items-stretch">
         <q-card flat bordered class="q-px-lg q-pt-sm q-pb-lg full-height">
           <div class="row q-col-gutter-xl">
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md">
+              <article-list :items="($page.props.articles as HipeacArticle[])" :max="8" show-more />
+            </div>
+            <div class="col-12 col-md">
               <div v-if="$page.props.video" class="q-mb-lg">
                 <h6 class="q-mb-md">Latest from HiPEAC TV</h6>
                 <q-video
@@ -58,16 +61,6 @@
                   class="rounded-borders"
                 />
               </div>
-              <article-list :items="($page.props.articles as HipeacArticle[])" :max="10" show-more />
-            </div>
-            <div class="col-12 col-md">
-              <a
-                class="twitter-timeline"
-                href="https://twitter.com/hipeac"
-                data-height="1200"
-                data-dnt="true"
-                data-chrome="nofooter noborders"
-              ></a>
             </div>
           </div>
         </q-card>
@@ -107,10 +100,12 @@ const texts = {
   },
 };
 
-const nextEvent = computed(() => {
-  const events = page.props.events.slice().reverse();
+const events = computed<HipeacEvent[]>(() => page.props.events as HipeacEvent[]);
+
+const nextEvent = computed<HipeacEvent | undefined>(() => {
+  const nextEvents = events.value.slice().reverse();
   const now = new Date();
-  return events.find((event) => new Date(event.end_date) > now);
+  return nextEvents.find((event) => new Date(event.end_date) > now);
 });
 
 onMounted(() => {

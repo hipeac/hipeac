@@ -17,17 +17,31 @@
       <link href="{% static '__inertia__/scss/base.scss' %}" type="text/x-scss" rel="stylesheet">
       <link href="{% static 'css/flags.css' %}" type="text/css" rel="stylesheet">
     {% endcompress %}
-    {% if site_name == "Computing Continuum" %}
-      {% compress css file cc %}
-        <link href="{% static '__inertia__/scss/cc.scss' %}" type="text/x-scss" rel="stylesheet">
-      {% endcompress %}
-    {% endif %}
     <title>{{ page_title }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta property="og:site_name" content="{{ site_name }}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
-
+    {% if not debug %}
+      {% if request.DNT %}
+        <meta name="twitter:dnt" content="on">
+      {% else %}
+        <script async src="//www.googletagmanager.com/gtag/js?id=G-L9R1MSGBM9"></script>
+        {% compress js inline %}
+          <script>
+            var userId = +(document.querySelector('html').dataset.user);
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            };
+            gtag('js', new Date());
+            gtag('config', 'G-L9R1MSGBM9', {
+              'user_id': (userId == 0) ? undefined : userId
+            });
+          </script>
+        {% endcompress %}
+      {% endif %}
+    {% endif %}
     {% vite_hmr_client %}
     {% vite_asset vue_entry_point %}
   </head>
