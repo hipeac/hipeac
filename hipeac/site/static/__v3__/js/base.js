@@ -369,7 +369,7 @@ var Hipeac = {
               label: privacyBtnText || 'Learn more',
               color: 'white',
               handler: function () {
-                Quasar.openURL(privacyUrl || '/privacy/');
+                Quasar.openURL(privacyUrl || '/privacy-policy/');
               }
             }
           ]
