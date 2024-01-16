@@ -17,11 +17,26 @@ var SessionMixin = {
     room: function () {
       if (!this.event || !this.session) return null;
       var rooms = {};
-      _.each(this.event.venues, function (venue) {
-        _.each(venue.rooms, function (room) {
-          rooms[room.id] = room;
+
+      if (this.event.venue) {
+        var v = this.event.venue;
+        _.each(this.event.venue.rooms, function (room) {
+          rooms[room.id] = {
+            room: room,
+            venue: v,
+          };
+        });
+      }
+
+      _.each(this.event.extra_venues, function (extraVenue) {
+        _.each(extraVenue.rooms, function (room) {
+          rooms[room.id] = {
+            room: room,
+            venue: extraVenue,
+          };
         });
       });
+
       return rooms[this.session.room] || null;
     },
     showDialog: {

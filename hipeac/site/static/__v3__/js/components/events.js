@@ -139,6 +139,12 @@ var HipeacEventComponents = {
           });
         }
 
+        _.each(this.event.extra_venues, function (extraVenue) {
+          _.each(extraVenue.rooms, function (room) {
+            rooms[room.id] = room;
+          });
+        });
+
         if (this.event.breaks.length) {
           _.each(this.event.breaks, function (br) {
             output.push({

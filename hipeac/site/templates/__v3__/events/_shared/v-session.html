@@ -28,7 +28,7 @@
               </li>
               <li v-if="room">
                 <q-icon size="xs" name="room" class="q-mr-xs" />
-                <span>{{ room.name }}</span>
+                <span>{{ room.room.name }}</span>
               </li>
               <li>
                 <q-icon size="xs" name="schedule" class="q-mr-xs" />
@@ -48,6 +48,11 @@
             <q-tab-panels v-model="tab" :swipeable="$q.screen.lt.md" horizontal :class="{'q-pa-sm': $q.screen.gt.sm}">
 
               <q-tab-panel name="main">
+
+                <div class="bg-yellow-3 q-pa-sm q-mb-md text-caption" v-if="room.venue.name == 'Leibniz Supercomputer Centre'">
+                  <a href="https://maps.app.goo.gl/AgiEAp4iRnFDSuV99" target="_blank">Find here</a> how to arrive to LRZ from the conference venue.
+                </div>
+
                 <div class="row q-col-gutter-x-xl q-col-gutter-y-lg">
                   <div class="col-12 col-md-8">
                     <display-2 class="q-mb-md">{{ session.title }}</display-2>
