@@ -1,12 +1,15 @@
-from django.contrib import admin
-from django.db import models
-from django.urls import path
 from typing import Optional
 
+from django.contrib import admin
+from django.db import models
+from django.urls import path, reverse
+from django.utils.html import format_html
+
 from hipeac.models.events import Event
-from hipeac.models.recruitment import PhdMobility, Job, JobEvaluation, JobFair, JobFairCompany, JobFairRegistration
+from hipeac.models.recruitment import Job, JobEvaluation, JobFair, JobFairCompany, JobFairRegistration, PhdMobility
 from hipeac.site.pdfs.recruitment import JobsPdfMaker
 from hipeac.site.pdfs.redux.events.badges import JobFairBadgesPdfMaker
+
 from .generic import custom_titled_filter
 from .institutions import InstitutionsInline
 from .links import LinksInline
@@ -148,7 +151,13 @@ class JobFairAdmin(admin.ModelAdmin):
 class JobFairRegistrationAdmin(admin.ModelAdmin):
     actions = ("pdf_badges",)
     date_hierarchy = "created_at"
+    list_display = (
+        "id",
+        "created_at",
+        "name",
+    )
     list_filter = ("fair",)
+    search_fields = ("id", "user__email", "user__username", "user__first_name", "user__last_name")
 
     # custom actions
 
@@ -156,3 +165,13 @@ class JobFairRegistrationAdmin(admin.ModelAdmin):
     def pdf_badges(self, request, queryset):
         maker = JobFairBadgesPdfMaker(registrations=queryset, filename="badges.pdf")
         return maker.response
+
+    # custom fields
+
+    def name(self, obj):
+        institution = obj.user.profile.institution.short_name if obj.user.profile.institution else "-"
+        url = reverse("admin:auth_user_changelist")
+        return format_html(
+            f'<a href="{url}{obj.user_id}/" target="admin_user" class="text-nowrap">{obj.user.profile.name}</a>'
+            f", {institution}"
+        )
