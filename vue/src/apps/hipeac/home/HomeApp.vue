@@ -110,7 +110,7 @@ const texts = {
 const nextEvent = computed(() => {
   const events = page.props.events.slice().reverse();
   const now = new Date();
-  return events.find((event) => new Date(event.start_date) > now);
+  return events.find((event) => new Date(event.end_date) > now);
 });
 
 onMounted(() => {
