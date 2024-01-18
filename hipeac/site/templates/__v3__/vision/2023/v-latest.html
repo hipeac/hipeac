@@ -8,8 +8,6 @@
     <q-card v-show="answered" class="hipeac__card q-my-lg">
       <q-tabs no-caps inline-label class="bg-white text-blue-9 q-mt-lg">
         <q-route-tab exact :to="{name: 'latest'}" icon="book" label="Overview" />
-        <q-route-tab exact :to="{name: 'highlights'}" icon="photo_filter" label="Highlights" />
-        <q-route-tab exact :to="{name: 'articles'}" icon="article" label="Articles" />
         <q-route-tab exact :to="{name: 'downloads'}" icon="download" label="Other downloads" />
         <q-route-tab exact :to="{name: 'dissemination'}" icon="monitor" label="Dissemination" />
       </q-tabs>
@@ -26,16 +24,7 @@
       <div v-if="answered" class="col-12 col-md-5 align-items-stretch">
         <q-card class="hipeac__card full-height">
           <q-card-section class="q-py-none">
-            <display-5>The six races</display-5>
-            <q-list dense separator>
-              <q-item v-for="articles, dimension in groupedArticles" :key="dimension" clickable :to="{name: 'articles', query: {q: dimensionData[dimension].key}}">
-                <q-item-section>{{ dimension }}</q-item-section>
-                <q-item-section side>
-                  <q-chip icon="article" :color="dimensionData[dimension].color" text-color="white" :label="articles.length" />
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <p class="text-caption text-grey-8 q-mt-lg q-mb-none">In order to help the reader, instead of having big monolithic chapters, we propose to split the “rationale” part of the document into a coherent set of independent articles grouped by `dimensions`, illustrating or explaining different aspects of the recommendations we propose. We hope it will help and that you will take as much pleasure in reading this new release as we have done in producing it.</p>
+            <q-img v-if="vision.images.length" :src="vision.images[0].image" :width="($q.screen.gt.sm) ? '128' : '64'" class="rounded-borders" />
           </q-card-section>
         </q-card>
       </div>
@@ -105,7 +94,8 @@
       <div class="col-12 col-md">
         <q-card class="hipeac__card full-height">
           <q-card-section class="q-py-none">
-            <download-btn outline color="primary" :href="vision.download_url" title="Download full document" class="q-mb-lg" />
+            <download-btn unelevated color="blue" :href="vision.download_url" target="_blank" title="Download full document" class="q-mb-md" />
+            <q-btn outline color="primary" href="https://vision.hipeac.net/" target="_blank" class="full-width q-mb-lg">Explore the rationale</q-btn>
             <marked :text="vision.introduction" class="catchphrase-first q-my-none"></marked>
             <div v-if="vision.youtube_url" class="q-mt-xl">
               <display-5>Video</display-5>
