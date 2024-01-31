@@ -15,9 +15,9 @@ from hipeac.models.mixins import (
     UsersMixin,
     VideosMixin,
 )
-from .events import validate_date
+
 from ..metadata import Metadata
-from ..permissions import Permission
+from .events import validate_date
 
 
 class SessionManager(models.Manager):
@@ -131,6 +131,8 @@ class Session(EditorMixin, SessionAbstractModel):
         return self.main_speaker_id == user.id or self._can_be_managed_by(user)
 
     def files_viewable_by_user(self, user) -> bool:
+        return user.is_authenticated
+        # TODO: check if this is still the best approach
         return user.is_authenticated and (
             self.can_be_managed_by(user) or self.event.registrations.filter(user=user).exists()
         )
