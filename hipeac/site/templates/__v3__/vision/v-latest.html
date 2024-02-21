@@ -8,7 +8,7 @@
     <q-card class="hipeac__card q-my-lg" style="padding-bottom: 0">
       <q-card-section class="text-center q-py-none">
         <marked :text="vision.introduction" class="text-h6 text-weight-light q-my-none"></marked>
-        <download-btn unelevated v-if="!$q.screen.gt.sm && vision.download_url" :href="vision.download_url" title="Download full document" class="q-mt-lg" />
+        <download-btn unelevated v-if="!$q.screen.gt.sm && vision.download_url" :href="vision.download_url" title="HiPEAC Vision 2024 summary & recommendations" class="q-mt-lg" />
       </q-card-section>
       <q-tabs no-caps inline-label class="bg-white text-blue-9 q-mt-lg">
         <q-route-tab exact :to="{name: 'latest'}" icon="book" label="Overview"></q-route-tab>
@@ -50,7 +50,7 @@
       </div>
       <div class="col-12 col-md-4">
         <q-card v-if="$q.screen.gt.sm && vision.download_url" class="hipeac__card q-mb-lg">
-          <download-btn flat :href="vision.download_url" title="Download full document" />
+          <download-btn flat :href="vision.download_url" title="HiPEAC Vision 2024 summary & recommendations" />
         </q-card>
         <q-card class="hipeac__card">
           <q-card-section class="q-py-none">

@@ -94,8 +94,10 @@
       <div class="col-12 col-md">
         <q-card class="hipeac__card full-height">
           <q-card-section class="q-py-none">
-            <download-btn unelevated color="blue" :href="vision.download_url" target="_blank" title="Download full document" class="q-mb-md" />
-            <q-btn outline color="primary" href="https://vision.hipeac.net/" target="_blank" class="full-width q-mb-lg">Explore the rationale</q-btn>
+            <download-btn unelevated color="blue" :href="vision.download_url" target="_blank" title="HiPEAC Vision 2024 summary & recommendations" class="q-mb-md" />
+            <download-btn unelevated color="blue" href="https://cloud.hipeac.net/s/JJGGBK9RyC9m2K4" target="_blank" title="HiPEAC Vision 2024 rationale" class="q-mb-md" />
+            <q-btn outline color="primary" href="https://vision.hipeac.net/" target="_blank" class="full-width q-mb-lg">Explore the rationale articles</q-btn>
+            <!-- link to the video -->
             <marked :text="vision.introduction" class="catchphrase-first q-my-none"></marked>
             <div v-if="vision.youtube_url" class="q-mt-xl">
               <display-5>Video</display-5>
