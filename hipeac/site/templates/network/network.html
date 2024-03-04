@@ -19,6 +19,9 @@
     <a is="router-link" :to="{name: 'members'}" class="nav-link">Members</a>
   </li>
   <li class="nav-item">
+    <a is="router-link" :to="{name: 'iab'}" class="nav-link">IAB</a>
+  </li>
+  <li class="nav-item">
     <a is="router-link" :to="{name: 'projects'}" class="nav-link">Projects</a>
   </li>
   <li class="nav-item">
@@ -38,6 +41,7 @@
 
 {% block vue_templates %}
   {% include './v-about.html' with id='v-about' tbs=flatpage.page.tbs %}
+  {% include './v-iab.html' with id='v-iab' tbs=flatpage.page.tbs %}
   {% include './v-benefits.html' with id='v-benefits' tbs=flatpage.page.tbs %}
   {% include './v-equality.html' with id='v-equality' tbs=flatpage.page.tbs %}
   {% include './v-industry.html' with id='v-industry' header=flatpage.page.tbs.about_industry.content benefits=flatpage.page.tbs.industry_benefits get_involved=flatpage.page.tbs.industry_get_involved %}
@@ -111,6 +115,10 @@
 
     var EqualityView = {
       template: '#v-equality'
+    };
+
+    var IabView = {
+      template: '#v-iab'
     };
 
     var IndustryView = {
@@ -288,6 +296,12 @@
               component: MembersStatsView
             }
           ]
+        },
+        {
+          name: 'iab',
+          path: '/iab/',
+          pathToRegexpOptions: {strict: true},
+          component: IabView
         },
         {
           name: 'partners',
