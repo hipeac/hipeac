@@ -1,3 +1,5 @@
+from hashlib import md5
+
 from allauth.socialaccount.providers.linkedin_oauth2.provider import LinkedInOAuth2Provider
 from allauth.socialaccount.signals import social_account_added
 from django.contrib.auth import get_user_model
@@ -12,9 +14,9 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django_countries.fields import CountryField
-from hashlib import md5
 
 from hipeac.functions import get_images_path, send_task
+
 from .metadata import Metadata
 from .mixins import ApplicationAreasMixin, FilesMixin, ImageMixin, LinksMixin, ProjectsMixin, TopicsMixin
 
@@ -164,7 +166,7 @@ class Profile(ApplicationAreasMixin, FilesMixin, ImageMixin, LinksMixin, Project
 
             email_hash = md5(self.user.email.lower().encode("utf-8")).hexdigest()
         except Exception:
-            email_hash = md5("hipeac@hipeac.net".encode("utf-8")).hexdigest()
+            email_hash = md5(b"hipeac@hipeac.net").hexdigest()
 
         return f"https://www.gravatar.com/avatar/{email_hash}?s={size}&d=retro&r=PG"
 
@@ -180,8 +182,20 @@ class Profile(ApplicationAreasMixin, FilesMixin, ImageMixin, LinksMixin, Project
             return True
 
         fair_job_ids = self.user.job_fair_registrations.values_list("jobs", flat=True)
-        recruiter_job_ids = user.job_fairs.values_list("institution__jobs", flat=True)
+
+        # get job ids that the recruiter has access to
+        # 1. get the instution_id for the recruiter
+        # 2. get job ids where the institution_id is the same as the recruiter's institution_id
+        #    or the institution_id is in the recruiter's institution's children
+        from .recruitment import Job
+
+        recruiter_institution_ids = list(user.job_fairs.values_list("institution", flat=True))
+        recruiter_institution_ids += list(user.job_fairs.values_list("institution__children", flat=True))
+        recruiter_job_ids = list(
+            Job.objects.filter(institution_id__in=recruiter_institution_ids).values_list("id", flat=True)
+        )
         intersection = set(fair_job_ids).intersection(set(recruiter_job_ids))
+
         return len(intersection) > 0
 
 
