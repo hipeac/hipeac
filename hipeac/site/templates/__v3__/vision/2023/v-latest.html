@@ -23,7 +23,11 @@
     <div class="row q-col-gutter-lg">
       <div v-if="answered" class="col-12 col-md-5 align-items-stretch">
         <q-card class="hipeac__card full-height">
-          <q-card-section class="q-py-none">
+          <q-card-section>
+            <div v-if="vision.youtube_url">
+              <youtube-embed :url="vision.youtube_url"></youtube-embed>
+              <q-separator class="q-my-lg" />
+            </div>
             <q-img v-if="vision.images.length" :src="vision.images[0].image" :width="($q.screen.gt.sm) ? '128' : '64'" class="rounded-borders" />
           </q-card-section>
         </q-card>
@@ -97,12 +101,7 @@
             <download-btn unelevated color="blue" :href="vision.download_url" target="_blank" title="HiPEAC Vision 2024 summary & recommendations" class="q-mb-md" />
             <download-btn unelevated color="blue" href="https://cloud.hipeac.net/s/JJGGBK9RyC9m2K4" target="_blank" title="HiPEAC Vision 2024 rationale" class="q-mb-md" />
             <q-btn outline color="primary" href="https://vision.hipeac.net/" target="_blank" class="full-width q-mb-lg">Explore the rationale articles</q-btn>
-            <!-- link to the video -->
             <marked :text="vision.introduction" class="catchphrase-first q-my-none"></marked>
-            <div v-if="vision.youtube_url" class="q-mt-xl">
-              <display-5>Video</display-5>
-              <youtube-embed :url="vision.youtube_url"></youtube-embed>
-            </div>
             <q-list class="q-mt-xl">
               <q-item clickable tag="a" :href="'https://www.google.com/search?q=%22HiPEAC+Vision+' + vision.year + '%22+-site%3Ahipeac.net+-site%3Atwitter.com'" target="_blank">
                 <q-item-section avatar>
