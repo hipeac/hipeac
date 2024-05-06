@@ -19,6 +19,11 @@
               <q-toggle size="xs" v-model="props.row.status" @input="update(props.row)" color="green" checked-icon="check" unchecked-icon="schedule" :indeterminate-icon="(props.row.status == 9) ? 'close' : 'question_mark'" :true-value="1" :false-value="5" :indeterminate-value="9" toggle-indeterminate :disable="disableAdmitToggle(props.row)" ></q-toggle>
             </q-td>
           </template>
+          <template v-slot:body-cell-dus="props">
+            <q-td auto-width :props="props">
+              <small>{{ props.row.dus_selection }}</small>
+            </q-td>
+          </template>
           <template v-slot:body-cell-grant_assigned="props">
             <q-td auto-width :props="props">
               <q-toggle v-if="props.row.grant_requested" size="xs" v-model="props.row.grant_assigned" @input="update(props.row)" color="green" checked-icon="check" :unchecked-icon="(disableGrantToggle(props.row)) ? 'null' : 'arrow_forward_ios'" :disable="disableGrantToggle(props.row)" />

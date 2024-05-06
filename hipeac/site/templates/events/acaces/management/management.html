@@ -136,6 +136,11 @@
           return state.registrations.map(function (obj) {
             obj = Hipeac.map.registration(obj);
 
+            // we want to see how many of the courses from DISCOVER-US have been selected
+            var dus = [97, 100, 104, 106];
+            var course_ids = obj.courses.map(function (c) { return c.id });
+            obj.dus_selection = _.intersection(obj.courses, dus).length;
+
             var w = _.without(obj.history, VIRTUAL_ACACES);
             obj.date = moment(obj.created_at);
             obj.acaces_count = obj.history.length;
@@ -163,6 +168,7 @@
 
             obj._q = [
               obj._q,
+              'dus:' + _.intersection(obj.courses, dus).length,
               'gender:' + obj.user_gender,
               'admitted:' + (obj.admitted ? 'yes' : 'no'),
               'dietary.requirements:' + (obj.dietary_requirements ? 'yes' : 'no'),
@@ -434,6 +440,13 @@
                 field: 'accepted',
                 sortable: true,
                 label: 'Accepted',
+                align: 'center',
+              },
+              {
+                name: 'dus',
+                field: 'dus_selection',
+                sortable: true,
+                label: 'D-US',
                 align: 'center',
               },
               {
