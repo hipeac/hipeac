@@ -155,6 +155,10 @@ class Profile(ApplicationAreasMixin, FilesMixin, ImageMixin, LinksMixin, Project
         return f"{self.user.first_name} {self.user.last_name}"
 
     @property
+    def affiliation(self) -> str:
+        return self.institution.name if self.institution else "-"
+
+    @property
     def username(self) -> str:
         return self.user.username
 

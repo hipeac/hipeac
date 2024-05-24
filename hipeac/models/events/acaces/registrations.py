@@ -3,8 +3,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .buses import AcacesBus
 from ..registrations import Registration, registration_post_save
+from .buses import AcacesBus
 
 
 class AcacesRegistration(Registration):
@@ -80,6 +80,27 @@ class AcacesRegistration(Registration):
         self.base_fee = base_fee
         self.saldo = -self.remaining_fee
         super().save(*args, **kwargs)
+
+    def get_registrations_sharing_room(self) -> models.QuerySet["AcacesRegistration"]:
+        return (
+            AcacesRegistration.objects.filter(
+                event=self.event, status=self.STATUS_ADMITTED, accepted=True, roommate_requested=True, roommate=None
+            )
+            .exclude(id=self.id)
+            .order_by("user__first_name", "user__last_name")
+        )
+
+    @property
+    def name(self) -> str:
+        return self.user.profile.name
+
+    @property
+    def affiliation(self) -> str:
+        return self.user.profile.affiliation
+
+    @property
+    def gender(self) -> str:
+        return self.user.profile.gender.value if self.user.profile.gender else "-"
 
 
 @receiver(post_save, sender=AcacesRegistration)
