@@ -38,7 +38,7 @@
         state: {
           visions: null,
           dissemination: null,
-          targetGroup: HipeacStorage.cache.get('vision.target_group')
+          targetGroup: HipeacStorage.cache.get('vision.target_group') || 'research',
         },
         getters: {
           vision: function (state) {
