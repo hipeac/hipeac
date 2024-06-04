@@ -542,7 +542,7 @@
             'gender': null
           }); }
         },
-        save: function () {
+        save: _.debounce(function () {
           var self = this;
           var method = (this.user.registration) ? 'put' : 'post';
           var url = (this.user.registration) ? this.user.registration.self : VARS.registrationUrl;
@@ -556,7 +556,7 @@
           }).catch(function (error) {
             Hipeac.utils.notifyApiError(error);
           });
-        },
+        }, 500),
         updateCourses: function (model) {
           this.obj.courses = _.values(model);
         }
