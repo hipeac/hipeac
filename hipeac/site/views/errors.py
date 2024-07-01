@@ -12,4 +12,4 @@ def permission_denied_error(request, exception):
 
 @requires_csrf_token
 def server_error(request):
-    return render(request, "500.html", {"sentry_event_id": ""}, status=500)
+    return render(request, "errors/500.html", {"sentry_event_id": ""}, status=500)
