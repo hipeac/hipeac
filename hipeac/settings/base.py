@@ -17,8 +17,9 @@ SITE_ROOT = PACKAGE_ROOT / "site"
 DEBUG = True
 TEST = False
 
-ADMINS = (("eillarra", "e@illarra.com"),)
+ADMINS = (("eillarra", "eneko.illarramendi@ugent.be"),)
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "DJANGO_SECRET_KEY")
+SITE_ID = int(os.environ.get("SITE_ID", 1))
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
