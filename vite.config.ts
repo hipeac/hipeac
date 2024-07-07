@@ -18,7 +18,7 @@ export default defineConfig({
   base: '/static/vite/',
   server: {
     host: 'localhost',
-    port: 3000,
+    port: 5173,
     open: false,
     watch: {
       usePolling: true,
