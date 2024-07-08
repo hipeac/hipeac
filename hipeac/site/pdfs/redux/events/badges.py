@@ -5,7 +5,6 @@ from django.template.defaultfilters import date as date_filter
 from reportlab.graphics.shapes import Drawing, Image, Rect, String
 from reportlab.lib.colors import HexColor
 from reportlab.lib.units import mm
-from typing import Optional
 
 from hipeac.models.metadata import Metadata
 from hipeac.services.pdf import PdfResponse
@@ -27,9 +26,9 @@ def draw_badge(
     attendee_name: str,
     color: HexColor,
     show_social: bool = False,
-    institution: Optional[str] = None,
-    country: Optional[str] = None,
-    one_logo: Optional[bool] = False,
+    institution: str | None = None,
+    country: str | None = None,
+    one_logo: bool | None = False,
 ) -> Drawing:
     side_margin = 6 * mm  # a minimum on the sides for the printers
     width = (210 * mm) - (2 * side_margin)
@@ -175,19 +174,22 @@ class BadgesPdfMaker:
                     width = (210 * mm) - (2 * side_margin)
                     y = 28 * mm
 
-                    for course in reg.courses.all():
-                        y = y - (3 * mm)
-                        draw.add(
-                            String(
-                                width * 0.75,
-                                y,
-                                str(course),
-                                fontName="Roboto Light",
-                                fillColor="black",
-                                fontSize=5.0,
-                                textAnchor="middle",
+                    try:
+                        for course in reg.courses.all():
+                            y = y - (3 * mm)
+                            draw.add(
+                                String(
+                                    width * 0.75,
+                                    y,
+                                    str(course),
+                                    fontName="Roboto Light",
+                                    fillColor="black",
+                                    fontSize=5.0,
+                                    textAnchor="middle",
+                                )
                             )
-                        )
+                    except Exception:
+                        pass
 
                 pdf.parts.append(draw)
 

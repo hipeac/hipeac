@@ -3,9 +3,10 @@ from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
 
-from hipeac.models.events import Break, Committee, Event
+from hipeac.models.events import AcacesRegistration, Break, Committee, Event
 from hipeac.site.pdfs.redux.events.badges import BadgesPdfMaker
 from hipeac.site.sheets.events.registrations import RegistrationsSheet
+
 from ..communication import VideosInline
 from ..links import LinksInline
 from ..users import MembersInline
@@ -126,9 +127,14 @@ class EventAdmin(admin.ModelAdmin):
             return
 
         event = queryset.first()
-        return BadgesPdfMaker(
-            registrations=event.registrations, filename=f"{event.year}-{event.slug}-badges.pdf"
-        ).response
+        registrations = event.registrations
+
+        if event.type == Event.ACACES:
+            registrations = AcacesRegistration.objects.filter(
+                event=event, status=AcacesRegistration.STATUS_ADMITTED, accepted=True
+            )
+
+        return BadgesPdfMaker(registrations=registrations, filename=f"{event.year}-{event.slug}-badges.pdf").response
 
     # custom fields
 
