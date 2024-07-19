@@ -81,7 +81,11 @@ class AcacesSurvey(AcacesDetail):
 class AcacesSurveyGelato(AcacesSurvey):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        registration = self.get_registration(request.user)
+        try:
+            registration = self.get_registration(request.user)
+        except AcacesRegistration.DoesNotExist:
+            messages.error(request, "You are not registered for this event.")
+            raise PermissionDenied
 
         if not registration.gelato:
             registration.gelato = True
