@@ -130,7 +130,6 @@ CSRF_USE_SESSIONS = not DEBUG
 
 # XFRAME
 
-X_FRAME_OPTIONS = "ALLOW-FROM https://gather.town/"
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Account
