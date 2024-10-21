@@ -1,8 +1,9 @@
-from drf_writable_nested import NestedUpdateMixin, WritableNestedModelSerializer
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from hipeac.functions import truncate_md
-from hipeac.models import Session
+from hipeac.models import Permission, Session
+
 from ..institutions import InstitutionsMixin
 from ..metadata import MetadataSerializer
 from ..mixins import ApplicationAreasMixin, FilesMixin, KeywordsMixin, LinksMixin, TopicsMixin
@@ -42,9 +43,14 @@ class SessionSerializer(FilesMixin, InstitutionsMixin, LinksMixin, ProjectsMixin
     date = serializers.DateField(read_only=True)
     editor_href = serializers.URLField(source="get_editor_url", read_only=True)
     is_industrial_session = serializers.BooleanField(read_only=True)
+    _organizers = serializers.SerializerMethodField(read_only=True)
 
     class Meta(SessionNestedSerializer.Meta):
         exclude = ("created_at", "updated_at")
+
+    def get__organizers(self, obj) -> str:
+        organizers = obj.acl.filter(level__gte=Permission.ADMIN)
+        return "<br/>".join([f"{o.user.profile.name}, {o.user.profile.affiliation}" for o in organizers])
 
 
 """

@@ -185,9 +185,26 @@
     var SessionView = {
       mixins: [SessionMixin],
       template: '#v-session',
+      data: function () {
+        return {
+          showContactDialog: false,
+          msgToOrganizers: '',
+        };
+      },
       computed: _.extend(
+        Vuex.mapState('user', ['user']),
         Vuex.mapState('events', ['event', 'registration']), {
-      })
+      }),
+      methods: {
+        sendMessageToOrganizers: function () {
+          var self = this;
+          Hipeac.api.request('POST', this.session.self + 'contact/', {message: this.msgToOrganizers}).then(function (res) {
+            self.msgToOrganizers = '';
+            self.showContactDialog = false;
+            self.$q.notify({message: 'Message sent', color: 'positive'});
+          });
+        }
+      }
     };
 
     var VenueView = {

@@ -17,6 +17,7 @@
               <q-tab v-if="session.files.length" name="files" label="Files" />
             </q-tabs>
             <q-space></q-space>
+            <q-btn v-if="user" flat no-caps @click="showContactDialog = true" icon="mail_outline" label="Contact organizers"></q-btn>
             <editor-link v-if="session.editor_href" type="btn" :url="session.editor_href" target="_blank" />
             <q-btn flat round v-close-popup icon="close" />
           </q-toolbar>
@@ -57,6 +58,11 @@
                   <div class="col-12 col-md-8">
                     <display-2 class="q-mb-md">{{ session.title }}</display-2>
                     <marked v-if="session.summary" :text="session.summary" />
+                    <div v-if="session.organizers || session._organizers" class="q-mt-lg">
+                      <display-5>Organizers</display-5>
+                      <marked v-if="session.organizers" :text="session.organizers" />
+                      <div v-else v-html="session._organizers"></div>
+                    </div>
                     <div v-if="session.is_industrial_session && (session.institutions.length || session.projects.length)">
                       <q-separator class="q-my-xl" />
                       <div class="row items-center q-col-gutter-lg text-center q-mb-lg">
@@ -144,6 +150,26 @@
         </q-page-container>
 
       </q-layout>
+    </q-dialog>
+
+    <q-dialog v-model="showContactDialog" @show="showContactDialog = true">
+      <q-card class="q-pa-sm" style="width: 500px">
+        <q-toolbar>
+          <q-toolbar-title class="q-ml-xs">Contact form</q-toolbar-title>
+          <q-space />
+          <q-btn v-close-popup flat round icon="close" />
+        </q-toolbar>
+        <q-card-section class="text-body2">
+          <p>Please use this form to send a message to the session organizers:<br />
+          <strong v-html="session._organizers"></strong></p>
+          <p>we will share your email address with them so you can get a direct response.</p>
+          <q-input v-model="msgToOrganizers" filled type="textarea" class="q-mb-md"></q-input>
+          <q-btn v-close-popup @click="sendMessageToOrganizers" outline color="primary" label="Send message" :disable="!msgToOrganizers" />
+        </q-card-section>
+        <q-card-section class="text-caption q-pb-lg">
+          <span>Please note that the organizers can choose to discard your message.</span>
+        </q-card-section>
+      </q-card>
     </q-dialog>
   </div>
 {% endverbatim %}
